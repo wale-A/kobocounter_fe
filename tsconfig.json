@@ -14,7 +14,10 @@
     "baseUrl": ".",
     "types": [
       "webpack-env",
-      "jest"
+      "jest",
+    ],
+    "typeRoots": [
+      "src/typings"
     ],
     "paths": {
       "@/*": [
@@ -25,7 +28,7 @@
       "esnext",
       "dom",
       "dom.iterable",
-      "scripthost"
+      "scripthost" 
     ]
   },
   "include": [

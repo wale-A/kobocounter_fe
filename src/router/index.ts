@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Home from "../views/Home.vue";
+import { AccountRoutes } from "./account";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -16,6 +17,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/About.vue"),
   },
+  ...AccountRoutes,
 ];
 
 const router = createRouter({
