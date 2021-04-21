@@ -2,9 +2,9 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import "./registerServiceWorker";
 import router from "./router";
-import "bootstrap";
+// import "bootstrap";
 // import BootstrapVue from "bootstrap-vue";
-import "bootstrap/dist/css/bootstrap.min.css";
+// import "bootstrap/dist/css/bootstrap.min.css";
 // import "bootstrap-vue/dist/css/bootstrap-vue.css";
 import MonoJS from "vue-mono";
 

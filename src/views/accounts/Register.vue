@@ -1,5 +1,5 @@
 <template>
-  <div class="register container">
+  <div class="register">
     <h1>Register</h1>
     <form>
       <div class="mb-3 row align-items-center">
