@@ -2,16 +2,24 @@
   <header>
     <nav class="">
       <!-- logo section -->
-      <div id="logo">
+      <a href="/" id="logo">
         <img src="@/assets/logo.svg" alt="logo" />
-        <span id="logo-text">kobocounter</span>
-      </div>
-      <div id="option" class="">Menu</div>
+        <span id="logo-text" class="darker-text">kobocounter</span>
+      </a>
+      <div v-if="displayMenu" id="option" class="">Menu</div>
     </nav>
   </header>
 </template>
 
 <script lang="ts">
-import { Vue } from "vue-class-component";
-export default class Header extends Vue {}
+import { Options, Vue } from "vue-class-component";
+
+@Options({
+  props: {
+    displayMenu: Boolean,
+  },
+})
+export default class Header extends Vue {
+  displayMenu = true;
+}
 </script>

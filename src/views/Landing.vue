@@ -1,12 +1,15 @@
 <template>
   <div id="landing" class="">
-    <Header />
+    <Header :displayMenu="true" />
     <!-- main section -->
     <main id="main">
       <section id="landing-text">
-        <h2>Track your <span>coins</span></h2>
-        <p>
-          Tired of asking <span>"where did my money go"</span> ? <br />
+        <h2 class="major-text darker-text">
+          Track your <span class="accent-text">coins</span>
+        </h2>
+        <p class="lighter-text">
+          Tired of asking
+          <span class="accent-text">"where did my money go"</span> ? <br />
           Let us help you find out where your account is leaking
         </p>
         <a href="/account/register" class="submit-link-text">TRACK MY COINS</a>
@@ -41,23 +44,9 @@ main section {
   flex-direction: column;
   text-align: start;
 }
-#landing-text h2 {
-  font-family: "Paytone One";
-  color: #1c5298;
-  font-size: 64px;
-  line-height: 64px;
-  margin-bottom: 20px;
-}
-#landing-text h2 span {
-  color: #007cff;
-}
 #landing-text p {
   font-family: Poppins;
   font-size: 22px;
-  color: #19365e;
-}
-#landing-text p span {
-  color: #007cff;
 }
 section a {
   text-decoration: none;

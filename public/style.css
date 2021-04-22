@@ -19,13 +19,13 @@ nav {
 #logo {
   display: flex;
   align-items: center;
+  text-decoration: none;
 }
 
 #logo-text {
   font-family: "Paytone One";
   margin-left: 10px;
   font-size: 20px;
-  color: #1c5298;
 }
 
 #option {
@@ -48,7 +48,7 @@ footer {
   width: 100%;
 }
 
-button[type="submit"] {
+button {
   padding: 10px 50px;
   border-radius: 5px;
   border-color: transparent;
@@ -57,6 +57,63 @@ button[type="submit"] {
   background-color: #007cff;
   font-size: 16px;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.05);
+}
+button:disabled {
+  background-color: #fff;
+  color: black;
+  cursor: no-drop;
+  border: 1px solid #007cff;
+}
+
+input[type="email"],
+input[type="text"],
+input[type="password"] {
+  height: 48px;
+  width: 100%;
+  background-color: #fff;
+  border: 2px solid #bfdeff;
+  box-sizing: border-box;
+  border-radius: 5px;
+  padding-left: 10px;
+  color: black;
+}
+
+.accent-text {
+  color: #007cff;
+}
+
+.lighter-text {
+  color: #19365e;
+}
+
+.darker-text {
+  color: #1c5298;
+}
+.major-text {
+  font-family: "Paytone One";
+  font-size: 64px;
+  line-height: 64px;
+  margin-bottom: 20px;
+}
+.mid-text {
+  font-family: "Poppins";
+  font-size: 20px;
+  line-height: 30px;
+}
+.small-text {
+  font-family: "Poppins";
+  font-size: 14px;
+  line-height: 30px;
+}
+
+label {
+  display: block;
+  text-align: start;
+  font-size: 16px;
+  line-height: 24px;
+  font-family: Poppins;
+  font-weight: 500;
+  margin-bottom: 0;
 }
 
 @media screen and (max-width: 600px) {

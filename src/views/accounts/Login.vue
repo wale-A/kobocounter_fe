@@ -1,5 +1,5 @@
 <template>
-  <div id="register">
+  <div id="login">
     <aside id="empty"></aside>
     <main id="content">
       <div class="form-container">
@@ -7,11 +7,11 @@
         <div id="form">
           <div>
             <section class="form-row">
-              <p class="label">Email</p>
+              <label for="email">Email</label>
               <input type="email" name="email" placeholder="abc@xyz.com" />
             </section>
             <section class="form-row">
-              <p class="label">Password</p>
+              <label for="password">Password</label>
               <input type="password" name="password" />
             </section>
             <button type="submit">LOGIN</button>
@@ -23,7 +23,7 @@
 </template>
 
 <style scoped>
-#register {
+#login {
   display: flex;
   justify-content: space-between;
   height: 100vh;
@@ -48,23 +48,6 @@ h2 {
 }
 section {
   margin: 2% 20% 5% 20%;
-}
-section .label {
-  text-align: start;
-  font-size: 16px;
-  line-height: 24px;
-  font-family: Poppins;
-  font-weight: 500;
-  margin-bottom: 0;
-}
-input {
-  height: 48px;
-  width: 100%;
-  background: #ffffff;
-  border: 2px solid #bfdeff;
-  box-sizing: border-box;
-  border-radius: 5px;
-  padding-left: 10px;
 }
 
 @media screen and (max-width: 600px) {
