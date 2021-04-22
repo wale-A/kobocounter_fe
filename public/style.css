@@ -81,11 +81,9 @@ input[type="password"] {
 .accent-text {
   color: #007cff;
 }
-
 .lighter-text {
   color: #19365e;
 }
-
 .darker-text {
   color: #1c5298;
 }
@@ -125,5 +123,17 @@ label {
   }
   button[type="submit"] {
     margin-top: 15px;
+  }
+  .major-text {
+    font-size: 60px;
+    line-height: 60px;
+  }
+  .mid-text {
+    font-size: 18px;
+    line-height: 26px;
+  }
+  .small-text {
+    font-size: 13px;
+    line-height: 28px;
   }
 }

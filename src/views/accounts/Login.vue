@@ -1,4 +1,5 @@
 <template>
+  <Header />
   <div id="login">
     <aside id="empty"></aside>
     <main id="content">
@@ -14,8 +15,14 @@
               <label for="password">Password</label>
               <input type="password" name="password" />
             </section>
-            <button type="submit">LOGIN</button>
+            <section>
+              <button type="submit">LOGIN</button>
+            </section>
           </div>
+          <p class="small-text lighter-text">
+            Don't have an account ?
+            <a href="/account/register" class="accent-text">Register here</a>
+          </p>
         </div>
       </div>
     </main>
@@ -26,7 +33,7 @@
 #login {
   display: flex;
   justify-content: space-between;
-  height: 100vh;
+  height: 94vh;
 }
 aside {
   flex: 1 1 0;
@@ -39,7 +46,7 @@ main {
   justify-content: center;
 }
 .form-container {
-  margin-top: -10%;
+  margin-top: -20%;
 }
 h2 {
   font-family: Poppins;
@@ -54,11 +61,21 @@ section {
   section {
     margin: 5% 10% 7% 10%;
   }
+  button {
+    width: 100%;
+    margin-top: 35px;
+  }
 }
 </style>
 
 <script lang="ts">
-import { Vue } from "vue-class-component";
+import { Options, Vue } from "vue-class-component";
+import Header from "@/components/Header.vue";
 
+@Options({
+  components: {
+    Header,
+  },
+})
 export default class Login extends Vue {}
 </script>

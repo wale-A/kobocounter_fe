@@ -62,6 +62,10 @@
           <button type="submit" :disabled="password.length < 8">SUBMIT</button>
         </div>
       </section>
+      <p class="small-text lighter-text">
+        Already have an account ?
+        <a href="/account/login" class="accent-text">Login here</a>
+      </p>
     </form>
   </div>
 </template>
