@@ -33,6 +33,10 @@ nav {
   font-size: 20px;
   color: #007cff;
 }
+#menu {
+  font-size: 1.7em;
+  cursor: pointer;
+}
 
 footer {
   min-height: 13vh;
@@ -115,6 +119,9 @@ label {
 }
 
 @media screen and (max-width: 600px) {
+  #menu {
+    font-size: 1.4em;
+  }
   footer {
     position: unset;
   }

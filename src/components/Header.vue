@@ -6,7 +6,9 @@
         <img src="@/assets/logo.svg" alt="logo" />
         <span id="logo-text" class="darker-text">kobocounter</span>
       </a>
-      <div v-if="displayMenu" id="option" class="">Menu</div>
+      <div v-if="displayMenu" id="option" class="">
+        <i class="material-icons" id="menu">menu</i>
+      </div>
     </nav>
   </header>
 </template>
