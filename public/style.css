@@ -15,27 +15,24 @@ nav {
   display: flex;
   justify-content: space-between;
 }
-
 #logo {
   display: flex;
   align-items: center;
   text-decoration: none;
 }
-
 #logo-text {
   font-family: "Paytone One";
   margin-left: 10px;
   font-size: 20px;
+}
+#menu-option {
+  font-size: 2em;
 }
 
 #option {
   font-family: Poppins;
   font-size: 20px;
   color: #007cff;
-}
-#menu {
-  font-size: 1.7em;
-  cursor: pointer;
 }
 
 footer {
@@ -80,15 +77,16 @@ input[type="password"] {
   border-radius: 5px;
   padding-left: 10px;
   color: black;
+  font-size: large;
 }
 
-.accent-text {
+.accent-color {
   color: #007cff;
 }
-.lighter-text {
+.lighter-color {
   color: #19365e;
 }
-.darker-text {
+.darker-color {
   color: #1c5298;
 }
 .major-text {
@@ -104,7 +102,7 @@ input[type="password"] {
 }
 .small-text {
   font-family: "Poppins";
-  font-size: 14px;
+  font-size: 15px;
   line-height: 30px;
 }
 
@@ -118,8 +116,16 @@ label {
   margin-bottom: 0;
 }
 
+.no-break {
+  white-space: nowrap;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
 @media screen and (max-width: 600px) {
-  #menu {
+  #menu-option {
     font-size: 1.4em;
   }
   footer {
@@ -128,19 +134,21 @@ label {
   nav {
     padding: 3% 5%;
   }
-  button[type="submit"] {
-    margin-top: 15px;
-  }
   .major-text {
-    font-size: 60px;
+    font-size: 55px;
     line-height: 60px;
   }
   .mid-text {
-    font-size: 18px;
-    line-height: 26px;
+    font-size: 17px;
+    line-height: 25px;
   }
   .small-text {
     font-size: 13px;
-    line-height: 28px;
+    line-height: 23px;
+  }
+  button,
+  .button {
+    width: 100%;
+    margin-top: 35px;
   }
 }

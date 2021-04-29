@@ -9,19 +9,30 @@
           <div>
             <section class="form-row">
               <label for="email">Email</label>
-              <input type="email" name="email" placeholder="abc@xyz.com" />
+              <input
+                type="email"
+                name="email"
+                placeholder="abc@xyz.com"
+                v-model="email"
+              />
             </section>
             <section class="form-row">
               <label for="password">Password</label>
-              <input type="password" name="password" />
+              <input type="password" name="password" v-model="password" />
             </section>
             <section>
-              <button type="submit">LOGIN</button>
+              <button
+                type="submit"
+                @click="loginUser"
+                :disabled="!(email && password)"
+              >
+                LOGIN
+              </button>
             </section>
           </div>
-          <p class="small-text lighter-text">
+          <p class="small-text lighter-color">
             Don't have an account ?
-            <a href="/account/register" class="accent-text">Register here</a>
+            <a href="/account/register" class="accent-color">Register here</a>
           </p>
         </div>
       </div>
@@ -47,6 +58,7 @@ main {
 }
 .form-container {
   margin-top: -20%;
+  text-align: center;
 }
 h2 {
   font-family: Poppins;
@@ -71,10 +83,44 @@ section {
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import Header from "@/components/Header.vue";
+import superagent from "superagent";
+import toastr from "toastr";
+import { User } from "@/types";
 
 @Options({
   components: {
     Header,
+  },
+  data() {
+    return {
+      email: "",
+      password: "",
+    };
+  },
+  methods: {
+    async loginUser() {
+      try {
+        const res = await superagent
+          .post(`${process.env.VUE_APP_BE_URL}/users/login`)
+          .send({ email: this.email, password: this.password })
+          .ok((res) => res.status < 500);
+
+        if (res.status !== 200) {
+          toastr.info(res.text, "Login failed");
+        } else {
+          // refreshing the page clears the store.. this is still a WIP
+          window.localStorage.setItem(
+            "authenticated-user",
+            JSON.stringify(res.body)
+          );
+          this.$store.commit("setUser", res.body as User);
+          this.$router.push({ name: "Home" });
+        }
+      } catch (e) {
+        toastr.error("Unable to login user", "Login failed");
+        console.log(e);
+      }
+    },
   },
 })
 export default class Login extends Vue {}

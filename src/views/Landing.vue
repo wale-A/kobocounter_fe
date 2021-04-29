@@ -1,16 +1,19 @@
 <template>
   <div id="landing" class="">
     <Header :displayMenu="true" />
-    <!-- main section -->
     <main id="main">
       <section id="landing-text">
-        <h2 class="major-text darker-text">
-          Track your <span class="accent-text">coins</span>
+        <h2 class="major-text darker-color">
+          Track your <span class="accent-color">coins</span>
         </h2>
-        <p class="lighter-text">
-          Tired of asking
-          <span class="accent-text">"where did my money go"</span> ? <br />
-          Let us help you find out where your account is leaking
+        <p class="lighter-color">
+          Tired of asking yourself
+          <span class="no-break"
+            ><span class="accent-color">"where did my money go"</span> ?</span
+          >
+          <br />
+          Let us help find the hole in your account(s)
+          <span class="small-text">this needs to be changed</span>
         </p>
         <a href="/account/register" class="submit-link-text">TRACK MY COINS</a>
       </section>
@@ -26,7 +29,7 @@
 <style scoped>
 main {
   display: flex;
-  padding: 5% 12%;
+  padding: 4% 10%;
   padding-bottom: 0;
 }
 main section {
@@ -39,7 +42,7 @@ main section {
 }
 #landing-text {
   margin-top: 2%;
-  width: 35%;
+  width: 45%;
   display: flex;
   flex-direction: column;
   text-align: start;
@@ -51,7 +54,7 @@ main section {
 section a {
   text-decoration: none;
   margin-top: 20px;
-  padding: 15px 25px;
+  padding: 20px 35px;
   border-radius: 5px;
   font-family: Poppins;
   color: white;
@@ -63,7 +66,7 @@ section a {
   display: none;
 }
 #landing-image {
-  width: 65%;
+  width: 55%;
 }
 
 @media screen and (max-width: 600px) {
