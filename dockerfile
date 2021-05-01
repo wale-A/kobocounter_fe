@@ -8,9 +8,9 @@ RUN yarn install
 COPY . .
 RUN yarn build
 
+ARG PORT
+ENV PORT=${PORT}
+ENV NODE_ENV=production
 
-# production stage
-FROM nginx:stable-alpine as production-stage
-COPY --from=build-stage /app/dist /usr/share/nginx/html
-EXPOSE 8080
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE ${PORT}
+CMD [ "yarn", "serve" ]
