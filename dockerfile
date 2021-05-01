@@ -1,19 +1,16 @@
+# build stage
 FROM node:lts-alpine as build-stage
 WORKDIR /app
 
-COPY package.json yarn.lock tsconfig.json ./
+COPY package*.json yarn.lock tsconfig.json ./
 
-RUN yarn install \
-    --prefer-offline \
-    --frozen-lockfile \
-    --non-interactive
-
+RUN yarn install 
 COPY . .
 RUN yarn build
 
-ARG PORT
-ENV PORT=${PORT}
-ENV NODE_ENV=production
 
-EXPOSE ${PORT}
-CMD [ "yarn", "serve" ]
+# production stage
+FROM nginx:stable-alpine as production-stage
+COPY --from=build-stage /app/dist /usr/share/nginx/html
+EXPOSE 8080
+CMD ["nginx", "-g", "daemon off;"]
