@@ -1,5 +1,6 @@
 # build stage
 FROM node:lts-alpine as build-stage
+RUN npm i -g http-server
 WORKDIR /app
 
 COPY package*.json yarn.lock tsconfig.json ./
@@ -13,4 +14,4 @@ ENV PORT=${PORT}
 ENV NODE_ENV=production
 
 EXPOSE ${PORT}
-CMD [ "yarn", "serve" ]
+CMD [ "http-server", "dist" ]
