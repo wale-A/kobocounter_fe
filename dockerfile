@@ -1,17 +1,15 @@
 # build stage
 FROM node:lts-alpine as build-stage
-RUN npm i -g http-server
 WORKDIR /app
-
-COPY package*.json yarn.lock tsconfig.json ./
-
-RUN yarn install 
+COPY package*.json ./
+RUN npm install
 COPY . .
-RUN yarn build
+ARG VUE_APP_API_URL
+ENV VUE_APP_API_URL=${VUE_APP_API_URL}
+RUN npm run build
 
-ARG PORT
-ENV PORT=${PORT}
-ENV NODE_ENV=production
-
-EXPOSE ${PORT}
-CMD [ "http-server", "dist" ]
+# production stage
+FROM socialengine/nginx-spa:latest as production-stage
+COPY --from=build-stage /app/dist /app
+RUN chmod -R 777 /app
+EXPOSE 80
