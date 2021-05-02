@@ -80,11 +80,6 @@ input[type="password"] {
   color: black;
   font-size: large;
 }
-.info-text {
-  display: block;
-  text-align: start;
-  color: #f13148;
-}
 
 .accent-color {
   color: #007cff;
@@ -110,6 +105,11 @@ input[type="password"] {
   font-family: "Poppins";
   font-size: 15px;
   line-height: 30px;
+}
+.info-text {
+  display: block;
+  text-align: start;
+  color: #f13148;
 }
 
 label {
