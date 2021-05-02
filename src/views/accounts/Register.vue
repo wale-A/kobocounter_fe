@@ -136,7 +136,7 @@ import toastr from "toastr";
       try {
         (document.getElementById("register-button") as any).disabled = true;
         const res = await superagent
-          .post(`${process.env.VUE_APP_BE_URL}/users`)
+          .post(`${process.env.VUE_APP_API_URL}/users`)
           .send({ email: this.email, password: this.password, name: this.name })
           .ok((res) => res.status < 500);
 
