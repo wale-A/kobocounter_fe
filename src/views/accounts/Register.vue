@@ -1,6 +1,9 @@
 <template>
+  <Header />
   <div id="register">
-    <Header />
+    <aside>
+      <img src="@/assets/phone.svg" alt="phone screen" />
+    </aside>
     <form>
       <section v-if="stage == 1">
         <div class="texts">
@@ -11,9 +14,6 @@
         <div class="inputs">
           <label for="name" class="lighter-color">
             <span class="mid-text">Your firstname or a nick-name</span>
-            <span class="small-text no-break">
-              (min. 2 characters, max. 30 characters)
-            </span>
           </label>
           <input
             type="text"
@@ -21,6 +21,9 @@
             v-model="name"
             placeholder="james-bond"
           />
+          <span class="small-text info-text no-break">
+            between 2 and 30 characters
+          </span>
           <button
             @click="stage++"
             :disabled="name.length < 2 || name.length > 30"
@@ -52,15 +55,13 @@
         <div class="texts">
           <h2 class="major-text accent-color">Holla {{ shortName }}</h2>
           <p class="mid-text lighter-color">Enter your password</p>
-          <!-- <p class="small-text accent-color">This helps us verify you</p> -->
         </div>
         <div class="inputs">
           <label for="password" class="small-text lighter-color">
             <span class="mid-text">Your password</span>
-            <span class="small-text no-break"> (min. 8 characters) </span>
-            <br />
           </label>
           <input type="password" name="password" v-model="password" />
+          <span class="small-text info-text no-break"> min. 8 characters </span>
           <button
             id="register-button"
             @click.prevent="registerUser"
@@ -72,6 +73,18 @@
         </div>
       </section>
 
+      <a
+        href="#"
+        v-if="stage > 1"
+        style="text-decoration: none; display: block"
+        class="mid-text darker-color"
+        @click.prevent="stage--"
+      >
+        &lt;&lt; PREVIOUS</a
+      >
+
+      <br /><br /><br />
+
       <p class="small-text lighter-color">
         Already have an account ?
         <a href="/account/login" class="accent-color">Login here</a>
@@ -82,10 +95,15 @@
 
 <style scoped>
 #register {
+  margin-top: 6%;
   display: flex;
-  flex-flow: column;
+  justify-content: space-around;
+}
+aside {
+  width: 15%;
 }
 form {
+  width: 45%;
   text-align: center;
 }
 section {
@@ -99,15 +117,22 @@ section {
   margin: 0;
 }
 .inputs {
-  margin: 5% 20%;
+  margin: 5% 10%;
+  margin-bottom: 0;
 }
 button {
   margin: 25px auto;
 }
 
 @media screen and (max-width: 600px) {
-  .inputs {
-    margin: 10% 10%;
+  aside {
+    display: none;
+  }
+  #register {
+    flex-flow: column;
+  }
+  form {
+    width: 100%;
   }
 }
 </style>
@@ -140,8 +165,6 @@ import toastr from "toastr";
           .send({ email: this.email, password: this.password, name: this.name })
           .ok((res) => res.status < 500);
 
-        console.log({ res });
-
         if (res.status !== 201) {
           toastr.error(res.text, "Registration failed");
         } else {
@@ -154,7 +177,7 @@ import toastr from "toastr";
       } catch (e) {
         toastr.error("Unable to register user", "Registration failed");
         (document.getElementById("register-button") as any).disabled = false;
-        console.log(e);
+        console.error(e);
       }
     },
   },

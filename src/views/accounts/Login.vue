@@ -100,7 +100,6 @@ import { User } from "@/types";
   methods: {
     async loginUser() {
       try {
-        console.log("be_url", process.env.VUE_APP_API_URL);
         const res = await superagent
           .post(`${process.env.VUE_APP_API_URL}/users/login`)
           .send({ email: this.email, password: this.password })
