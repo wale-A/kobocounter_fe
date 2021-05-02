@@ -15,11 +15,15 @@
           Let us help find the hole in your account(s)
           <span class="small-text">this needs to be changed</span>
         </p>
-        <a href="/account/register" class="submit-link-text">TRACK MY COINS</a>
+        <router-link :to="{ name: 'Register' }" class="submit-link-text"
+          >TRACK MY COINS</router-link
+        >
       </section>
       <section id="landing-image">
         <img src="@/assets/phone.svg" alt="phone screen" />
-        <a href="/account/register" class="submit-link-image">TRACK MY COINS</a>
+        <router-link :to="{ name: 'Register' }" class="submit-link-image"
+          >TRACK MY COINS</router-link
+        >
       </section>
     </main>
     <Footer />

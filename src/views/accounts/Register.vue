@@ -4,7 +4,7 @@
     <aside>
       <img src="@/assets/phone.svg" alt="phone screen" />
     </aside>
-    <form>
+    <form @submit.prevent="registerUser">
       <section v-if="stage == 1">
         <div class="texts">
           <h2 class="major-text accent-color">Holla!</h2>
@@ -64,7 +64,6 @@
           <span class="small-text info-text no-break"> min. 8 characters </span>
           <button
             id="register-button"
-            @click.prevent="registerUser"
             type="submit"
             :disabled="password.length < 8"
           >
@@ -87,7 +86,9 @@
 
       <p class="small-text lighter-color">
         Already have an account ?
-        <a href="/account/login" class="accent-color">Login here</a>
+        <router-link :to="{ name: 'Login' }" class="accent-color"
+          >Login here</router-link
+        >
       </p>
     </form>
   </div>
@@ -135,6 +136,20 @@ button {
     width: 100%;
   }
 }
+
+@media screen and (max-width: 1200px) {
+  aside {
+    display: none;
+  }
+  #register {
+    flex-flow: column;
+  }
+  form {
+    width: 80%;
+    padding-left: 10%;
+    padding-right: 10%;
+  }
+}
 </style>
 
 <script lang="ts">
@@ -175,8 +190,8 @@ import toastr from "toastr";
           this.$router.push({ name: "Home" });
         }
       } catch (e) {
-        toastr.error("Unable to register user", "Registration failed");
         (document.getElementById("register-button") as any).disabled = false;
+        toastr.error("Unable to register user", "Registration failed");
         console.error(e);
       }
     },

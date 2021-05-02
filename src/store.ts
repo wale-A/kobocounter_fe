@@ -17,7 +17,7 @@ export const store = createStore({
       return !!state.user;
     },
     avatarUrl(state: State) {
-      return `https://ui-avatars.com/api/?background=007cff&color=fff&rounded=true&size=32&format=svg&name=${state.user?.email?.slice(
+      return `https://ui-avatars.com/api/?background=007cff&color=fff&rounded=true&size=32&format=svg&name=${state.user?.name?.slice(
         0,
         2
       )}`;

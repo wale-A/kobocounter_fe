@@ -1,11 +1,10 @@
 <template>
   <header>
     <nav>
-      <router-link to="/" id="logo">
+      <router-link :to="{ name: 'Home' }" id="logo">
         <img src="@/assets/logo.svg" alt="logo" />
         <span id="logo-text" class="darker-color">kobocounter</span>
       </router-link>
-      <!-- <a href="/" id="logo"> </a> -->
       <div v-if="displayMenu" id="menu" class="">
         <img v-if="isLoggedIn" :src="avatarUrl" alt="avatar" class="pointer" />
         <i v-else class="material-icons accent-color pointer" id="menu-option"

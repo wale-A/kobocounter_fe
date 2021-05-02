@@ -5,36 +5,32 @@
     <main id="content">
       <div class="form-container">
         <h2>Log in</h2>
-        <div id="form">
-          <div>
-            <section class="form-row">
-              <label for="email">Email</label>
-              <input
-                type="email"
-                name="email"
-                placeholder="abc@xyz.com"
-                v-model="email"
-              />
-            </section>
-            <section class="form-row">
-              <label for="password">Password</label>
-              <input type="password" name="password" v-model="password" />
-            </section>
-            <section>
-              <button
-                type="submit"
-                @click="loginUser"
-                :disabled="!(email && password)"
-              >
-                LOGIN
-              </button>
-            </section>
-          </div>
-          <p class="small-text lighter-color">
-            Don't have an account ?
-            <a href="/account/register" class="accent-color">Register here</a>
-          </p>
-        </div>
+        <form @submit.prevent="loginUser">
+          <section class="form-row">
+            <label for="email">Email</label>
+            <input
+              type="email"
+              name="email"
+              placeholder="abc@xyz.com"
+              v-model="email"
+            />
+          </section>
+          <section class="form-row">
+            <label for="password">Password</label>
+            <input type="password" name="password" v-model="password" />
+          </section>
+          <section>
+            <button type="submit" :disabled="!(email && password)">
+              LOGIN
+            </button>
+          </section>
+        </form>
+        <p class="small-text lighter-color">
+          Don't have an account ?
+          <router-link :to="{ name: 'Register' }" class="accent-color"
+            >Register here</router-link
+          >
+        </p>
       </div>
     </main>
   </div>
@@ -109,12 +105,9 @@ import { User } from "@/types";
           toastr.info(res.text, "Login failed");
         } else {
           // refreshing the page clears the store.. this is still a WIP
-          window.localStorage.setItem(
-            "authenticated-user",
-            JSON.stringify(res.body)
-          );
+          localStorage.setItem("authenticated-user", JSON.stringify(res.body));
           this.$store.commit("setUser", res.body as User);
-          this.$router.push({ name: "Home" });
+          this.$router.push({ name: "Dashboard" });
         }
       } catch (e) {
         toastr.error("Unable to login user", "Login failed");

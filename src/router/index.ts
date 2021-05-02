@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Landing from "../views/Landing.vue";
 import { AccountRoutes } from "./account";
+import Dashboard from "../views/Dashboard.vue";
+import PageNotFound from "../views/PageNotFound.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -18,6 +20,16 @@ const routes: Array<RouteRecordRaw> = [
       import(/* webpackChunkName: "about" */ "../views/About.vue"),
   },
   ...AccountRoutes,
+  {
+    path: "/dashboard",
+    name: "Dashboard",
+    component: Dashboard,
+  },
+  {
+    path: "/:pathMach(.*)*",
+    name: "NotFound",
+    component: PageNotFound,
+  },
 ];
 
 const router = createRouter({

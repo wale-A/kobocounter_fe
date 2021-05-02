@@ -9,7 +9,9 @@ import { store } from "./store";
 createApp(App)
   .use(router)
   .use(store)
-  .use((MonoJS as any).install, { publicKey: "live_pk_s1rNRqsZEhz4ff8paDiJ" })
+  .use((MonoJS as any).install, {
+    publicKey: process.env.VUE_APP_MONO_PUBLIC_KEY,
+  })
   .mount("#app");
 
 toastr.options = {
