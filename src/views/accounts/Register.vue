@@ -183,7 +183,7 @@ import toastr from "toastr";
   },
   computed: {
     shortName() {
-      return this.name.length > 7 ? `${this.name.slice(0, 2)}..` : this.name;
+      return this.name.length > 7 ? `${this.name.slice(0, 5)}..` : this.name;
     },
   },
 })
