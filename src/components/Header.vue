@@ -6,7 +6,9 @@
         <span id="logo-text" class="darker-color">kobocounter</span>
       </router-link>
       <div v-if="displayMenu" id="menu" class="">
-        <img v-if="isLoggedIn" :src="avatarUrl" alt="avatar" class="pointer" />
+        <router-link v-if="isLoggedIn" :to="{ name: 'Dashboard' }">
+          <img :src="avatarUrl" alt="avatar" class="pointer" />
+        </router-link>
         <i v-else class="material-icons accent-color pointer" id="menu-option"
           >menu</i
         >
