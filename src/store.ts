@@ -11,6 +11,17 @@ export const store = createStore({
     setUser(state: State, u: User) {
       state.user = u;
     },
+    getUser(state: State) {
+      if (state.user) return;
+
+      const json = localStorage.getItem("authenticated-user");
+      if (json) {
+        const authUser = JSON.parse(json) as User;
+        if (authUser && authUser.email && authUser.token) {
+          state.user = authUser;
+        }
+      }
+    },
   },
   getters: {
     isLoggedIn(state: State) {

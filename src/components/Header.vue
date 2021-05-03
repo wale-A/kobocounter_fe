@@ -33,6 +33,9 @@ import { Options, Vue } from "vue-class-component";
   props: {
     displayMenu: Boolean,
   },
+  mounted() {
+    this.$store.commit("getUser");
+  },
   computed: {
     ...mapGetters(["avatarUrl", "isLoggedIn"]),
   },
