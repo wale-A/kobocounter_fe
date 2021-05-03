@@ -4,6 +4,7 @@
       alt="Not Found"
       src="https://th.bing.com/th/id/R0a373d6d51122ade8642e7acb748ef32?rik=nrVRaXFmAbWxXw&pid=ImgRaw"
     />
+    <p class="major-text darker-color">Page Not Found</p>
 
     <button>
       <router-link :to="{ name: 'Home' }"> GO HOME </router-link>
@@ -17,17 +18,29 @@ main {
   flex-flow: column;
   justify-content: space-between;
   align-items: center;
-  margin-top: 25%;
+  margin-top: 10%;
 }
 main img {
-  width: 90%;
-  margin-bottom: 15%;
+  width: 70%;
+  margin-bottom: 1%;
 }
 main button {
+  margin-top: 40px;
   width: unset;
 }
 main button a {
   color: white;
+  text-decoration: none;
+}
+
+@media screen and (max-width: 800px) {
+  main {
+    margin-top: 40%;
+  }
+  main img {
+    width: 85%;
+    margin-bottom: 10%;
+  }
 }
 </style>
 

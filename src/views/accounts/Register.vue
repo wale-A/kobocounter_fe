@@ -125,18 +125,6 @@ button {
   margin: 25px auto;
 }
 
-@media screen and (max-width: 600px) {
-  aside {
-    display: none;
-  }
-  #register {
-    flex-flow: column;
-  }
-  form {
-    width: 100%;
-  }
-}
-
 @media screen and (max-width: 1200px) {
   aside {
     display: none;
@@ -148,6 +136,19 @@ button {
     width: 80%;
     padding-left: 10%;
     padding-right: 10%;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  aside {
+    display: none;
+  }
+  #register {
+    flex-flow: column;
+  }
+  form {
+    width: 100%;
+    padding: 0;
   }
 }
 </style>
@@ -198,7 +199,8 @@ import toastr from "toastr";
   },
   computed: {
     shortName() {
-      return this.name.length > 7 ? `${this.name.slice(0, 5)}..` : this.name;
+      let _ = this.name.split(/\W/)[0];
+      return _.length > 7 ? `${this.name.slice(0, 5)}..` : _;
     },
   },
 })
