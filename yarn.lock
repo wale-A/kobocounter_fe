@@ -10959,10 +10959,10 @@ vue-loader@^15.9.2:
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
 
-vue-mono@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/vue-mono/-/vue-mono-1.0.2.tgz#350a71d8e6e308b6c234b403ddc15e0477f22407"
-  integrity sha512-0KSGab9e5KWd9ZBnp2rVJZlmpWoWs23twKo1T6DmUv4ygJuZSr7k4xbI4JzKmcijO8+JnmalOFcu6CQDqsAqVg==
+vue-mono@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/vue-mono/-/vue-mono-1.1.0.tgz#4358db5dd0adfd909227193c484928b6c5887d38"
+  integrity sha512-prnY3+buNm90I8PaSqaq2PxnRedRl3WKJU9cNV6Adfedhr1X7LnwX9hrG8zGq6zEFUfd6TS4F4DV5HYQluQFDg==
   dependencies:
     vue "^2.6.7"
 

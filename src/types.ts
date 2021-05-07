@@ -6,6 +6,7 @@ export type State = {
   transactions?: Transaction[];
   netIncome?: NetIncome[];
   transactionCategories?: TransactionCategories[];
+  accountCreateSuccessful?: boolean;
 };
 
 export type User = {

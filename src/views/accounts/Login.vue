@@ -79,9 +79,7 @@ section {
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import Header from "@/components/Header.vue";
-// import superagent from "superagent";
 import toastr from "toastr";
-// import { User } from "@/types";
 
 @Options({
   components: {

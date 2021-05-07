@@ -18,11 +18,15 @@ export const store = createStore({
       accounts: undefined,
       transactions: undefined,
       transactionCategories: undefined,
+      accountCreateSuccessful: undefined,
     };
   },
   mutations: {
     setLoginStatus(state: State, status: boolean) {
       state.loginSuccessful = status;
+    },
+    setAccountCreateStatus(state: State, status: boolean) {
+      state.accountCreateSuccessful = status;
     },
     setLoginError(state: State) {
       state.loginError = true;
@@ -52,7 +56,6 @@ export const store = createStore({
       { email, password }: { email: string; password: string }
     ) {
       try {
-        console.log("loggin user in");
         const res = await superagent
           .post(`${process.env.VUE_APP_API_URL}/users/login`)
           .send({ email, password })
@@ -64,16 +67,27 @@ export const store = createStore({
           localStorage.setItem("authenticated-user", JSON.stringify(res.body));
           this.commit("setUser", res.body as User);
           this.commit("setLoginStatus", true);
-
-          console.log(res.body);
         }
       } catch (e) {
         this.commit("setLoginError");
       }
     },
+    async addAccount(_, { code }: { code: string }) {
+      try {
+        if (!this.state.user) throw "";
+
+        await superagent
+          .post(`${process.env.VUE_APP_API_URL}/banking/accounts`)
+          .auth(this.state.user?.token?.token, { type: "bearer" })
+          .send({ code });
+        this.commit("setAccountCreateStatus", true);
+      } catch (e) {
+        this.commit("setAccountCreateStatus", false);
+      }
+    },
     async getAccounts(_) {
       try {
-        if (!this.state.user) return undefined;
+        if (!this.state.user) throw "";
 
         const res = await superagent
           .get(`${process.env.VUE_APP_API_URL}/banking/accounts`)
@@ -85,7 +99,7 @@ export const store = createStore({
     },
     async getTransactions(_, { accountId }: { accountId?: string }) {
       try {
-        if (!this.state.user) return undefined;
+        if (!this.state.user) throw "";
 
         const res = await superagent
           .get(`${process.env.VUE_APP_API_URL}/banking/accounts/transactions`)
@@ -149,6 +163,9 @@ export const store = createStore({
     },
     transactionCategories(state: State) {
       return state.transactionCategories;
+    },
+    accountCreateStatus(state: State) {
+      return state.accountCreateSuccessful;
     },
   },
 });

@@ -10,6 +10,10 @@
       <p class="mid-text darker-color">Account Expenses</p>
       <pie-chart :donut="true" :data="transactionCategoryData"></pie-chart>
     </section>
+
+    <button class="floating-button" @click="addAccount" title="Add an account">
+      +
+    </button>
   </main>
   <aside v-show="accounts && accounts.length === 0">
     <img src="@/assets/logo.svg" alt="logo" />
@@ -63,11 +67,28 @@ section {
   margin-bottom: 35px;
   background-color: white;
 }
+.floating-button {
+  padding: 2px 15px;
+  width: unset !important;
+  font-size: 2em;
+  border-radius: 50%;
+  position: fixed;
+  top: 90%;
+  left: 90%;
+  transition: all 0.2s ease-in 0s;
+  z-index: 9999;
+  cursor: pointer;
+  margin: 0;
+}
 
 @media screen and (max-width: 600px) {
   aside {
     margin: 10% 5%;
     width: 90%;
+  }
+  .floating-button {
+    top: 90%;
+    left: 83%;
   }
 }
 </style>
@@ -77,13 +98,11 @@ import { Options, Vue } from "vue-class-component";
 import Header from "@/components/Header.vue";
 import { mapGetters } from "vuex";
 import { NetIncome, TransactionCategories } from "@/types";
+import toastr from "toastr";
 
 @Options({
   created() {
-    this.$store.dispatch("getAccounts");
-    this.$store.dispatch("getTransactions", { accountId: undefined });
-    this.$store.dispatch("getNetIncome", { accountId: undefined });
-    this.$store.dispatch("getTransactionCategories", { accountId: undefined });
+    this.setup();
   },
   data() {
     return {
@@ -97,6 +116,7 @@ import { NetIncome, TransactionCategories } from "@/types";
       "transactions",
       "income",
       "transactionCategories",
+      "accountCreateStatus",
     ]),
   },
   components: {
@@ -104,12 +124,22 @@ import { NetIncome, TransactionCategories } from "@/types";
   },
   methods: {
     addAccount() {
+      const fn = (code: string) => this.$store.dispatch("addAccount", { code });
       const options = {
         onSuccess: function (response: { code: string }) {
-          console.log(response.code);
+          console.log({ code: response.code });
+          fn(response.code);
         },
       };
       this.$launchMono(options);
+    },
+    setup() {
+      this.$store.dispatch("getAccounts");
+      this.$store.dispatch("getTransactions", { accountId: undefined });
+      this.$store.dispatch("getNetIncome", { accountId: undefined });
+      this.$store.dispatch("getTransactionCategories", {
+        accountId: undefined,
+      });
     },
     parseAccountBalances() {
       let result: Record<string, string> = {};
@@ -126,12 +156,11 @@ import { NetIncome, TransactionCategories } from "@/types";
       let result = [];
       const categories = (this
         .transactionCategories as TransactionCategories[]).filter(
-        (x) => x.category != null
+        (x) => x.category != null && x.category >= 0
       );
       for (var i = 0; i < categories.length; i++) {
         result.push([categories[i].displayCategory, categories[i].count]);
       }
-      console.log({ result });
       this.transactionCategoryData = result;
     },
   },
@@ -140,7 +169,14 @@ import { NetIncome, TransactionCategories } from "@/types";
       if (newVal && newVal.length > 0) this.parseAccountBalances();
     },
     transactionCategories(newVal?: TransactionCategories[]) {
+      console.log(newVal);
       if (newVal && newVal.length > 0) this.parseTransactionCategories();
+    },
+    accountCreateStatus(newVal?: NetIncome[]) {
+      if (newVal !== undefined && newVal)
+        toastr.success("Account added successful");
+      else if (newVal !== undefined && !newVal)
+        toastr.error("Unable to add account, please retry");
     },
   },
 })
