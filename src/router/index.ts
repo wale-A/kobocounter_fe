@@ -3,6 +3,7 @@ import Landing from "../views/Landing.vue";
 import { AccountRoutes } from "./account";
 import Dashboard from "../views/Dashboard.vue";
 import PageNotFound from "../views/PageNotFound.vue";
+import { store } from "@/store";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -24,6 +25,9 @@ const routes: Array<RouteRecordRaw> = [
     path: "/dashboard",
     name: "Dashboard",
     component: Dashboard,
+    meta: {
+      authorize: true,
+    },
   },
   {
     path: "/:pathMach(.*)*",
@@ -35,6 +39,19 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some((record) => record.meta.authorize)) {
+    if (!store.getters.isLoggedIn) {
+      console.log("here in routeee");
+      next({ name: "Login", params: { nextUrl: to.fullPath } });
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
 });
 
 export default router;

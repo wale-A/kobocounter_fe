@@ -79,9 +79,9 @@ section {
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import Header from "@/components/Header.vue";
-import superagent from "superagent";
+// import superagent from "superagent";
 import toastr from "toastr";
-import { User } from "@/types";
+// import { User } from "@/types";
 
 @Options({
   components: {
@@ -95,23 +95,38 @@ import { User } from "@/types";
   },
   methods: {
     async loginUser() {
-      try {
-        const res = await superagent
-          .post(`${process.env.VUE_APP_API_URL}/users/login`)
-          .send({ email: this.email, password: this.password })
-          .ok((res) => res.status < 500);
-
-        if (res.status !== 200) {
-          toastr.info(res.text, "Login failed");
+      this.$store.dispatch("loginUser", {
+        email: this.email,
+        password: this.password,
+      });
+    },
+  },
+  computed: {
+    loginSuccessful(): boolean {
+      return this.$store.state.loginSuccessful;
+    },
+    loginError(): boolean {
+      return this.$store.state.loginError;
+    },
+  },
+  watch: {
+    loginSuccessful(newVal?: boolean) {
+      if (newVal === true) {
+        if (this.$route.params.nextUrl) {
+          this.$router.push(this.$route.params.nextUrl);
         } else {
-          // refreshing the page clears the store.. this is still a WIP
-          localStorage.setItem("authenticated-user", JSON.stringify(res.body));
-          this.$store.commit("setUser", res.body as User);
           this.$router.push({ name: "Dashboard" });
         }
-      } catch (e) {
+      } else {
+        toastr.info(
+          "Email and Password combination is invalid",
+          "Login failed"
+        );
+      }
+    },
+    loginError(newVal?: boolean) {
+      if (newVal === true) {
         toastr.error("Unable to login user", "Login failed");
-        console.log(e);
       }
     },
   },

@@ -5,7 +5,7 @@
         <img src="@/assets/logo.svg" alt="logo" />
         <span id="logo-text" class="darker-color">kobocounter</span>
       </router-link>
-      <div v-if="displayMenu" id="menu" class="">
+      <div v-if="showMenu" id="menu" class="">
         <router-link v-if="isLoggedIn" :to="{ name: 'Dashboard' }">
           <img :src="avatarUrl" alt="avatar" class="pointer" />
         </router-link>
@@ -31,16 +31,19 @@ import { Options, Vue } from "vue-class-component";
 
 @Options({
   props: {
-    displayMenu: Boolean,
+    displayMenu: [Boolean],
+  },
+  data() {
+    return {
+      showMenu: this.displayMenu || false,
+    };
   },
   mounted() {
-    this.$store.commit("getUser");
+    //this.$store.commit("getUser");
   },
   computed: {
     ...mapGetters(["avatarUrl", "isLoggedIn"]),
   },
 })
-export default class Header extends Vue {
-  displayMenu = true;
-}
+export default class Header extends Vue {}
 </script>

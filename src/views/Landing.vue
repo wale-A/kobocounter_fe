@@ -1,6 +1,6 @@
 <template>
   <div id="landing" class="">
-    <Header :displayMenu="true" />
+    <Header :display-menu="true" />
     <main id="main">
       <section id="landing-text">
         <h2 class="major-text darker-color">
