@@ -127,7 +127,6 @@ import toastr from "toastr";
       const fn = (code: string) => this.$store.dispatch("addAccount", { code });
       const options = {
         onSuccess: function (response: { code: string }) {
-          console.log({ code: response.code });
           fn(response.code);
         },
       };
@@ -169,7 +168,6 @@ import toastr from "toastr";
       if (newVal && newVal.length > 0) this.parseAccountBalances();
     },
     transactionCategories(newVal?: TransactionCategories[]) {
-      console.log(newVal);
       if (newVal && newVal.length > 0) this.parseTransactionCategories();
     },
     accountCreateStatus(newVal?: NetIncome[]) {
