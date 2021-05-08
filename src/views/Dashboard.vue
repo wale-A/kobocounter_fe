@@ -2,13 +2,17 @@
   <Header :display-menu="true" />
   <main v-show="accounts && accounts.length > 0">
     <section>
-      <p class="mid-text darker-color">Balance</p>
-      <line-chart :data="accountBalanceData"></line-chart>
+      <p class="mid-text darker-color">Net Income</p>
+      <line-chart :data="netIncomeData" class="chart"></line-chart>
     </section>
 
     <section>
       <p class="mid-text darker-color">Account Expenses</p>
-      <pie-chart :donut="true" :data="transactionCategoryData"></pie-chart>
+      <pie-chart
+        :donut="true"
+        :data="transactionCategoryData"
+        class="chart"
+      ></pie-chart>
     </section>
 
     <button class="floating-button" @click="addAccount" title="Add an account">
@@ -67,6 +71,9 @@ section {
   margin-bottom: 35px;
   background-color: white;
 }
+section p {
+  margin-bottom: 0;
+}
 .floating-button {
   padding: 2px 15px;
   width: unset !important;
@@ -90,6 +97,9 @@ section {
     top: 90%;
     left: 83%;
   }
+  section > .chart {
+    height: 230px !important;
+  }
 }
 </style>
 
@@ -107,6 +117,7 @@ import toastr from "toastr";
   data() {
     return {
       accountBalanceData: {},
+      netIncomeData: {},
       transactionCategoryData: [],
     };
   },
@@ -140,7 +151,7 @@ import toastr from "toastr";
         accountId: undefined,
       });
     },
-    parseAccountBalances() {
+    parseNetIncome() {
       let result: Record<string, string> = {};
       // let sum = 0;
       for (var i = 0; i < (this.income as NetIncome[]).length; i++) {
@@ -149,7 +160,7 @@ import toastr from "toastr";
           2
         );
       }
-      this.accountBalanceData = result;
+      this.netIncomeData = result;
     },
     parseTransactionCategories() {
       let result = [];
@@ -165,7 +176,7 @@ import toastr from "toastr";
   },
   watch: {
     income(newVal?: NetIncome[]) {
-      if (newVal && newVal.length > 0) this.parseAccountBalances();
+      if (newVal && newVal.length > 0) this.parseNetIncome();
     },
     transactionCategories(newVal?: TransactionCategories[]) {
       if (newVal && newVal.length > 0) this.parseTransactionCategories();
