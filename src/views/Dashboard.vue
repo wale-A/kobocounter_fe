@@ -3,7 +3,16 @@
   <main v-show="accounts && accounts.length > 0">
     <section>
       <p class="mid-text darker-color">Net Income</p>
-      <line-chart :data="netIncomeData" class="chart"></line-chart>
+      <line-chart
+        :data="netIncomeData"
+        thousands=","
+        loading="Loading..."
+        empty="We don't have your transactions yet"
+        class="chart"
+        download="net-income"
+        :legend="false"
+        label="Net Income"
+      ></line-chart>
     </section>
 
     <section>
@@ -12,6 +21,10 @@
         :donut="true"
         :data="transactionCategoryData"
         class="chart"
+        loading="Loading..."
+        empty="We don't have your transactions yet"
+        download="account-expenses"
+        legend="bottom"
       ></pie-chart>
     </section>
 
@@ -89,6 +102,12 @@ section p {
 }
 
 @media screen and (max-width: 600px) {
+  main {
+    width: 90%;
+    margin-right: 5%;
+    margin-left: 5%;
+    margin-top: 3%;
+  }
   aside {
     margin: 10% 5%;
     width: 90%;
@@ -118,7 +137,7 @@ import toastr from "toastr";
     return {
       accountBalanceData: {},
       netIncomeData: {},
-      transactionCategoryData: [],
+      transactionCategoryData: {},
     };
   },
   computed: {
@@ -153,9 +172,7 @@ import toastr from "toastr";
     },
     parseNetIncome() {
       let result: Record<string, string> = {};
-      // let sum = 0;
       for (var i = 0; i < (this.income as NetIncome[]).length; i++) {
-        // sum += this.income[i].amount;
         result[this.income[i].date] = (this.income[i].amount as number).toFixed(
           2
         );
@@ -163,15 +180,15 @@ import toastr from "toastr";
       this.netIncomeData = result;
     },
     parseTransactionCategories() {
-      let result = [];
+      this.transactionCategoryData = {};
       const categories = (this
         .transactionCategories as TransactionCategories[]).filter(
         (x) => x.category != null && x.category >= 0
       );
       for (var i = 0; i < categories.length; i++) {
-        result.push([categories[i].displayCategory, categories[i].count]);
+        this.transactionCategoryData[categories[i].displayCategory] =
+          categories[i].count;
       }
-      this.transactionCategoryData = result;
     },
   },
   watch: {
