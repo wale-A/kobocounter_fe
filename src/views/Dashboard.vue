@@ -9,23 +9,42 @@
         loading="Loading..."
         empty="We don't have your transactions yet"
         class="chart"
-        download="net-income"
+        :download="{
+          background: '#fff',
+          filename: 'net-income',
+        }"
         :legend="false"
         label="Net Income"
       ></line-chart>
     </section>
-
     <section>
-      <p class="mid-text darker-color">Account Expenses</p>
+      <p class="mid-text darker-color">Transaction Category</p>
       <pie-chart
         :donut="true"
         :data="transactionCategoryData"
         class="chart"
         loading="Loading..."
         empty="We don't have your transactions yet"
-        download="account-expenses"
+        :download="{
+          background: '#fff',
+          filename: 'account-expenses',
+        }"
         legend="bottom"
       ></pie-chart>
+    </section>
+    <section style="margin-top: -15px">
+      <bar-chart
+        :data="transactionCategoryAndAmountData"
+        thousands=","
+        class="chart"
+        loading="Loading..."
+        empty="We don't have your transactions yet"
+        :download="{
+          background: '#fff',
+          filename: 'account-expenses-amount',
+        }"
+        xtitle="Amount N,000"
+      ></bar-chart>
     </section>
 
     <button class="floating-button" @click="addAccount" title="Add an account">
@@ -138,6 +157,7 @@ import toastr from "toastr";
       accountBalanceData: {},
       netIncomeData: {},
       transactionCategoryData: {},
+      transactionCategoryAndAmountData: {},
     };
   },
   computed: {
@@ -181,13 +201,18 @@ import toastr from "toastr";
     },
     parseTransactionCategories() {
       this.transactionCategoryData = {};
+      this.transactionCategoryAndAmountData = {};
+      console.log(this.transactionCategories);
       const categories = (this
         .transactionCategories as TransactionCategories[]).filter(
-        (x) => x.category != null && x.category >= 0
+        (x) => x.category != null
       );
       for (var i = 0; i < categories.length; i++) {
         this.transactionCategoryData[categories[i].displayCategory] =
           categories[i].count;
+        this.transactionCategoryAndAmountData[
+          categories[i].shortText
+        ] = parseFloat((categories[i].amount / 1000).toFixed(2));
       }
     },
   },

@@ -51,4 +51,5 @@ export type TransactionCategories = {
   count: number;
   amount: number;
   displayCategory: string;
+  shortText: string;
 };
