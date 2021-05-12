@@ -7,6 +7,7 @@ import MonoJS from "vue-mono";
 import { store } from "./store";
 import VueChartkick from "vue-chartkick";
 import "chartkick/chart.js";
+// import vSelect from "vue-select";
 
 createApp(App)
   .use(router)
@@ -15,6 +16,7 @@ createApp(App)
     publicKey: process.env.VUE_APP_MONO_PUBLIC_KEY,
   })
   .use(VueChartkick as any)
+  // .component("v-select", vSelect)
   .mount("#app");
 
 toastr.options = {

@@ -2,6 +2,47 @@
   <Header :display-menu="true" />
   <main v-show="accounts && accounts.length > 0">
     <section>
+      <Multiselect
+        :searchable="true"
+        v-model="selectedAccounts"
+        placeholder="All accounts"
+        :options="transformedAccountInfo"
+        mode="tags"
+        :multipleLabel="
+          (params) => params.map((x) => x.label.split(/\W/)[0]).join(', ')
+        "
+        noOptionsText="The list is empty"
+        noResultsText="No results found"
+        @close="updateAccountBalance"
+      />
+      <div
+        id="account-info-container"
+        style="
+          display: flex;
+          justify-content: space-between;
+          padding: 1% 5%;
+          align-items: center;
+        "
+      >
+        <div id="account-info" style="width: 70%">
+          <p class="mid-text darker-color" style="margin: 0">
+            {{ accountBalance }}
+          </p>
+          <p class="small-text darker-color" style="margin: 0">All expenses</p>
+        </div>
+        <div id="time-filter" style="width: 30%; padding-left: 2%">
+          <!-- <Multiselect
+            v-model="selectedPeriod"
+            placeholder="Period"
+            :options="[7, 30, 60, 90]"
+          />
+          <p class="small-text darker-color" style="margin: 0; margin-left: 4%">
+            Days
+          </p> -->
+        </div>
+      </div>
+    </section>
+    <section>
       <p class="mid-text darker-color">Net Income</p>
       <line-chart
         :data="netIncomeData"
@@ -67,6 +108,7 @@
   />
 </template>
 
+<style src="@vueform/multiselect/themes/default.css"></style>
 <style scoped>
 body {
   background-color: #ededf0;
@@ -119,6 +161,13 @@ section p {
   cursor: pointer;
   margin: 0;
 }
+div.multiselect-input {
+  border: 0 !important;
+}
+div.multiselect {
+  border: 0 !important;
+  font-family: "Poppins" !important;
+}
 
 @media screen and (max-width: 600px) {
   main {
@@ -145,8 +194,10 @@ section p {
 import { Options, Vue } from "vue-class-component";
 import Header from "@/components/Header.vue";
 import { mapGetters } from "vuex";
-import { NetIncome, TransactionCategories } from "@/types";
+import { NetIncome, TransactionCategories, Account } from "@/types";
 import toastr from "toastr";
+// import "vue-select/dist/vue-select.css";
+import Multiselect from "@vueform/multiselect";
 
 @Options({
   created() {
@@ -154,10 +205,15 @@ import toastr from "toastr";
   },
   data() {
     return {
+      accountBalance: 0,
       accountBalanceData: {},
       netIncomeData: {},
       transactionCategoryData: {},
       transactionCategoryAndAmountData: {},
+      selectedAccounts: [],
+      transformedAccountInfo: [],
+      selectedPeriod: 30,
+      accountSelectionUpdated: false,
     };
   },
   computed: {
@@ -171,8 +227,42 @@ import toastr from "toastr";
   },
   components: {
     Header,
+    Multiselect,
   },
   methods: {
+    multipleLabel(params: { label: string }[]) {
+      return params.map((x) => x.label.split(/\W/)[0]).join(", ");
+    },
+    updateAccountBalance() {
+      let balance = "";
+      if (this.selectedAccounts && this.selectedAccounts?.length > 0) {
+        balance = (this.accounts as Account[])
+          .filter((x) => this.selectedAccounts.includes(x.id))
+          .reduce((sum, acct) => {
+            return sum + acct.balance;
+          }, 0)
+          .toFixed(2);
+      } else {
+        balance = (this.accounts as Account[])
+          .reduce((sum, acct) => {
+            return sum + acct.balance;
+          }, 0)
+          .toFixed(2);
+      }
+      this.accountBalance = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "NGN",
+      }).format(parseFloat(balance));
+
+      if (this.accountSelectionUpdated) {
+        this.setup(
+          this.selectedAccounts && this.selectedAccounts.length > 0
+            ? this.selectedAccounts.join(", ")
+            : undefined
+        );
+        this.accountSelectionUpdated = false;
+      }
+    },
     addAccount() {
       const fn = (code: string) => this.$store.dispatch("addAccount", { code });
       const options = {
@@ -182,12 +272,12 @@ import toastr from "toastr";
       };
       this.$launchMono(options);
     },
-    setup() {
+    setup(accountIds: string) {
       this.$store.dispatch("getAccounts");
-      this.$store.dispatch("getTransactions", { accountId: undefined });
-      this.$store.dispatch("getNetIncome", { accountId: undefined });
+      this.$store.dispatch("getTransactions", { accountId: accountIds });
+      this.$store.dispatch("getNetIncome", { accountId: accountIds });
       this.$store.dispatch("getTransactionCategories", {
-        accountId: undefined,
+        accountId: accountIds,
       });
     },
     parseNetIncome() {
@@ -202,7 +292,6 @@ import toastr from "toastr";
     parseTransactionCategories() {
       this.transactionCategoryData = {};
       this.transactionCategoryAndAmountData = {};
-      console.log(this.transactionCategories);
       const categories = (this
         .transactionCategories as TransactionCategories[]).filter(
         (x) => x.category != null
@@ -214,6 +303,9 @@ import toastr from "toastr";
           categories[i].shortText
         ] = parseFloat((categories[i].amount / 1000).toFixed(2));
       }
+    },
+    updateSelectedAccount(value: string) {
+      this.selectedAccount = value;
     },
   },
   watch: {
@@ -228,6 +320,24 @@ import toastr from "toastr";
         toastr.success("Account added successful");
       else if (newVal !== undefined && !newVal)
         toastr.error("Unable to add account, please retry");
+    },
+    accounts(newVal?: Account[]) {
+      if (newVal && newVal.length > 0) {
+        this.transformedAccountInfo = newVal.map((x) => {
+          return {
+            label: `${x.bankName}-${x.accountNumber}`,
+            value: x.id,
+          };
+        });
+        this.updateAccountBalance();
+      } else {
+        this.transformedAccountInfo = [];
+      }
+    },
+    selectedAccounts(newAccounts?: string, oldAccounts?: string) {
+      if (newAccounts !== oldAccounts && newAccounts) {
+        this.accountSelectionUpdated = true;
+      }
     },
   },
 })
