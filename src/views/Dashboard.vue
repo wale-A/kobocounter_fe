@@ -13,8 +13,8 @@
         "
         noOptionsText="The list is empty"
         noResultsText="No results found"
-        @close="updateAccountBalance"
       />
+      <!-- @close="updateAccountBalance" -->
       <div
         id="account-info-container"
         style="
@@ -335,8 +335,9 @@ import Multiselect from "@vueform/multiselect";
       }
     },
     selectedAccounts(newAccounts?: string, oldAccounts?: string) {
-      if (newAccounts !== oldAccounts && newAccounts) {
+      if (newAccounts !== oldAccounts) {
         this.accountSelectionUpdated = true;
+        this.updateAccountBalance();
       }
     },
   },
