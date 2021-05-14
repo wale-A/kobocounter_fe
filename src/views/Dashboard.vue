@@ -180,7 +180,7 @@ section p {
 #filter-section {
   display: flex;
 }
-#filter-section #filter {
+#filter-section #filters {
   width: 95%;
   padding-right: 5%;
 }
