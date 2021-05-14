@@ -1,45 +1,61 @@
 <template>
   <Header :display-menu="true" />
   <main v-show="accounts && accounts.length > 0">
-    <section>
-      <Multiselect
-        :searchable="true"
-        v-model="selectedAccounts"
-        placeholder="All accounts"
-        :options="transformedAccountInfo"
-        mode="tags"
-        :multipleLabel="
-          (params) => params.map((x) => x.label.split(/\W/)[0]).join(', ')
-        "
-        noOptionsText="The list is empty"
-        noResultsText="No results found"
-      />
-      <!-- @close="updateAccountBalance" -->
-      <div
-        id="account-info-container"
-        style="
-          display: flex;
-          justify-content: space-between;
-          padding: 1% 5%;
-          align-items: center;
-        "
-      >
-        <div id="account-info" style="width: 70%">
-          <p class="mid-text darker-color" style="margin: 0">
-            {{ accountBalance }}
-          </p>
-          <p class="small-text darker-color" style="margin: 0">All expenses</p>
+    <section id="filter-section">
+      <div id="filters">
+        <Multiselect
+          :searchable="true"
+          v-model="selectedAccounts"
+          placeholder="All accounts"
+          :options="transformedAccountInfo"
+          mode="tags"
+          :multipleLabel="
+            (params) => params.map((x) => x.label.split(/\W/)[0]).join(', ')
+          "
+          noOptionsText="The list is empty"
+          noResultsText="No results found"
+        />
+        <div
+          id="account-info-container"
+          style="
+            display: flex;
+            justify-content: space-between;
+            padding: 1% 5%;
+            align-items: center;
+          "
+        >
+          <div id="account-info" style="width: 70%">
+            <p class="mid-text darker-color" style="margin: 0">
+              {{ accountBalance }}
+            </p>
+            <p class="small-text darker-color" style="margin: 0">
+              All expenses
+            </p>
+          </div>
+          <div
+            id="time-filter"
+            style="width: 30%; padding-left: 2%; padding-top: 5px"
+          >
+            <datepicker
+              v-model="period.from"
+              :upperLimit="period.to"
+              placeholder="from"
+            />
+            <datepicker
+              v-model="period.to"
+              :lowerLimit="period.from"
+              placeholder="to"
+            />
+          </div>
         </div>
-        <div id="time-filter" style="width: 30%; padding-left: 2%">
-          <!-- <Multiselect
-            v-model="selectedPeriod"
-            placeholder="Period"
-            :options="[7, 30, 60, 90]"
-          />
-          <p class="small-text darker-color" style="margin: 0; margin-left: 4%">
-            Days
-          </p> -->
-        </div>
+      </div>
+      <div id="filter-button">
+        <button
+          style="padding: 5px; padding-bottom: 0px"
+          @click="refreshDashboardData"
+        >
+          <i class="material-icons">search</i>
+        </button>
       </div>
     </section>
     <section>
@@ -65,7 +81,7 @@
         :data="transactionCategoryData"
         class="chart"
         loading="Loading..."
-        empty="We don't have your transactions yet"
+        empty="We don't have your transactions..."
         :download="{
           background: '#fff',
           filename: 'account-expenses',
@@ -79,7 +95,7 @@
         thousands=","
         class="chart"
         loading="Loading..."
-        empty="We don't have your transactions yet"
+        empty="We don't have your transactions..."
         :download="{
           background: '#fff',
           filename: 'account-expenses-amount',
@@ -161,12 +177,15 @@ section p {
   cursor: pointer;
   margin: 0;
 }
-div.multiselect-input {
-  border: 0 !important;
+#filter-section {
+  display: flex;
 }
-div.multiselect {
-  border: 0 !important;
-  font-family: "Poppins" !important;
+#filter-section #filter {
+  width: 95%;
+  padding-right: 5%;
+}
+#filter-section #filter-button {
+  width: 5%;
 }
 
 @media screen and (max-width: 600px) {
@@ -187,6 +206,43 @@ div.multiselect {
   section > .chart {
     height: 230px !important;
   }
+  #filter-section #filters {
+    width: 90%;
+    padding-right: 5%;
+  }
+  #filter-section #filter-button {
+    width: 10%;
+  }
+}
+</style>
+<style>
+div.multiselect-input {
+  border: 0;
+  border-bottom: 1px solid grey;
+}
+div.multiselect {
+  /* border: 0 !important; */
+  font-family: "Poppins";
+}
+
+input[placeholder="from"],
+input[placeholder="to"] {
+  height: 30px !important;
+  font-size: 17px;
+  font-family: "Poppins";
+}
+
+@media screen and (max-width: 600px) {
+  input[placeholder="from"],
+  input[placeholder="to"] {
+    height: 25px !important;
+    font-size: 13px;
+    font-family: "Poppins";
+    padding-left: 2px;
+  }
+  .v3dp__popout {
+    right: 0px;
+  }
 }
 </style>
 
@@ -196,7 +252,7 @@ import Header from "@/components/Header.vue";
 import { mapGetters } from "vuex";
 import { NetIncome, TransactionCategories, Account } from "@/types";
 import toastr from "toastr";
-// import "vue-select/dist/vue-select.css";
+import Datepicker from "vue3-datepicker";
 import Multiselect from "@vueform/multiselect";
 
 @Options({
@@ -214,6 +270,10 @@ import Multiselect from "@vueform/multiselect";
       transformedAccountInfo: [],
       selectedPeriod: 30,
       accountSelectionUpdated: false,
+      period: {
+        from: undefined,
+        to: undefined,
+      },
     };
   },
   computed: {
@@ -228,6 +288,7 @@ import Multiselect from "@vueform/multiselect";
   components: {
     Header,
     Multiselect,
+    Datepicker,
   },
   methods: {
     multipleLabel(params: { label: string }[]) {
@@ -253,15 +314,6 @@ import Multiselect from "@vueform/multiselect";
         style: "currency",
         currency: "NGN",
       }).format(parseFloat(balance));
-
-      if (this.accountSelectionUpdated) {
-        this.setup(
-          this.selectedAccounts && this.selectedAccounts.length > 0
-            ? this.selectedAccounts.join(", ")
-            : undefined
-        );
-        this.accountSelectionUpdated = false;
-      }
     },
     addAccount() {
       const fn = (code: string) => this.$store.dispatch("addAccount", { code });
@@ -274,10 +326,26 @@ import Multiselect from "@vueform/multiselect";
     },
     setup(accountIds: string) {
       this.$store.dispatch("getAccounts");
-      this.$store.dispatch("getTransactions", { accountId: accountIds });
-      this.$store.dispatch("getNetIncome", { accountId: accountIds });
+      this.$store.dispatch("getTransactions", {
+        accountId: accountIds,
+        start: this.period.from
+          ? new Date(this.period.from).getTime()
+          : undefined,
+        end: this.period.to ? new Date(this.period.to).getTime() : undefined,
+      });
+      this.$store.dispatch("getNetIncome", {
+        accountId: accountIds,
+        start: this.period.from
+          ? new Date(this.period.from).getTime()
+          : undefined,
+        end: this.period.to ? new Date(this.period.to).getTime() : undefined,
+      });
       this.$store.dispatch("getTransactionCategories", {
         accountId: accountIds,
+        start: this.period.from
+          ? new Date(this.period.from).getTime()
+          : undefined,
+        end: this.period.to ? new Date(this.period.to).getTime() : undefined,
       });
     },
     parseNetIncome() {
@@ -307,13 +375,17 @@ import Multiselect from "@vueform/multiselect";
     updateSelectedAccount(value: string) {
       this.selectedAccount = value;
     },
+    refreshDashboardData() {
+      this.setup();
+      this.updateAccountBalance();
+    },
   },
   watch: {
-    income(newVal?: NetIncome[]) {
-      if (newVal && newVal.length > 0) this.parseNetIncome();
+    income() {
+      this.parseNetIncome();
     },
-    transactionCategories(newVal?: TransactionCategories[]) {
-      if (newVal && newVal.length > 0) this.parseTransactionCategories();
+    transactionCategories() {
+      this.parseTransactionCategories();
     },
     accountCreateStatus(newVal?: NetIncome[]) {
       if (newVal !== undefined && newVal)
@@ -332,12 +404,6 @@ import Multiselect from "@vueform/multiselect";
         this.updateAccountBalance();
       } else {
         this.transformedAccountInfo = [];
-      }
-    },
-    selectedAccounts(newAccounts?: string, oldAccounts?: string) {
-      if (newAccounts !== oldAccounts) {
-        this.accountSelectionUpdated = true;
-        this.updateAccountBalance();
       }
     },
   },

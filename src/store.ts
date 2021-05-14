@@ -97,33 +97,55 @@ export const store = createStore({
         this.commit("setAccounts", []);
       }
     },
-    async getTransactions(_, { accountId }: { accountId?: string }) {
+    async getTransactions(
+      _,
+      {
+        accountId,
+        start,
+        end,
+      }: { accountId?: string; start?: number; end?: number }
+    ) {
       try {
         if (!this.state.user) throw "";
 
+        console.log({ start, end });
         const res = await superagent
           .get(`${process.env.VUE_APP_API_URL}/banking/accounts/transactions`)
           .auth(this.state.user?.token.token, { type: "bearer" })
-          .query({ accountId });
+          .query({ accountId, start, end });
         this.commit("setTransactions", res.body as Account[]);
       } catch (e) {
         this.commit("setTransactions", []);
       }
     },
-    async getNetIncome(_, { accountId }: { accountId?: string }) {
+    async getNetIncome(
+      _,
+      {
+        accountId,
+        start,
+        end,
+      }: { accountId?: string; start?: number; end?: number }
+    ) {
       try {
         if (!this.state.user) return undefined;
 
         const res = await superagent
           .get(`${process.env.VUE_APP_API_URL}/banking/accounts/netincome`)
           .auth(this.state.user?.token.token, { type: "bearer" })
-          .query({ accountId });
+          .query({ accountId, start, end });
         this.commit("setNetIncome", res.body as NetIncome[]);
       } catch (e) {
         this.commit("setNetIncome", []);
       }
     },
-    async getTransactionCategories(_, { accountId }: { accountId?: string }) {
+    async getTransactionCategories(
+      _,
+      {
+        accountId,
+        start,
+        end,
+      }: { accountId?: string; start?: number; end?: number }
+    ) {
       try {
         if (!this.state.user) return undefined;
 
@@ -132,7 +154,7 @@ export const store = createStore({
             `${process.env.VUE_APP_API_URL}/banking/accounts/transactions/categories`
           )
           .auth(this.state.user?.token.token, { type: "bearer" })
-          .query({ accountId });
+          .query({ accountId, start, end });
         this.commit(
           "setTransactionCategories",
           res.body as TransactionCategories[]
