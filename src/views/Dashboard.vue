@@ -17,8 +17,10 @@
             noResultsText="No results found"
           />
           <button
+            id="small-search-button"
             style="padding: 5px; padding-bottom: 0px; width: unset"
             @click="refreshDashboardData"
+            disabled
           >
             <i class="material-icons">search</i>
           </button>
@@ -33,15 +35,17 @@
             </p>
           </div>
           <div id="time-filter">
-            <input type="date" v-model="period.from" :max="period.to" />
-            <input type="date" v-model="period.to" :min="period.from" />
+            <input type="date" v-model="from" :max="to" />
+            <input type="date" v-model="to" :min="from" />
           </div>
         </div>
       </div>
       <div id="filter-button">
         <button
+          id="big-search-button"
           style="padding: 5px; padding-bottom: 0px"
           @click="refreshDashboardData"
+          disabled
         >
           <i class="material-icons">search</i>
         </button>
@@ -176,6 +180,9 @@ section p {
 #filter-button {
   width: 5%;
 }
+#small-search-button {
+  display: none;
+}
 #account-info-container {
   display: flex;
   justify-content: space-between;
@@ -240,6 +247,9 @@ input[type="date"] {
   #filter-button {
     display: none;
   }
+  #small-search-button {
+    display: unset;
+  }
   #select-button {
     display: flex;
   }
@@ -292,14 +302,12 @@ import Multiselect from "@vueform/multiselect";
       transformedAccountInfo: [],
       selectedPeriod: 30,
       accountSelectionUpdated: false,
-      period: {
-        from: `${from.getFullYear()}-${(from.getMonth() + 1)
-          .toString()
-          .padStart(2, "0")}-${from.getDate().toString().padStart(2, "0")}`,
-        to: `${to.getFullYear()}-${(to.getMonth() + 1)
-          .toString()
-          .padStart(2, "0")}-${to.getDate().toString().padStart(2, "0")}`,
-      },
+      from: `${from.getFullYear()}-${(from.getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}-${from.getDate().toString().padStart(2, "0")}`,
+      to: `${to.getFullYear()}-${(to.getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}-${to.getDate().toString().padStart(2, "0")}`,
     };
   },
   computed: {
@@ -349,31 +357,25 @@ import Multiselect from "@vueform/multiselect";
       };
       this.$launchMono(options);
     },
-    setup(accountIds: string) {
-      console.log({ from: this.period.from, to: this.period.to });
-
+    setup() {
+      const accountIds = this.selectedAccounts.join(", ");
       this.$store.dispatch("getAccounts");
       this.$store.dispatch("getTransactions", {
         accountId: accountIds,
-        start: this.period.from
-          ? new Date(this.period.from).getTime()
-          : undefined,
-        end: this.period.to ? new Date(this.period.to).getTime() : undefined,
+        start: this.from ? new Date(this.from).getTime() : undefined,
+        end: this.to ? new Date(this.to).getTime() : undefined,
       });
       this.$store.dispatch("getNetIncome", {
         accountId: accountIds,
-        start: this.period.from
-          ? new Date(this.period.from).getTime()
-          : undefined,
-        end: this.period.to ? new Date(this.period.to).getTime() : undefined,
+        start: this.from ? new Date(this.from).getTime() : undefined,
+        end: this.to ? new Date(this.to).getTime() : undefined,
       });
       this.$store.dispatch("getTransactionCategories", {
         accountId: accountIds,
-        start: this.period.from
-          ? new Date(this.period.from).getTime()
-          : undefined,
-        end: this.period.to ? new Date(this.period.to).getTime() : undefined,
+        start: this.from ? new Date(this.from).getTime() : undefined,
+        end: this.to ? new Date(this.to).getTime() : undefined,
       });
+      this.disableSearchButtons();
     },
     parseNetIncome() {
       let result: Record<string, string> = {};
@@ -406,6 +408,18 @@ import Multiselect from "@vueform/multiselect";
       this.setup();
       this.updateAccountBalance();
     },
+    disableSearchButtons() {
+      if (!document.getElementById("small-search-button")) return;
+
+      (document.getElementById("small-search-button") as any).disabled = true;
+      (document.getElementById("big-search-button") as any).disabled = true;
+    },
+    enableSearchButtons() {
+      if (!document.getElementById("small-search-button")) return;
+
+      (document.getElementById("small-search-button") as any).disabled = false;
+      (document.getElementById("big-search-button") as any).disabled = false;
+    },
   },
   watch: {
     income() {
@@ -431,6 +445,20 @@ import Multiselect from "@vueform/multiselect";
         this.updateAccountBalance();
       } else {
         this.transformedAccountInfo = [];
+      }
+
+      if (this.selectedAccounts.length > 0) {
+        this.enableSearchButtons();
+      }
+    },
+    from(newVal?: string, oldVal?: string) {
+      if (newVal !== oldVal) {
+        this.enableSearchButtons();
+      }
+    },
+    to(newVal?: string, oldVal?: string) {
+      if (newVal !== oldVal) {
+        this.enableSearchButtons();
       }
     },
   },
