@@ -108,7 +108,6 @@ export const store = createStore({
       try {
         if (!this.state.user) throw "";
 
-        console.log({ start, end });
         const res = await superagent
           .get(`${process.env.VUE_APP_API_URL}/banking/accounts/transactions`)
           .auth(this.state.user?.token.token, { type: "bearer" })
@@ -162,6 +161,19 @@ export const store = createStore({
       } catch (e) {
         this.commit("setTransactionCategories", []);
       }
+    },
+    async subscribeUser(_) {
+      console.log("in subscriber");
+      if (!this.state.user) return undefined;
+
+      navigator.serviceWorker.controller?.postMessage(
+        JSON.stringify({
+          type: "subscribe",
+          arg: {
+            token: this.state.user?.token,
+          },
+        })
+      );
     },
   }, // END OF ACTION
   getters: {

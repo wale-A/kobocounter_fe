@@ -44,7 +44,6 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.authorize)) {
     if (!store.getters.isLoggedIn) {
-      console.log("here in routeee");
       next({ name: "Login", params: { nextUrl: to.fullPath } });
     } else {
       next();

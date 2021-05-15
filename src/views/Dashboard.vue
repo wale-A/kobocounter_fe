@@ -3,27 +3,27 @@
   <main v-show="accounts && accounts.length > 0">
     <section id="filter-section">
       <div id="filters">
-        <Multiselect
-          :searchable="true"
-          v-model="selectedAccounts"
-          placeholder="All accounts"
-          :options="transformedAccountInfo"
-          mode="tags"
-          :multipleLabel="
-            (params) => params.map((x) => x.label.split(/\W/)[0]).join(', ')
-          "
-          noOptionsText="The list is empty"
-          noResultsText="No results found"
-        />
-        <div
-          id="account-info-container"
-          style="
-            display: flex;
-            justify-content: space-between;
-            padding: 1% 5%;
-            align-items: center;
-          "
-        >
+        <div id="select-button">
+          <Multiselect
+            :searchable="true"
+            v-model="selectedAccounts"
+            placeholder="All accounts"
+            :options="transformedAccountInfo"
+            mode="tags"
+            :multipleLabel="
+              (params) => params.map((x) => x.label.split(/\W/)[0]).join(', ')
+            "
+            noOptionsText="The list is empty"
+            noResultsText="No results found"
+          />
+          <button
+            style="padding: 5px; padding-bottom: 0px; width: unset"
+            @click="refreshDashboardData"
+          >
+            <i class="material-icons">search</i>
+          </button>
+        </div>
+        <div id="account-info-container">
           <div id="account-info" style="width: 70%">
             <p class="mid-text darker-color" style="margin: 0">
               {{ accountBalance }}
@@ -32,20 +32,9 @@
               All expenses
             </p>
           </div>
-          <div
-            id="time-filter"
-            style="width: 30%; padding-left: 2%; padding-top: 5px"
-          >
-            <datepicker
-              v-model="period.from"
-              :upperLimit="period.to"
-              placeholder="from"
-            />
-            <datepicker
-              v-model="period.to"
-              :lowerLimit="period.from"
-              placeholder="to"
-            />
+          <div id="time-filter">
+            <input type="date" v-model="period.from" :max="period.to" />
+            <input type="date" v-model="period.to" :min="period.from" />
           </div>
         </div>
       </div>
@@ -64,7 +53,7 @@
         :data="netIncomeData"
         thousands=","
         loading="Loading..."
-        empty="We don't have your transactions yet"
+        empty="We don't have for the selected period..."
         class="chart"
         :download="{
           background: '#fff',
@@ -81,7 +70,7 @@
         :data="transactionCategoryData"
         class="chart"
         loading="Loading..."
-        empty="We don't have your transactions..."
+        empty="We don't have data for the selected period..."
         :download="{
           background: '#fff',
           filename: 'account-expenses',
@@ -95,7 +84,7 @@
         thousands=","
         class="chart"
         loading="Loading..."
-        empty="We don't have your transactions..."
+        empty="We don't have for the selected period..."
         :download="{
           background: '#fff',
           filename: 'account-expenses-amount',
@@ -180,15 +169,35 @@ section p {
 #filter-section {
   display: flex;
 }
-#filter-section #filters {
+#filters {
   width: 95%;
   padding-right: 5%;
 }
-#filter-section #filter-button {
+#filter-button {
   width: 5%;
 }
+#account-info-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 1% 5%;
+  align-items: center;
+}
+#account-info {
+  width: 70%;
+}
+#time-filter {
+  width: 30%;
+  padding-left: 2%;
+  padding-top: 5px;
+}
+input[type="date"] {
+  height: 30px !important;
+  font-size: 15px;
+  font-family: "Poppins";
+  margin-top: 0;
+}
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 700px) {
   main {
     width: 90%;
     margin-right: 5%;
@@ -206,12 +215,36 @@ section p {
   section > .chart {
     height: 230px !important;
   }
-  #filter-section #filters {
-    width: 90%;
-    padding-right: 5%;
+  #filters {
+    width: 100%;
+    padding: 0;
   }
-  #filter-section #filter-button {
-    width: 10%;
+  #account-info-container {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  #account-info {
+    width: 60%;
+  }
+  #time-filter {
+    width: 40%;
+    padding-left: 0;
+  }
+  input[type="date"] {
+    height: 27px !important;
+    font-size: 13px;
+    font-family: "Poppins";
+    margin-top: 0;
+    padding-left: 0;
+  }
+  #filter-button {
+    display: none;
+  }
+  #select-button {
+    display: flex;
+  }
+  button {
+    margin-top: 0;
   }
 }
 </style>
@@ -221,27 +254,12 @@ div.multiselect-input {
   border-bottom: 1px solid grey;
 }
 div.multiselect {
-  /* border: 0 !important; */
   font-family: "Poppins";
 }
 
-input[placeholder="from"],
-input[placeholder="to"] {
-  height: 30px !important;
-  font-size: 17px;
-  font-family: "Poppins";
-}
-
-@media screen and (max-width: 600px) {
-  input[placeholder="from"],
-  input[placeholder="to"] {
-    height: 25px !important;
-    font-size: 13px;
-    font-family: "Poppins";
-    padding-left: 2px;
-  }
-  .v3dp__popout {
-    right: 0px;
+@media screen and (max-width: 700px) {
+  #multiselect {
+    margin-left: 0;
   }
 }
 </style>
@@ -252,14 +270,18 @@ import Header from "@/components/Header.vue";
 import { mapGetters } from "vuex";
 import { NetIncome, TransactionCategories, Account } from "@/types";
 import toastr from "toastr";
-import Datepicker from "vue3-datepicker";
 import Multiselect from "@vueform/multiselect";
 
 @Options({
   created() {
     this.setup();
   },
+  mounted() {
+    this.$store.dispatch("subscribeUser");
+  },
   data() {
+    const from = new Date(new Date(new Date().setDate(0)).setDate(1));
+    const to = new Date();
     return {
       accountBalance: 0,
       accountBalanceData: {},
@@ -271,8 +293,12 @@ import Multiselect from "@vueform/multiselect";
       selectedPeriod: 30,
       accountSelectionUpdated: false,
       period: {
-        from: undefined,
-        to: undefined,
+        from: `${from.getFullYear()}-${(from.getMonth() + 1)
+          .toString()
+          .padStart(2, "0")}-${from.getDate().toString().padStart(2, "0")}`,
+        to: `${to.getFullYear()}-${(to.getMonth() + 1)
+          .toString()
+          .padStart(2, "0")}-${to.getDate().toString().padStart(2, "0")}`,
       },
     };
   },
@@ -288,7 +314,6 @@ import Multiselect from "@vueform/multiselect";
   components: {
     Header,
     Multiselect,
-    Datepicker,
   },
   methods: {
     multipleLabel(params: { label: string }[]) {
@@ -325,6 +350,8 @@ import Multiselect from "@vueform/multiselect";
       this.$launchMono(options);
     },
     setup(accountIds: string) {
+      console.log({ from: this.period.from, to: this.period.to });
+
       this.$store.dispatch("getAccounts");
       this.$store.dispatch("getTransactions", {
         accountId: accountIds,
