@@ -15,13 +15,17 @@
           Let us help find the hole in your account(s)
           <span class="small-text">this needs to be changed</span>
         </p>
-        <router-link :to="{ name: 'Register' }" class="submit-link-text"
+        <router-link
+          :to="{ name: isLoggedIn ? 'Dashboard' : 'Register' }"
+          class="submit-link-text"
           >TRACK MY COINS</router-link
         >
       </section>
       <section id="landing-image">
         <img src="@/assets/phone.svg" alt="phone screen" />
-        <router-link :to="{ name: 'Register' }" class="submit-link-image"
+        <router-link
+          :to="{ name: isLoggedIn ? 'Dashboard' : 'Register' }"
+          class="submit-link-image"
           >TRACK MY COINS</router-link
         >
       </section>
@@ -105,11 +109,15 @@ section a {
 import { Options, Vue } from "vue-class-component";
 import Footer from "@/components/Footer.vue";
 import Header from "@/components/Header.vue";
+import { mapGetters } from "vuex";
 
 @Options({
   components: {
     Footer,
     Header,
+  },
+  computed: {
+    ...mapGetters(["isLoggedIn"]),
   },
 })
 export default class Landing extends Vue {}
