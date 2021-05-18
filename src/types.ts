@@ -7,6 +7,7 @@ export type State = {
   netIncome?: NetIncome[];
   transactionCategories?: TransactionCategories[];
   accountCreateSuccessful?: boolean;
+  recurringExpenditure?: Subscription[];
 };
 
 export type User = {
@@ -52,4 +53,14 @@ export type TransactionCategories = {
   amount: number;
   displayCategory: string;
   shortText: string;
+};
+
+export type Subscription = {
+  narration: string;
+  amount: number;
+  frequency: number;
+  date: number;
+  transactionCategory?: string;
+  recipient?: any;
+  category?: string;
 };

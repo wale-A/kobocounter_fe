@@ -55,6 +55,7 @@
       <p class="mid-text darker-color">Net Income</p>
       <line-chart
         :data="netIncomeData"
+        :pointRadius="0"
         thousands=","
         loading="Loading..."
         empty="We don't have for the selected period..."
@@ -95,6 +96,51 @@
         }"
         xtitle="Amount N,000"
       ></bar-chart>
+    </section>
+
+    <section>
+      <p class="mid-text darker-color">Recurring expenses (Last 3 months)</p>
+      <span v-if="subscriptions.length == 0" class="small-text accent-color">
+        You don't have recurring transactions in the last 3 months
+      </span>
+      <div
+        v-for="(exp, index) in subscriptions"
+        :key="index"
+        style="
+          display: flex;
+          justify-content: space-between;
+          border-bottom: 1px solid black;
+        "
+      >
+        <div style="text-align: start; width: 67%">
+          <p class="small-text" style="line-height: 20px">
+            {{ exp.narration }}
+          </p>
+          <span class="small-text darker-color">
+            {{ exp.transactionCategory }}
+          </span>
+        </div>
+        <div style="text-align: end; width: 33%">
+          <p
+            class="small-text darker-color"
+            style="
+              font-weight: 500;
+              color: rgba(255, 10, 10, 0.7);
+              line-height: 20px;
+            "
+          >
+            {{
+              new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "NGN",
+              }).format(exp.amount)
+            }}
+          </p>
+          <span class="small-text darker-color">
+            {{ new Date(exp.date).toDateString() }}
+          </span>
+        </div>
+      </div>
     </section>
 
     <button class="floating-button" @click="addAccount" title="Add an account">
@@ -317,6 +363,7 @@ import Multiselect from "@vueform/multiselect";
       "income",
       "transactionCategories",
       "accountCreateStatus",
+      "subscriptions",
     ]),
   },
   components: {
@@ -374,6 +421,9 @@ import Multiselect from "@vueform/multiselect";
         accountId: accountIds,
         start: this.from ? new Date(this.from).getTime() : undefined,
         end: this.to ? new Date(this.to).getTime() : undefined,
+      });
+      this.$store.dispatch("getRecurringExpenses", {
+        accountId: accountIds,
       });
       this.disableSearchButtons();
     },
