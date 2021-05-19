@@ -99,7 +99,10 @@
     </section>
 
     <section>
-      <p class="mid-text darker-color">Recurring expenses (Last 3 months)</p>
+      <p class="mid-text darker-color">
+        Recurring expenses
+        <span class="small-text"> (last 3 months) </span>
+      </p>
       <div v-if="subscriptions.length == 0" class="small-text accent-color">
         <span>
           You don't have recurring transactions in the last 3 months
@@ -113,11 +116,14 @@
         style="
           display: flex;
           justify-content: space-between;
-          border-bottom: 1px solid black;
+          padding: 5px 5px;
+          border: 1px solid #1c5298;
+          border-radius: 10px;
+          margin-bottom: 5px;
         "
       >
         <div style="text-align: start; width: 67%">
-          <p class="small-text" style="line-height: 20px">
+          <p class="small-text" style="line-height: 20px; margin-top: 0">
             {{ exp.narration }}
           </p>
           <span class="small-text darker-color">
@@ -131,6 +137,7 @@
               font-weight: 500;
               color: rgba(255, 10, 10, 0.7);
               line-height: 20px;
+              margin-top: 0;
             "
           >
             {{
@@ -141,7 +148,7 @@
             }}
           </p>
           <span class="small-text darker-color">
-            {{ new Date(exp.date).toDateString() }}
+            {{ new Date(exp.date).toLocaleDateString("en-GB") }}
           </span>
         </div>
       </div>
