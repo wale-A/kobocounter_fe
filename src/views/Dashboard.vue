@@ -436,9 +436,6 @@ import Multiselect from "@vueform/multiselect";
       this.$store.dispatch("getRecurringExpenses", {
         accountId: accountIds,
       });
-      this.$store.dispatch("getRecurringExpenses", {
-        accountId: accountIds,
-      });
       this.disableSearchButtons();
     },
     parseNetIncome() {
