@@ -58,7 +58,7 @@
         :pointRadius="0"
         thousands=","
         loading="Loading..."
-        empty="We don't have for the selected period..."
+        empty="We don't have data for the selected period..."
         class="chart"
         :download="{
           background: '#fff',
@@ -100,9 +100,13 @@
 
     <section>
       <p class="mid-text darker-color">Recurring expenses (Last 3 months)</p>
-      <span v-if="subscriptions.length == 0" class="small-text accent-color">
-        You don't have recurring transactions in the last 3 months
-      </span>
+      <div v-if="subscriptions.length == 0" class="small-text accent-color">
+        <span>
+          You don't have recurring transactions in the last 3 months
+        </span>
+        <span v-if="selectedAccounts"> for selected account(s)</span>
+      </div>
+
       <div
         v-for="(exp, index) in subscriptions"
         :key="index"
@@ -425,6 +429,9 @@ import Multiselect from "@vueform/multiselect";
       this.$store.dispatch("getRecurringExpenses", {
         accountId: accountIds,
       });
+      this.$store.dispatch("getRecurringExpenses", {
+        accountId: accountIds,
+      });
       this.disableSearchButtons();
     },
     parseNetIncome() {
@@ -456,7 +463,6 @@ import Multiselect from "@vueform/multiselect";
     },
     refreshDashboardData() {
       this.setup();
-      this.updateAccountBalance();
     },
     disableSearchButtons() {
       if (!document.getElementById("small-search-button")) return;
@@ -496,10 +502,6 @@ import Multiselect from "@vueform/multiselect";
       } else {
         this.transformedAccountInfo = [];
       }
-
-      if (this.selectedAccounts.length > 0) {
-        this.enableSearchButtons();
-      }
     },
     from(newVal?: string, oldVal?: string) {
       if (newVal !== oldVal) {
@@ -508,6 +510,12 @@ import Multiselect from "@vueform/multiselect";
     },
     to(newVal?: string, oldVal?: string) {
       if (newVal !== oldVal) {
+        this.enableSearchButtons();
+      }
+    },
+    selectedAccounts(newVal?: string[], oldVal?: string[]) {
+      if (newVal !== oldVal) {
+        this.updateAccountBalance();
         this.enableSearchButtons();
       }
     },
