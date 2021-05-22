@@ -73,10 +73,6 @@
       ></line-chart>
     </section>
     <section>
-      <p class="mid-text darker-color">Word Cloud</p>
-      <canvas id="word-cloud" height="400" width="700"> </canvas>
-    </section>
-    <section>
       <p class="mid-text darker-color">Transaction Category</p>
       <pie-chart
         :donut="true"
@@ -105,7 +101,6 @@
         xtitle="Amount N,000"
       ></bar-chart>
     </section>
-
     <section>
       <p class="mid-text darker-color">
         Recurring expenses
@@ -162,6 +157,12 @@
       </div>
     </section>
 
+    <section
+      v-show="establishmentActivities && establishmentActivities.length > 0"
+    >
+      <p class="mid-text darker-color">Word Cloud</p>
+      <canvas id="word-cloud" height="500" width="700"> </canvas>
+    </section>
     <button class="floating-button" @click="addAccount" title="Add an account">
       +
     </button>
@@ -333,7 +334,7 @@ div.multiselect {
 }
 #word-cloud {
   width: 70%;
-  height: 35%;
+  height: 50%;
   image-rendering: auto;
 }
 
@@ -343,7 +344,7 @@ div.multiselect {
   }
   #word-cloud {
     width: 100%;
-    height: 20%;
+    height: 50%;
   }
 }
 </style>
@@ -357,7 +358,6 @@ import toastr from "toastr";
 import Multiselect from "@vueform/multiselect";
 import { subMonths } from "date-fns";
 import WordCloud from "wordcloud";
-// import VueWordCloud from "vuewordcloud";
 
 @Options({
   created() {
@@ -551,7 +551,7 @@ import WordCloud from "wordcloud";
     ) {
       const node = document.getElementById("word-cloud") as any;
       node.width = node.offsetWidth;
-      node.height = node.offsetHeight * 0.6;
+      node.height = node.offsetHeight * 0.7;
 
       if (!newVal) return;
 
@@ -580,7 +580,7 @@ import WordCloud from "wordcloud";
         //   const _avg = (max - min) / 2 - 1;
         //   return 2;
         //   // if (size < _avg) return (max / _avg) * size;
-        //   // // // return (Math.pow(size, 1.3) * node.clientWidth) / 1024;
+        //   // // //   return (Math.pow(size, 1.3) * node.clientWidth) / 1024;
         //   // return max / size;
         //   // return (Math.pow(size, 1.3) * node.clientWidth) / 1024;
         // },
