@@ -9,10 +9,12 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@types/wordcloud": "^1.1.2",
     "@vueform/multiselect": "^1.4.0",
     "autoprefixer": "^9",
     "chart.js": "^3.2.1",
     "core-js": "^3.6.5",
+    "date-fns": "^2.21.3",
     "dotenv": "^8.2.0",
     "jquery": "^3.6.0",
     "popper.js": "^1.16.1",
@@ -25,7 +27,8 @@
     "vue-class-component": "^8.0.0-0",
     "vue-mono": "^1.1.0",
     "vue-router": "^4.0.0-0",
-    "vuex": "^4.0.0"
+    "vuex": "^4.0.0",
+    "wordcloud": "^1.2.2"
   },
   "devDependencies": {
     "@types/jest": "^24.0.19",

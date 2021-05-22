@@ -8,6 +8,7 @@ export type State = {
   transactionCategories?: TransactionCategories[];
   accountCreateSuccessful?: boolean;
   recurringExpenditure?: Subscription[];
+  establishmentActivities?: Array<{ count: number; activity: string }>;
 };
 
 export type User = {

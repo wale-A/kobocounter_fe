@@ -30,7 +30,7 @@ export const store = createStore({
       state.accountCreateSuccessful = status;
     },
     setLoginError(state: State) {
-      state.loginError = true;
+      state.loginError = false;
     },
     setUser(state: State, u: User) {
       state.user = u;
@@ -53,6 +53,9 @@ export const store = createStore({
     setRecurringExpenses(state: State, subscription?: Subscription[]) {
       state.recurringExpenditure = subscription;
     },
+    setEstablishmentActivities(state: State, activities?: []) {
+      state.establishmentActivities = activities;
+    },
   }, // END OF MUTATION
   actions: {
     async loginUser(
@@ -60,6 +63,7 @@ export const store = createStore({
       { email, password }: { email: string; password: string }
     ) {
       try {
+        this.commit("setLoginStatus", undefined);
         const res = await superagent
           .post(`${process.env.VUE_APP_API_URL}/users/login`)
           .send({ email, password })
@@ -154,6 +158,18 @@ export const store = createStore({
         this.commit("setRecurringExpenses", []);
       }
     },
+    async getEstablishmentActivities() {
+      try {
+        if (!this.state.user) return undefined;
+
+        const res = await superagent
+          .get(`${process.env.VUE_APP_API_URL}/banking/establishmentActivities`)
+          .auth(this.state.user?.token.token, { type: "bearer" });
+        this.commit("setEstablishmentActivities", res.body);
+      } catch (e) {
+        this.commit("setEstablishmentActivities", []);
+      }
+    },
     async getTransactionCategories(
       _,
       {
@@ -194,6 +210,12 @@ export const store = createStore({
     },
   }, // END OF ACTION
   getters: {
+    loginError(state: State) {
+      return state.loginError;
+    },
+    loginSuccessful(state: State) {
+      return state.loginSuccessful;
+    },
     isLoggedIn(state: State) {
       return state.user && (state.user?.token?.expires || 0) > Date.now();
     },
@@ -220,6 +242,9 @@ export const store = createStore({
     },
     subscriptions(state: State) {
       return state.recurringExpenditure || [];
+    },
+    establishmentActivities(state: State) {
+      return state.establishmentActivities || [];
     },
   },
 });

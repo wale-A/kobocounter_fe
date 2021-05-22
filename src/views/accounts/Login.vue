@@ -20,7 +20,11 @@
             <input type="password" name="password" v-model="password" />
           </section>
           <section>
-            <button type="submit" :disabled="!(email && password)">
+            <button
+              type="submit"
+              id="login_button"
+              :disabled="!(email && password)"
+            >
               LOGIN
             </button>
           </section>
@@ -80,6 +84,7 @@ section {
 import { Options, Vue } from "vue-class-component";
 import Header from "@/components/Header.vue";
 import toastr from "toastr";
+import { mapGetters } from "vuex";
 
 @Options({
   components: {
@@ -93,6 +98,8 @@ import toastr from "toastr";
   },
   methods: {
     async loginUser() {
+      console.log("here");
+      (document.getElementById("login_button") as any).disabled = true;
       this.$store.dispatch("loginUser", {
         email: this.email,
         password: this.password,
@@ -100,15 +107,12 @@ import toastr from "toastr";
     },
   },
   computed: {
-    loginSuccessful(): boolean {
-      return this.$store.state.loginSuccessful;
-    },
-    loginError(): boolean {
-      return this.$store.state.loginError;
-    },
+    ...mapGetters(["loginSuccessful", "loginError"]),
   },
   watch: {
     loginSuccessful(newVal?: boolean) {
+      if (newVal == undefined) return;
+      console.log({ newVal });
       if (newVal === true) {
         if (this.$route.params.nextUrl) {
           this.$router.push(this.$route.params.nextUrl);
@@ -116,6 +120,7 @@ import toastr from "toastr";
           this.$router.push({ name: "Dashboard" });
         }
       } else {
+        (document.getElementById("login_button") as any).disabled = false;
         toastr.info(
           "Email and Password combination is invalid",
           "Login failed"
@@ -123,8 +128,11 @@ import toastr from "toastr";
       }
     },
     loginError(newVal?: boolean) {
+      (document.getElementById("login_button") as any).disabled = false;
       if (newVal === true) {
-        toastr.error("Unable to login user", "Login failed");
+        toastr.error("Unable to login user", "Login failed", {
+          preventDuplicates: false,
+        });
       }
     },
   },

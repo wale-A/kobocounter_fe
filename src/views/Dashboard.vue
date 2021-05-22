@@ -27,12 +27,14 @@
         </div>
         <div id="account-info-container">
           <div id="account-info" style="width: 70%">
-            <p class="mid-text darker-color" style="margin: 0">
-              {{ accountBalance }}
-            </p>
-            <p class="small-text darker-color" style="margin: 0">
-              All expenses
-            </p>
+            <div style="display: none">
+              <p class="mid-text darker-color" style="margin: 0">
+                {{ accountBalance }}
+              </p>
+              <p class="small-text darker-color" style="margin: 0">
+                All expenses
+              </p>
+            </div>
           </div>
           <div id="time-filter">
             <input type="date" v-model="from" :max="to" />
@@ -60,13 +62,19 @@
         loading="Loading..."
         empty="We don't have data for the selected period..."
         class="chart"
+        :library="{ showLines: false }"
         :download="{
           background: '#fff',
           filename: 'net-income',
         }"
         :legend="false"
         label="Net Income"
+        prefix="N"
       ></line-chart>
+    </section>
+    <section>
+      <p class="mid-text darker-color">Word Cloud</p>
+      <canvas id="word-cloud" height="400" width="700"> </canvas>
     </section>
     <section>
       <p class="mid-text darker-color">Transaction Category</p>
@@ -323,10 +331,19 @@ div.multiselect-input {
 div.multiselect {
   font-family: "Poppins";
 }
+#word-cloud {
+  width: 70%;
+  height: 35%;
+  image-rendering: auto;
+}
 
 @media screen and (max-width: 700px) {
   #multiselect {
     margin-left: 0;
+  }
+  #word-cloud {
+    width: 100%;
+    height: 20%;
   }
 }
 </style>
@@ -338,16 +355,20 @@ import { mapGetters } from "vuex";
 import { NetIncome, TransactionCategories, Account } from "@/types";
 import toastr from "toastr";
 import Multiselect from "@vueform/multiselect";
+import { subMonths } from "date-fns";
+import WordCloud from "wordcloud";
+// import VueWordCloud from "vuewordcloud";
 
 @Options({
   created() {
     this.setup();
+    this.$store.dispatch("getEstablishmentActivities");
   },
   mounted() {
     this.$store.dispatch("subscribeUser");
   },
   data() {
-    const from = new Date(new Date(new Date().setDate(0)).setDate(1));
+    const from = subMonths(Date.now(), 1);
     const to = new Date();
     return {
       accountBalance: 0,
@@ -375,11 +396,13 @@ import Multiselect from "@vueform/multiselect";
       "transactionCategories",
       "accountCreateStatus",
       "subscriptions",
+      "establishmentActivities",
     ]),
   },
   components: {
     Header,
     Multiselect,
+    // [VueWordCloud.name]: VueWordCloud,
   },
   methods: {
     multipleLabel(params: { label: string }[]) {
@@ -522,6 +545,49 @@ import Multiselect from "@vueform/multiselect";
         this.updateAccountBalance();
         this.enableSearchButtons();
       }
+    },
+    establishmentActivities(
+      newVal?: Array<{ count: number; activity: string }>
+    ) {
+      const node = document.getElementById("word-cloud") as any;
+      node.width = node.offsetWidth;
+      node.height = node.offsetHeight * 0.6;
+
+      if (!newVal) return;
+
+      WordCloud(node, {
+        list: newVal?.map((x) => {
+          return [x.activity, x.count];
+        }),
+        backgroundColor: "#fff",
+        // weightFactor: 10,
+        fontFamily: "Times, serif",
+        // minSize:
+        // newVal.map((x) => x.count).reduce((x, y) => x + y, 0) /
+        //   newVal.length -
+        // 2,
+        fontWeight: "normal",
+        minRotation: 1.57,
+        clearCanvas: true,
+        // gridSize: 1,
+        gridSize: 1,
+        // weightFactor: function (size) {
+        //   const numbers = newVal.map((x) => x.count);
+        //   const max = Math.max(...numbers);
+        //   const min = Math.min(...numbers);
+        //   if (size < Math.sqrt(max) - 1) return 0;
+
+        //   const _avg = (max - min) / 2 - 1;
+        //   return 2;
+        //   // if (size < _avg) return (max / _avg) * size;
+        //   // // // return (Math.pow(size, 1.3) * node.clientWidth) / 1024;
+        //   // return max / size;
+        //   // return (Math.pow(size, 1.3) * node.clientWidth) / 1024;
+        // },
+        // minSize: 13,
+        weightFactor: 7,
+        // color: "#19365e",
+      });
     },
   },
 })
