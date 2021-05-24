@@ -4,7 +4,7 @@ import {
   Account,
   NetIncome,
   State,
-  Subscription,
+  RecurrentExpense,
   Transaction,
   TransactionCategories,
   User,
@@ -50,7 +50,7 @@ export const store = createStore({
     ) {
       state.transactionCategories = categories;
     },
-    setRecurringExpenses(state: State, subscription?: Subscription[]) {
+    setRecurringExpenses(state: State, subscription?: RecurrentExpense[]) {
       state.recurringExpenditure = subscription;
     },
     setEstablishmentActivities(state: State, activities?: []) {
@@ -150,10 +150,12 @@ export const store = createStore({
         if (!this.state.user) return undefined;
 
         const res = await superagent
-          .get(`${process.env.VUE_APP_API_URL}/banking/accounts/subscriptions`)
+          .get(
+            `${process.env.VUE_APP_API_URL}/banking/accounts/recurrentExpenses`
+          )
           .auth(this.state.user?.token.token, { type: "bearer" })
           .query({ accountId });
-        this.commit("setRecurringExpenses", res.body as NetIncome[]);
+        this.commit("setRecurringExpenses", res.body as RecurrentExpense[]);
       } catch (e) {
         this.commit("setRecurringExpenses", []);
       }
@@ -240,7 +242,7 @@ export const store = createStore({
     accountCreateStatus(state: State) {
       return state.accountCreateSuccessful;
     },
-    subscriptions(state: State) {
+    recurrentExpenses(state: State) {
       return state.recurringExpenditure || [];
     },
     establishmentActivities(state: State) {

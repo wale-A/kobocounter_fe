@@ -27,7 +27,7 @@
         </div>
         <div id="account-info-container">
           <div id="account-info" style="width: 70%">
-            <div style="display: none">
+            <div>
               <p class="mid-text darker-color" style="margin: 0">
                 {{ accountBalance }}
               </p>
@@ -97,23 +97,6 @@
         }"
       ></pie-chart>
     </section>
-    <!-- <section style="margin-top: -15px">
-      <bar-chart
-        :data="transactionCategoryAndAmountData"
-        thousands=","
-        class="chart"
-        loading="Loading..."
-        empty="We don't have for the selected period..."
-        :download="{
-          background: '#fff',
-          filename: 'account-expenses-amount',
-        }"
-        xtitle="Amount N,000"
-        :library="{
-          onClick: eventHandler,
-        }"
-      ></bar-chart>
-    </section> -->
 
     <!-- recurrent expenditure -->
     <section>
@@ -121,7 +104,7 @@
         Recurring expenses
         <span class="small-text"> (last 3 months) </span>
       </p>
-      <div v-if="subscriptions.length == 0" class="small-text accent-color">
+      <div v-if="recurrentExpenses.length == 0" class="small-text accent-color">
         <span>
           You don't have recurring transactions in the last 3 months
         </span>
@@ -129,7 +112,7 @@
       </div>
 
       <div
-        v-for="(exp, index) in subscriptions"
+        v-for="(exp, index) in recurrentExpenses"
         :key="index"
         style="
           display: flex;
@@ -139,8 +122,11 @@
           border-radius: 10px;
           margin-bottom: 5px;
         "
+        :data-index="index"
+        class="expense"
+        @click.prevent="recurrentExpenseClickHandler"
       >
-        <div style="text-align: start; width: 67%">
+        <div style="text-align: start; width: 85%">
           <p class="small-text" style="line-height: 20px; margin-top: 0">
             {{ exp.narration }}
           </p>
@@ -148,22 +134,21 @@
             {{ exp.transactionCategory }}
           </span>
         </div>
-        <div style="text-align: end; width: 33%">
+        <div style="text-align: end; max-width: 15%">
           <p
-            class="small-text darker-color"
+            class="small-text"
             style="
-              font-weight: 500;
-              color: rgba(255, 10, 10, 0.7);
-              line-height: 20px;
+              font-weight: 700;
               margin-top: 0;
+              color: white;
+              background-color: gray;
+              text-align: center;
+              padding: 5px 13px;
+              border-radius: 18px;
             "
           >
-            {{ exp.amount.toLocaleString() }}
+            {{ exp.frequency }}
           </p>
-
-          <span class="small-text darker-color">
-            {{ new Date(exp.date).toLocaleDateString("en-GB") }}
-          </span>
         </div>
       </div>
     </section>
@@ -540,7 +525,7 @@ import WordCloud from "wordcloud";
       "income",
       "transactionCategories",
       "accountCreateStatus",
-      "subscriptions",
+      "recurrentExpenses",
       "establishmentActivities",
     ]),
   },
@@ -550,6 +535,19 @@ import WordCloud from "wordcloud";
     // [VueWordCloud.name]: VueWordCloud,
   },
   methods: {
+    recurrentExpenseClickHandler(e: Event) {
+      const index = (e.currentTarget as any).dataset.index;
+
+      this.modalTitle = `Recurrent Expenses`;
+      this.modalTransactions.transactions = this.recurrentExpenses[
+        index
+      ].transactions;
+      this.modalTransactions.total = this.modalTransactions.transactions.reduce(
+        (x: number, y: Transaction) => x + y.amount,
+        0
+      );
+      this.showModal();
+    },
     modalMethods() {
       const span = document.getElementById("close-modal");
       const modal = document.getElementById("modal");
@@ -612,15 +610,6 @@ import WordCloud from "wordcloud";
         0
       );
       this.showModal();
-    },
-    eventHandler(
-      _: number,
-      arg: Array<{ datasetIndex: number; index: number }>
-    ) {
-      if (!(arg && arg.length > 0)) return;
-
-      const { datasetIndex, index } = arg[0];
-      // console.log({ datasetIndex, index });
     },
     showModal() {
       document.getElementById("modal")!.style.display = "block";
