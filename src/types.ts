@@ -31,7 +31,7 @@ export type Account = {
 export type Transaction = {
   id: string;
   amount: number;
-  date: string;
+  date: number;
   narration: string;
   displayCategory: string;
 };

@@ -53,6 +53,8 @@
         </button>
       </div>
     </section>
+
+    <!-- net-income -->
     <section>
       <p class="mid-text darker-color">Net Income</p>
       <line-chart
@@ -62,7 +64,10 @@
         loading="Loading..."
         empty="We don't have data for the selected period..."
         class="chart"
-        :library="{ showLines: false }"
+        :library="{
+          showLines: false,
+          onClick: netIncomeEventHandler,
+        }"
         :download="{
           background: '#fff',
           filename: 'net-income',
@@ -72,6 +77,8 @@
         prefix="N"
       ></line-chart>
     </section>
+
+    <!-- transaction categories -->
     <section>
       <p class="mid-text darker-color">Transaction Category</p>
       <pie-chart
@@ -85,9 +92,12 @@
           filename: 'account-expenses',
         }"
         legend="bottom"
+        :library="{
+          onClick: transactionCategoriesEventHandler,
+        }"
       ></pie-chart>
     </section>
-    <section style="margin-top: -15px">
+    <!-- <section style="margin-top: -15px">
       <bar-chart
         :data="transactionCategoryAndAmountData"
         thousands=","
@@ -99,8 +109,13 @@
           filename: 'account-expenses-amount',
         }"
         xtitle="Amount N,000"
+        :library="{
+          onClick: eventHandler,
+        }"
       ></bar-chart>
-    </section>
+    </section> -->
+
+    <!-- recurrent expenditure -->
     <section>
       <p class="mid-text darker-color">
         Recurring expenses
@@ -143,13 +158,9 @@
               margin-top: 0;
             "
           >
-            {{
-              new Intl.NumberFormat("en-US", {
-                style: "currency",
-                currency: "NGN",
-              }).format(exp.amount)
-            }}
+            {{ exp.amount.toLocaleString() }}
           </p>
+
           <span class="small-text darker-color">
             {{ new Date(exp.date).toLocaleDateString("en-GB") }}
           </span>
@@ -157,12 +168,14 @@
       </div>
     </section>
 
+    <!-- word cloud -->
     <section
       v-show="establishmentActivities && establishmentActivities.length > 0"
     >
       <p class="mid-text darker-color">Word Cloud</p>
       <canvas id="word-cloud" height="500" width="700"> </canvas>
     </section>
+
     <button class="floating-button" @click="addAccount" title="Add an account">
       +
     </button>
@@ -181,6 +194,82 @@
     src="@/assets/loading.gif"
     alt="loading image"
   />
+
+  <!-- The Modal -->
+  <div id="modal">
+    <div id="modal-content">
+      <div id="modal-header">
+        <div>
+          <p class="mid-text darker-color" style="margin: 0">
+            {{ modalTitle }}
+          </p>
+          <p
+            v-show="modalSubTitle && modalSubTitle.length > 0"
+            class="small-text lighter-color"
+            style="margin: 0"
+          >
+            {{ modalSubTitle }}
+          </p>
+        </div>
+        <span id="close-modal">&times;</span>
+      </div>
+      <div
+        v-show="modalTransactions && modalTransactions.transactions.length > 0"
+        v-for="(exp, index) in modalTransactions.transactions"
+        :key="index"
+        style="
+          display: flex;
+          justify-content: space-between;
+          padding: 5px 5px;
+          border: 1px solid #1c5298;
+          border-radius: 10px;
+          margin-bottom: 5px;
+        "
+      >
+        <div style="text-align: start; width: 67%">
+          <p class="small-text" style="line-height: 20px; margin: 0">
+            {{ exp.narration }}
+          </p>
+          <span class="small-text darker-color">
+            {{ exp.displayCategory }}
+          </span>
+        </div>
+        <div style="text-align: end; width: 33%">
+          <p
+            class="small-text darker-color"
+            :style="{
+              'font-weight': 500,
+              color:
+                exp.amount < 0 ? 'rgba(255, 10, 10, 0.7)' : 'rgb(20, 180, 20)',
+              'line-height': '20px',
+              margin: 0,
+            }"
+          >
+            {{ Math.abs(exp.amount).toLocaleString() }}
+          </p>
+          <span class="small-text darker-color">
+            {{ new Date(exp.date).toLocaleDateString("en-GB") }}
+          </span>
+        </div>
+      </div>
+      <div style="display: flex; justify-content: space-between">
+        <p class="mid-text">Total</p>
+        <p class="mid-text">
+          <span style="font-weight: 800; font-size: large">&#8358; </span>
+          <span
+            :style="{
+              color:
+                modalTransactions.total < 0
+                  ? 'rgba(255, 10, 10, 0.7)'
+                  : 'rgb(20, 180, 20)',
+            }"
+          >
+            {{ Math.abs(modalTransactions.total).toLocaleString() }}
+          </span>
+        </p>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style src="@vueform/multiselect/themes/default.css"></style>
@@ -270,6 +359,51 @@ input[type="date"] {
   margin-top: 0;
 }
 
+#modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+#modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+}
+#modal-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+/* The Close Button */
+#close-modal {
+  color: #19365e;
+  float: right;
+  font-size: 30px;
+  font-weight: bold;
+  align-self: center;
+}
+
+#close-modal:hover,
+#close-modal:focus {
+  color: #19365e;
+  text-decoration: none;
+  cursor: pointer;
+}
+
 @media screen and (max-width: 700px) {
   main {
     width: 90%;
@@ -322,6 +456,10 @@ input[type="date"] {
   button {
     margin-top: 0;
   }
+  #modal-content {
+    padding: 10px;
+    width: 90%;
+  }
 }
 </style>
 <style>
@@ -334,8 +472,8 @@ div.multiselect {
 }
 #word-cloud {
   width: 70%;
-  height: 50%;
-  image-rendering: auto;
+  height: 40%;
+  /* image-rendering: auto; */
 }
 
 @media screen and (max-width: 700px) {
@@ -353,7 +491,12 @@ div.multiselect {
 import { Options, Vue } from "vue-class-component";
 import Header from "@/components/Header.vue";
 import { mapGetters } from "vuex";
-import { NetIncome, TransactionCategories, Account } from "@/types";
+import {
+  NetIncome,
+  TransactionCategories,
+  Account,
+  Transaction,
+} from "@/types";
 import toastr from "toastr";
 import Multiselect from "@vueform/multiselect";
 import { subMonths } from "date-fns";
@@ -366,6 +509,7 @@ import WordCloud from "wordcloud";
   },
   mounted() {
     this.$store.dispatch("subscribeUser");
+    this.modalMethods();
   },
   data() {
     const from = subMonths(Date.now(), 1);
@@ -386,6 +530,9 @@ import WordCloud from "wordcloud";
       to: `${to.getFullYear()}-${(to.getMonth() + 1)
         .toString()
         .padStart(2, "0")}-${to.getDate().toString().padStart(2, "0")}`,
+      modalTransactions: { transactions: [], total: 0 },
+      modalTitle: "",
+      modalSubTitle: "",
     };
   },
   computed: {
@@ -405,6 +552,81 @@ import WordCloud from "wordcloud";
     // [VueWordCloud.name]: VueWordCloud,
   },
   methods: {
+    modalMethods() {
+      const span = document.getElementById("close-modal");
+      const modal = document.getElementById("modal");
+
+      if (span && modal) {
+        span.onclick = function () {
+          modal.style.display = "none";
+        };
+        window.onclick = function (event: MouseEvent) {
+          if (event.target == modal) {
+            modal.style.display = "none";
+          }
+        };
+      }
+    },
+    netIncomeEventHandler(
+      _: number,
+      arg: Array<{ datasetIndex: number; index: number }>
+    ) {
+      if (!(arg && arg.length > 0)) return;
+
+      this.modalTitle = `Net-Income Transactions`;
+      const { index } = arg[0];
+
+      const keys = Object.keys(this.netIncomeData);
+      const selectedDate = keys[index];
+      this.modalSubTitle = new Date(selectedDate).toLocaleDateString("en-GB");
+
+      const selectedDateStart = new Date(selectedDate).setHours(0, 0, 0, 0);
+      const selectedDateEnd = new Date(selectedDate).setHours(23, 59, 59);
+      this.modalTransactions.transactions = this.transactions.filter(
+        (x: Transaction) =>
+          x.date >= selectedDateStart && x.date <= selectedDateEnd
+      );
+      this.modalTransactions.total = this.modalTransactions.transactions.reduce(
+        (x: number, y: Transaction) => x + y.amount,
+        0
+      );
+      this.showModal();
+    },
+    transactionCategoriesEventHandler(
+      _: number,
+      arg: Array<{ datasetIndex: number; index: number }>
+    ) {
+      if (!(arg && arg.length > 0)) return;
+
+      this.modalTitle = `Category Transactions`;
+      const { index } = arg[0];
+
+      const keys = Object.keys(this.transactionCategoryData);
+      this.modalSubTitle = keys[index];
+      const selectedCategory = keys[index].substr(0, 3).toLowerCase();
+
+      this.modalTransactions.transactions = this.transactions.filter(
+        (x: Transaction) =>
+          x.displayCategory.toLowerCase().startsWith(selectedCategory)
+      );
+      this.modalTransactions.total = this.modalTransactions.transactions.reduce(
+        (x: number, y: Transaction) => x + y.amount,
+        0
+      );
+      this.showModal();
+    },
+    eventHandler(
+      _: number,
+      arg: Array<{ datasetIndex: number; index: number }>
+    ) {
+      if (!(arg && arg.length > 0)) return;
+
+      const { datasetIndex, index } = arg[0];
+      // console.log({ datasetIndex, index });
+    },
+    showModal() {
+      document.getElementById("modal")!.style.display = "block";
+    },
     multipleLabel(params: { label: string }[]) {
       return params.map((x) => x.label.split(/\W/)[0]).join(", ");
     },
@@ -549,11 +771,11 @@ import WordCloud from "wordcloud";
     establishmentActivities(
       newVal?: Array<{ count: number; activity: string }>
     ) {
-      const node = document.getElementById("word-cloud") as any;
-      node.width = node.offsetWidth;
-      node.height = node.offsetHeight * 0.7;
-
       if (!newVal) return;
+
+      const node = document.getElementById("word-cloud") as any;
+      node.width = node.offsetWidth || window.innerWidth * 0.85;
+      node.height = node.offsetHeight * 0.4 || window.innerHeight * 0.4;
 
       WordCloud(node, {
         list: newVal?.map((x) => {
