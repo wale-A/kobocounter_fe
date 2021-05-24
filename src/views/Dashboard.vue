@@ -789,6 +789,7 @@ import WordCloud from "wordcloud";
           return [x.activity, scaleValue(x.count, [min, max])];
         }),
         backgroundColor: "#fff",
+        color: "black",
         // weightFactor: 10,
         fontFamily: "Times, serif",
         // minSize:
