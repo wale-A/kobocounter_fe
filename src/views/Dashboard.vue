@@ -173,7 +173,7 @@
       v-show="establishmentActivities && establishmentActivities.length > 0"
     >
       <p class="mid-text darker-color">Word Cloud</p>
-      <canvas id="word-cloud" height="500" width="700"> </canvas>
+      <canvas id="word-cloud"> </canvas>
     </section>
 
     <button class="floating-button" @click="addAccount" title="Add an account">
@@ -471,7 +471,7 @@ div.multiselect {
   font-family: "Poppins";
 }
 #word-cloud {
-  width: 70%;
+  width: 100%;
   height: 40%;
 }
 
@@ -781,7 +781,7 @@ import WordCloud from "wordcloud";
       }
 
       const node = document.getElementById("word-cloud") as any;
-      node.width = node.offsetWidth || window.innerWidth * 0.85;
+      node.width = node.offsetWidth || window.innerWidth * 0.9;
       node.height = node.offsetHeight || window.innerHeight * 0.4;
 
       WordCloud(node, {
@@ -789,7 +789,7 @@ import WordCloud from "wordcloud";
           return [x.activity, scaleValue(x.count, [min, max])];
         }),
         backgroundColor: "#fff",
-        color: "black",
+        // color: "bl ack",
         // weightFactor: 10,
         fontFamily: "Times, serif",
         // minSize:
