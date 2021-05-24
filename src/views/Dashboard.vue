@@ -473,7 +473,6 @@ div.multiselect {
 #word-cloud {
   width: 70%;
   height: 40%;
-  /* image-rendering: auto; */
 }
 
 @media screen and (max-width: 700px) {
@@ -482,7 +481,6 @@ div.multiselect {
   }
   #word-cloud {
     width: 100%;
-    height: 50%;
   }
 }
 </style>
@@ -772,14 +770,23 @@ import WordCloud from "wordcloud";
       newVal?: Array<{ count: number; activity: string }>
     ) {
       if (!newVal) return;
+      const counts = newVal.map((x) => x.count);
+      const max = Math.max(...counts);
+      const min = Math.min(...counts);
+
+      function scaleValue(value: number, from: [number, number], to = [1, 10]) {
+        var scale = (to[1] - to[0]) / (from[1] - from[0]);
+        var capped = Math.min(from[1], Math.max(from[0], value)) - from[0];
+        return capped * scale + to[0];
+      }
 
       const node = document.getElementById("word-cloud") as any;
       node.width = node.offsetWidth || window.innerWidth * 0.85;
-      node.height = node.offsetHeight * 0.4 || window.innerHeight * 0.4;
+      node.height = node.offsetHeight || window.innerHeight * 0.4;
 
       WordCloud(node, {
         list: newVal?.map((x) => {
-          return [x.activity, x.count];
+          return [x.activity, scaleValue(x.count, [min, max])];
         }),
         backgroundColor: "#fff",
         // weightFactor: 10,
@@ -807,7 +814,7 @@ import WordCloud from "wordcloud";
         //   // return (Math.pow(size, 1.3) * node.clientWidth) / 1024;
         // },
         // minSize: 13,
-        weightFactor: 7,
+        weightFactor: 15,
         // color: "#19365e",
       });
     },
