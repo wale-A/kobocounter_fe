@@ -31,9 +31,9 @@
               <p class="mid-text darker-color" style="margin: 0">
                 {{ accountBalance }}
               </p>
-              <p class="small-text darker-color" style="margin: 0">
+              <!-- <p class="small-text darker-color" style="margin: 0">
                 All expenses
-              </p>
+              </p> -->
             </div>
           </div>
           <div id="time-filter">
