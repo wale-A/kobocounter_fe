@@ -1,5 +1,6 @@
 import superagent from "superagent";
 import { createStore } from "vuex";
+import router from "./router";
 import {
   Account,
   NetIncome,
@@ -25,6 +26,11 @@ export const store = createStore({
   mutations: {
     setLoginStatus(state: State, status: boolean) {
       state.loginSuccessful = status;
+    },
+    logoutUser(state: State) {
+      localStorage.removeItem("authenticated-user");
+      state.user = undefined;
+      router.push({ name: "Login" });
     },
     setAccountCreateStatus(state: State, status: boolean) {
       state.accountCreateSuccessful = status;
@@ -84,11 +90,17 @@ export const store = createStore({
       try {
         if (!this.state.user) throw "";
 
-        await superagent
+        const res = await superagent
           .post(`${process.env.VUE_APP_API_URL}/banking/accounts`)
           .auth(this.state.user?.token?.token, { type: "bearer" })
-          .send({ code });
-        this.commit("setAccountCreateStatus", true);
+          .send({ code })
+          .ok((r) => r.status < 500);
+
+        if (res.status == 401) {
+          this.commit("logoutUser");
+        } else {
+          this.commit("setAccountCreateStatus", true);
+        }
       } catch (e) {
         this.commit("setAccountCreateStatus", false);
       }
@@ -99,8 +111,14 @@ export const store = createStore({
 
         const res = await superagent
           .get(`${process.env.VUE_APP_API_URL}/banking/accounts`)
-          .auth(this.state.user?.token.token, { type: "bearer" });
-        this.commit("setAccounts", res.body as Account[]);
+          .auth(this.state.user?.token.token, { type: "bearer" })
+          .ok((r) => r.status < 500);
+
+        if (res.status == 401) {
+          this.commit("logoutUser");
+        } else {
+          this.commit("setAccounts", res.body as Account[]);
+        }
       } catch (e) {
         this.commit("setAccounts", []);
       }
@@ -119,8 +137,14 @@ export const store = createStore({
         const res = await superagent
           .get(`${process.env.VUE_APP_API_URL}/banking/accounts/transactions`)
           .auth(this.state.user?.token.token, { type: "bearer" })
-          .query({ accountId, start, end });
-        this.commit("setTransactions", res.body as Account[]);
+          .query({ accountId, start, end })
+          .ok((r) => r.status < 500);
+
+        if (res.status == 401) {
+          this.commit("logoutUser");
+        } else {
+          this.commit("setTransactions", res.body as Account[]);
+        }
       } catch (e) {
         this.commit("setTransactions", []);
       }
@@ -139,8 +163,14 @@ export const store = createStore({
         const res = await superagent
           .get(`${process.env.VUE_APP_API_URL}/banking/accounts/netincome`)
           .auth(this.state.user?.token.token, { type: "bearer" })
-          .query({ accountId, start, end });
-        this.commit("setNetIncome", res.body as NetIncome[]);
+          .query({ accountId, start, end })
+          .ok((r) => r.status < 500);
+
+        if (res.status == 401) {
+          this.commit("logoutUser");
+        } else {
+          this.commit("setNetIncome", res.body as NetIncome[]);
+        }
       } catch (e) {
         this.commit("setNetIncome", []);
       }
@@ -154,8 +184,14 @@ export const store = createStore({
             `${process.env.VUE_APP_API_URL}/banking/accounts/recurrentExpenses`
           )
           .auth(this.state.user?.token.token, { type: "bearer" })
-          .query({ accountId });
-        this.commit("setRecurringExpenses", res.body as RecurrentExpense[]);
+          .query({ accountId })
+          .ok((r) => r.status < 500);
+
+        if (res.status == 401) {
+          this.commit("logoutUser");
+        } else {
+          this.commit("setRecurringExpenses", res.body as RecurrentExpense[]);
+        }
       } catch (e) {
         this.commit("setRecurringExpenses", []);
       }
@@ -166,8 +202,14 @@ export const store = createStore({
 
         const res = await superagent
           .get(`${process.env.VUE_APP_API_URL}/banking/establishmentActivities`)
-          .auth(this.state.user?.token.token, { type: "bearer" });
-        this.commit("setEstablishmentActivities", res.body);
+          .auth(this.state.user?.token.token, { type: "bearer" })
+          .ok((r) => r.status < 500);
+
+        if (res.status == 401) {
+          this.commit("logoutUser");
+        } else {
+          this.commit("setEstablishmentActivities", res.body);
+        }
       } catch (e) {
         this.commit("setEstablishmentActivities", []);
       }
@@ -188,11 +230,17 @@ export const store = createStore({
             `${process.env.VUE_APP_API_URL}/banking/accounts/transactions/categories`
           )
           .auth(this.state.user?.token.token, { type: "bearer" })
-          .query({ accountId, start, end });
-        this.commit(
-          "setTransactionCategories",
-          res.body as TransactionCategories[]
-        );
+          .query({ accountId, start, end })
+          .ok((r) => r.status < 500);
+
+        if (res.status == 401) {
+          this.commit("logoutUser");
+        } else {
+          this.commit(
+            "setTransactionCategories",
+            res.body as TransactionCategories[]
+          );
+        }
       } catch (e) {
         this.commit("setTransactionCategories", []);
       }
