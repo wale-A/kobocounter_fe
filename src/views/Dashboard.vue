@@ -157,7 +157,7 @@
     <section
       v-show="establishmentActivities && establishmentActivities.length > 0"
     >
-      <p class="mid-text darker-color">Word Cloud</p>
+      <p class="mid-text darker-color">Spending Pattern</p>
       <canvas id="word-cloud"> </canvas>
     </section>
 
