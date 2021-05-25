@@ -98,7 +98,6 @@ import { mapGetters } from "vuex";
   },
   methods: {
     async loginUser() {
-      console.log("here");
       (document.getElementById("login_button") as any).disabled = true;
       this.$store.dispatch("loginUser", {
         email: this.email,
@@ -112,7 +111,6 @@ import { mapGetters } from "vuex";
   watch: {
     loginSuccessful(newVal?: boolean) {
       if (newVal == undefined) return;
-      console.log({ newVal });
       if (newVal === true) {
         if (this.$route.params.nextUrl) {
           this.$router.push(this.$route.params.nextUrl);

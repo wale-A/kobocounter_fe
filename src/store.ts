@@ -246,7 +246,7 @@ export const store = createStore({
       }
     },
     async subscribeUser(_) {
-      console.log("in subscriber");
+      // console.log("in subscriber");
       if (!this.state.user) return undefined;
 
       navigator.serviceWorker.controller?.postMessage(

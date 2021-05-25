@@ -5,17 +5,15 @@ import { register } from "register-service-worker";
 if (process.env.NODE_ENV === "production") {
   register(`${process.env.BASE_URL}service-worker.js`, {
     ready(registration: ServiceWorkerRegistration) {
-      console.log(
-        "App is being served from cache by a service worker.\n" +
-          "For more details, visit https://goo.gl/AFskqB"
-      );
+      // console.log(
+      //   "App is being served from cache by a service worker.\n" +
+      //     "For more details, visit https://goo.gl/AFskqB"
+      // );
     },
     registered(registration: ServiceWorkerRegistration) {
-      console.log("Service worker has been registered.");
+      // console.log("Service worker has been registered.");
 
-      console.log("here");
       registration.addEventListener("push", (e: any) => {
-        console.log("herre");
         const data = e.data.json();
         registration.showNotification(data.title, {
           body: "Notified by KoboCounter",
@@ -24,9 +22,9 @@ if (process.env.NODE_ENV === "production") {
       });
 
       registration.addEventListener("message", (e: any) => {
-        console.log("in message");
+        // console.log("in message");
         const data = e.data.json();
-        console.log({ data });
+        // console.log({ data });
 
         if (data.type === "subscribe") {
           subscribeUser(registration, data.arg.token);
@@ -34,21 +32,21 @@ if (process.env.NODE_ENV === "production") {
       });
     },
     cached() {
-      console.log("Content has been cached for offline use.");
+      // console.log("Content has been cached for offline use.");
     },
     updatefound() {
-      console.log("New content is downloading.");
+      // console.log("New content is downloading.");
     },
     updated() {
-      console.log("New content is available; please refresh.");
+      // console.log("New content is available; please refresh.");
     },
     offline() {
-      console.log(
-        "No internet connection found. App is running in offline mode."
-      );
+      // console.log(
+      //   "No internet connection found. App is running in offline mode."
+      // );
     },
     error(error) {
-      console.error("Error during service worker registration:", error);
+      // console.error("Error during service worker registration:", error);
     },
   });
 }
