@@ -200,7 +200,7 @@
       </div>
       <div
         v-show="modalTransactions && modalTransactions.transactions.length > 0"
-        v-for="(exp, index) in modalTransactions.transactions"
+        v-for="(txn, index) in modalTransactions.transactions"
         :key="index"
         style="
           display: flex;
@@ -213,10 +213,12 @@
       >
         <div style="text-align: start; width: 67%">
           <p class="small-text" style="line-height: 20px; margin: 0">
-            {{ exp.narration }}
+            {{ txn.narration }}
           </p>
           <span class="small-text darker-color">
-            {{ exp.displayCategory }}
+            {{
+              txn?.establishment?.name || txn?.recipient || txn.displayCategory
+            }}
           </span>
         </div>
         <div style="text-align: end; width: 33%">
@@ -225,15 +227,15 @@
             :style="{
               'font-weight': 500,
               color:
-                exp.amount < 0 ? 'rgba(255, 10, 10, 0.7)' : 'rgb(20, 180, 20)',
+                txn.amount < 0 ? 'rgba(255, 10, 10, 0.7)' : 'rgb(20, 180, 20)',
               'line-height': '20px',
               margin: 0,
             }"
           >
-            {{ Math.abs(exp.amount).toLocaleString() }}
+            {{ Math.abs(txn.amount).toLocaleString() }}
           </p>
           <span class="small-text darker-color">
-            {{ new Date(exp.date).toLocaleDateString("en-GB") }}
+            {{ new Date(txn.date).toLocaleDateString("en-GB") }}
           </span>
         </div>
       </div>
@@ -466,6 +468,7 @@ div.multiselect {
   }
   #word-cloud {
     width: 100%;
+    height: 45%;
   }
 }
 </style>
@@ -479,6 +482,7 @@ import {
   TransactionCategories,
   Account,
   Transaction,
+  EstablishmentActivity,
 } from "@/types";
 import toastr from "toastr";
 import Multiselect from "@vueform/multiselect";
@@ -488,7 +492,6 @@ import WordCloud from "wordcloud";
 @Options({
   created() {
     this.setup();
-    this.$store.dispatch("getEstablishmentActivities");
   },
   mounted() {
     this.$store.dispatch("subscribeUser");
@@ -532,7 +535,6 @@ import WordCloud from "wordcloud";
   components: {
     Header,
     Multiselect,
-    // [VueWordCloud.name]: VueWordCloud,
   },
   methods: {
     recurrentExpenseClickHandler(e: Event) {
@@ -571,11 +573,9 @@ import WordCloud from "wordcloud";
 
       this.modalTitle = `Net-Income Transactions`;
       const { index } = arg[0];
-
       const keys = Object.keys(this.netIncomeData);
       const selectedDate = keys[index];
       this.modalSubTitle = new Date(selectedDate).toLocaleDateString("en-GB");
-
       const selectedDateStart = new Date(selectedDate).setHours(0, 0, 0, 0);
       const selectedDateEnd = new Date(selectedDate).setHours(23, 59, 59);
       this.modalTransactions.transactions = this.transactions.filter(
@@ -604,6 +604,22 @@ import WordCloud from "wordcloud";
       this.modalTransactions.transactions = this.transactions.filter(
         (x: Transaction) =>
           x.displayCategory.toLowerCase().startsWith(selectedCategory)
+      );
+      this.modalTransactions.total = this.modalTransactions.transactions.reduce(
+        (x: number, y: Transaction) => x + y.amount,
+        0
+      );
+      this.showModal();
+    },
+    spendingPatternEventHandler(activity: [string, number]) {
+      this.modalTitle = `Spending Pattern`;
+      this.modalSubTitle = activity[0].toUpperCase();
+      const transactionIds = (this
+        .establishmentActivities as EstablishmentActivity[]).find(
+        (x) => x.activity == activity[0]
+      )?.transactionIds;
+      this.modalTransactions.transactions = this.transactions.filter(
+        (x: Transaction) => transactionIds?.includes(x.id)
       );
       this.modalTransactions.total = this.modalTransactions.transactions.reduce(
         (x: number, y: Transaction) => x + y.amount,
@@ -648,25 +664,32 @@ import WordCloud from "wordcloud";
       this.$launchMono(options);
     },
     setup() {
-      const accountIds = this.selectedAccounts.join(", ");
+      const accountId = this.selectedAccounts.join(", ");
+      const start = this.from ? new Date(this.from).getTime() : undefined;
+      const end = this.to ? new Date(this.to).getTime() : undefined;
       this.$store.dispatch("getAccounts");
       this.$store.dispatch("getTransactions", {
-        accountId: accountIds,
-        start: this.from ? new Date(this.from).getTime() : undefined,
-        end: this.to ? new Date(this.to).getTime() : undefined,
+        accountId,
+        start,
+        end,
       });
       this.$store.dispatch("getNetIncome", {
-        accountId: accountIds,
-        start: this.from ? new Date(this.from).getTime() : undefined,
-        end: this.to ? new Date(this.to).getTime() : undefined,
+        accountId,
+        start,
+        end,
       });
       this.$store.dispatch("getTransactionCategories", {
-        accountId: accountIds,
-        start: this.from ? new Date(this.from).getTime() : undefined,
-        end: this.to ? new Date(this.to).getTime() : undefined,
+        accountId,
+        start,
+        end,
       });
       this.$store.dispatch("getRecurringExpenses", {
-        accountId: accountIds,
+        accountId,
+      });
+      this.$store.dispatch("getEstablishmentActivities", {
+        accountId,
+        // start,
+        // end,
       });
       this.disableSearchButtons();
     },
@@ -755,15 +778,15 @@ import WordCloud from "wordcloud";
         this.enableSearchButtons();
       }
     },
-    establishmentActivities(
-      newVal?: Array<{ count: number; activity: string }>
-    ) {
+    establishmentActivities(newVal?: EstablishmentActivity[]) {
       if (!newVal) return;
-      const counts = newVal.map((x) => x.count);
+      const counts = newVal.map((x) => x.transactionIds.length);
       const max = Math.max(...counts);
       const min = Math.min(...counts);
 
       function scaleValue(value: number, from: [number, number], to = [1, 10]) {
+        if (from[0] === from[1]) return to[1];
+
         var scale = (to[1] - to[0]) / (from[1] - from[0]);
         var capped = Math.min(from[1], Math.max(from[0], value)) - from[0];
         return capped * scale + to[0];
@@ -775,37 +798,17 @@ import WordCloud from "wordcloud";
 
       WordCloud(node, {
         list: newVal?.map((x) => {
-          return [x.activity, scaleValue(x.count, [min, max])];
+          return [x.activity, scaleValue(x.transactionIds.length, [min, max])];
         }),
         backgroundColor: "#fff",
-        // color: "bl ack",
-        // weightFactor: 10,
         fontFamily: "Times, serif",
-        // minSize:
-        // newVal.map((x) => x.count).reduce((x, y) => x + y, 0) /
-        //   newVal.length -
-        // 2,
         fontWeight: "normal",
-        minRotation: 1.57,
+        // minRotation: 1.57,
         clearCanvas: true,
-        // gridSize: 1,
-        gridSize: 1,
-        // weightFactor: function (size) {
-        //   const numbers = newVal.map((x) => x.count);
-        //   const max = Math.max(...numbers);
-        //   const min = Math.min(...numbers);
-        //   if (size < Math.sqrt(max) - 1) return 0;
-
-        //   const _avg = (max - min) / 2 - 1;
-        //   return 2;
-        //   // if (size < _avg) return (max / _avg) * size;
-        //   // // //   return (Math.pow(size, 1.3) * node.clientWidth) / 1024;
-        //   // return max / size;
-        //   // return (Math.pow(size, 1.3) * node.clientWidth) / 1024;
-        // },
-        // minSize: 13,
-        weightFactor: 15,
-        // color: "#19365e",
+        gridSize: 1.5,
+        weightFactor: 12,
+        click: this.spendingPatternEventHandler,
+        drawOutOfBound: true,
       });
     },
   },

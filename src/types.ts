@@ -8,7 +8,7 @@ export type State = {
   transactionCategories?: TransactionCategories[];
   accountCreateSuccessful?: boolean;
   recurringExpenditure?: RecurrentExpense[];
-  establishmentActivities?: Array<{ count: number; activity: string }>;
+  establishmentActivities?: EstablishmentActivity[];
 };
 
 export type User = {
@@ -61,4 +61,9 @@ export type RecurrentExpense = {
   frequency: number;
   transactionCategory?: string;
   transactions?: Transaction[];
+};
+
+export type EstablishmentActivity = {
+  activity: string;
+  transactionIds: string[];
 };

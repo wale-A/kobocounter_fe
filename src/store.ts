@@ -196,13 +196,21 @@ export const store = createStore({
         this.commit("setRecurringExpenses", []);
       }
     },
-    async getEstablishmentActivities() {
+    async getEstablishmentActivities(
+      _,
+      {
+        accountId,
+        start,
+        end,
+      }: { accountId?: string; start?: number; end?: number }
+    ) {
       try {
         if (!this.state.user) return undefined;
 
         const res = await superagent
           .get(`${process.env.VUE_APP_API_URL}/banking/establishmentActivities`)
           .auth(this.state.user?.token.token, { type: "bearer" })
+          .query({ accountId, start, end })
           .ok((r) => r.status < 500);
 
         if (res.status == 401) {
