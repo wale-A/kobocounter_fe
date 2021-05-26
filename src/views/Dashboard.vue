@@ -491,6 +491,7 @@ import toastr from "toastr";
 import Multiselect from "@vueform/multiselect";
 import { subMonths } from "date-fns";
 import WordCloud from "wordcloud";
+import router from "@/router";
 
 @Options({
   created() {
@@ -747,9 +748,10 @@ import WordCloud from "wordcloud";
       this.parseTransactionCategories();
     },
     accountCreateStatus(newVal?: NetIncome[]) {
-      if (newVal !== undefined && newVal)
+      if (newVal !== undefined && newVal) {
         toastr.success("Account added successful");
-      else if (newVal !== undefined && !newVal)
+        router.push({ name: "Dashboard" });
+      } else if (newVal !== undefined && !newVal)
         toastr.error("Unable to add account, please retry");
     },
     accounts(newVal?: Account[]) {
