@@ -212,7 +212,10 @@
         "
       >
         <div style="text-align: start; width: 67%">
-          <p class="small-text" style="line-height: 20px; margin: 0">
+          <p
+            class="small-text"
+            style="line-height: 20px; margin: 0; overflow: hidden"
+          >
             {{ txn.narration }}
           </p>
           <span class="small-text darker-color">
