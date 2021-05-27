@@ -238,7 +238,7 @@
             {{ Math.abs(txn.amount).toLocaleString() }}
           </p>
           <span class="small-text darker-color">
-            {{ new Date(txn.date).toLocaleDateString("en-GB") }}
+            {{ getTimeForTimeZone(txn.date).toLocaleDateString("en-GB") }}
           </span>
         </div>
       </div>
@@ -489,7 +489,7 @@ import {
 } from "@/types";
 import toastr from "toastr";
 import Multiselect from "@vueform/multiselect";
-import { sub, subMonths } from "date-fns";
+import { add, sub, subMonths } from "date-fns";
 import WordCloud from "wordcloud";
 
 @Options({
@@ -540,6 +540,11 @@ import WordCloud from "wordcloud";
     Multiselect,
   },
   methods: {
+    getTimeForTimeZone(date: number) {
+      return add(new Date(date), {
+        minutes: new Date().getTimezoneOffset(),
+      });
+    },
     recurrentExpenseClickHandler(e: Event) {
       const index = (e.currentTarget as any).dataset.index;
 
