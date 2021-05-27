@@ -26,14 +26,15 @@
           </button>
         </div>
         <div id="account-info-container">
-          <div id="account-info" style="width: 70%">
+          <div id="account-info">
             <div>
               <p class="mid-text darker-color" style="margin: 0">
+                <span style="color: black">&#8358;</span>
                 {{ accountBalance }}
               </p>
-              <!-- <p class="small-text darker-color" style="margin: 0">
-                All expenses
-              </p> -->
+              <p class="small-text darker-color" style="margin: 0">
+                Account Balance
+              </p>
             </div>
           </div>
           <div id="time-filter">
@@ -421,10 +422,10 @@ input[type="date"] {
     padding-right: 0;
   }
   #account-info {
-    width: 60%;
+    width: 57%;
   }
   #time-filter {
-    width: 40%;
+    width: 43%;
     padding-left: 0;
   }
   input[type="date"] {
@@ -665,10 +666,7 @@ import WordCloud from "wordcloud";
           }, 0)
           .toFixed(2);
       }
-      this.accountBalance = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "NGN",
-      }).format(parseFloat(balance));
+      this.accountBalance = parseFloat(balance).toLocaleString();
     },
     addAccount() {
       const fn = (code: string) => this.$store.dispatch("addAccount", { code });
