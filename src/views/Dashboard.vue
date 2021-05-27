@@ -489,7 +489,7 @@ import {
 } from "@/types";
 import toastr from "toastr";
 import Multiselect from "@vueform/multiselect";
-import { subMonths } from "date-fns";
+import { sub, subMonths } from "date-fns";
 import WordCloud from "wordcloud";
 
 @Options({
@@ -579,8 +579,16 @@ import WordCloud from "wordcloud";
       const keys = Object.keys(this.netIncomeData);
       const selectedDate = keys[index];
       this.modalSubTitle = new Date(selectedDate).toLocaleDateString("en-GB");
-      const selectedDateStart = new Date(selectedDate).setHours(0, 0, 0, 0);
-      const selectedDateEnd = new Date(selectedDate).setHours(23, 59, 59);
+      const selectedDateStart = sub(
+        new Date(selectedDate).setHours(0, 0, 0, 0),
+        {
+          minutes: new Date().getTimezoneOffset(),
+        }
+      ).getTime();
+      const selectedDateEnd = sub(new Date(selectedDate).setHours(23, 59, 59), {
+        minutes: new Date().getTimezoneOffset(),
+      }).getTime();
+
       this.modalTransactions.transactions = this.transactions.filter(
         (x: Transaction) =>
           x.date >= selectedDateStart && x.date <= selectedDateEnd
