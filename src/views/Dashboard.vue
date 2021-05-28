@@ -329,7 +329,7 @@
         </div>
         <div>
           <div style="text-align: start">
-            <p class="mid-text" style="overflow-wrap: anywhere">
+            <p class="mid-text" style="overflow-wrap: break-word">
               {{ singleTransaction?.narration }}
             </p>
             <p class="mid-text">
