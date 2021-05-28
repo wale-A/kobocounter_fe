@@ -3,7 +3,7 @@ export type State = {
   loginError?: boolean;
   loginSuccessful?: boolean;
   accounts?: Account[];
-  transactions?: Transaction[];
+  transactions?: TransactionInfo[];
   netIncome?: NetIncome[];
   transactionCategories?: TransactionCategories[];
   accountCreateSuccessful?: boolean;
@@ -34,6 +34,7 @@ export type Transaction = {
   date: number;
   narration: string;
   displayCategory: string;
+  bank?: string;
 };
 
 export type TransactionInfo = Transaction & {

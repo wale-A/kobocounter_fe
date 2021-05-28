@@ -167,7 +167,7 @@
     </button>
   </main>
   <aside v-show="accounts && accounts.length === 0">
-    <img src="@/assets/logo.svg" alt="logo" />
+    <img src="/img/logo.svg" alt="logo" />
     <p class="accent-color mid-text">You have not added any account</p>
     <p class="lighter-color small-text">
       Add an account to start tracking your leaks
@@ -181,23 +181,28 @@
     alt="loading image"
   />
 
-  <!-- The Modal -->
-  <div id="modal">
-    <div id="modal-content">
-      <div id="modal-header">
+  <!-- Multiple Transactions Modal -->
+  <div id="multiple-transaction-modal">
+    <div class="modal-content">
+      <div class="modal-header">
         <div>
           <p class="mid-text darker-color" style="margin: 0">
-            {{ modalTitle }}
+            {{ multipleTransactionModalTitle }}
           </p>
           <p
-            v-show="modalSubTitle && modalSubTitle.length > 0"
+            v-show="
+              multipleTransactionModalSubtitle &&
+              multipleTransactionModalSubtitle.length > 0
+            "
             class="small-text lighter-color"
             style="margin: 0"
           >
-            {{ modalSubTitle }}
+            {{ multipleTransactionModalSubtitle }}
           </p>
         </div>
-        <span id="close-modal">&times;</span>
+        <span id="multiple-transaction-close-modal" class="close-modal"
+          >&times;</span
+        >
       </div>
       <div
         v-show="modalTransactions && modalTransactions.transactions.length > 0"
@@ -225,7 +230,16 @@
             }}
           </span>
         </div>
-        <div style="text-align: end; width: 33%">
+        <div
+          style="
+            text-align: end;
+            width: 33%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-end;
+          "
+        >
           <p
             class="small-text darker-color"
             :style="{
@@ -238,8 +252,24 @@
           >
             {{ Math.abs(txn.amount).toLocaleString() }}
           </p>
-          <span class="small-text darker-color">
+          <span class="small-text darker-color" style="display: block">
             {{ getTimeForTimeZone(txn.date).toLocaleDateString("en-GB") }}
+          </span>
+          <span
+            v-show="transactions.some((x) => x.id === txn.id)"
+            class="material-icons expand-transaction"
+            :data_txnId="txn.id"
+            style="
+              padding: 5px;
+              background-color: #aaa;
+              color: white;
+              border-radius: 5px;
+              cursor: pointer;
+              font-size: 10px;
+            "
+            @click="() => singleTransactionEventHandler(txn.id)"
+          >
+            open_in_full
           </span>
         </div>
       </div>
@@ -258,6 +288,90 @@
             {{ Math.abs(modalTransactions.total).toLocaleString() }}
           </span>
         </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Single Transaction Modal  -->
+  <div id="single-transaction-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span
+          id="single-transaction-close-modal"
+          class="close-modal material-icons"
+          style="display: block"
+        >
+          arrow_back
+        </span>
+      </div>
+      <div style="padding: 15px" v-if="singleTransaction">
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+          "
+        >
+          <img
+            :alt="`${singleTransaction?.bank} logo`"
+            :src="`/img/banks/${singleTransaction?.bank}.svg`"
+            id="bank-logo"
+          />
+          <!-- onerror="https://ui-avatars.com/api/?size=50&format=svg" -->
+          <span class="mid-text darker-color">
+            {{
+              getTimeForTimeZone(singleTransaction?.date).toLocaleDateString(
+                "en-GB"
+              )
+            }}
+          </span>
+        </div>
+        <div>
+          <div style="text-align: start">
+            <p class="mid-text" style="overflow-wrap: anywhere">
+              {{ singleTransaction?.narration }}
+            </p>
+            <p class="mid-text">
+              <span style="font-weight: 800; font-size: large">&#8358; </span>
+              <span
+                :style="{
+                  'font-weight': 500,
+                  color:
+                    singleTransaction?.amount < 0
+                      ? 'rgba(255, 10, 10, 0.7)'
+                      : 'rgb(20, 180, 20)',
+                }"
+              >
+                {{ Math.abs(singleTransaction?.amount).toLocaleString() }}
+              </span>
+            </p>
+            <p
+              v-show="
+                singleTransaction?.establishment?.name ||
+                singleTransaction?.recipient
+              "
+              class="mid-text darker-color"
+            >
+              {{
+                singleTransaction?.establishment?.name ||
+                singleTransaction?.recipient
+              }}
+            </p>
+            <p
+              v-show="
+                singleTransaction?.establishment?.activities &&
+                singleTransaction?.establishment?.activities.length > 0
+              "
+              class="mid-text darker-color"
+            >
+              {{ singleTransaction?.establishment?.activities.join(", ") }}
+            </p>
+            <p class="mid-text darker-color">
+              {{ singleTransaction?.displayCategory }}
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -350,7 +464,8 @@ input[type="date"] {
   margin-top: 0;
 }
 
-#modal {
+#multiple-transaction-modal,
+#single-transaction-modal {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */
@@ -362,10 +477,9 @@ input[type="date"] {
   background-color: rgb(0, 0, 0); /* Fallback color */
   background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
 }
-
-#modal-content {
+.modal-content {
   background-color: #fefefe;
-  margin: 15% auto; /* 15% from the top and centered */
+  margin: 11% auto; /* 11% from the top and centered */
   padding: 20px;
   border: 1px solid #888;
   width: 80%;
@@ -373,28 +487,27 @@ input[type="date"] {
   display: flex;
   flex-direction: column;
 }
-#modal-header {
+.modal-header {
   display: flex;
   justify-content: space-between;
   margin-bottom: 15px;
 }
-
-/* The Close Button */
-#close-modal {
+.close-modal {
   color: #19365e;
   float: right;
   font-size: 30px;
   font-weight: bold;
   align-self: center;
 }
-
-#close-modal:hover,
-#close-modal:focus {
+.close-modal:hover,
+.close-modal:focus {
   color: #19365e;
   text-decoration: none;
   cursor: pointer;
 }
-
+#bank-logo {
+  width: 100px;
+}
 @media screen and (max-width: 700px) {
   main {
     width: 90%;
@@ -447,9 +560,13 @@ input[type="date"] {
   button {
     margin-top: 0;
   }
-  #modal-content {
+  .modal-content {
     padding: 10px;
     width: 90%;
+    margin: 11% auto;
+  }
+  #bank-logo {
+    width: 70px;
   }
 }
 </style>
@@ -485,7 +602,7 @@ import {
   NetIncome,
   TransactionCategories,
   Account,
-  Transaction,
+  TransactionInfo,
   EstablishmentActivity,
 } from "@/types";
 import toastr from "toastr";
@@ -521,8 +638,9 @@ import WordCloud from "wordcloud";
         .toString()
         .padStart(2, "0")}-${to.getDate().toString().padStart(2, "0")}`,
       modalTransactions: { transactions: [], total: 0 },
-      modalTitle: "",
-      modalSubTitle: "",
+      multipleTransactionModalTitle: "",
+      multipleTransactionModalSubtitle: "",
+      singleTransaction: undefined,
     };
   },
   computed: {
@@ -549,28 +667,49 @@ import WordCloud from "wordcloud";
     recurrentExpenseClickHandler(e: Event) {
       const index = (e.currentTarget as any).dataset.index;
 
-      this.modalTitle = `Recurrent Expenses`;
+      this.multipleTransactionModalTitle = `Recurrent Expenses`;
       this.modalTransactions.transactions = this.recurrentExpenses[
         index
       ].transactions;
       this.modalTransactions.total = this.modalTransactions.transactions.reduce(
-        (x: number, y: Transaction) => x + y.amount,
+        (x: number, y: TransactionInfo) => x + y.amount,
         0
       );
-      this.showModal();
+      this.showMultipleTransactionsModal();
     },
     modalMethods() {
-      const span = document.getElementById("close-modal");
-      const modal = document.getElementById("modal");
+      // multiple transactions info
+      const multipleTransactionCloseModal = document.getElementById(
+        "multiple-transaction-close-modal"
+      );
+      const multipleTransactionModal = document.getElementById(
+        "multiple-transaction-modal"
+      );
 
-      if (span && modal) {
-        span.onclick = function () {
-          modal.style.display = "none";
+      //single transaction info
+      const singleTransactionCloseModal = document.getElementById(
+        "single-transaction-close-modal"
+      );
+      const singleTransactionModal = document.getElementById(
+        "single-transaction-modal"
+      );
+
+      if (multipleTransactionCloseModal && multipleTransactionModal) {
+        multipleTransactionCloseModal.onclick = function () {
+          multipleTransactionModal.style.display = "none";
         };
         window.onclick = function (event: MouseEvent) {
-          if (event.target == modal) {
-            modal.style.display = "none";
+          if (event.target == multipleTransactionModal) {
+            multipleTransactionModal.style.display = "none";
+          } else if (event.target == singleTransactionModal) {
+            singleTransactionModal!.style.display = "none";
           }
+        };
+      }
+
+      if (singleTransactionCloseModal && singleTransactionModal) {
+        singleTransactionCloseModal.onclick = function () {
+          singleTransactionModal.style.display = "none";
         };
       }
     },
@@ -580,11 +719,13 @@ import WordCloud from "wordcloud";
     ) {
       if (!(arg && arg.length > 0)) return;
 
-      this.modalTitle = `Net-Income Transactions`;
+      this.multipleTransactionModalTitle = `Net-Income Transactions`;
       const { index } = arg[0];
       const keys = Object.keys(this.netIncomeData);
       const selectedDate = keys[index];
-      this.modalSubTitle = new Date(selectedDate).toLocaleDateString("en-GB");
+      this.multipleTransactionModalSubtitle = new Date(
+        selectedDate
+      ).toLocaleDateString("en-GB");
       const selectedDateStart = sub(
         new Date(selectedDate).setHours(0, 0, 0, 0),
         {
@@ -596,14 +737,14 @@ import WordCloud from "wordcloud";
       }).getTime();
 
       this.modalTransactions.transactions = this.transactions.filter(
-        (x: Transaction) =>
+        (x: TransactionInfo) =>
           x.date >= selectedDateStart && x.date <= selectedDateEnd
       );
       this.modalTransactions.total = this.modalTransactions.transactions.reduce(
-        (x: number, y: Transaction) => x + y.amount,
+        (x: number, y: TransactionInfo) => x + y.amount,
         0
       );
-      this.showModal();
+      this.showMultipleTransactionsModal();
     },
     transactionCategoriesEventHandler(
       _: number,
@@ -611,41 +752,54 @@ import WordCloud from "wordcloud";
     ) {
       if (!(arg && arg.length > 0)) return;
 
-      this.modalTitle = `Category Transactions`;
+      this.multipleTransactionModalTitle = `Category Transactions`;
       const { index } = arg[0];
 
       const keys = Object.keys(this.transactionCategoryData);
-      this.modalSubTitle = keys[index];
+      this.multipleTransactionModalSubtitle = keys[index];
       const selectedCategory = keys[index].substr(0, 3).toLowerCase();
 
       this.modalTransactions.transactions = this.transactions.filter(
-        (x: Transaction) =>
+        (x: TransactionInfo) =>
           x.displayCategory.toLowerCase().startsWith(selectedCategory)
       );
       this.modalTransactions.total = this.modalTransactions.transactions.reduce(
-        (x: number, y: Transaction) => x + y.amount,
+        (x: number, y: TransactionInfo) => x + y.amount,
         0
       );
-      this.showModal();
+      this.showMultipleTransactionsModal();
     },
     spendingPatternEventHandler(activity: [string, number]) {
-      this.modalTitle = `Spending Pattern`;
-      this.modalSubTitle = activity[0].toUpperCase();
+      this.multipleTransactionModalTitle = `Spending Pattern`;
+      this.multipleTransactionModalSubtitle = activity[0].toUpperCase();
       const transactionIds = (this
         .establishmentActivities as EstablishmentActivity[]).find(
         (x) => x.activity == activity[0]
       )?.transactionIds;
       this.modalTransactions.transactions = this.transactions.filter(
-        (x: Transaction) => transactionIds?.includes(x.id)
+        (x: TransactionInfo) => transactionIds?.includes(x.id)
       );
       this.modalTransactions.total = this.modalTransactions.transactions.reduce(
-        (x: number, y: Transaction) => x + y.amount,
+        (x: number, y: TransactionInfo) => x + y.amount,
         0
       );
-      this.showModal();
+      this.showMultipleTransactionsModal();
     },
-    showModal() {
-      document.getElementById("modal")!.style.display = "block";
+    singleTransactionEventHandler(transactionId: string) {
+      this.singleTransaction = this.transactions.find(
+        (x: TransactionInfo) => x.id == transactionId
+      );
+      if (this.singleTransaction) {
+        this.showSingleTransactionsModal();
+      }
+    },
+    showMultipleTransactionsModal() {
+      document.getElementById("multiple-transaction-modal")!.style.display =
+        "block";
+    },
+    showSingleTransactionsModal() {
+      document.getElementById("single-transaction-modal")!.style.display =
+        "block";
     },
     multipleLabel(params: { label: string }[]) {
       return params.map((x) => x.label.split(/\W/)[0]).join(", ");

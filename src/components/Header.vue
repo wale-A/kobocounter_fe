@@ -2,7 +2,7 @@
   <header>
     <nav>
       <router-link :to="{ name: 'Home' }" id="logo">
-        <img src="@/assets/logo.svg" alt="logo" />
+        <img src="/img/logo.svg" alt="logo" />
         <span id="logo-text" class="darker-color">kobocounter</span>
       </router-link>
       <div v-if="showMenu" id="menu" class="">

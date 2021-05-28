@@ -6,9 +6,9 @@ import {
   NetIncome,
   State,
   RecurrentExpense,
-  Transaction,
   TransactionCategories,
   User,
+  TransactionInfo,
 } from "./types";
 
 export const store = createStore({
@@ -44,7 +44,7 @@ export const store = createStore({
     setAccounts(state: State, accounts?: Account[]) {
       state.accounts = accounts;
     },
-    setTransactions(state: State, transactions?: Transaction[]) {
+    setTransactions(state: State, transactions?: TransactionInfo[]) {
       state.transactions = transactions;
     },
     setNetIncome(state: State, netIncome?: NetIncome[]) {
