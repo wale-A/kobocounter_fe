@@ -329,7 +329,9 @@
             }}
             <br />
             {{
-              getTimeForTimeZone(singleTransaction?.date).toLocaleTimeString()
+              getTimeForTimeZone(singleTransaction?.date).toLocaleTimeString(
+                "en-US"
+              )
             }}
           </span>
         </div>
