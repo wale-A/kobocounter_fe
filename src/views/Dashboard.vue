@@ -479,7 +479,7 @@ input[type="date"] {
 }
 .modal-content {
   background-color: #fefefe;
-  margin: 11% auto; /* 11% from the top and centered */
+  margin: 8% auto; /* 11% from the top and centered */
   padding: 20px;
   border: 1px solid #888;
   width: 80%;
@@ -666,7 +666,6 @@ import WordCloud from "wordcloud";
     },
     recurrentExpenseClickHandler(e: Event) {
       const index = (e.currentTarget as any).dataset.index;
-
       this.multipleTransactionModalTitle = `Recurrent Expenses`;
       this.modalTransactions.transactions = this.recurrentExpenses[
         index
@@ -722,7 +721,7 @@ import WordCloud from "wordcloud";
       this.multipleTransactionModalTitle = `Net-Income Transactions`;
       const { index } = arg[0];
       const keys = Object.keys(this.netIncomeData);
-      const selectedDate = keys[index];
+      const selectedDate = keys[index].replace(/-/g, "/");
       this.multipleTransactionModalSubtitle = new Date(
         selectedDate
       ).toLocaleDateString("en-GB");
