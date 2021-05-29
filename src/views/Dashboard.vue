@@ -57,7 +57,10 @@
 
     <!-- net-income -->
     <section>
-      <p class="mid-text darker-color">Net Income</p>
+      <p class="mid-text darker-color">
+        Net Income
+        <span class="small-text" style="color: black"> (&#8358; '000)</span>
+      </p>
       <line-chart
         :data="netIncomeData"
         :pointRadius="0"
@@ -75,7 +78,6 @@
         }"
         :legend="false"
         label="Net Income"
-        prefix="N"
       ></line-chart>
     </section>
 
@@ -324,6 +326,10 @@
               getTimeForTimeZone(singleTransaction?.date).toLocaleDateString(
                 "en-GB"
               )
+            }}
+            <br />
+            {{
+              getTimeForTimeZone(singleTransaction?.date).toLocaleTimeString()
             }}
           </span>
         </div>
@@ -863,9 +869,9 @@ import WordCloud from "wordcloud";
     parseNetIncome() {
       let result: Record<string, string> = {};
       for (var i = 0; i < (this.income as NetIncome[]).length; i++) {
-        result[this.income[i].date] = (this.income[i].amount as number).toFixed(
-          2
-        );
+        result[this.income[i].date] = (
+          (this.income[i].amount as number) / 1000
+        ).toFixed(2);
       }
       this.netIncomeData = result;
     },
