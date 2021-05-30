@@ -589,6 +589,9 @@ div.multiselect {
 #word-cloud {
   width: 100%;
   height: 40%;
+  border-color: rgba(0, 0, 0, 0.1);
+  border-width: 1px;
+  border-style: solid;
 }
 
 @media screen and (max-width: 700px) {
@@ -970,7 +973,7 @@ import WordCloud from "wordcloud";
 
       const node = document.getElementById("word-cloud") as any;
       node.width = node.offsetWidth || window.innerWidth * 0.9;
-      node.height = node.offsetHeight || window.innerHeight * 0.4;
+      node.height = node.offsetHeight || window.innerHeight * 0.5;
 
       WordCloud(node, {
         list: newVal?.map((x) => {
@@ -979,10 +982,10 @@ import WordCloud from "wordcloud";
         backgroundColor: "#fff",
         fontFamily: "Times, serif",
         fontWeight: "normal",
-        // minRotation: 1.57,
+        minRotation: 1.57,
         clearCanvas: true,
-        gridSize: 1.5,
-        weightFactor: 12,
+        gridSize: 2,
+        weightFactor: (weight) => Math.log2(weight) * 8,
         click: this.spendingPatternEventHandler,
         drawOutOfBound: true,
       });

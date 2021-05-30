@@ -29,11 +29,11 @@ const routes: Array<RouteRecordRaw> = [
       authorize: true,
     },
   },
-  // {
-  //   path: "/:pathMach(.*)*",
-  //   name: "NotFound",
-  //   component: PageNotFound,
-  // },
+  {
+    path: "/:pathMach(.*)*",
+    name: "NotFound",
+    component: PageNotFound,
+  },
 ];
 
 const router = createRouter({
