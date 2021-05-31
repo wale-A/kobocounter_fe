@@ -338,9 +338,11 @@
         <div>
           <div style="text-align: start">
             <p class="mid-text" style="overflow-wrap: break-word">
+              <span class="small-text accent-color">narration: </span> <br />
               {{ singleTransaction?.narration }}
             </p>
             <p class="mid-text">
+              <span class="small-text accent-color">amount: </span> <br />
               <span style="font-weight: 800; font-size: large">&#8358; </span>
               <span
                 :style="{
@@ -359,8 +361,9 @@
                 singleTransaction?.establishment?.name ||
                 singleTransaction?.recipient
               "
-              class="mid-text darker-color"
+              class="mid-text"
             >
+              <span class="small-text accent-color">recipient: </span> <br />
               {{
                 singleTransaction?.establishment?.name ||
                 singleTransaction?.recipient
@@ -371,11 +374,17 @@
                 singleTransaction?.establishment?.activities &&
                 singleTransaction?.establishment?.activities.length > 0
               "
-              class="mid-text darker-color"
+              class="mid-text"
             >
+              <span class="small-text accent-color">business activity: </span>
+              <br />
               {{ singleTransaction?.establishment?.activities.join(", ") }}
             </p>
-            <p class="mid-text darker-color">
+            <p class="mid-text">
+              <span class="small-text accent-color"
+                >transaction category:
+              </span>
+              <br />
               {{ singleTransaction?.displayCategory }}
             </p>
           </div>
@@ -963,7 +972,7 @@ import WordCloud from "wordcloud";
       const max = Math.max(...counts);
       const min = Math.min(...counts);
 
-      function scaleValue(value: number, from: [number, number], to = [1, 10]) {
+      function scaleValue(value: number, from: [number, number], to = [2, 10]) {
         if (from[0] === from[1]) return to[1];
 
         var scale = (to[1] - to[0]) / (from[1] - from[0]);
@@ -985,7 +994,7 @@ import WordCloud from "wordcloud";
         minRotation: 1.57,
         clearCanvas: true,
         gridSize: 2,
-        weightFactor: (weight) => Math.log2(weight) * 8,
+        weightFactor: (weight) => Math.log2(weight) * 15,
         click: this.spendingPatternEventHandler,
         drawOutOfBound: true,
       });
