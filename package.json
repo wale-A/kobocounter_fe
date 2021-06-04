@@ -16,6 +16,7 @@
     "core-js": "^3.6.5",
     "date-fns": "^2.21.3",
     "dotenv": "^8.2.0",
+    "firebase": "^8.6.3",
     "jquery": "^3.6.0",
     "popper.js": "^1.16.1",
     "postcss": "^7",

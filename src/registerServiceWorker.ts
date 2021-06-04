@@ -9,27 +9,29 @@ if (process.env.NODE_ENV === "production") {
       //   "App is being served from cache by a service worker.\n" +
       //     "For more details, visit https://goo.gl/AFskqB"
       // );
+      subscribeUser(registration);
     },
     registered(registration: ServiceWorkerRegistration) {
       // console.log("Service worker has been registered.");
 
       registration.addEventListener("push", (e: any) => {
+        console.log({ e });
         const data = e.data.json();
-        registration.showNotification(data.title, {
+        registration.showNotification(data.title || "title", {
           body: "Notified by KoboCounter",
           icon: `${process.env.BASE_URL}logo.svg`,
         });
       });
 
-      registration.addEventListener("message", (e: any) => {
-        // console.log("in message");
-        const data = e.data.json();
-        // console.log({ data });
+      // registration.addEventListener("message", (e: any) => {
+      //   // console.log("in message");
+      //   const data = e.data.json();
+      //   // console.log({ data });
 
-        if (data.type === "subscribe") {
-          subscribeUser(registration, data.arg.token);
-        }
-      });
+      //   if (data.type === "subscribe") {
+      //     subscribeUser(registration, data.arg.token);
+      //   }
+      // });
     },
     cached() {
       // console.log("Content has been cached for offline use.");
@@ -51,10 +53,7 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-async function subscribeUser(
-  registration: ServiceWorkerRegistration,
-  token: string
-) {
+async function subscribeUser(registration: ServiceWorkerRegistration) {
   const subscription = registration.pushManager.subscribe({
     userVisibleOnly: true,
     applicationServerKey: urlBase64ToUint8Array(
@@ -62,12 +61,17 @@ async function subscribeUser(
     ),
   });
 
+  console.log(JSON.stringify(subscription));
+
   await fetch(`${process.env.VUE_APP_API_URL}/users/subscribe`, {
     method: "POST",
     body: JSON.stringify(subscription),
     headers: {
       "content-type": "application/json",
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${
+        JSON.parse(localStorage.getItem("authenticated-user") || "null")?.token
+          ?.token
+      }`,
     },
   });
 }
