@@ -25,9 +25,7 @@ nav {
   margin-left: 10px;
   font-size: 20px;
 }
-#menu-option {
-  font-size: 2em;
-}
+
 
 #option {
   font-family: Poppins;
@@ -132,7 +130,7 @@ label {
   cursor: pointer;
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 700px) {
   #menu-option {
     font-size: 1.4em;
   }
@@ -159,7 +157,6 @@ label {
     width: 100%;
     margin-top: 35px;
   }
-
   input[type="email"],
   input[type="text"],
   input[type="password"] {
