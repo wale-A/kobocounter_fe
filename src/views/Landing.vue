@@ -1,6 +1,8 @@
 <template>
   <div id="landing" class="">
     <Header :display-menu="true" />
+
+    <button @click="subscribeToPushNotifications">Subscribe Here</button>
     <main id="main">
       <section id="landing-text">
         <h2 class="major-text darker-color">
@@ -110,6 +112,7 @@ import { Options, Vue } from "vue-class-component";
 import Footer from "@/components/Footer.vue";
 import Header from "@/components/Header.vue";
 import { mapGetters } from "vuex";
+import { subscribeUser } from "@/lib/pushNotification";
 
 @Options({
   components: {
@@ -118,6 +121,11 @@ import { mapGetters } from "vuex";
   },
   computed: {
     ...mapGetters(["isLoggedIn"]),
+  },
+  methods: {
+    subscribeToPushNotifications() {
+      subscribeUser(this.$store);
+    },
   },
 })
 export default class Landing extends Vue {}

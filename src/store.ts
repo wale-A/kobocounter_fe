@@ -253,18 +253,26 @@ export const store = createStore({
         this.commit("setTransactionCategories", []);
       }
     },
-    async subscribeUser(_) {
-      // console.log("in subscriber");
+    async subscribeUser(_, { subscription }: { subscription: string }) {
+      console.log({ subscription });
       if (!this.state.user) return undefined;
+      try {
+        if (!this.state.user) return undefined;
 
-      navigator.serviceWorker.controller?.postMessage(
-        JSON.stringify({
-          type: "subscribe",
-          arg: {
-            token: this.state.user?.token,
-          },
-        })
-      );
+        const res = await superagent
+          .post(`${process.env.VUE_APP_API_URL}/users/subscribe`)
+          .auth(this.state.user?.token.token, { type: "bearer" })
+          .send({ subscription })
+          .ok((r) => r.status < 500);
+
+        if (res.status == 401) {
+          this.commit("logoutUser");
+        } else {
+          // this.commit("setRecurringExpenses", res.body as RecurrentExpense[]);
+        }
+      } catch (e) {
+        // this.commit("setRecurringExpenses", []);
+      }
     },
   }, // END OF ACTION
   getters: {
