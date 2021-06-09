@@ -629,14 +629,34 @@ import toastr from "toastr";
 import Multiselect from "@vueform/multiselect";
 import { add, sub, subMonths } from "date-fns";
 import WordCloud from "wordcloud";
+// import firebase from "firebase/app";
+// import "firebase/messaging";
+import { subscribeUser } from "../lib/pushNotification";
 
 @Options({
   created() {
     this.setup();
   },
   mounted() {
-    this.$store.dispatch("subscribeUser");
     this.modalMethods();
+    // this.subscribeToPushNotifications();
+    // const messaging = firebase.messaging();
+    // messaging
+    //   .getToken({
+    //     vapidKey:
+    //       "BM0pR7rOcwi6G3MqSUeXi9jrZbOn17J_Whl1ERYOIYVsoyiaUUVhd4ToG5qCMfU5xyI7EYEvGaGssY-vwpJrfHg",
+    //   })
+    //   .then((token) => {
+    //     if (token) {
+    //       console.log("sending token to the server");
+    //       this.$store.dispatch("subscribeUser", { token });
+    //     } else {
+    //       console.log("no registration token available");
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.log("An error occurred whule trying to retrieve token");
+    //   });
   },
   data() {
     const from = subMonths(Date.now(), 1);
@@ -697,40 +717,33 @@ import WordCloud from "wordcloud";
       this.showMultipleTransactionsModal();
     },
     modalMethods() {
-      // multiple transactions info
       const multipleTransactionCloseModal = document.getElementById(
         "multiple-transaction-close-modal"
-      );
+      )!;
       const multipleTransactionModal = document.getElementById(
         "multiple-transaction-modal"
-      );
+      )!;
 
-      //single transaction info
       const singleTransactionCloseModal = document.getElementById(
         "single-transaction-close-modal"
-      );
+      )!;
       const singleTransactionModal = document.getElementById(
         "single-transaction-modal"
-      );
+      )!;
 
-      if (multipleTransactionCloseModal && multipleTransactionModal) {
-        multipleTransactionCloseModal.onclick = function () {
+      multipleTransactionCloseModal.onclick = function () {
+        multipleTransactionModal.style.display = "none";
+      };
+      singleTransactionCloseModal.onclick = function () {
+        singleTransactionModal.style.display = "none";
+      };
+      window.onclick = function (event: MouseEvent) {
+        if (event.target == multipleTransactionModal) {
           multipleTransactionModal.style.display = "none";
-        };
-        window.onclick = function (event: MouseEvent) {
-          if (event.target == multipleTransactionModal) {
-            multipleTransactionModal.style.display = "none";
-          } else if (event.target == singleTransactionModal) {
-            singleTransactionModal!.style.display = "none";
-          }
-        };
-      }
-
-      if (singleTransactionCloseModal && singleTransactionModal) {
-        singleTransactionCloseModal.onclick = function () {
+        } else if (event.target == singleTransactionModal) {
           singleTransactionModal.style.display = "none";
-        };
-      }
+        }
+      };
     },
     netIncomeEventHandler(
       _: number,
@@ -921,6 +934,9 @@ import WordCloud from "wordcloud";
 
       (document.getElementById("small-search-button") as any).disabled = false;
       (document.getElementById("big-search-button") as any).disabled = false;
+    },
+    subscribeToPushNotifications() {
+      subscribeUser(this.$store);
     },
   },
   watch: {
