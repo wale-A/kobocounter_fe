@@ -2,7 +2,7 @@
   <div id="landing" class="">
     <Header :display-menu="true" />
 
-    <button @click="subscribeToPushNotifications">Subscribe Here</button>
+    <!-- <button @click="subscribeToPushNotifications">Subscribe Here</button> -->
     <main id="main">
       <section id="landing-text">
         <h2 class="major-text darker-color">

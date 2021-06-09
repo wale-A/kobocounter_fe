@@ -639,24 +639,7 @@ import { subscribeUser } from "../lib/pushNotification";
   },
   mounted() {
     this.modalMethods();
-    // this.subscribeToPushNotifications();
-    // const messaging = firebase.messaging();
-    // messaging
-    //   .getToken({
-    //     vapidKey:
-    //       "BM0pR7rOcwi6G3MqSUeXi9jrZbOn17J_Whl1ERYOIYVsoyiaUUVhd4ToG5qCMfU5xyI7EYEvGaGssY-vwpJrfHg",
-    //   })
-    //   .then((token) => {
-    //     if (token) {
-    //       console.log("sending token to the server");
-    //       this.$store.dispatch("subscribeUser", { token });
-    //     } else {
-    //       console.log("no registration token available");
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.log("An error occurred whule trying to retrieve token");
-    //   });
+    subscribeUser(this.$store);
   },
   data() {
     const from = subMonths(Date.now(), 1);
