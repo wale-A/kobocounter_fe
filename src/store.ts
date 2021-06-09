@@ -30,7 +30,7 @@ export const store = createStore({
     logoutUser(state: State) {
       localStorage.removeItem("authenticated-user");
       state.user = undefined;
-      router.push({ name: "Login" });
+      router.push({ name: "Home" });
     },
     setAccountCreateStatus(state: State, status: boolean) {
       state.accountCreateSuccessful = status;
