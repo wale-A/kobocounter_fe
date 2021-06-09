@@ -5,7 +5,7 @@ self.addEventListener("push", function (e) {
   const options = {
     body: data.body,
     icon: `../public/favicon.ico`,
-    image: `https://kobocounter.com/logo.png`,
+    image: `https://kobocounter.com/img/logo.svg`,
     vibrate: [100, 50, 100],
   };
   e.waitUntil(
