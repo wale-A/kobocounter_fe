@@ -5,16 +5,17 @@ import { register } from "register-service-worker";
 if (process.env.NODE_ENV === "production") {
   register(`${process.env.BASE_URL}service-worker.js`, {
     ready(registration: ServiceWorkerRegistration) {
-      console.log(
-        "App is being served from cache by a service worker.\n" +
-          "For more details, visit https://goo.gl/AFskqB"
-      );
+      // console.log(
+      //   "App is being served from cache by a service worker.\n" +
+      //     "For more details, visit https://goo.gl/AFskqB"
+      // );
       // subscribeUser(registration);
-    },
-    registered(registration: ServiceWorkerRegistration) {
-      console.log("Service worker has been registered.");
 
-      registration.addEventListener("push", (e: any) => {
+      registration.addEventListener("push", function (e) {
+        console.log("12345");
+      });
+
+      self.addEventListener("push", function (e: any) {
         console.log("...inside push event handler...");
         console.log({ e });
         const data = e.data.json();
@@ -31,20 +32,23 @@ if (process.env.NODE_ENV === "production") {
             { action: "close", title: "Close" },
           ],
         };
+        console.log({ options });
+        new Notification(data.title || "title", options);
+        registration.showNotification(data.title || "title", options);
         e.waitUntil(
-          registration.showNotification(data.title || "title", options)
+          (self as any).registration.showNotification(
+            data.title || "title",
+            options
+          )
         );
       });
+    },
+    registered(registration: ServiceWorkerRegistration) {
+      console.log("Service worker has been registered.");
 
-      // registration.addEventListener("message", (e: any) => {
-      //   // console.log("in message");
-      //   const data = e.data.json();
-      //   // console.log({ data });
-
-      //   if (data.type === "subscribe") {
-      //     subscribeUser(registration, data.arg.token);
-      //   }
-      // });
+      registration.addEventListener("push", function (e) {
+        console.log("lorem ipsum dolot sit amen");
+      });
     },
     cached() {
       console.log("Content has been cached for offline use.");

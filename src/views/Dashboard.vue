@@ -936,7 +936,7 @@ import { subscribeUser } from "../lib/pushNotification";
       (document.getElementById("big-search-button") as any).disabled = false;
     },
     subscribeToPushNotifications() {
-      subscribeUser(this.$store, process.env.VUE_APP_VAPID_PUBLIC_KEY || "");
+      subscribeUser(this.$store);
     },
   },
   watch: {

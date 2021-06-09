@@ -254,7 +254,6 @@ export const store = createStore({
       }
     },
     async subscribeUser(_, { subscription }: { subscription: string }) {
-      console.log({ subscription });
       if (!this.state.user) return undefined;
       try {
         if (!this.state.user) return undefined;

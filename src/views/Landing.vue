@@ -124,7 +124,7 @@ import { subscribeUser } from "@/lib/pushNotification";
   },
   methods: {
     subscribeToPushNotifications() {
-      subscribeUser(this.$store, process.env.VUE_APP_VAPID_PUBLIC_KEY || "");
+      subscribeUser(this.$store);
     },
   },
 })
