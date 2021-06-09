@@ -13,46 +13,6 @@ export async function subscribeUser(store: Store<State>) {
   store.dispatch("subscribeUser", {
     subscription: JSON.stringify(subscription),
   });
-
-  // self.addEventListener("push", function (e: any) {
-  //   console.log("...inside push event handler...");
-  //   console.log({ e });
-  //   const data = e.data.json();
-  //   const options = {
-  //     body: "Notified by KoboCounter",
-  //     icon: `${process.env.BASE_URL}logo.svg`,
-  //     vibrate: [100, 50, 100],
-  //     data: {
-  //       dateOfArrival: Date.now(),
-  //       primaryKey: "2",
-  //     },
-  //     actions: [
-  //       { action: "explore", title: "Explore this new world" },
-  //       { action: "close", title: "Close" },
-  //     ],
-  //   };
-  //   console.log({ options });
-  //   new Notification(data.title || "title", options);
-
-  //   e.waitUntil(
-  //     (self as any).registration.showNotification(
-  //       data.title || "title",
-  //       options
-  //     )
-  //   );
-  // });
-
-  //   await fetch(`${process.env.VUE_APP_API_URL}/users/subscribe`, {
-  //     method: "POST",
-  //     body: JSON.stringify(subscription),
-  //     headers: {
-  //       "content-type": "application/json",
-  //       Authorization: `Bearer ${
-  //         JSON.parse(localStorage.getItem("authenticated-user") || "null")?.token
-  //           ?.token
-  //       }`,
-  //     },
-  //   });
 }
 
 function urlBase64ToUint8Array(base64String: string) {
