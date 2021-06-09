@@ -21,16 +21,16 @@ createApp(App)
   // .component("v-select", vSelect)
   .mount("#app");
 
-firebase.initializeApp({
-  apiKey: "AIzaSyCbfEb3S7GNFT6tTaBxXv0kSwI-hQTxGYw",
-  authDomain: "kobocounter.firebaseapp.com",
-  projectId: "kobocounter",
-  storageBucket: "kobocounter.appspot.com",
-  messagingSenderId: "1090043211481",
-  appId: "1:1090043211481:web:de6fa632a7adb609ab98c8",
-  measurementId: "G-6BELL3C1XC",
-});
-firebase.analytics();
+// firebase.initializeApp({
+//   apiKey: "AIzaSyCbfEb3S7GNFT6tTaBxXv0kSwI-hQTxGYw",
+//   authDomain: "kobocounter.firebaseapp.com",
+//   projectId: "kobocounter",
+//   storageBucket: "kobocounter.appspot.com",
+//   messagingSenderId: "1090043211481",
+//   appId: "1:1090043211481:web:de6fa632a7adb609ab98c8",
+//   measurementId: "G-6BELL3C1XC",
+// });
+// firebase.analytics();
 
 toastr.options = {
   closeButton: true,

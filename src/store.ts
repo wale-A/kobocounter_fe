@@ -253,7 +253,8 @@ export const store = createStore({
         this.commit("setTransactionCategories", []);
       }
     },
-    async subscribeUser(_, { token }: { token: string }) {
+    async subscribeUser(_, { subscription }: { subscription: string }) {
+      console.log({ subscription });
       if (!this.state.user) return undefined;
       try {
         if (!this.state.user) return undefined;
@@ -261,7 +262,7 @@ export const store = createStore({
         const res = await superagent
           .post(`${process.env.VUE_APP_API_URL}/users/subscribe`)
           .auth(this.state.user?.token.token, { type: "bearer" })
-          .set({ token })
+          .send({ subscription })
           .ok((r) => r.status < 500);
 
         if (res.status == 401) {
