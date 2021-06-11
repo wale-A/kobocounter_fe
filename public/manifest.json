@@ -1,6 +1,7 @@
 {
     "name": "KoboCounter",
     "short_name": "KoboCounter",
+    "description": "Expense tracker",
     "icons": [
         {
             "src": "./img/icons/windows10/SmallTile.scale-100.png",
@@ -507,9 +508,8 @@
             "sizes": "16x16"
         }
     ],
-    "start_url": "/",
-    "display": "standalone",
+    "start_url": "/dashboard",
+    "display": "fullscreen",
     "background_color": "#000000",
-    "theme_color": "#007cff",
-    "gcm_sender_id": "1090043211481"
+    "theme_color": "#007cff"
 }
