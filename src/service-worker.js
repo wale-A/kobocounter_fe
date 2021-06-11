@@ -5,7 +5,7 @@ self.addEventListener("push", function (e) {
   const options = {
     body: data.body,
     icon: `../public/favicon.ico`,
-    image: `https://kobocounter.com/img/icons/android-launchericon-48-48.png`,
+    image: `https://kobocounter.com/img/icons/android/android-launchericon-48-48.png`,
     vibrate: [100, 50, 100],
   };
   e.waitUntil(
