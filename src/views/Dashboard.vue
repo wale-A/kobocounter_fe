@@ -831,7 +831,7 @@ import { subscribeUser } from "../lib/pushNotification";
       } else {
         balance = (this.accounts as Account[])
           .reduce((sum, acct) => {
-            return sum + acct.balance;
+            return sum + (acct.balance || 0);
           }, 0)
           .toFixed(2);
       }
