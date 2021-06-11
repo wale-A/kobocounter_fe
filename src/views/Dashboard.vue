@@ -825,7 +825,7 @@ import { subscribeUser } from "../lib/pushNotification";
         balance = (this.accounts as Account[])
           .filter((x) => this.selectedAccounts.includes(x.id))
           .reduce((sum, acct) => {
-            return sum + acct.balance;
+            return sum + (acct.balance || 0);
           }, 0)
           .toFixed(2);
       } else {
