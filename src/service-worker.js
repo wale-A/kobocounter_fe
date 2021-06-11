@@ -1,6 +1,18 @@
 const staticCacheName = "kobocounter-cache-v1";
+const OFFLINE_URL = "/404";
 
 self.__precacheManifest = [].concat(self.__precacheManifest || []);
+
+self.addEventListener("install", function (event) {
+  event.waitUntil(
+    (async () => {
+      const cache = await caches.open(staticCacheName);
+      await cache.add(new Request(OFFLINE_URL, { cache: "reload" }));
+    })()
+  );
+
+  self.skipWaiting();
+});
 
 self.addEventListener("push", function (e) {
   const data = e.data.json();
@@ -38,7 +50,9 @@ self.addEventListener("fetch", (event) => {
         });
       })
       .catch((error) => {
-        // TODO 6 - Respond with custom offline page
+        return caches.open(staticCacheName).then((cache) => {
+          return cache.then((offlineResponse) => offlineResponse);
+        });
       })
   );
 });
