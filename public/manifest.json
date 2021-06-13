@@ -510,6 +510,6 @@
     ],
     "start_url": "/dashboard",
     "display": "fullscreen",
-    "background_color": "#ffffff",
+    "background_color": "white",
     "theme_color": "#007cff"
 }
