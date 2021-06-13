@@ -67,7 +67,7 @@
         thousands=","
         loading="Loading..."
         empty="We don't have data for the selected period..."
-        class="chart"
+        class="chart margin-left"
         :library="{
           showLines: false,
           onClick: netIncomeEventHandler,
@@ -77,7 +77,7 @@
           filename: 'net-income',
         }"
         :legend="false"
-        label="Net Income"
+        label="Net Income (in thousands)"
       ></line-chart>
     </section>
 
@@ -330,7 +330,11 @@
             <br />
             {{
               getTimeForTimeZone(singleTransaction?.date).toLocaleTimeString(
-                "en-US"
+                "en-us",
+                {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }
               )
             }}
           </span>
@@ -602,6 +606,9 @@ div.multiselect {
   border-width: 1px;
   border-style: solid;
 }
+.margin-left {
+  margin-left: -15px;
+}
 
 @media screen and (max-width: 700px) {
   #multiselect {
@@ -683,7 +690,7 @@ import { subscribeUser } from "../lib/pushNotification";
   methods: {
     getTimeForTimeZone(date: number) {
       return add(new Date(date), {
-        minutes: new Date().getTimezoneOffset(),
+        minutes: new Date().getTimezoneOffset() + 60,
       });
     },
     recurrentExpenseClickHandler(e: Event) {

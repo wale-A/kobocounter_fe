@@ -20,9 +20,10 @@ self.addEventListener("push", function (e) {
   const data = e.data.json();
   const options = {
     body: data.body,
-    icon: `https://kobocounter.com/img/icons/android/android-launchericon-48-48.png`,
-    image: `https://kobocounter.com/img/icons/android/android-launchericon-48-48.png`,
+    icon: `https://kobocounter.com/img/icons/android/android-launchericon-192-192.png`,
+    // image: `https://kobocounter.com/img/icons/android/android-launchericon-512-512.png`,
     vibrate: [100, 50, 100],
+    actions: JSON.parse(data.actions),
   };
   e.waitUntil(
     self.registration.showNotification(
@@ -30,6 +31,24 @@ self.addEventListener("push", function (e) {
       options
     )
   );
+});
+
+self.addEventListener("notificationclick", function (e) {
+  const notification = e.notification;
+  var action = e.action;
+
+  if (!action) {
+    notification.close();
+  } else if (action === "close") {
+    notification.close();
+  } else {
+    self.clients.matchAll().then(function (clientList) {
+      if (clientList.length > 0) {
+        return clientList[0].focus();
+      }
+      // return self.clients.openWindow("../push-clients_demo.html");
+    });
+  }
 });
 
 self.addEventListener("fetch", (event) => {
