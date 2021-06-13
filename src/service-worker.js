@@ -6,10 +6,11 @@ self.__precacheManifest = [].concat(self.__precacheManifest || []);
 
 self.addEventListener("install", function (event) {
   event.waitUntil(
-    (async () => {
-      const cache = await caches.open(staticCacheName);
-      await cache.add(new Request(OFFLINE_URL, { cache: "reload" }));
-    })()
+    caches.open(staticCacheName).then((cache) => {
+      if (cache) {
+        cache.add(new Request(OFFLINE_URL, { cache: "reload" }));
+      }
+    })
   );
 
   self.skipWaiting();
@@ -35,37 +36,28 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        if (response.status === 404) {
-          return caches.match(event.request).then((cacheResponse) => {
-            if (cacheResponse) {
-              return cacheResponse;
-            }
-          });
-        } else {
-          return caches.open(staticCacheName).then((cache) => {
-            cache.put(event.request.url, response.clone());
-            return response;
-          });
-        }
+        return caches.open(staticCacheName).then((cache) => {
+          cache.put(event.request.url, response.clone());
+          return response;
+        });
       })
       .catch((error) => {
-        // return caches.open(staticCacheName).then((cache) => {
-        //   return cache.then((offlineResponse) => offlineResponse);
-        // });
+        console.log("error occurred fetching data");
+        return caches.match(event.request).then((cacheResponse) => {
+          if (cacheResponse) {
+            return cacheResponse;
+          } else {
+            return caches.match(OFFLINE_URL);
+          }
+        });
       })
   );
 });
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheAllowlist.indexOf(cacheName) !== -1) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
+    cacheAllowlist.map((name) => {
+      caches.delete(name);
     })
   );
 });

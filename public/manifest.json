@@ -1,7 +1,12 @@
 {
     "name": "KoboCounter",
     "short_name": "KoboCounter",
-    "description": "Expense tracker",
+    "description": "Your personal expense tracker",
+    "scope": "/",
+    "start_url": "/dashboard",
+    "display": "standalone",
+    "background_color": "white",
+    "theme_color": "#007cff",
     "icons": [
         {
             "src": "./img/icons/windows10/SmallTile.scale-100.png",
@@ -507,9 +512,5 @@
             "src": "./img/icons/firefox/firefox-general-16-16.png",
             "sizes": "16x16"
         }
-    ],
-    "start_url": "/dashboard",
-    "display": "standalone",
-    "background_color": "white",
-    "theme_color": "#007cff"
+    ]
 }

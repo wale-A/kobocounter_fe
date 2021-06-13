@@ -649,7 +649,6 @@ import { subscribeUser } from "../lib/pushNotification";
       accountBalanceData: {},
       netIncomeData: {},
       transactionCategoryData: {},
-      transactionCategoryAndAmountData: {},
       selectedAccounts: [],
       transformedAccountInfo: [],
       selectedPeriod: 30,
@@ -887,17 +886,14 @@ import { subscribeUser } from "../lib/pushNotification";
     },
     parseTransactionCategories() {
       this.transactionCategoryData = {};
-      this.transactionCategoryAndAmountData = {};
       const categories = (this
         .transactionCategories as TransactionCategories[]).filter(
         (x) => x.category != null
       );
       for (var i = 0; i < categories.length; i++) {
-        this.transactionCategoryData[categories[i].displayCategory] =
-          categories[i].count;
-        this.transactionCategoryAndAmountData[
-          categories[i].shortText
-        ] = parseFloat((categories[i].amount / 1000).toFixed(2));
+        this.transactionCategoryData[
+          categories[i].displayCategory
+        ] = parseFloat(categories[i].amount.toFixed(2));
       }
     },
     updateSelectedAccount(value: string) {
