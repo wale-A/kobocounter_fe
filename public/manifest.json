@@ -509,7 +509,7 @@
         }
     ],
     "start_url": "/dashboard",
-    "display": "fullscreen",
+    "display": "standalone",
     "background_color": "white",
     "theme_color": "#007cff"
 }
