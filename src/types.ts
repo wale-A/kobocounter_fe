@@ -1,14 +1,16 @@
 export type State = {
-  user?: User;
-  loginError?: boolean;
-  loginSuccessful?: boolean;
-  accounts?: Account[];
-  transactions?: TransactionInfo[];
-  netIncome?: NetIncome[];
-  transactionCategories?: TransactionCategories[];
-  accountCreateSuccessful?: boolean;
-  recurringExpenditure?: RecurrentExpense[];
-  establishmentActivities?: EstablishmentActivity[];
+  user: User | undefined;
+  loginError: boolean | undefined;
+  loginSuccessful: boolean | undefined;
+  accounts: Account[] | undefined;
+  transactions: TransactionInfo[] | undefined;
+  netIncome: NetIncome[] | undefined;
+  transactionCategories: TransactionCategories[] | undefined;
+  accountCreateSuccessful: boolean | undefined;
+  recurringExpenditure: RecurrentExpense[] | undefined;
+  establishmentActivities: EstablishmentActivity[] | undefined;
+  establishments: string[] | undefined;
+  activities: string[] | undefined;
 };
 
 export type User = {

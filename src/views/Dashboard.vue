@@ -255,7 +255,7 @@
             {{ Math.abs(txn.amount).toLocaleString() }}
           </p>
           <span class="small-text darker-color" style="display: block">
-            {{ getTimeForTimeZone(txn.date).toLocaleDateString("en-GB") }}
+            {{ new Date(txn.date).toLocaleDateString("en-GB") }}
           </span>
           <span
             v-show="transactions.some((x) => x.id === txn.id)"
@@ -297,13 +297,23 @@
   <!-- Single Transaction Modal  -->
   <div id="single-transaction-modal">
     <div class="modal-content">
-      <div class="modal-header">
+      <div class="modal-header" style="align-items: flex-end">
         <span
           id="single-transaction-close-modal"
           class="close-modal material-icons"
-          style="display: block"
         >
           arrow_back
+        </span>
+        <span
+          id="single-transaction-edit"
+          v-show="
+            singleTransaction?.displayCategory !== 'INFLOW' && !editTransaction
+          "
+          class="material-icons"
+          style="margin-right: 20px; cursor: pointer"
+          @click="enableEditTransaction"
+        >
+          create
         </span>
       </div>
       <div style="padding: 15px" v-if="singleTransaction">
@@ -322,75 +332,159 @@
           />
           <!-- onerror="https://ui-avatars.com/api/?size=50&format=svg" -->
           <span class="mid-text darker-color">
-            {{
-              getTimeForTimeZone(singleTransaction?.date).toLocaleDateString(
-                "en-GB"
-              )
-            }}
+            {{ new Date(singleTransaction?.date).toLocaleDateString("en-GB") }}
             <br />
             {{
-              getTimeForTimeZone(singleTransaction?.date).toLocaleTimeString(
-                "en-us",
-                {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                }
-              )
+              new Date(singleTransaction?.date).toLocaleTimeString("en-us", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })
             }}
           </span>
         </div>
         <div>
           <div style="text-align: start">
-            <p class="mid-text" style="overflow-wrap: break-word">
-              <span class="small-text accent-color">narration: </span> <br />
-              {{ singleTransaction?.narration }}
-            </p>
-            <p class="mid-text">
-              <span class="small-text accent-color">amount: </span> <br />
-              <span style="font-weight: 800; font-size: large">&#8358; </span>
-              <span
-                :style="{
-                  'font-weight': 500,
-                  color:
-                    singleTransaction?.amount < 0
-                      ? 'rgba(255, 10, 10, 0.7)'
-                      : 'rgb(20, 180, 20)',
-                }"
+            <form action="#">
+              <p class="mid-text" style="overflow-wrap: break-word">
+                <span class="small-text accent-color">narration: </span> <br />
+                {{ singleTransaction?.narration }}
+              </p>
+              <p class="mid-text">
+                <span class="small-text accent-color">amount: </span> <br />
+                <span style="font-weight: 800; font-size: large">&#8358; </span>
+                <span
+                  :style="{
+                    'font-weight': 500,
+                    color:
+                      singleTransaction?.amount < 0
+                        ? 'rgba(255, 10, 10, 0.7)'
+                        : 'rgb(20, 180, 20)',
+                  }"
+                >
+                  {{ Math.abs(singleTransaction?.amount).toLocaleString() }}
+                </span>
+              </p>
+              <p
+                v-show="
+                  (singleTransaction?.establishment?.name ||
+                    singleTransaction?.recipient) &&
+                  !editTransaction
+                "
+                class="mid-text"
               >
-                {{ Math.abs(singleTransaction?.amount).toLocaleString() }}
-              </span>
-            </p>
-            <p
-              v-show="
-                singleTransaction?.establishment?.name ||
-                singleTransaction?.recipient
-              "
-              class="mid-text"
-            >
-              <span class="small-text accent-color">recipient: </span> <br />
-              {{
-                singleTransaction?.establishment?.name ||
-                singleTransaction?.recipient
-              }}
-            </p>
-            <p
-              v-show="
-                singleTransaction?.establishment?.activities &&
-                singleTransaction?.establishment?.activities.length > 0
-              "
-              class="mid-text"
-            >
-              <span class="small-text accent-color">business activity: </span>
-              <br />
-              {{ singleTransaction?.establishment?.activities.join(", ") }}
-            </p>
-            <p class="mid-text">
-              <span class="small-text accent-color"
-                >transaction category:
-              </span>
-              <br />
-              {{ singleTransaction?.displayCategory }}
-            </p>
+                <span class="small-text accent-color">recipient: </span> <br />
+                {{
+                  singleTransaction?.establishment?.name ||
+                  singleTransaction?.recipient
+                }}
+              </p>
+              <Multiselect
+                v-if="editTransaction"
+                :searchable="true"
+                placeholder="Recipient"
+                v-model="editedTransaction.recipientName"
+                :options="[
+                  { value: 'All Bread Bakery', label: 'All Bread Bakery' },
+                  { value: 'Food Concepts Plc', label: 'Food Concepts Plc' },
+                  {
+                    value: 'dhl international nigeria',
+                    label: 'dhl international nigeria',
+                  },
+                  {
+                    value: 'Q.f.a Nigeria Limited',
+                    label: 'Q.f.a Nigeria Limited',
+                  },
+                  { value: 'Crichlow Orchids', label: 'Crichlow Orchids' },
+                  { value: 'Farm City', label: 'Farm City' },
+                ]"
+                :createTag="true"
+              />
+              <label for="" v-if="editTransaction">
+                <input
+                  type="checkbox"
+                  name=""
+                  id=""
+                  :checked="singleTransaction?.establishment?.name"
+                  v-model="isBusinessEstablishment"
+                />
+                Is a business establishment ?
+              </label>
+
+              <p
+                v-show="
+                  singleTransaction?.establishment?.activities &&
+                  singleTransaction?.establishment?.activities.length > 0 &&
+                  !editTransaction
+                "
+                class="mid-text"
+              >
+                <span class="small-text accent-color">business activity: </span>
+                <br />
+                {{ singleTransaction?.establishment?.activities.join(", ") }}
+              </p>
+              <Multiselect
+                :searchable="true"
+                v-if="editTransaction && isBusinessEstablishment"
+                placeholder="Establishment's activites"
+                v-model="editedTransaction.recipientActivities"
+                :options="[
+                  { value: 'food', label: 'food' },
+                  { value: 'store', label: 'store' },
+                  { value: 'gas-station', label: 'gas-station' },
+                  { value: 'bar', label: 'bar' },
+                  { value: 'night-club', label: 'night-club' },
+                  { value: 'restaurant', label: 'restaurant' },
+                ]"
+                mode="tags"
+                :createTag="true"
+                style="margin-top: 25px"
+              />
+
+              <p class="mid-text" v-show="!editTransaction">
+                <span class="small-text accent-color"
+                  >transaction category:
+                </span>
+                <br />
+                {{ singleTransaction?.displayCategory }}
+              </p>
+              <Multiselect
+                :searchable="true"
+                v-if="editTransaction"
+                placeholder="Transaction category"
+                v-model="editedTransaction.displayCategory"
+                :options="[
+                  { value: 'MISC', label: 'MISC' },
+                  { value: 'ATM WITHDRAWAL', label: 'ATM WITHDRAWAL' },
+                  {
+                    value: 'BANK CHARGES',
+                    label: 'BANK CHARGES',
+                  },
+                  { value: 'POS PURCHASE', label: 'POS PURCHASE' },
+                  { value: 'WEB PURCHASE', label: 'WEB PURCHASE' },
+                  { value: 'AIRTIME', label: 'AIRTIME' },
+                  {
+                    value: 'MOBILE DATA',
+                    label: 'MOBILE DATA',
+                  },
+                  { value: 'TRANSFER', label: 'TRANSFER' },
+                ]"
+                noResultsText="No result found"
+                style="margin-top: 35px"
+              />
+
+              <div v-if="editTransaction" id="edit-form-buttons">
+                <button type="submit" style="background-color: #55bb55">
+                  SUBMIT
+                </button>
+                <button
+                  type="reset"
+                  style="background-color: red"
+                  @click="disableEditTransaction"
+                >
+                  CANCEL
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
@@ -529,6 +623,11 @@ input[type="date"] {
 #bank-logo {
   width: 100px;
 }
+#edit-form-buttons {
+  margin-top: 40px;
+  display: flex;
+  justify-content: space-between;
+}
 @media screen and (max-width: 700px) {
   main {
     width: 90%;
@@ -589,6 +688,14 @@ input[type="date"] {
   #bank-logo {
     width: 70px;
   }
+
+  #edit-form-buttons {
+    display: unset;
+    margin-top: unset;
+  }
+  #edit-form-buttons button {
+    margin-top: 40px;
+  }
 }
 </style>
 <style>
@@ -631,6 +738,7 @@ import {
   Account,
   TransactionInfo,
   EstablishmentActivity,
+  Transaction,
 } from "@/types";
 import toastr from "toastr";
 import Multiselect from "@vueform/multiselect";
@@ -670,6 +778,14 @@ import { subscribeUser } from "../lib/pushNotification";
       multipleTransactionModalTitle: "",
       multipleTransactionModalSubtitle: "",
       singleTransaction: undefined,
+      editedTransaction: {
+        id: undefined,
+        displayCategory: "",
+        recipientName: "",
+        recipientActivities: "",
+      },
+      editTransaction: false,
+      isBusinessEstablishment: false,
     };
   },
   computed: {
@@ -681,6 +797,8 @@ import { subscribeUser } from "../lib/pushNotification";
       "accountCreateStatus",
       "recurrentExpenses",
       "establishmentActivities",
+      "establishments",
+      "activities",
     ]),
   },
   components: {
@@ -688,6 +806,30 @@ import { subscribeUser } from "../lib/pushNotification";
     Multiselect,
   },
   methods: {
+    enableEditTransaction() {
+      if (!this.singleTransaction) return;
+
+      this.editTransaction = true;
+      this.editedTransaction = {
+        id: this.singleTransaction.id,
+        displayCategory: this.singleTransaction.displayCategory,
+        recipientName:
+          this.singleTransaction?.establishment?.name ||
+          this.singleTransaction?.recipient ||
+          "",
+        recipientActivities:
+          this.singleTransaction?.recipient?.activities || [],
+      };
+    },
+    disableEditTransaction() {
+      this.editTransaction = false;
+      this.editedTransaction = {
+        id: undefined,
+        displayCategory: "",
+        recipientName: "",
+        recipientActivities: "",
+      };
+    },
     getTimeForTimeZone(date: number) {
       return add(new Date(date), {
         minutes: new Date().getTimezoneOffset() + 60,
@@ -706,6 +848,7 @@ import { subscribeUser } from "../lib/pushNotification";
       this.showMultipleTransactionsModal();
     },
     modalMethods() {
+      const fn = this.disableEditTransaction;
       const multipleTransactionCloseModal = document.getElementById(
         "multiple-transaction-close-modal"
       )!;
@@ -725,12 +868,14 @@ import { subscribeUser } from "../lib/pushNotification";
       };
       singleTransactionCloseModal.onclick = function () {
         singleTransactionModal.style.display = "none";
+        fn();
       };
       window.onclick = function (event: MouseEvent) {
         if (event.target == multipleTransactionModal) {
           multipleTransactionModal.style.display = "none";
         } else if (event.target == singleTransactionModal) {
           singleTransactionModal.style.display = "none";
+          fn();
         }
       };
     },
@@ -809,7 +954,7 @@ import { subscribeUser } from "../lib/pushNotification";
     singleTransactionEventHandler(transactionId: string) {
       this.singleTransaction = this.transactions.find(
         (x: TransactionInfo) => x.id == transactionId
-      );
+      ) as TransactionInfo;
       if (this.singleTransaction) {
         this.showSingleTransactionsModal();
       }

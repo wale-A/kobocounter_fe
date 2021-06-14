@@ -14,13 +14,21 @@ import {
 export const store = createStore({
   state() {
     return {
-      user: JSON.parse(localStorage.getItem("authenticated-user") || "null"),
+      user:
+        (JSON.parse(
+          localStorage.getItem("authenticated-user") || "null"
+        ) as User) || undefined,
       loginError: undefined,
       loginSuccessful: undefined,
       accounts: undefined,
+      netIncome: undefined,
       transactions: undefined,
       transactionCategories: undefined,
       accountCreateSuccessful: undefined,
+      recurringExpenditure: undefined,
+      establishmentActivities: undefined,
+      establishments: undefined,
+      activities: undefined,
     };
   },
   mutations: {
@@ -61,6 +69,12 @@ export const store = createStore({
     },
     setEstablishmentActivities(state: State, activities?: []) {
       state.establishmentActivities = activities;
+    },
+    setActivities(state: State, activities?: []) {
+      state.activities = activities;
+    },
+    setEstablishments(state: State, establishments?: []) {
+      state.establishments = establishments;
     },
   }, // END OF MUTATION
   actions: {
@@ -256,8 +270,6 @@ export const store = createStore({
     async subscribeUser(_, { subscription }: { subscription: string }) {
       if (!this.state.user) return undefined;
       try {
-        if (!this.state.user) return undefined;
-
         const res = await superagent
           .post(`${process.env.VUE_APP_API_URL}/users/subscribe`)
           .auth(this.state.user?.token.token, { type: "bearer" })
@@ -271,6 +283,36 @@ export const store = createStore({
         }
       } catch (e) {
         // this.commit("setRecurringExpenses", []);
+      }
+    },
+    async getActivities() {
+      try {
+        const res = await superagent
+          .get(`${process.env.VUE_APP_API_URL}/banking/activities`)
+          .ok((r) => r.status < 500);
+
+        if (res.status == 401) {
+          this.commit("logoutUser");
+        } else {
+          this.commit("setActivities", res.body as string[]);
+        }
+      } catch (e) {
+        this.commit("setActivities", []);
+      }
+    },
+    async getEstablishments() {
+      try {
+        const res = await superagent
+          .get(`${process.env.VUE_APP_API_URL}/banking/establishments`)
+          .ok((r) => r.status < 500);
+
+        if (res.status == 401) {
+          this.commit("logoutUser");
+        } else {
+          this.commit("setEstablishments", res.body as string[]);
+        }
+      } catch (e) {
+        this.commit("setEstablishments", []);
       }
     },
   }, // END OF ACTION
@@ -310,6 +352,12 @@ export const store = createStore({
     },
     establishmentActivities(state: State) {
       return state.establishmentActivities || [];
+    },
+    establishments(state: State) {
+      return state.establishments || [];
+    },
+    activities(state: State) {
+      return state.activities || [];
     },
   },
 });

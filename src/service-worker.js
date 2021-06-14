@@ -23,7 +23,7 @@ self.addEventListener("push", function (e) {
     icon: `https://kobocounter.com/img/icons/android/android-launchericon-192-192.png`,
     // image: `https://kobocounter.com/img/icons/android/android-launchericon-512-512.png`,
     vibrate: [100, 50, 100],
-    actions: JSON.parse(data.actions),
+    actions: JSON.parse(data?.actions || "{}"),
   };
   e.waitUntil(
     self.registration.showNotification(
@@ -60,13 +60,10 @@ self.addEventListener("fetch", (event) => {
           return response;
         });
       })
-      .catch((error) => {
-        console.log("error occurred fetching data");
+      .catch(() => {
         return caches.match(event.request).then((cacheResponse) => {
           if (cacheResponse) {
             return cacheResponse;
-          } else {
-            return caches.match(OFFLINE_URL);
           }
         });
       })
