@@ -23,7 +23,7 @@ self.addEventListener("push", function (e) {
     icon: `https://kobocounter.com/img/icons/android/android-launchericon-192-192.png`,
     // image: `https://kobocounter.com/img/icons/android/android-launchericon-512-512.png`,
     vibrate: [100, 50, 100],
-    actions: JSON.parse(data?.actions || "{}"),
+    actions: JSON.parse(data?.actions || "null") || undefined,
   };
   e.waitUntil(
     self.registration.showNotification(

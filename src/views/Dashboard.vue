@@ -810,6 +810,8 @@ import { subscribeUser } from "../lib/pushNotification";
       if (!this.singleTransaction) return;
 
       this.editTransaction = true;
+      this.isBusinessEstablishment = !!this.singleTransaction?.establishment
+        ?.name;
       this.editedTransaction = {
         id: this.singleTransaction.id,
         displayCategory: this.singleTransaction.displayCategory,
@@ -823,6 +825,7 @@ import { subscribeUser } from "../lib/pushNotification";
     },
     disableEditTransaction() {
       this.editTransaction = false;
+      this.isBusinessEstablishment = false;
       this.editedTransaction = {
         id: undefined,
         displayCategory: "",
