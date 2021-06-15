@@ -35,20 +35,23 @@ self.addEventListener("push", function (e) {
 
 self.addEventListener("notificationclick", function (e) {
   const notification = e.notification;
-  var action = e.action;
+  // var action = e.action;
 
-  if (!action) {
-    notification.close();
-  } else if (action === "close") {
-    notification.close();
-  } else {
-    self.clients.matchAll().then(function (clientList) {
-      if (clientList.length > 0) {
-        return clientList[0].focus();
-      }
-      // return self.clients.openWindow("../push-clients_demo.html");
-    });
-  }
+  // if (!action) {
+  //   notification.close();
+  // } else
+  // if (action === "close") {
+  //   notification.close();
+  // } else {
+  notification.close();
+  self.clients.matchAll().then(function (clientList) {
+    if (clientList.length > 0) {
+      return clientList[0].focus();
+    }
+
+    return self.clients.openWindow("/index.html");
+  });
+  // }
 });
 
 self.addEventListener("fetch", (event) => {
