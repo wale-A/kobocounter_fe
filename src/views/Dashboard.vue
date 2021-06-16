@@ -831,6 +831,13 @@ import { subscribeUser } from "../lib/pushNotification";
           callback: (success: boolean) => {
             if (success) {
               this.singleTransaction = updatedTransaction;
+              this.modalTransactions.transactions.splice(
+                this.modalTransactions.transactions.findIndex(
+                  (x: TransactionInfo) => x.id == updatedTransaction.id
+                ),
+                1,
+                updatedTransaction
+              );
               this.disableEditTransaction();
             } else {
               this.editFormSubmitted = false;
