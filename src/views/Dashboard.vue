@@ -344,7 +344,7 @@
         </div>
         <div>
           <div style="text-align: start">
-            <form action="#">
+            <form action="#" @submit.prevent="saveEditedTransaction">
               <p class="mid-text" style="overflow-wrap: break-word">
                 <span class="small-text accent-color">narration: </span> <br />
                 {{ singleTransaction?.narration }}
@@ -379,6 +379,7 @@
                 }}
               </p>
               <Multiselect
+                :disabled="editFormSubmitted"
                 v-if="editTransaction"
                 :searchable="true"
                 placeholder="Recipient"
@@ -398,6 +399,7 @@
                   :checked="singleTransaction?.establishment?.name"
                   v-model="editedTransaction.isEstablishment"
                   :disabled="
+                    editFormSubmitted &&
                     editedTransaction.recipientName &&
                     editedTransaction.recipientName.length !== 1
                   "
@@ -406,7 +408,7 @@
               </label>
 
               <p
-                v-show="
+                v-if="
                   singleTransaction?.establishment?.activities &&
                   singleTransaction?.establishment?.activities.length > 0 &&
                   !editTransaction
@@ -415,9 +417,10 @@
               >
                 <span class="small-text accent-color">business activity: </span>
                 <br />
-                {{ singleTransaction?.establishment?.activities.join(", ") }}
+                {{ singleTransaction?.establishment?.activities?.join(", ") }}
               </p>
               <Multiselect
+                :disabled="editFormSubmitted"
                 :searchable="true"
                 v-if="
                   editTransaction &&
@@ -441,6 +444,7 @@
                 {{ singleTransaction?.displayCategory }}
               </p>
               <Multiselect
+                :disabled="editFormSubmitted"
                 :searchable="true"
                 v-if="editTransaction"
                 placeholder="Transaction category"
@@ -463,13 +467,14 @@
                 <button
                   type="submit"
                   style="background-color: #55bb55"
-                  @click="saveEditedTransaction"
+                  :disabled="editFormSubmitted"
                 >
                   SUBMIT
                 </button>
                 <button
                   type="reset"
                   style="background-color: red"
+                  :disabled="editFormSubmitted"
                   @click="disableEditTransaction"
                 >
                   CANCEL
@@ -777,6 +782,7 @@ import { subscribeUser } from "../lib/pushNotification";
       },
       editTransaction: false,
       singleTransactionKey: 1,
+      editFormSubmitted: false,
     };
   },
   computed: {
@@ -802,6 +808,8 @@ import { subscribeUser } from "../lib/pushNotification";
         (x: TransactionInfo) => x.id === this.editedTransaction.id
       );
       if (txn) {
+        this.editFormSubmitted = true;
+
         const updatedTransaction = { ...txn };
         updatedTransaction.displayCategory = this.editedTransaction.displayCategory;
         updatedTransaction.recipient = this.editedTransaction.recipientName[0];
@@ -820,10 +828,13 @@ import { subscribeUser } from "../lib/pushNotification";
             recipientName: this.editedTransaction.recipientName[0],
           },
           updatedTransaction,
-          callback: () => {
-            console.log({ updatedTransaction });
-            this.disableEditTransaction();
-            this.singleTransaction = updatedTransaction;
+          callback: (success: boolean) => {
+            if (success) {
+              this.singleTransaction = updatedTransaction;
+              this.disableEditTransaction();
+            } else {
+              this.editFormSubmitted = false;
+            }
           },
         });
       }
@@ -857,6 +868,7 @@ import { subscribeUser } from "../lib/pushNotification";
         recipientActivities: [],
         isEstablishment: false,
       };
+      this.editFormSubmitted = false;
     },
     addActivity(activity: string) {
       this.$store.commit("insertActivity", activity);

@@ -85,13 +85,11 @@ export const store = createStore({
     },
     updateTransaction(state: State, updatedTransaction: TransactionInfo) {
       if (!(state.transactions && state.transactions.length > 0)) return;
-      console.log({ updatedTransaction });
 
       const index = state.transactions.findIndex(
         (x: TransactionInfo) => x.id === updatedTransaction.id
       );
       if (index == -1) return;
-
       state.transactions.splice(index, 1, updatedTransaction);
     },
   }, // END OF MUTATION
@@ -344,7 +342,7 @@ export const store = createStore({
         transactionId: string;
         params: string;
         updatedTransaction: TransactionInfo;
-        callback: () => void;
+        callback: (success: boolean) => void;
       }
     ) {
       if (!this.state.user) return undefined;
@@ -356,16 +354,16 @@ export const store = createStore({
           .auth(this.state.user?.token.token, { type: "bearer" })
           .send(params)
           .ok((r) => r.status == 401 || r.status == 201);
-
         if (res.status == 401) {
           this.commit("logoutUser");
         } else {
           this.commit("updateTransaction", updatedTransaction);
           toastr.success("Transaction update was successful");
-          callback();
+          callback(true);
         }
       } catch (e) {
         toastr.error("Transaction update failed");
+        callback(false);
       }
     },
   }, // END OF ACTION
