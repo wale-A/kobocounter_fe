@@ -10,6 +10,7 @@ import {
   User,
   TransactionInfo,
 } from "./types";
+import toastr from "toastr";
 
 export const store = createStore({
   state() {
@@ -75,6 +76,23 @@ export const store = createStore({
     },
     setEstablishments(state: State, establishments?: []) {
       state.establishments = establishments;
+    },
+    insertActivity(state: State, activity: string) {
+      state.activities?.push(activity);
+    },
+    insertEstablishment(state: State, establishment: string) {
+      state.establishments?.push(establishment);
+    },
+    updateTransaction(state: State, updatedTransaction: TransactionInfo) {
+      if (!(state.transactions && state.transactions.length > 0)) return;
+      console.log({ updatedTransaction });
+
+      const index = state.transactions.findIndex(
+        (x: TransactionInfo) => x.id === updatedTransaction.id
+      );
+      if (index == -1) return;
+
+      state.transactions.splice(index, 1, updatedTransaction);
     },
   }, // END OF MUTATION
   actions: {
@@ -313,6 +331,41 @@ export const store = createStore({
         }
       } catch (e) {
         this.commit("setEstablishments", []);
+      }
+    },
+    async updateTransaction(
+      _,
+      {
+        transactionId,
+        params,
+        updatedTransaction,
+        callback,
+      }: {
+        transactionId: string;
+        params: string;
+        updatedTransaction: TransactionInfo;
+        callback: () => void;
+      }
+    ) {
+      if (!this.state.user) return undefined;
+      try {
+        const res = await superagent
+          .post(
+            `${process.env.VUE_APP_API_URL}/banking/transactions/${transactionId}`
+          )
+          .auth(this.state.user?.token.token, { type: "bearer" })
+          .send(params)
+          .ok((r) => r.status == 401 || r.status == 201);
+
+        if (res.status == 401) {
+          this.commit("logoutUser");
+        } else {
+          this.commit("updateTransaction", updatedTransaction);
+          toastr.success("Transaction update was successful");
+          callback();
+        }
+      } catch (e) {
+        toastr.error("Transaction update failed");
       }
     },
   }, // END OF ACTION

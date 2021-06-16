@@ -2,16 +2,24 @@ import { State } from "@/types";
 import { Store } from "vuex";
 
 export async function subscribeUser(store: Store<State>) {
-  const sw = await navigator.serviceWorker.ready;
-  const subscription = await sw.pushManager.subscribe({
-    userVisibleOnly: true,
-    applicationServerKey: urlBase64ToUint8Array(
-      process.env.VUE_APP_VAPID_PUBLIC_KEY || ""
-    ),
-  });
-
-  store.dispatch("subscribeUser", {
-    subscription: JSON.stringify(subscription),
+  navigator.serviceWorker.ready.then(function (sw) {
+    sw.pushManager.getSubscription().then(function (subscription) {
+      if (subscription) {
+        return;
+      }
+      sw.pushManager
+        .subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(
+            process.env.VUE_APP_VAPID_PUBLIC_KEY || ""
+          ),
+        })
+        .then(function (subscription) {
+          store.dispatch("subscribeUser", {
+            subscription: JSON.stringify(subscription),
+          });
+        });
+    });
   });
 }
 

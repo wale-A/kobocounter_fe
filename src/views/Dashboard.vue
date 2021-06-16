@@ -383,29 +383,24 @@
                 :searchable="true"
                 placeholder="Recipient"
                 v-model="editedTransaction.recipientName"
-                :options="[
-                  { value: 'All Bread Bakery', label: 'All Bread Bakery' },
-                  { value: 'Food Concepts Plc', label: 'Food Concepts Plc' },
-                  {
-                    value: 'dhl international nigeria',
-                    label: 'dhl international nigeria',
-                  },
-                  {
-                    value: 'Q.f.a Nigeria Limited',
-                    label: 'Q.f.a Nigeria Limited',
-                  },
-                  { value: 'Crichlow Orchids', label: 'Crichlow Orchids' },
-                  { value: 'Farm City', label: 'Farm City' },
-                ]"
+                :options="establishments"
                 :createTag="true"
+                mode="tags"
+                :max="Number('1')"
+                @tag="addEstablishment"
               />
-              <label for="" v-if="editTransaction">
+              <label for="business-establishment" v-if="editTransaction">
                 <input
+                  v-if="editTransaction"
+                  id="business-establishment"
+                  name="business-establishment"
                   type="checkbox"
-                  name=""
-                  id=""
                   :checked="singleTransaction?.establishment?.name"
-                  v-model="isBusinessEstablishment"
+                  v-model="editedTransaction.isEstablishment"
+                  :disabled="
+                    editedTransaction.recipientName &&
+                    editedTransaction.recipientName.length !== 1
+                  "
                 />
                 Is a business establishment ?
               </label>
@@ -424,20 +419,18 @@
               </p>
               <Multiselect
                 :searchable="true"
-                v-if="editTransaction && isBusinessEstablishment"
+                v-if="
+                  editTransaction &&
+                  editedTransaction.recipientName.length === 1 &&
+                  editedTransaction.isEstablishment
+                "
                 placeholder="Establishment's activites"
-                v-model="editedTransaction.recipientActivities"
-                :options="[
-                  { value: 'food', label: 'food' },
-                  { value: 'store', label: 'store' },
-                  { value: 'gas-station', label: 'gas-station' },
-                  { value: 'bar', label: 'bar' },
-                  { value: 'night-club', label: 'night-club' },
-                  { value: 'restaurant', label: 'restaurant' },
-                ]"
+                v-model="editedTransaction.establishmentActivities"
+                :options="activities"
                 mode="tags"
                 :createTag="true"
                 style="margin-top: 25px"
+                @tag="addActivity"
               />
 
               <p class="mid-text" v-show="!editTransaction">
@@ -453,27 +446,25 @@
                 placeholder="Transaction category"
                 v-model="editedTransaction.displayCategory"
                 :options="[
-                  { value: 'MISC', label: 'MISC' },
-                  { value: 'ATM WITHDRAWAL', label: 'ATM WITHDRAWAL' },
-                  {
-                    value: 'BANK CHARGES',
-                    label: 'BANK CHARGES',
-                  },
-                  { value: 'POS PURCHASE', label: 'POS PURCHASE' },
-                  { value: 'WEB PURCHASE', label: 'WEB PURCHASE' },
-                  { value: 'AIRTIME', label: 'AIRTIME' },
-                  {
-                    value: 'MOBILE DATA',
-                    label: 'MOBILE DATA',
-                  },
-                  { value: 'TRANSFER', label: 'TRANSFER' },
+                  'MISC',
+                  'ATM WITHDRAWAL',
+                  'BANK CHARGES',
+                  'POS PURCHASE',
+                  'WEB PURCHASE',
+                  'AIRTIME',
+                  'MOBILE DATA',
+                  'TRANSFER',
                 ]"
                 noResultsText="No result found"
                 style="margin-top: 35px"
               />
 
               <div v-if="editTransaction" id="edit-form-buttons">
-                <button type="submit" style="background-color: #55bb55">
+                <button
+                  type="submit"
+                  style="background-color: #55bb55"
+                  @click="saveEditedTransaction"
+                >
                   SUBMIT
                 </button>
                 <button
@@ -738,19 +729,18 @@ import {
   Account,
   TransactionInfo,
   EstablishmentActivity,
-  Transaction,
 } from "@/types";
 import toastr from "toastr";
 import Multiselect from "@vueform/multiselect";
 import { add, sub, subMonths } from "date-fns";
 import WordCloud from "wordcloud";
-// import firebase from "firebase/app";
-// import "firebase/messaging";
 import { subscribeUser } from "../lib/pushNotification";
 
 @Options({
   created() {
     this.setup();
+    this.$store.dispatch("getActivities");
+    this.$store.dispatch("getEstablishments");
   },
   mounted() {
     this.modalMethods();
@@ -781,11 +771,12 @@ import { subscribeUser } from "../lib/pushNotification";
       editedTransaction: {
         id: undefined,
         displayCategory: "",
-        recipientName: "",
-        recipientActivities: "",
+        recipientName: [],
+        establishmentActivities: [],
+        isEstablishment: false,
       },
       editTransaction: false,
-      isBusinessEstablishment: false,
+      singleTransactionKey: 1,
     };
   },
   computed: {
@@ -806,6 +797,37 @@ import { subscribeUser } from "../lib/pushNotification";
     Multiselect,
   },
   methods: {
+    saveEditedTransaction() {
+      const txn = this.transactions.find(
+        (x: TransactionInfo) => x.id === this.editedTransaction.id
+      );
+      if (txn) {
+        const updatedTransaction = { ...txn };
+        updatedTransaction.displayCategory = this.editedTransaction.displayCategory;
+        updatedTransaction.recipient = this.editedTransaction.recipientName[0];
+        if (this.editedTransaction.isEstablishment) {
+          updatedTransaction.establishment = txn.establishment || {};
+          updatedTransaction.establishment.activities = this.editedTransaction.establishmentActivities;
+          updatedTransaction.establishment.name = this.editedTransaction.recipientName[0];
+        } else {
+          updatedTransaction.establishment = {} as any;
+        }
+
+        this.$store.dispatch("updateTransaction", {
+          transactionId: this.editedTransaction.id,
+          params: {
+            ...this.editedTransaction,
+            recipientName: this.editedTransaction.recipientName[0],
+          },
+          updatedTransaction,
+          callback: () => {
+            console.log({ updatedTransaction });
+            this.disableEditTransaction();
+            this.singleTransaction = updatedTransaction;
+          },
+        });
+      }
+    },
     enableEditTransaction() {
       if (!this.singleTransaction) return;
 
@@ -815,12 +837,14 @@ import { subscribeUser } from "../lib/pushNotification";
       this.editedTransaction = {
         id: this.singleTransaction.id,
         displayCategory: this.singleTransaction.displayCategory,
-        recipientName:
-          this.singleTransaction?.establishment?.name ||
-          this.singleTransaction?.recipient ||
-          "",
-        recipientActivities:
-          this.singleTransaction?.recipient?.activities || [],
+        recipientName: this.singleTransaction?.establishment?.name
+          ? [this.singleTransaction?.establishment?.name]
+          : this.singleTransaction?.recipient
+          ? [this.singleTransaction?.recipient]
+          : [],
+        isEstablishment: !!this.singleTransaction?.establishment?.name,
+        establishmentActivities:
+          this.singleTransaction?.establishment?.activities || [],
       };
     },
     disableEditTransaction() {
@@ -829,9 +853,16 @@ import { subscribeUser } from "../lib/pushNotification";
       this.editedTransaction = {
         id: undefined,
         displayCategory: "",
-        recipientName: "",
-        recipientActivities: "",
+        recipientName: [],
+        recipientActivities: [],
+        isEstablishment: false,
       };
+    },
+    addActivity(activity: string) {
+      this.$store.commit("insertActivity", activity);
+    },
+    addEstablishment(establishment: string) {
+      this.$store.commit("insertEstablishment", establishment);
     },
     getTimeForTimeZone(date: number) {
       return add(new Date(date), {
@@ -959,15 +990,12 @@ import { subscribeUser } from "../lib/pushNotification";
         (x: TransactionInfo) => x.id == transactionId
       ) as TransactionInfo;
       if (this.singleTransaction) {
-        this.showSingleTransactionsModal();
+        document.getElementById("single-transaction-modal")!.style.display =
+          "block";
       }
     },
     showMultipleTransactionsModal() {
       document.getElementById("multiple-transaction-modal")!.style.display =
-        "block";
-    },
-    showSingleTransactionsModal() {
-      document.getElementById("single-transaction-modal")!.style.display =
         "block";
     },
     multipleLabel(params: { label: string }[]) {

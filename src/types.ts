@@ -40,10 +40,11 @@ export type Transaction = {
 };
 
 export type TransactionInfo = Transaction & {
-  recipient: {
+  establishment: {
     name: string;
     activities: string[];
   };
+  recipient: string;
 };
 
 export type NetIncome = {
