@@ -9,8 +9,7 @@ export type State = {
   accountCreateSuccessful: boolean | undefined;
   recurringExpenditure: RecurrentExpense[] | undefined;
   establishmentActivities: EstablishmentActivity[] | undefined;
-  establishments: string[] | undefined;
-  activities: string[] | undefined;
+  establishments: Record<string, string[]> | undefined;
 };
 
 export type User = {

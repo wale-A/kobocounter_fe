@@ -71,17 +71,22 @@ export const store = createStore({
     setEstablishmentActivities(state: State, activities?: []) {
       state.establishmentActivities = activities;
     },
-    setActivities(state: State, activities?: []) {
-      state.activities = activities;
-    },
-    setEstablishments(state: State, establishments?: []) {
+    setEstablishments(state: State, establishments?: Record<string, string[]>) {
       state.establishments = establishments;
     },
-    insertActivity(state: State, activity: string) {
-      state.activities?.push(activity);
+    insertActivity(
+      state: State,
+      { establishment, activity }: { establishment: string; activity: string }
+    ) {
+      if (state.establishments && state.establishments[establishment]) {
+        state.establishments[establishment].push(activity);
+      }
     },
     insertEstablishment(state: State, establishment: string) {
-      state.establishments?.push(establishment);
+      if (!state.establishments) {
+        state.establishments = {};
+      }
+      state.establishments[establishment] = [];
     },
     updateTransaction(state: State, updatedTransaction: TransactionInfo) {
       if (!(state.transactions && state.transactions.length > 0)) return;
@@ -301,21 +306,6 @@ export const store = createStore({
         // this.commit("setRecurringExpenses", []);
       }
     },
-    async getActivities() {
-      try {
-        const res = await superagent
-          .get(`${process.env.VUE_APP_API_URL}/banking/activities`)
-          .ok((r) => r.status < 500);
-
-        if (res.status == 401) {
-          this.commit("logoutUser");
-        } else {
-          this.commit("setActivities", res.body as string[]);
-        }
-      } catch (e) {
-        this.commit("setActivities", []);
-      }
-    },
     async getEstablishments() {
       try {
         const res = await superagent
@@ -405,10 +395,7 @@ export const store = createStore({
       return state.establishmentActivities || [];
     },
     establishments(state: State) {
-      return state.establishments || [];
-    },
-    activities(state: State) {
-      return state.activities || [];
+      return state.establishments || {};
     },
   },
 });

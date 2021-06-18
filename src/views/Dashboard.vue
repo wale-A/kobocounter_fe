@@ -384,11 +384,12 @@
                 :searchable="true"
                 placeholder="Recipient"
                 v-model="editedTransaction.recipientName"
-                :options="establishments"
+                :options="allEstablishments"
                 :createTag="true"
                 mode="tags"
                 :max="Number('1')"
                 @tag="addEstablishment"
+                @change="changedEstablishment"
               />
               <label for="business-establishment" v-if="editTransaction">
                 <input
@@ -399,9 +400,7 @@
                   :checked="singleTransaction?.establishment?.name"
                   v-model="editedTransaction.isEstablishment"
                   :disabled="
-                    editFormSubmitted &&
-                    editedTransaction.recipientName &&
-                    editedTransaction.recipientName.length !== 1
+                    !editFormSubmitted && !editedTransaction?.recipientName[0]
                   "
                 />
                 Is a business establishment ?
@@ -429,7 +428,7 @@
                 "
                 placeholder="Establishment's activites"
                 v-model="editedTransaction.establishmentActivities"
-                :options="activities"
+                :options="allActivities"
                 mode="tags"
                 :createTag="true"
                 style="margin-top: 25px"
@@ -744,7 +743,6 @@ import { subscribeUser } from "../lib/pushNotification";
 @Options({
   created() {
     this.setup();
-    this.$store.dispatch("getActivities");
     this.$store.dispatch("getEstablishments");
   },
   mounted() {
@@ -795,14 +793,34 @@ import { subscribeUser } from "../lib/pushNotification";
       "recurrentExpenses",
       "establishmentActivities",
       "establishments",
-      "activities",
     ]),
+    allEstablishments() {
+      return Object.keys(this.establishments);
+    },
+    allActivities() {
+      return [
+        ...new Set(
+          Object.values(this.establishments as Record<string, string[]>)
+            .flat()
+            .map((x) => x.split(","))
+            .flat()
+        ),
+      ];
+    },
   },
   components: {
     Header,
     Multiselect,
   },
   methods: {
+    changedEstablishment(val: string[]) {
+      let activities = [];
+      if (val && val.length > 0) {
+        activities = this.establishments[val[0]] || [];
+      }
+      this.editedTransaction.establishmentActivities = activities;
+      this.editedTransaction.isEstablishment = activities.length > 0;
+    },
     saveEditedTransaction() {
       const txn = this.transactions.find(
         (x: TransactionInfo) => x.id === this.editedTransaction.id
@@ -864,6 +882,7 @@ import { subscribeUser } from "../lib/pushNotification";
         establishmentActivities:
           this.singleTransaction?.establishment?.activities || [],
       };
+      this.editFormSubmitted = false;
     },
     disableEditTransaction() {
       this.editTransaction = false;
