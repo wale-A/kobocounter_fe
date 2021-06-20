@@ -27,7 +27,10 @@
       delete
     </p>
     <div style="text-align: start; display: flex">
-      <img :alt="`${bank} logo`" :src="`/img/banks/${bank}.svg`" />
+      <img
+        :alt="`${banktoLowerCase()} logo`"
+        :src="`/img/banks/${bank.toLowerCase()}.svg`"
+      />
       <div class="content">
         <span>
           Number: {{ accountNumber }} <br />
