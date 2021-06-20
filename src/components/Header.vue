@@ -11,6 +11,9 @@
           <div class="dropdown-content">
             <span style="height: 12px; display: block">&nbsp;</span>
             <router-link :to="{ name: 'Dashboard' }"> Dashboard </router-link>
+            <router-link :to="{ name: 'Manage' }">
+              Manage Accounts
+            </router-link>
             <a href="#" @click.prevent="logoutUser"> Logout </a>
           </div>
         </div>
@@ -86,7 +89,7 @@ import { Options, Vue } from "vue-class-component";
 
 @Options({
   props: {
-    displayMenu: [Boolean],
+    displayMenu: Boolean,
   },
   data() {
     return {

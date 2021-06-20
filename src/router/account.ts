@@ -1,4 +1,5 @@
 import { RouteRecordRaw } from "vue-router";
+import Manage from "@/views/accounts/Manage.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -15,6 +16,14 @@ const routes: Array<RouteRecordRaw> = [
     path: "/account/add",
     name: "AddAccount",
     component: () => import("@/components/home/AddAccount.vue"),
+  },
+  {
+    path: "/account/manage",
+    name: "Manage",
+    component: Manage,
+    meta: {
+      authorize: true,
+    },
   },
 ];
 

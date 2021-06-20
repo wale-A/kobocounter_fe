@@ -338,7 +338,7 @@ export const store = createStore({
       if (!this.state.user) return undefined;
       try {
         const res = await superagent
-          .post(
+          .put(
             `${process.env.VUE_APP_API_URL}/banking/transactions/${transactionId}`
           )
           .auth(this.state.user?.token.token, { type: "bearer" })
@@ -354,6 +354,63 @@ export const store = createStore({
       } catch (e) {
         toastr.error("Transaction update failed");
         callback(false);
+      }
+    },
+    async generateAccountReAuthCode(
+      _,
+      {
+        accountId,
+        callback,
+      }: {
+        accountId: string;
+        callback: (token?: string) => void;
+      }
+    ) {
+      if (!this.state.user) return undefined;
+      try {
+        // const res = await superagent
+        //   .post(
+        //     `${process.env.VUE_APP_API_URL}/banking/account/${accountId}/reauthorize`
+        //   )
+        //   .auth(this.state.user?.token.token, { type: "bearer" })
+        //   .ok((r) => r.status == 401 || r.status == 200);
+        // if (res.status == 401) {
+        //   this.commit("logoutUser");
+        // } else {
+        //   callback(res.body.token);
+        // }
+        callback("VwxcfeLRZvq1UlD5WiuN");
+      } catch (e) {
+        console.error(e);
+        toastr.error("Unable to generate re-authorization token");
+        callback(undefined);
+      }
+    },
+    async deleteAccount(
+      _,
+      {
+        accountId,
+        callback,
+      }: {
+        accountId: string;
+        callback: (token?: string) => void;
+      }
+    ) {
+      if (!this.state.user) return undefined;
+      try {
+        const res = await superagent
+          .delete(`${process.env.VUE_APP_API_URL}/banking/account/${accountId}`)
+          .auth(this.state.user?.token.token, { type: "bearer" })
+          .ok((r) => r.status == 401 || r.status == 200);
+
+        if (res.status == 401) {
+          this.commit("logoutUser");
+        } else {
+          callback();
+        }
+      } catch (e) {
+        console.error(e);
+        toastr.error("Unable to delete account");
       }
     },
   }, // END OF ACTION

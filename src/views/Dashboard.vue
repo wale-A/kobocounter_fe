@@ -164,9 +164,7 @@
       <canvas id="word-cloud"> </canvas>
     </section>
 
-    <button class="floating-button" @click="addAccount" title="Add an account">
-      +
-    </button>
+    <AddNewAccount />
   </main>
   <aside v-show="accounts && accounts.length === 0">
     <img src="/img/logo.svg" alt="logo" />
@@ -527,19 +525,6 @@ section {
 section p {
   margin-bottom: 0;
 }
-.floating-button {
-  padding: 2px 15px;
-  width: unset !important;
-  font-size: 2em;
-  border-radius: 50%;
-  position: fixed;
-  top: 90%;
-  left: 90%;
-  transition: all 0.2s ease-in 0s;
-  z-index: 9999;
-  cursor: pointer;
-  margin: 0;
-}
 #filter-section {
   display: flex;
 }
@@ -633,10 +618,6 @@ input[type="date"] {
   aside {
     margin: 10% 5%;
     width: 90%;
-  }
-  .floating-button {
-    top: 90%;
-    left: 83%;
   }
   section > .chart {
     height: 230px !important;
@@ -739,6 +720,7 @@ import Multiselect from "@vueform/multiselect";
 import { add, sub, subMonths } from "date-fns";
 import WordCloud from "wordcloud";
 import { subscribeUser } from "../lib/pushNotification";
+import AddNewAccount from "@/components/AddNewAccount.vue";
 
 @Options({
   created() {
@@ -811,6 +793,7 @@ import { subscribeUser } from "../lib/pushNotification";
   components: {
     Header,
     Multiselect,
+    AddNewAccount,
   },
   methods: {
     changedEstablishment(val: string[]) {
@@ -1056,15 +1039,6 @@ import { subscribeUser } from "../lib/pushNotification";
           .toFixed(2);
       }
       this.accountBalance = parseFloat(balance).toLocaleString();
-    },
-    addAccount() {
-      const fn = (code: string) => this.$store.dispatch("addAccount", { code });
-      const options = {
-        onSuccess: function (response: { code: string }) {
-          fn(response.code);
-        },
-      };
-      this.$launchMono(options);
     },
     setup() {
       const accountId = this.selectedAccounts.join(", ");
