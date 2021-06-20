@@ -172,7 +172,7 @@
     <p class="lighter-color small-text">
       Add an account to start tracking your leaks
     </p>
-    <button type="button" @click="addAccount">ADD AN ACCOUNT</button>
+    <button type="button" @click="addNewAccount">ADD AN ACCOUNT</button>
   </aside>
   <img
     style="width: 100%; margin-top: 15%"
@@ -796,6 +796,15 @@ import AddNewAccount from "@/components/AddNewAccount.vue";
     AddNewAccount,
   },
   methods: {
+    addNewAccount() {
+      const fn = (code: string) => this.$store.dispatch("addAccount", { code });
+      const options = {
+        onSuccess: function (response: { code: string }) {
+          fn(response.code);
+        },
+      };
+      this.$launchMono(options);
+    },
     changedEstablishment(val: string[]) {
       let activities = [];
       if (val && val.length > 0) {
