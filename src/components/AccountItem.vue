@@ -28,7 +28,7 @@
     </p>
     <div style="text-align: start; display: flex">
       <img
-        :alt="`${banktoLowerCase()} logo`"
+        :alt="`${bank.toLowerCase()} logo`"
         :src="`/img/banks/${bank.toLowerCase()}.svg`"
       />
       <div class="content">
