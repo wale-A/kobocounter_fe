@@ -43,7 +43,6 @@ self.addEventListener("notificationclick", function (e) {
   // if (action === "close") {
   //   notification.close();
   // } else {
-  notification.close();
   self.clients.matchAll().then(function (clientList) {
     if (clientList.length > 0) {
       return clientList[0].focus();
@@ -51,6 +50,7 @@ self.addEventListener("notificationclick", function (e) {
 
     return self.clients.openWindow("https://kobocounter.com/dashboard");
   });
+  // notification.close();
   // }
 });
 
