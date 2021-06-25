@@ -1,6 +1,9 @@
 <template>
-  <!-- Single Transaction Modal  -->
-  <div id="single-transaction-modal" class="modal" v-show="singleTransaction">
+  <div
+    id="single-transaction-modal"
+    class="modal"
+    v-show="singleTransaction && singleTransaction.id"
+  >
     <div class="modal-content">
       <div class="modal-header" style="align-items: flex-end">
         <span
@@ -207,6 +210,7 @@ import { mapGetters } from "vuex";
   },
   props: {
     singleTransaction: Object,
+    closeFunction: Function,
   },
   data() {
     return {
@@ -275,36 +279,31 @@ import { mapGetters } from "vuex";
       this.$store.commit("insertEstablishment", establishment);
     },
     modalMethods() {
-      const fn = this.disableEditTransaction;
+      const closeModal = this.close;
       const singleTransactionCloseModal = document.getElementById(
         "single-transaction-close-modal"
       );
       const singleTransactionModal = document.getElementById(
         "single-transaction-modal"
       );
-      console.log({ singleTransactionModal });
-      console.log({ singleTransactionCloseModal });
-
       if (!(singleTransactionCloseModal && singleTransactionModal)) {
         return;
       }
 
       singleTransactionCloseModal.onclick = function () {
-        singleTransactionModal.style.display = "none";
-        fn();
+        closeModal();
       };
 
       window.onclick = function (event: MouseEvent) {
         if (event.target == singleTransactionModal) {
-          singleTransactionModal.style.display = "none";
-          fn();
+          closeModal();
         }
       };
     },
     close() {
       const modal = document.getElementById("single-transaction-close-modal");
       if (modal) {
-        modal.style.display = "none";
+        this.closeFunction();
         this.disableEditTransaction();
       }
     },
@@ -369,10 +368,21 @@ export default class SingleTransaction extends Vue {}
   width: 70px;
 }
 #edit-form-buttons {
+  margin-top: 40px;
+  display: flex;
+  justify-content: space-between;
+}
+.modal {
   display: unset;
-  margin-top: unset;
 }
 button {
   margin-top: 40px;
+}
+
+@media screen and (max-width: 700px) {
+  #edit-form-buttons {
+    display: unset;
+    margin-top: unset;
+  }
 }
 </style>

@@ -285,7 +285,10 @@
     </div>
   </div>
 
-  <SingleTransaction :singleTransaction="singleTransaction" />
+  <SingleTransaction
+    :singleTransaction="singleTransaction"
+    :closeFunction="() => (singleTransaction = undefined)"
+  />
 </template>
 
 <style src="@vueform/multiselect/themes/default.css"></style>
@@ -341,14 +344,6 @@ input[type="date"] {
   margin-top: 0;
 }
 
-#bank-logo {
-  width: 100px;
-}
-#edit-form-buttons {
-  margin-top: 40px;
-  display: flex;
-  justify-content: space-between;
-}
 @media screen and (max-width: 700px) {
   main {
     width: 90%;
@@ -601,14 +596,11 @@ import SingleTransaction from "@/components/SingleTransaction.vue";
       this.showMultipleTransactionsModal();
     },
     singleTransactionEventHandler(transactionId: string) {
-      console.log("here.......");
-      this.singleTransaction = this.transactions.find(
-        (x: TransactionInfo) => x.id == transactionId
-      ) as TransactionInfo;
-      if (this.singleTransaction) {
-        document.getElementById("single-transaction-modal")!.style.display =
-          "block";
-      }
+      this.singleTransaction = {
+        ...(this.transactions.find(
+          (x: TransactionInfo) => x.id == transactionId
+        ) as TransactionInfo),
+      };
     },
     showMultipleTransactionsModal() {
       document.getElementById("multiple-transaction-modal")!.style.display =
