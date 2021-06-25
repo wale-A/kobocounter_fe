@@ -33,8 +33,9 @@ self.addEventListener("push", function (e) {
   );
 });
 
-self.addEventListener("notificationclick", function (e) {
-  const notification = e.notification;
+self.addEventListener("notificationclick", function (event) {
+  const notification = event.notification;
+  notification.close();
   // var action = e.action;
 
   // if (!action) {
@@ -43,14 +44,14 @@ self.addEventListener("notificationclick", function (e) {
   // if (action === "close") {
   //   notification.close();
   // } else {
-  self.clients.matchAll().then(function (clientList) {
-    if (clientList.length > 0) {
-      return clientList[0].focus();
-    }
-
-    return self.clients.openWindow("https://kobocounter.com/dashboard");
-  });
-  // notification.close();
+  event.waitUntil(
+    self.clients.matchAll().then(function (clientList) {
+      if (clientList.length > 0) {
+        return clientList[0].focus();
+      }
+      // return self.clients.openWindow("https://kobocounter.com/dashboard");
+    })
+  );
   // }
 });
 
