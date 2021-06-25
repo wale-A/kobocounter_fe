@@ -1,6 +1,10 @@
 <template>
   <Header :display-menu="true" />
-  <main class="container" style="padding: 15px">
+  <main
+    class="container"
+    style="padding: 15px"
+    v-show="accounts && accounts?.length > 0"
+  >
     <section style="margin-bottom: 30px">
       <AccountItem
         v-for="(account, index) in accounts"
@@ -14,9 +18,9 @@
         :status="account.status"
       />
     </section>
-
-    <AddNewAccount />
   </main>
+
+  <AddNewAccount :hasAccounts="accounts != undefined && accounts?.length > 0" />
 </template>
 
 <script lang="ts">
