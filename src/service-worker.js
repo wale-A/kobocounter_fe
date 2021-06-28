@@ -49,7 +49,7 @@ self.addEventListener("notificationclick", function (event) {
       if (clientList.length > 0) {
         return clientList[0].focus();
       }
-      // return self.clients.openWindow("https://kobocounter.com/dashboard");
+      return self.clients.openWindow("https://kobocounter.com/dashboard");
     })
   );
   // }
