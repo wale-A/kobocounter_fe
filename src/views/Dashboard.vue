@@ -193,9 +193,12 @@
             {{ multipleTransactionModalSubtitle }}
           </p>
         </div>
-        <span id="multiple-transaction-close-modal" class="close-modal"
-          >&times;</span
+        <span
+          id="multiple-transaction-close-modal"
+          class="close-modal material-icons"
         >
+          close
+        </span>
       </div>
       <div
         v-show="modalTransactions && modalTransactions.transactions.length > 0"

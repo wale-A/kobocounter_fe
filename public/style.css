@@ -165,7 +165,7 @@ label {
 }
 .close-modal:hover,
 .close-modal:focus {
-  color: #19365e;
+  color: rgba(255, 10, 10, 0.7);
   text-decoration: none;
   cursor: pointer;
 }
