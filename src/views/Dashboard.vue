@@ -163,26 +163,19 @@
       <p class="mid-text darker-color">Spending Pattern</p>
       <canvas id="word-cloud"> </canvas>
     </section>
-
-    <AddNewAccount />
   </main>
-  <aside v-show="accounts && accounts.length === 0">
-    <img src="/img/logo.svg" alt="logo" />
-    <p class="accent-color mid-text">You have not added any account</p>
-    <p class="lighter-color small-text">
-      Add an account to start tracking your leaks
-    </p>
-    <button type="button" @click="addNewAccount">ADD AN ACCOUNT</button>
-  </aside>
+
+  <AddNewAccount :hasAccounts="!(accounts && accounts?.length == 0)" />
+
   <img
-    style="width: 100%; margin-top: 15%"
+    style="width: 30%; margin: 5% 35%"
     v-show="!accounts"
     src="@/assets/loading.gif"
     alt="loading image"
   />
 
   <!-- Multiple Transactions Modal -->
-  <div id="multiple-transaction-modal">
+  <div id="multiple-transaction-modal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
         <div>
@@ -200,9 +193,12 @@
             {{ multipleTransactionModalSubtitle }}
           </p>
         </div>
-        <span id="multiple-transaction-close-modal" class="close-modal"
-          >&times;</span
+        <span
+          id="multiple-transaction-close-modal"
+          class="close-modal material-icons"
         >
+          close
+        </span>
       </div>
       <div
         v-show="modalTransactions && modalTransactions.transactions.length > 0"
@@ -292,197 +288,10 @@
     </div>
   </div>
 
-  <!-- Single Transaction Modal  -->
-  <div id="single-transaction-modal">
-    <div class="modal-content">
-      <div class="modal-header" style="align-items: flex-end">
-        <span
-          id="single-transaction-close-modal"
-          class="close-modal material-icons"
-        >
-          arrow_back
-        </span>
-        <span
-          id="single-transaction-edit"
-          v-show="
-            singleTransaction?.displayCategory !== 'INFLOW' && !editTransaction
-          "
-          class="material-icons"
-          style="margin-right: 20px; cursor: pointer"
-          @click="enableEditTransaction"
-        >
-          create
-        </span>
-      </div>
-      <div style="padding: 15px" v-if="singleTransaction">
-        <div
-          style="
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-          "
-        >
-          <img
-            :alt="`${singleTransaction?.bank} logo`"
-            :src="`/img/banks/${singleTransaction?.bank}.svg`"
-            id="bank-logo"
-          />
-          <!-- onerror="https://ui-avatars.com/api/?size=50&format=svg" -->
-          <span class="mid-text darker-color">
-            {{ new Date(singleTransaction?.date).toLocaleDateString("en-GB") }}
-            <br />
-            {{
-              new Date(singleTransaction?.date).toLocaleTimeString("en-us", {
-                hour: "2-digit",
-                minute: "2-digit",
-              })
-            }}
-          </span>
-        </div>
-        <div>
-          <div style="text-align: start">
-            <form action="#" @submit.prevent="saveEditedTransaction">
-              <p class="mid-text" style="overflow-wrap: break-word">
-                <span class="small-text accent-color">narration: </span> <br />
-                {{ singleTransaction?.narration }}
-              </p>
-              <p class="mid-text">
-                <span class="small-text accent-color">amount: </span> <br />
-                <span style="font-weight: 800; font-size: large">&#8358; </span>
-                <span
-                  :style="{
-                    'font-weight': 500,
-                    color:
-                      singleTransaction?.amount < 0
-                        ? 'rgba(255, 10, 10, 0.7)'
-                        : 'rgb(20, 180, 20)',
-                  }"
-                >
-                  {{ Math.abs(singleTransaction?.amount).toLocaleString() }}
-                </span>
-              </p>
-              <p
-                v-show="
-                  (singleTransaction?.establishment?.name ||
-                    singleTransaction?.recipient) &&
-                  !editTransaction
-                "
-                class="mid-text"
-              >
-                <span class="small-text accent-color">recipient: </span> <br />
-                {{
-                  singleTransaction?.establishment?.name ||
-                  singleTransaction?.recipient
-                }}
-              </p>
-              <Multiselect
-                :disabled="editFormSubmitted"
-                v-if="editTransaction"
-                :searchable="true"
-                placeholder="Recipient"
-                v-model="editedTransaction.recipientName"
-                :options="allEstablishments"
-                :createTag="true"
-                mode="tags"
-                :max="Number('1')"
-                @tag="addEstablishment"
-                @change="changedEstablishment"
-              />
-              <label for="business-establishment" v-if="editTransaction">
-                <input
-                  v-if="editTransaction"
-                  id="business-establishment"
-                  name="business-establishment"
-                  type="checkbox"
-                  :checked="singleTransaction?.establishment?.name"
-                  v-model="editedTransaction.isEstablishment"
-                  :disabled="
-                    !editFormSubmitted && !editedTransaction?.recipientName[0]
-                  "
-                />
-                Is a business establishment ?
-              </label>
-
-              <p
-                v-if="
-                  singleTransaction?.establishment?.activities &&
-                  singleTransaction?.establishment?.activities.length > 0 &&
-                  !editTransaction
-                "
-                class="mid-text"
-              >
-                <span class="small-text accent-color">business activity: </span>
-                <br />
-                {{ singleTransaction?.establishment?.activities?.join(", ") }}
-              </p>
-              <Multiselect
-                :disabled="editFormSubmitted"
-                :searchable="true"
-                v-if="
-                  editTransaction &&
-                  editedTransaction.recipientName.length === 1 &&
-                  editedTransaction.isEstablishment
-                "
-                placeholder="Establishment's activites"
-                v-model="editedTransaction.establishmentActivities"
-                :options="allActivities"
-                mode="tags"
-                :createTag="true"
-                style="margin-top: 25px"
-                @tag="addActivity"
-              />
-
-              <p class="mid-text" v-show="!editTransaction">
-                <span class="small-text accent-color"
-                  >transaction category:
-                </span>
-                <br />
-                {{ singleTransaction?.displayCategory }}
-              </p>
-              <Multiselect
-                :disabled="editFormSubmitted"
-                :searchable="true"
-                v-if="editTransaction"
-                placeholder="Transaction category"
-                v-model="editedTransaction.displayCategory"
-                :options="[
-                  'MISC',
-                  'ATM WITHDRAWAL',
-                  'BANK CHARGES',
-                  'POS PURCHASE',
-                  'WEB PURCHASE',
-                  'AIRTIME',
-                  'MOBILE DATA',
-                  'TRANSFER',
-                ]"
-                noResultsText="No result found"
-                style="margin-top: 35px"
-              />
-
-              <div v-if="editTransaction" id="edit-form-buttons">
-                <button
-                  type="submit"
-                  style="background-color: #55bb55"
-                  :disabled="editFormSubmitted"
-                >
-                  SUBMIT
-                </button>
-                <button
-                  type="reset"
-                  style="background-color: red"
-                  :disabled="editFormSubmitted"
-                  @click="disableEditTransaction"
-                >
-                  CANCEL
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <SingleTransaction
+    :singleTransaction="singleTransaction"
+    :closeFunction="() => (singleTransaction = undefined)"
+  />
 </template>
 
 <style src="@vueform/multiselect/themes/default.css"></style>
@@ -495,27 +304,6 @@ main {
   margin-right: 10%;
   margin-left: 10%;
   margin-top: 3%;
-}
-aside {
-  position: absolute;
-  margin: 10% 20%;
-  width: 60%;
-  height: 45%;
-  background-color: rgba(240, 248, 255, 0.6);
-  display: flex;
-  flex-flow: column;
-  align-items: center;
-}
-aside img {
-  height: 135px;
-  margin-top: 5%;
-  margin-bottom: 30px;
-}
-aside p {
-  margin: 0;
-}
-aside button {
-  margin-top: 50px;
 }
 section {
   margin-top: 15px;
@@ -559,65 +347,12 @@ input[type="date"] {
   margin-top: 0;
 }
 
-#multiple-transaction-modal,
-#single-transaction-modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0, 0, 0); /* Fallback color */
-  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
-}
-.modal-content {
-  background-color: #fefefe;
-  margin: 8% auto; /* 11% from the top and centered */
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
-  border-radius: 15px;
-  display: flex;
-  flex-direction: column;
-}
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 15px;
-}
-.close-modal {
-  color: #19365e;
-  float: right;
-  font-size: 30px;
-  font-weight: bold;
-  align-self: center;
-}
-.close-modal:hover,
-.close-modal:focus {
-  color: #19365e;
-  text-decoration: none;
-  cursor: pointer;
-}
-#bank-logo {
-  width: 100px;
-}
-#edit-form-buttons {
-  margin-top: 40px;
-  display: flex;
-  justify-content: space-between;
-}
 @media screen and (max-width: 700px) {
   main {
     width: 90%;
     margin-right: 5%;
     margin-left: 5%;
     margin-top: 3%;
-  }
-  aside {
-    margin: 10% 5%;
-    width: 90%;
   }
   section > .chart {
     height: 230px !important;
@@ -655,22 +390,6 @@ input[type="date"] {
   }
   button {
     margin-top: 0;
-  }
-  .modal-content {
-    padding: 10px;
-    width: 90%;
-    margin: 11% auto;
-  }
-  #bank-logo {
-    width: 70px;
-  }
-
-  #edit-form-buttons {
-    display: unset;
-    margin-top: unset;
-  }
-  #edit-form-buttons button {
-    margin-top: 40px;
   }
 }
 </style>
@@ -721,11 +440,11 @@ import { add, sub, subMonths } from "date-fns";
 import WordCloud from "wordcloud";
 import { subscribeUser } from "../lib/pushNotification";
 import AddNewAccount from "@/components/AddNewAccount.vue";
+import SingleTransaction from "@/components/SingleTransaction.vue";
 
 @Options({
   created() {
     this.setup();
-    this.$store.dispatch("getEstablishments");
   },
   mounted() {
     this.modalMethods();
@@ -753,16 +472,6 @@ import AddNewAccount from "@/components/AddNewAccount.vue";
       multipleTransactionModalTitle: "",
       multipleTransactionModalSubtitle: "",
       singleTransaction: undefined,
-      editedTransaction: {
-        id: undefined,
-        displayCategory: "",
-        recipientName: [],
-        establishmentActivities: [],
-        isEstablishment: false,
-      },
-      editTransaction: false,
-      singleTransactionKey: 1,
-      editFormSubmitted: false,
     };
   },
   computed: {
@@ -774,126 +483,15 @@ import AddNewAccount from "@/components/AddNewAccount.vue";
       "accountCreateStatus",
       "recurrentExpenses",
       "establishmentActivities",
-      "establishments",
     ]),
-    allEstablishments() {
-      return Object.keys(this.establishments);
-    },
-    allActivities() {
-      return [
-        ...new Set(
-          Object.values(this.establishments as Record<string, string[]>)
-            .flat()
-            .map((x) => x.split(","))
-            .flat()
-        ),
-      ];
-    },
   },
   components: {
     Header,
     Multiselect,
     AddNewAccount,
+    SingleTransaction,
   },
   methods: {
-    addNewAccount() {
-      const fn = (code: string) => this.$store.dispatch("addAccount", { code });
-      const options = {
-        onSuccess: function (response: { code: string }) {
-          fn(response.code);
-        },
-      };
-      this.$launchMono(options);
-    },
-    changedEstablishment(val: string[]) {
-      let activities = [];
-      if (val && val.length > 0) {
-        activities = this.establishments[val[0]] || [];
-      }
-      this.editedTransaction.establishmentActivities = activities;
-      this.editedTransaction.isEstablishment = activities.length > 0;
-    },
-    saveEditedTransaction() {
-      const txn = this.transactions.find(
-        (x: TransactionInfo) => x.id === this.editedTransaction.id
-      );
-      if (txn) {
-        this.editFormSubmitted = true;
-
-        const updatedTransaction = { ...txn };
-        updatedTransaction.displayCategory = this.editedTransaction.displayCategory;
-        updatedTransaction.recipient = this.editedTransaction.recipientName[0];
-        if (this.editedTransaction.isEstablishment) {
-          updatedTransaction.establishment = txn.establishment || {};
-          updatedTransaction.establishment.activities = this.editedTransaction.establishmentActivities;
-          updatedTransaction.establishment.name = this.editedTransaction.recipientName[0];
-        } else {
-          updatedTransaction.establishment = {} as any;
-        }
-
-        this.$store.dispatch("updateTransaction", {
-          transactionId: this.editedTransaction.id,
-          params: {
-            ...this.editedTransaction,
-            recipientName: this.editedTransaction.recipientName[0],
-          },
-          updatedTransaction,
-          callback: (success: boolean) => {
-            if (success) {
-              this.singleTransaction = updatedTransaction;
-              this.modalTransactions.transactions.splice(
-                this.modalTransactions.transactions.findIndex(
-                  (x: TransactionInfo) => x.id == updatedTransaction.id
-                ),
-                1,
-                updatedTransaction
-              );
-              this.disableEditTransaction();
-            } else {
-              this.editFormSubmitted = false;
-            }
-          },
-        });
-      }
-    },
-    enableEditTransaction() {
-      if (!this.singleTransaction) return;
-
-      this.editTransaction = true;
-      this.isBusinessEstablishment = !!this.singleTransaction?.establishment
-        ?.name;
-      this.editedTransaction = {
-        id: this.singleTransaction.id,
-        displayCategory: this.singleTransaction.displayCategory,
-        recipientName: this.singleTransaction?.establishment?.name
-          ? [this.singleTransaction?.establishment?.name]
-          : this.singleTransaction?.recipient
-          ? [this.singleTransaction?.recipient]
-          : [],
-        isEstablishment: !!this.singleTransaction?.establishment?.name,
-        establishmentActivities:
-          this.singleTransaction?.establishment?.activities || [],
-      };
-      this.editFormSubmitted = false;
-    },
-    disableEditTransaction() {
-      this.editTransaction = false;
-      this.isBusinessEstablishment = false;
-      this.editedTransaction = {
-        id: undefined,
-        displayCategory: "",
-        recipientName: [],
-        recipientActivities: [],
-        isEstablishment: false,
-      };
-      this.editFormSubmitted = false;
-    },
-    addActivity(activity: string) {
-      this.$store.commit("insertActivity", activity);
-    },
-    addEstablishment(establishment: string) {
-      this.$store.commit("insertEstablishment", establishment);
-    },
     getTimeForTimeZone(date: number) {
       return add(new Date(date), {
         minutes: new Date().getTimezoneOffset() + 60,
@@ -912,7 +510,6 @@ import AddNewAccount from "@/components/AddNewAccount.vue";
       this.showMultipleTransactionsModal();
     },
     modalMethods() {
-      const fn = this.disableEditTransaction;
       const multipleTransactionCloseModal = document.getElementById(
         "multiple-transaction-close-modal"
       )!;
@@ -920,26 +517,12 @@ import AddNewAccount from "@/components/AddNewAccount.vue";
         "multiple-transaction-modal"
       )!;
 
-      const singleTransactionCloseModal = document.getElementById(
-        "single-transaction-close-modal"
-      )!;
-      const singleTransactionModal = document.getElementById(
-        "single-transaction-modal"
-      )!;
-
       multipleTransactionCloseModal.onclick = function () {
         multipleTransactionModal.style.display = "none";
-      };
-      singleTransactionCloseModal.onclick = function () {
-        singleTransactionModal.style.display = "none";
-        fn();
       };
       window.onclick = function (event: MouseEvent) {
         if (event.target == multipleTransactionModal) {
           multipleTransactionModal.style.display = "none";
-        } else if (event.target == singleTransactionModal) {
-          singleTransactionModal.style.display = "none";
-          fn();
         }
       };
     },
@@ -1016,13 +599,11 @@ import AddNewAccount from "@/components/AddNewAccount.vue";
       this.showMultipleTransactionsModal();
     },
     singleTransactionEventHandler(transactionId: string) {
-      this.singleTransaction = this.transactions.find(
-        (x: TransactionInfo) => x.id == transactionId
-      ) as TransactionInfo;
-      if (this.singleTransaction) {
-        document.getElementById("single-transaction-modal")!.style.display =
-          "block";
-      }
+      this.singleTransaction = {
+        ...(this.transactions.find(
+          (x: TransactionInfo) => x.id == transactionId
+        ) as TransactionInfo),
+      };
     },
     showMultipleTransactionsModal() {
       document.getElementById("multiple-transaction-modal")!.style.display =
