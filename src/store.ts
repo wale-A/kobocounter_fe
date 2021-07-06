@@ -1,4 +1,3 @@
-import superagent from "superagent";
 import { createStore } from "vuex";
 import router from "./router";
 import {
@@ -11,6 +10,11 @@ import {
   TransactionInfo,
 } from "./types";
 import toastr from "toastr";
+import axios from "axios";
+import { unauthorizedInterceptor } from "./_helpers/axiosInterceptor";
+
+// add unauthorized interceptor to all axios requests
+unauthorizedInterceptor();
 
 export const store = createStore({
   state() {
@@ -105,18 +109,14 @@ export const store = createStore({
     ) {
       try {
         this.commit("setLoginStatus", undefined);
-        const res = await superagent
-          .post(`${process.env.VUE_APP_API_URL}/users/login`)
-          .send({ email, password })
-          .ok((res) => res.status < 500);
+        const res = await axios.post(
+          `${process.env.VUE_APP_API_URL}/users/login`,
+          { email, password }
+        );
 
-        if (res.status !== 200) {
-          this.commit("setLoginStatus", false);
-        } else {
-          localStorage.setItem("authenticated-user", JSON.stringify(res.body));
-          this.commit("setUser", res.body as User);
-          this.commit("setLoginStatus", true);
-        }
+        localStorage.setItem("authenticated-user", JSON.stringify(res.data));
+        this.commit("setUser", res.data as User);
+        this.commit("setLoginStatus", true);
       } catch (e) {
         this.commit("setLoginError");
       }
@@ -125,17 +125,17 @@ export const store = createStore({
       try {
         if (!this.state.user) throw "";
 
-        const res = await superagent
-          .post(`${process.env.VUE_APP_API_URL}/banking/accounts`)
-          .auth(this.state.user?.token?.token, { type: "bearer" })
-          .send({ code })
-          .ok((r) => r.status < 500);
+        const res = await axios.post(
+          `${process.env.VUE_APP_API_URL}/banking/accounts`,
+          { code },
+          {
+            headers: {
+              Authorization: `Bearer ${this.state.user?.token?.token}`,
+            },
+          }
+        );
 
-        if (res.status == 401) {
-          this.commit("logoutUser");
-        } else {
-          this.commit("setAccountCreateStatus", true);
-        }
+        this.commit("setAccountCreateStatus", true);
       } catch (e) {
         this.commit("setAccountCreateStatus", false);
       }
@@ -144,16 +144,16 @@ export const store = createStore({
       try {
         if (!this.state.user) throw "";
 
-        const res = await superagent
-          .get(`${process.env.VUE_APP_API_URL}/banking/accounts`)
-          .auth(this.state.user?.token.token, { type: "bearer" })
-          .ok((r) => r.status < 500);
+        const res = await axios.get(
+          `${process.env.VUE_APP_API_URL}/banking/accounts`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.state.user?.token?.token}`,
+            },
+          }
+        );
 
-        if (res.status == 401) {
-          this.commit("logoutUser");
-        } else {
-          this.commit("setAccounts", res.body as Account[]);
-        }
+        this.commit("setAccounts", res.data as Account[]);
       } catch (e) {
         this.commit("setAccounts", []);
       }
@@ -169,17 +169,17 @@ export const store = createStore({
       try {
         if (!this.state.user) throw "";
 
-        const res = await superagent
-          .get(`${process.env.VUE_APP_API_URL}/banking/accounts/transactions`)
-          .auth(this.state.user?.token.token, { type: "bearer" })
-          .query({ accountId, start, end })
-          .ok((r) => r.status < 500);
+        const res = await axios.get(
+          `${process.env.VUE_APP_API_URL}/banking/accounts/transactions`,
+          {
+            params: { accountId, start, end },
+            headers: {
+              Authorization: `Bearer ${this.state.user?.token?.token}`,
+            },
+          }
+        );
 
-        if (res.status == 401) {
-          this.commit("logoutUser");
-        } else {
-          this.commit("setTransactions", res.body as Account[]);
-        }
+        this.commit("setTransactions", res.data as Account[]);
       } catch (e) {
         this.commit("setTransactions", []);
       }
@@ -193,40 +193,34 @@ export const store = createStore({
       }: { accountId?: string; start?: number; end?: number }
     ) {
       try {
-        if (!this.state.user) return undefined;
+        const res = await axios.get(
+          `${process.env.VUE_APP_API_URL}/banking/accounts/netincome`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.state.user?.token?.token}`,
+            },
+            params: { accountId, start, end },
+          }
+        );
 
-        const res = await superagent
-          .get(`${process.env.VUE_APP_API_URL}/banking/accounts/netincome`)
-          .auth(this.state.user?.token.token, { type: "bearer" })
-          .query({ accountId, start, end })
-          .ok((r) => r.status < 500);
-
-        if (res.status == 401) {
-          this.commit("logoutUser");
-        } else {
-          this.commit("setNetIncome", res.body as NetIncome[]);
-        }
+        this.commit("setNetIncome", res.data as NetIncome[]);
       } catch (e) {
         this.commit("setNetIncome", []);
       }
     },
     async getRecurringExpenses(_, { accountId }: { accountId?: string }) {
       try {
-        if (!this.state.user) return undefined;
+        const res = await axios.get(
+          `${process.env.VUE_APP_API_URL}/banking/accounts/recurrentExpenses`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.state.user?.token?.token}`,
+            },
+            params: { accountId },
+          }
+        );
 
-        const res = await superagent
-          .get(
-            `${process.env.VUE_APP_API_URL}/banking/accounts/recurrentExpenses`
-          )
-          .auth(this.state.user?.token.token, { type: "bearer" })
-          .query({ accountId })
-          .ok((r) => r.status < 500);
-
-        if (res.status == 401) {
-          this.commit("logoutUser");
-        } else {
-          this.commit("setRecurringExpenses", res.body as RecurrentExpense[]);
-        }
+        this.commit("setRecurringExpenses", res.data as RecurrentExpense[]);
       } catch (e) {
         this.commit("setRecurringExpenses", []);
       }
@@ -240,19 +234,17 @@ export const store = createStore({
       }: { accountId?: string; start?: number; end?: number }
     ) {
       try {
-        if (!this.state.user) return undefined;
+        const res = await axios.get(
+          `${process.env.VUE_APP_API_URL}/banking/establishmentActivities`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.state.user?.token?.token}`,
+            },
+            params: { accountId, start, end },
+          }
+        );
 
-        const res = await superagent
-          .get(`${process.env.VUE_APP_API_URL}/banking/establishmentActivities`)
-          .auth(this.state.user?.token.token, { type: "bearer" })
-          .query({ accountId, start, end })
-          .ok((r) => r.status < 500);
-
-        if (res.status == 401) {
-          this.commit("logoutUser");
-        } else {
-          this.commit("setEstablishmentActivities", res.body);
-        }
+        this.commit("setEstablishmentActivities", res.data);
       } catch (e) {
         this.commit("setEstablishmentActivities", []);
       }
@@ -266,57 +258,56 @@ export const store = createStore({
       }: { accountId?: string; start?: number; end?: number }
     ) {
       try {
-        if (!this.state.user) return undefined;
+        const res = await axios.get(
+          `${process.env.VUE_APP_API_URL}/banking/accounts/transactions/categories`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.state.user?.token?.token}`,
+            },
+            params: { accountId, start, end },
+          }
+        );
 
-        const res = await superagent
-          .get(
-            `${process.env.VUE_APP_API_URL}/banking/accounts/transactions/categories`
-          )
-          .auth(this.state.user?.token.token, { type: "bearer" })
-          .query({ accountId, start, end })
-          .ok((r) => r.status < 500);
-
-        if (res.status == 401) {
-          this.commit("logoutUser");
-        } else {
-          this.commit(
-            "setTransactionCategories",
-            res.body as TransactionCategories[]
-          );
-        }
+        this.commit(
+          "setTransactionCategories",
+          res.data as TransactionCategories[]
+        );
       } catch (e) {
         this.commit("setTransactionCategories", []);
       }
     },
     async subscribeUser(_, { subscription }: { subscription: string }) {
-      if (!this.state.user) return undefined;
       try {
-        const res = await superagent
-          .post(`${process.env.VUE_APP_API_URL}/users/subscribe`)
-          .auth(this.state.user?.token.token, { type: "bearer" })
-          .send({ subscription })
-          .ok((r) => r.status < 500);
-
-        if (res.status == 401) {
-          this.commit("logoutUser");
-        } else {
-          // this.commit("setRecurringExpenses", res.body as RecurrentExpense[]);
-        }
+        await axios.post(
+          `${process.env.VUE_APP_API_URL}/users/subscription`,
+          { subscription },
+          {
+            headers: {
+              Authorization: `Bearer ${this.state.user?.token?.token}`,
+            },
+          }
+        );
       } catch (e) {
-        // this.commit("setRecurringExpenses", []);
+        // console.log()
+      }
+    },
+    async deleteSubscription(_, { subscription }: { subscription: string }) {
+      try {
+        await axios.delete(
+          `${process.env.VUE_APP_API_URL}/users/subscription`,
+          { data: { subscription } }
+        );
+      } catch (e) {
+        // console.log(e)
       }
     },
     async getEstablishments() {
       try {
-        const res = await superagent
-          .get(`${process.env.VUE_APP_API_URL}/banking/establishments`)
-          .ok((r) => r.status < 500);
+        const res = await axios.get(
+          `${process.env.VUE_APP_API_URL}/banking/establishments`
+        );
 
-        if (res.status == 401) {
-          this.commit("logoutUser");
-        } else {
-          this.commit("setEstablishments", res.body as string[]);
-        }
+        this.commit("setEstablishments", res.data as string[]);
       } catch (e) {
         this.commit("setEstablishments", []);
       }
@@ -335,22 +326,20 @@ export const store = createStore({
         callback: (success: boolean) => void;
       }
     ) {
-      if (!this.state.user) return undefined;
       try {
-        const res = await superagent
-          .put(
-            `${process.env.VUE_APP_API_URL}/banking/transactions/${transactionId}`
-          )
-          .auth(this.state.user?.token.token, { type: "bearer" })
-          .send(params)
-          .ok((r) => r.status == 401 || r.status == 201);
-        if (res.status == 401) {
-          this.commit("logoutUser");
-        } else {
-          this.commit("updateTransaction", updatedTransaction);
-          toastr.success("Transaction update was successful");
-          callback(true);
-        }
+        await axios.put(
+          `${process.env.VUE_APP_API_URL}/banking/transactions/${transactionId}`,
+          params,
+          {
+            headers: {
+              Authorization: `Bearer ${this.state.user?.token?.token}`,
+            },
+          }
+        );
+
+        this.commit("updateTransaction", updatedTransaction);
+        toastr.success("Transaction update was successful");
+        callback(true);
       } catch (e) {
         toastr.error("Transaction update failed");
         callback(false);
@@ -366,19 +355,19 @@ export const store = createStore({
         callback: (token?: string) => void;
       }
     ) {
-      if (!this.state.user) return undefined;
       try {
-        // const res = await superagent
+        // await axios
         //   .post(
-        //     `${process.env.VUE_APP_API_URL}/banking/account/${accountId}/reauthorize`
+        //     `${process.env.VUE_APP_API_URL}/banking/account/${accountId}/reauthorize`,
+        //     {
+        //       headers: {
+        //         Authorization: `Bearer ${this.state.user?.token?.token}`,
+        //       },
+        //     }
         //   )
-        //   .auth(this.state.user?.token.token, { type: "bearer" })
-        //   .ok((r) => r.status == 401 || r.status == 200);
-        // if (res.status == 401) {
-        //   this.commit("logoutUser");
-        // } else {
-        //   callback(res.body.token);
-        // }
+
+        //   callback(res.data.token);
+
         callback("VwxcfeLRZvq1UlD5WiuN");
       } catch (e) {
         console.error(e);
@@ -396,18 +385,17 @@ export const store = createStore({
         callback: (token?: string) => void;
       }
     ) {
-      if (!this.state.user) return undefined;
       try {
-        const res = await superagent
-          .delete(`${process.env.VUE_APP_API_URL}/banking/account/${accountId}`)
-          .auth(this.state.user?.token.token, { type: "bearer" })
-          .ok((r) => r.status == 401 || r.status == 200);
+        await axios.delete(
+          `${process.env.VUE_APP_API_URL}/banking/account/${accountId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.state.user?.token?.token}`,
+            },
+          }
+        );
 
-        if (res.status == 401) {
-          this.commit("logoutUser");
-        } else {
-          callback();
-        }
+        callback();
       } catch (e) {
         console.error(e);
         toastr.error("Unable to delete account");

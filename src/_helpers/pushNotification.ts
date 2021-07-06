@@ -1,7 +1,6 @@
-import { State } from "@/types";
-import { Store } from "vuex";
+import { store } from "@/store";
 
-export async function subscribeUser(store: Store<State>) {
+export async function subscribeUser() {
   navigator.serviceWorker.ready.then(function (sw) {
     sw.pushManager.getSubscription().then(function (subscription) {
       if (subscription) {
@@ -19,6 +18,20 @@ export async function subscribeUser(store: Store<State>) {
             subscription: JSON.stringify(subscription),
           });
         });
+    });
+  });
+}
+
+export async function deleteSubscription(): Promise<void> {
+  navigator.serviceWorker.ready.then(function (sw) {
+    sw.pushManager.getSubscription().then(function (subscription) {
+      if (!subscription) {
+        return;
+      }
+
+      store.dispatch("deleteSubscription", {
+        subscription: JSON.stringify(subscription),
+      });
     });
   });
 }

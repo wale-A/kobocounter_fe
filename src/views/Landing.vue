@@ -112,7 +112,7 @@ import { Options, Vue } from "vue-class-component";
 import Footer from "@/components/Footer.vue";
 import Header from "@/components/Header.vue";
 import { mapGetters } from "vuex";
-import { subscribeUser } from "@/lib/pushNotification";
+// import { subscribeUser } from "@/_helpers/pushNotification";
 
 @Options({
   components: {
@@ -124,7 +124,7 @@ import { subscribeUser } from "@/lib/pushNotification";
   },
   methods: {
     subscribeToPushNotifications() {
-      subscribeUser(this.$store);
+      // subscribeUser();
     },
   },
 })

@@ -86,6 +86,7 @@
 <script lang="ts">
 import { mapGetters } from "vuex";
 import { Options, Vue } from "vue-class-component";
+import { deleteSubscription } from "@/_helpers/pushNotification";
 
 @Options({
   props: {
@@ -98,6 +99,7 @@ import { Options, Vue } from "vue-class-component";
   },
   methods: {
     logoutUser() {
+      deleteSubscription();
       this.$store.commit("logoutUser");
     },
   },

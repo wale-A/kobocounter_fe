@@ -438,9 +438,9 @@ import toastr from "toastr";
 import Multiselect from "@vueform/multiselect";
 import { add, sub, subMonths } from "date-fns";
 import WordCloud from "wordcloud";
-import { subscribeUser } from "../lib/pushNotification";
 import AddNewAccount from "@/components/AddNewAccount.vue";
 import SingleTransaction from "@/components/SingleTransaction.vue";
+import { subscribeUser } from "@/_helpers/pushNotification";
 
 @Options({
   created() {
@@ -448,7 +448,7 @@ import SingleTransaction from "@/components/SingleTransaction.vue";
   },
   mounted() {
     this.modalMethods();
-    subscribeUser(this.$store);
+    subscribeUser();
   },
   data() {
     const from = subMonths(Date.now(), 1);
@@ -700,7 +700,7 @@ import SingleTransaction from "@/components/SingleTransaction.vue";
       (document.getElementById("big-search-button") as any).disabled = false;
     },
     subscribeToPushNotifications() {
-      subscribeUser(this.$store);
+      subscribeUser();
     },
   },
   watch: {
