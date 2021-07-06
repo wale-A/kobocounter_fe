@@ -49,7 +49,7 @@ export const store = createStore({
       state.accountCreateSuccessful = status;
     },
     setLoginError(state: State) {
-      state.loginError = false;
+      state.loginError = true;
     },
     setUser(state: State, u: User) {
       state.user = u;
@@ -116,11 +116,11 @@ export const store = createStore({
 
         if (res.status !== 200) {
           this.commit("setLoginStatus", false);
+        } else {
+          localStorage.setItem("authenticated-user", JSON.stringify(res.data));
+          this.commit("setUser", res.data as User);
+          this.commit("setLoginStatus", true);
         }
-
-        localStorage.setItem("authenticated-user", JSON.stringify(res.data));
-        this.commit("setUser", res.data as User);
-        this.commit("setLoginStatus", true);
       } catch (e) {
         this.commit("setLoginError");
       }
