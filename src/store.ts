@@ -114,6 +114,10 @@ export const store = createStore({
           { email, password }
         );
 
+        if (res.status !== 200) {
+          this.commit("setLoginStatus", false);
+        }
+
         localStorage.setItem("authenticated-user", JSON.stringify(res.data));
         this.commit("setUser", res.data as User);
         this.commit("setLoginStatus", true);
