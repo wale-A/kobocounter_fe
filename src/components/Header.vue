@@ -10,8 +10,16 @@
           <img :src="avatarUrl" alt="avatar" class="pointer" />
           <div class="dropdown-content">
             <span style="height: 12px; display: block">&nbsp;</span>
-            <router-link :to="{ name: 'Dashboard' }"> Dashboard </router-link>
-            <router-link :to="{ name: 'Manage' }">
+            <router-link
+              :to="{ name: 'Dashboard' }"
+              style="border-bottom: 1px solid black"
+            >
+              Dashboard
+            </router-link>
+            <router-link
+              :to="{ name: 'Manage' }"
+              style="border-bottom: 1px solid black"
+            >
               Manage Accounts
             </router-link>
             <a href="#" @click.prevent="logoutUser"> Logout </a>
