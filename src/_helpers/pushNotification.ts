@@ -28,9 +28,12 @@ export async function deleteSubscription(): Promise<void> {
       if (!subscription) {
         return;
       }
-
-      store.dispatch("deleteSubscription", {
-        subscription: JSON.stringify(subscription),
+      return subscription.unsubscribe().then(function (val) {
+        if (val) {
+          store.dispatch("deleteSubscription", {
+            subscription: JSON.stringify(subscription),
+          });
+        }
       });
     });
   });
