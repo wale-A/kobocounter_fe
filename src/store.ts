@@ -9,7 +9,6 @@ import {
   User,
   TransactionInfo,
 } from "./types";
-import toastr from "toastr";
 import axios from "axios";
 import { unauthorizedInterceptor } from "./_helpers/axiosInterceptor";
 
@@ -37,9 +36,6 @@ export const store = createStore({
     };
   },
   mutations: {
-    setLoginStatus(state: State, status: boolean) {
-      state.loginSuccessful = status;
-    },
     logoutUser(state: State) {
       localStorage.removeItem("authenticated-user");
       state.user = undefined;
@@ -47,9 +43,6 @@ export const store = createStore({
     },
     setAccountCreateStatus(state: State, status: boolean) {
       state.accountCreateSuccessful = status;
-    },
-    setLoginError(state: State) {
-      state.loginError = true;
     },
     setUser(state: State, u: User) {
       state.user = u;
@@ -103,9 +96,46 @@ export const store = createStore({
     },
   }, // END OF MUTATION
   actions: {
+    async registerUser(
+      _,
+      {
+        email,
+        name,
+        password,
+        callback,
+      }: {
+        email: string;
+        name: string;
+        password: string;
+        callback: (err: Error | null, val: boolean, message?: string) => void;
+      }
+    ) {
+      try {
+        const res = await axios.post(`${process.env.VUE_APP_API_URL}/users`, {
+          email,
+          password,
+          name,
+        });
+
+        if (res.status !== 200) {
+          return callback(null, false, res.data);
+        }
+        return callback(null, true);
+      } catch (e) {
+        return callback(e as Error, false);
+      }
+    },
     async loginUser(
       _,
-      { email, password }: { email: string; password: string }
+      {
+        email,
+        password,
+        callback,
+      }: {
+        email: string;
+        password: string;
+        callback: (err: Error | null, val: boolean, message?: string) => void;
+      }
     ) {
       try {
         this.commit("setLoginStatus", undefined);
@@ -115,14 +145,14 @@ export const store = createStore({
         );
 
         if (res.status !== 200) {
-          this.commit("setLoginStatus", false);
+          return callback(null, false, res.data);
         } else {
           localStorage.setItem("authenticated-user", JSON.stringify(res.data));
           this.commit("setUser", res.data as User);
-          this.commit("setLoginStatus", true);
+          return callback(null, true);
         }
       } catch (e) {
-        this.commit("setLoginError");
+        return callback(e as Error, false);
       }
     },
     async addAccount(_, { code }: { code: string }) {
@@ -342,10 +372,8 @@ export const store = createStore({
         );
 
         this.commit("updateTransaction", updatedTransaction);
-        toastr.success("Transaction update was successful");
         callback(true);
       } catch (e) {
-        toastr.error("Transaction update failed");
         callback(false);
       }
     },
@@ -375,7 +403,7 @@ export const store = createStore({
         callback("VwxcfeLRZvq1UlD5WiuN");
       } catch (e) {
         console.error(e);
-        toastr.error("Unable to generate re-authorization token");
+        // toastr.error("Unable to generate re-authorization token");
         callback(undefined);
       }
     },
@@ -386,7 +414,7 @@ export const store = createStore({
         callback,
       }: {
         accountId: string;
-        callback: (token?: string) => void;
+        callback: (e: Error | null) => void;
       }
     ) {
       try {
@@ -399,10 +427,10 @@ export const store = createStore({
           }
         );
 
-        callback();
+        callback(null);
       } catch (e) {
         console.error(e);
-        toastr.error("Unable to delete account");
+        callback(e as Error);
       }
     },
   }, // END OF ACTION

@@ -60,7 +60,7 @@
           <label for="password" class="small-text lighter-color">
             <span class="mid-text">Your password</span>
           </label>
-          <input type="password" name="password" v-model="password" />
+          <Password v-model:password="password" />
           <span class="small-text info-text no-break"> min. 8 characters </span>
           <button
             id="register-button"
@@ -157,12 +157,14 @@ button {
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Vue, Options } from "vue-class-component";
 import Header from "@/components/Header.vue";
-import superagent from "superagent";
-import toastr from "toastr";
+import router from "@/router";
+import { notify } from "@kyvg/vue3-notification";
+import Password from "@/components/Password.vue";
 
 @Options({
   components: {
     Header,
+    Password,
   },
   data() {
     return {
@@ -174,27 +176,39 @@ import toastr from "toastr";
   },
   methods: {
     async registerUser() {
-      try {
-        (document.getElementById("register-button") as any).disabled = true;
-        const res = await superagent
-          .post(`${process.env.VUE_APP_API_URL}/users`)
-          .send({ email: this.email, password: this.password, name: this.name })
-          .ok((res) => res.status < 500);
+      const registerButton = document.getElementById("register-button") as any;
+      registerButton.disabled = true;
 
-        if (res.status !== 201) {
-          toastr.error(res.text, "Registration failed");
-        } else {
-          toastr.success(
-            "User successfully registered, please check you mail for verification",
-            "Success"
-          );
-          this.$router.push({ name: "Home" });
-        }
-      } catch (e) {
-        (document.getElementById("register-button") as any).disabled = false;
-        toastr.error("Unable to register user", "Registration failed");
-        console.error(e);
-      }
+      this.$store.dispatch("registerUser", {
+        email: this.email,
+        password: this.password,
+        name: this.name,
+        callback: (e: Error, val: boolean, message?: string) => {
+          registerButton.disabled = val;
+          if (e) {
+            return notify({
+              title: "Registration failed",
+              text: "Unable to register user",
+              type: "error",
+            });
+          }
+
+          if (val) {
+            notify({
+              title: "User successfully registered",
+              text: "Please check you mail to verify your account",
+              type: "success",
+            });
+            return router.push({ name: "Home" });
+          } else {
+            return notify({
+              title: "Registration failed",
+              text: message,
+              type: "warning",
+            });
+          }
+        },
+      });
     },
   },
   computed: {

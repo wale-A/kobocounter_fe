@@ -420,6 +420,10 @@ div.multiselect {
     width: 100%;
     height: 45%;
   }
+  .multiselect.is-searchable {
+    /* margin-right: 25px !important; */
+    width: 85%;
+  }
 }
 </style>
 
@@ -434,13 +438,13 @@ import {
   TransactionInfo,
   EstablishmentActivity,
 } from "@/types";
-import toastr from "toastr";
 import Multiselect from "@vueform/multiselect";
 import { add, sub, subMonths } from "date-fns";
 import WordCloud from "wordcloud";
 import AddNewAccount from "@/components/AddNewAccount.vue";
 import SingleTransaction from "@/components/SingleTransaction.vue";
 import { subscribeUser } from "@/_helpers/pushNotification";
+import { notify } from "@kyvg/vue3-notification";
 
 @Options({
   created() {
@@ -712,10 +716,16 @@ import { subscribeUser } from "@/_helpers/pushNotification";
     },
     accountCreateStatus(newVal?: NetIncome[]) {
       if (newVal !== undefined && newVal) {
-        toastr.success("Account added successful");
+        notify({
+          text: "Account added successfully",
+          type: "success",
+        });
         location.reload();
       } else if (newVal !== undefined && !newVal)
-        toastr.error("Unable to add account, please retry");
+        notify({
+          text: "Unable to add account, please retry",
+          type: "error",
+        });
     },
     accounts(newVal?: Account[]) {
       if (newVal && newVal.length > 0) {

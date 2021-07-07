@@ -45,6 +45,7 @@
 </template>
 
 <script lang="ts">
+import { notify } from "@kyvg/vue3-notification";
 import { Options, Vue } from "vue-class-component";
 
 @Options({
@@ -94,11 +95,17 @@ import { Options, Vue } from "vue-class-component";
       const response = confirm(
         `Do you want to delete this account for ${this.bank}`
       );
-      console.log({ id: this.id });
       if (response) {
         this.$store.dispatch("deleteAccount", {
           accountId: this.id,
-          callback: () => location.reload(),
+          callback: (e: Error | null) => {
+            if (!e) return location.reload();
+
+            notify({
+              text: "Unable to delete account, please retry",
+              type: "error",
+            });
+          },
         });
       }
     },

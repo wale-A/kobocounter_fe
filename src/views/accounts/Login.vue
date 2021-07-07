@@ -17,7 +17,7 @@
           </section>
           <section class="form-row">
             <label for="password">Password</label>
-            <input type="password" name="password" v-model="password" />
+            <Password v-model:password="password" />
           </section>
           <section>
             <button
@@ -39,6 +39,63 @@
     </main>
   </div>
 </template>
+
+<script lang="ts">
+import { Options, Vue } from "vue-class-component";
+import Header from "@/components/Header.vue";
+import Password from "@/components/Password.vue";
+import { notify } from "@kyvg/vue3-notification";
+import router from "@/router";
+
+@Options({
+  components: {
+    Header,
+    Password,
+  },
+  data() {
+    return {
+      email: "",
+      password: "",
+    };
+  },
+  methods: {
+    async loginUser() {
+      const loginButton = document.getElementById("login_button") as any;
+      const nextUrl = this.$route.params.nextUrl;
+      loginButton.disabled = true;
+
+      this.$store.dispatch("loginUser", {
+        email: this.email,
+        password: this.password,
+        callback: (e: Error, val: boolean, message?: string) => {
+          loginButton.disabled = val;
+          if (e) {
+            return notify({
+              text: "Unable to login user",
+              title: "Login failed",
+              type: "error",
+            });
+          }
+
+          if (val) {
+            if (nextUrl) {
+              return router.push(nextUrl);
+            }
+            return router.push({ name: "Dashboard" });
+          } else {
+            return notify({
+              text: message,
+              title: "Login failed",
+              type: "warning",
+            });
+          }
+        },
+      });
+    },
+  },
+})
+export default class Login extends Vue {}
+</script>
 
 <style scoped>
 #login {
@@ -79,61 +136,3 @@ section {
   }
 }
 </style>
-
-<script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import Header from "@/components/Header.vue";
-import toastr from "toastr";
-import { mapGetters } from "vuex";
-
-@Options({
-  components: {
-    Header,
-  },
-  data() {
-    return {
-      email: "",
-      password: "",
-    };
-  },
-  methods: {
-    async loginUser() {
-      (document.getElementById("login_button") as any).disabled = true;
-      this.$store.dispatch("loginUser", {
-        email: this.email,
-        password: this.password,
-      });
-    },
-  },
-  computed: {
-    ...mapGetters(["loginSuccessful", "loginError"]),
-  },
-  watch: {
-    loginSuccessful(newVal?: boolean) {
-      if (newVal == undefined) return;
-      if (newVal === true) {
-        if (this.$route.params.nextUrl) {
-          this.$router.push(this.$route.params.nextUrl);
-        } else {
-          this.$router.push({ name: "Dashboard" });
-        }
-      } else {
-        (document.getElementById("login_button") as any).disabled = false;
-        toastr.info(
-          "Email and Password combination is invalid",
-          "Login failed"
-        );
-      }
-    },
-    loginError(newVal?: boolean) {
-      (document.getElementById("login_button") as any).disabled = false;
-      if (newVal === true) {
-        toastr.error("Unable to login user", "Login failed", {
-          preventDuplicates: false,
-        });
-      }
-    },
-  },
-})
-export default class Login extends Vue {}
-</script>

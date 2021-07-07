@@ -200,6 +200,7 @@ import { Options, Vue } from "vue-class-component";
 import Multiselect from "@vueform/multiselect";
 import { TransactionInfo } from "@/types";
 import { mapGetters } from "vuex";
+import { notify } from "@kyvg/vue3-notification";
 
 @Options({
   created() {
@@ -351,8 +352,16 @@ import { mapGetters } from "vuex";
                 updatedTransaction
               );
               this.disableEditTransaction();
+              notify({
+                text: "Transaction update was successful",
+                type: "success",
+              });
             } else {
               this.editFormSubmitted = false;
+              notify({
+                text: "Transaction update failed, please retry",
+                type: "error",
+              });
             }
           },
         });

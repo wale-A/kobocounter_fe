@@ -1,7 +1,5 @@
 export type State = {
   user: User | undefined;
-  loginError: boolean | undefined;
-  loginSuccessful: boolean | undefined;
   accounts: Account[] | undefined;
   transactions: TransactionInfo[] | undefined;
   netIncome: NetIncome[] | undefined;
