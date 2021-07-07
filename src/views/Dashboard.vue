@@ -384,6 +384,7 @@ input[type="date"] {
   }
   #small-search-button {
     display: unset;
+    max-height: 40px;
   }
   #select-button {
     display: flex;
