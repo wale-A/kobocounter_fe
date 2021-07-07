@@ -435,12 +435,6 @@ export const store = createStore({
     },
   }, // END OF ACTION
   getters: {
-    loginError(state: State) {
-      return state.loginError;
-    },
-    loginSuccessful(state: State) {
-      return state.loginSuccessful;
-    },
     isLoggedIn(state: State) {
       return state.user && (state.user?.token?.expires || 0) > Date.now();
     },
