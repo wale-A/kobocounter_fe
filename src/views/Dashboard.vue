@@ -243,6 +243,7 @@
               color:
                 txn.amount < 0 ? 'rgba(255, 10, 10, 0.7)' : 'rgb(20, 180, 20)',
               'line-height': '20px',
+              height: '20px',
               margin: 0,
             }"
           >
@@ -293,140 +294,6 @@
     :closeFunction="() => (singleTransaction = undefined)"
   />
 </template>
-
-<style src="@vueform/multiselect/themes/default.css"></style>
-<style scoped>
-body {
-  background-color: #ededf0;
-}
-main {
-  width: 80%;
-  margin-right: 10%;
-  margin-left: 10%;
-  margin-top: 3%;
-}
-section {
-  margin-top: 15px;
-  margin-bottom: 35px;
-  background-color: white;
-}
-section p {
-  margin-bottom: 0;
-}
-#filter-section {
-  display: flex;
-}
-#filters {
-  width: 95%;
-  padding-right: 5%;
-}
-#filter-button {
-  width: 5%;
-}
-#small-search-button {
-  display: none;
-}
-#account-info-container {
-  display: flex;
-  justify-content: space-between;
-  padding: 1% 5%;
-  align-items: center;
-}
-#account-info {
-  width: 70%;
-}
-#time-filter {
-  width: 30%;
-  padding-left: 2%;
-  padding-top: 5px;
-}
-input[type="date"] {
-  height: 30px !important;
-  font-size: 15px;
-  font-family: "Poppins";
-  margin-top: 0;
-}
-
-@media screen and (max-width: 700px) {
-  main {
-    width: 90%;
-    margin-right: 5%;
-    margin-left: 5%;
-    margin-top: 3%;
-  }
-  section > .chart {
-    height: 230px !important;
-  }
-  #filters {
-    width: 100%;
-    padding: 0;
-  }
-  #account-info-container {
-    padding-left: 0;
-    padding-right: 0;
-  }
-  #account-info {
-    width: 57%;
-  }
-  #time-filter {
-    width: 43%;
-    padding-left: 0;
-  }
-  input[type="date"] {
-    height: 27px !important;
-    font-size: 13px;
-    font-family: "Poppins";
-    margin-top: 0;
-    padding-left: 0;
-  }
-  #filter-button {
-    display: none;
-  }
-  #small-search-button {
-    display: unset;
-    max-height: 40px;
-  }
-  #select-button {
-    display: flex;
-  }
-  button {
-    margin-top: 0;
-  }
-}
-</style>
-<style>
-div.multiselect-input {
-  border: 0;
-  border-bottom: 1px solid grey;
-}
-div.multiselect {
-  font-family: "Poppins";
-}
-#word-cloud {
-  width: 100%;
-  height: 40%;
-  border-color: rgba(0, 0, 0, 0.1);
-  border-width: 1px;
-  border-style: solid;
-}
-.margin-left {
-  margin-left: -15px;
-}
-
-@media screen and (max-width: 700px) {
-  #multiselect {
-    margin-left: 0;
-  }
-  #word-cloud {
-    width: 100%;
-    height: 45%;
-  }
-  .multiselect.is-searchable {
-    /* margin-right: 25px !important; */
-    width: 85%;
-  }
-}
-</style>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -794,3 +661,137 @@ import { notify } from "@kyvg/vue3-notification";
 })
 export default class Dashboard extends Vue {}
 </script>
+
+<style src="@vueform/multiselect/themes/default.css"></style>
+<style scoped>
+body {
+  background-color: #ededf0;
+}
+main {
+  width: 80%;
+  margin-right: 10%;
+  margin-left: 10%;
+  margin-top: 3%;
+}
+section {
+  margin-top: 15px;
+  margin-bottom: 35px;
+  background-color: white;
+}
+section p {
+  margin-bottom: 0;
+}
+#filter-section {
+  display: flex;
+}
+#filters {
+  width: 95%;
+  padding-right: 5%;
+}
+#filter-button {
+  width: 5%;
+}
+#small-search-button {
+  display: none;
+}
+#account-info-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 1% 5%;
+  align-items: center;
+}
+#account-info {
+  width: 70%;
+}
+#time-filter {
+  width: 30%;
+  padding-left: 2%;
+  padding-top: 5px;
+}
+input[type="date"] {
+  height: 30px !important;
+  font-size: 15px;
+  font-family: "Poppins";
+  margin-top: 0;
+}
+
+@media screen and (max-width: 700px) {
+  main {
+    width: 90%;
+    margin-right: 5%;
+    margin-left: 5%;
+    margin-top: 3%;
+  }
+  section > .chart {
+    height: 230px !important;
+  }
+  #filters {
+    width: 100%;
+    padding: 0;
+  }
+  #account-info-container {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  #account-info {
+    width: 57%;
+  }
+  #time-filter {
+    width: 43%;
+    padding-left: 0;
+  }
+  input[type="date"] {
+    height: 27px !important;
+    font-size: 13px;
+    font-family: "Poppins";
+    margin-top: 0;
+    padding-left: 0;
+  }
+  #filter-button {
+    display: none;
+  }
+  #small-search-button {
+    display: unset;
+    max-height: 40px;
+  }
+  #select-button {
+    display: flex;
+  }
+  button {
+    margin-top: 0;
+  }
+}
+</style>
+<style>
+div.multiselect-input {
+  border: 0;
+  border-bottom: 1px solid grey;
+}
+div.multiselect {
+  font-family: "Poppins";
+}
+#word-cloud {
+  width: 100%;
+  height: 40%;
+  border-color: rgba(0, 0, 0, 0.1);
+  border-width: 1px;
+  border-style: solid;
+}
+.margin-left {
+  margin-left: -15px;
+}
+
+@media screen and (max-width: 700px) {
+  #multiselect {
+    margin-left: 0;
+  }
+  #word-cloud {
+    width: 100%;
+    height: 45%;
+  }
+  .multiselect.is-searchable {
+    /* margin-right: 25px !important; */
+    width: 85%;
+  }
+}
+</style>
