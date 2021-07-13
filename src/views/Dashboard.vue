@@ -58,8 +58,8 @@
     <!-- net-income -->
     <section>
       <p class="mid-text darker-color">
-        Net Income
-        <span class="small-text" style="color: black"> (&#8358; '000)</span>
+        Daily Summary
+        <!-- <span class="small-text" style="color: black"> (&#8358; '000)</span> -->
       </p>
       <!-- <line-chart
         :data="netIncomeData"
@@ -121,7 +121,7 @@
     <!-- recurrent expenditure -->
     <section>
       <p class="mid-text darker-color">
-        Recurring expenses
+        Recurring Expense
         <span class="small-text"> (last 3 months) </span>
       </p>
       <div v-if="recurrentExpenses.length == 0" class="small-text accent-color">
