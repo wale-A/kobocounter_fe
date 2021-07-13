@@ -10,10 +10,11 @@ import {
   TransactionInfo,
 } from "./types";
 import axios from "axios";
-import { unauthorizedInterceptor } from "./_helpers/axiosInterceptor";
+import axiosInterceptor from "./_helpers/axiosInterceptor";
 
 // add unauthorized interceptor to all axios requests
-unauthorizedInterceptor();
+axiosInterceptor.authInterceptor();
+axiosInterceptor.unauthorizedInterceptor();
 
 export const store = createStore({
   state() {
@@ -55,6 +56,12 @@ export const store = createStore({
     },
     setNetIncome(state: State, netIncome?: NetIncome[]) {
       state.netIncome = netIncome;
+    },
+    setRevenue(state: State, revenue?: { date: string; amount: number }[]) {
+      state.revenue = revenue;
+    },
+    setExpense(state: State, expense?: { date: string; amount: number }[]) {
+      state.expense = expense;
     },
     setTransactionCategories(
       state: State,
@@ -102,11 +109,13 @@ export const store = createStore({
         email,
         name,
         password,
+        provider,
         callback,
       }: {
         email: string;
         name: string;
         password: string;
+        provider?: "google" | "facebook" | undefined;
         callback: (err: Error | null, val: boolean, message?: string) => void;
       }
     ) {
@@ -115,6 +124,7 @@ export const store = createStore({
           email,
           password,
           name,
+          provider,
         });
 
         if (res.status !== 200) {
@@ -130,10 +140,12 @@ export const store = createStore({
       {
         email,
         password,
+        provider,
         callback,
       }: {
         email: string;
         password: string;
+        provider?: "google" | "facebook" | undefined;
         callback: (err: Error | null, val: boolean, message?: string) => void;
       }
     ) {
@@ -141,7 +153,7 @@ export const store = createStore({
         this.commit("setLoginStatus", undefined);
         const res = await axios.post(
           `${process.env.VUE_APP_API_URL}/users/login`,
-          { email, password }
+          { email, password, provider }
         );
 
         if (res.status !== 200) {
@@ -161,12 +173,7 @@ export const store = createStore({
 
         const res = await axios.post(
           `${process.env.VUE_APP_API_URL}/banking/accounts`,
-          { code },
-          {
-            headers: {
-              Authorization: `Bearer ${this.state.user?.token?.token}`,
-            },
-          }
+          { code }
         );
 
         this.commit("setAccountCreateStatus", true);
@@ -179,12 +186,7 @@ export const store = createStore({
         if (!this.state.user) throw "";
 
         const res = await axios.get(
-          `${process.env.VUE_APP_API_URL}/banking/accounts`,
-          {
-            headers: {
-              Authorization: `Bearer ${this.state.user?.token?.token}`,
-            },
-          }
+          `${process.env.VUE_APP_API_URL}/banking/accounts`
         );
 
         this.commit("setAccounts", res.data as Account[]);
@@ -207,9 +209,6 @@ export const store = createStore({
           `${process.env.VUE_APP_API_URL}/banking/accounts/transactions`,
           {
             params: { accountId, start, end },
-            headers: {
-              Authorization: `Bearer ${this.state.user?.token?.token}`,
-            },
           }
         );
 
@@ -230,9 +229,6 @@ export const store = createStore({
         const res = await axios.get(
           `${process.env.VUE_APP_API_URL}/banking/accounts/netincome`,
           {
-            headers: {
-              Authorization: `Bearer ${this.state.user?.token?.token}`,
-            },
             params: { accountId, start, end },
           }
         );
@@ -242,14 +238,53 @@ export const store = createStore({
         this.commit("setNetIncome", []);
       }
     },
+    async getExpense(
+      _,
+      {
+        accountId,
+        start,
+        end,
+      }: { accountId?: string; start?: number; end?: number }
+    ) {
+      try {
+        const res = await axios.get(
+          `${process.env.VUE_APP_API_URL}/banking/expense`,
+          {
+            params: { accountId, start, end },
+          }
+        );
+
+        this.commit("setExpense", res.data as NetIncome[]);
+      } catch (e) {
+        this.commit("setExpense", []);
+      }
+    },
+    async getRevenue(
+      _,
+      {
+        accountId,
+        start,
+        end,
+      }: { accountId?: string; start?: number; end?: number }
+    ) {
+      try {
+        const res = await axios.get(
+          `${process.env.VUE_APP_API_URL}/banking/revenue`,
+          {
+            params: { accountId, start, end },
+          }
+        );
+
+        this.commit("setRevenue", res.data as NetIncome[]);
+      } catch (e) {
+        this.commit("setRevenue", []);
+      }
+    },
     async getRecurringExpenses(_, { accountId }: { accountId?: string }) {
       try {
         const res = await axios.get(
           `${process.env.VUE_APP_API_URL}/banking/accounts/recurrentExpenses`,
           {
-            headers: {
-              Authorization: `Bearer ${this.state.user?.token?.token}`,
-            },
             params: { accountId },
           }
         );
@@ -271,9 +306,6 @@ export const store = createStore({
         const res = await axios.get(
           `${process.env.VUE_APP_API_URL}/banking/establishmentActivities`,
           {
-            headers: {
-              Authorization: `Bearer ${this.state.user?.token?.token}`,
-            },
             params: { accountId, start, end },
           }
         );
@@ -295,9 +327,6 @@ export const store = createStore({
         const res = await axios.get(
           `${process.env.VUE_APP_API_URL}/banking/accounts/transactions/categories`,
           {
-            headers: {
-              Authorization: `Bearer ${this.state.user?.token?.token}`,
-            },
             params: { accountId, start, end },
           }
         );
@@ -312,15 +341,9 @@ export const store = createStore({
     },
     async subscribeUser(_, { subscription }: { subscription: string }) {
       try {
-        await axios.post(
-          `${process.env.VUE_APP_API_URL}/users/subscription`,
-          { subscription },
-          {
-            headers: {
-              Authorization: `Bearer ${this.state.user?.token?.token}`,
-            },
-          }
-        );
+        await axios.post(`${process.env.VUE_APP_API_URL}/users/subscription`, {
+          subscription,
+        });
       } catch (e) {
         // console.log()
       }
@@ -363,12 +386,7 @@ export const store = createStore({
       try {
         await axios.put(
           `${process.env.VUE_APP_API_URL}/banking/transactions/${transactionId}`,
-          params,
-          {
-            headers: {
-              Authorization: `Bearer ${this.state.user?.token?.token}`,
-            },
-          }
+          params
         );
 
         this.commit("updateTransaction", updatedTransaction);
@@ -391,11 +409,6 @@ export const store = createStore({
         // await axios
         //   .post(
         //     `${process.env.VUE_APP_API_URL}/banking/account/${accountId}/reauthorize`,
-        //     {
-        //       headers: {
-        //         Authorization: `Bearer ${this.state.user?.token?.token}`,
-        //       },
-        //     }
         //   )
 
         //   callback(res.data.token);
@@ -419,12 +432,7 @@ export const store = createStore({
     ) {
       try {
         await axios.delete(
-          `${process.env.VUE_APP_API_URL}/banking/account/${accountId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${this.state.user?.token?.token}`,
-            },
-          }
+          `${process.env.VUE_APP_API_URL}/banking/account/${accountId}`
         );
 
         callback(null);
@@ -452,6 +460,12 @@ export const store = createStore({
     },
     income(state: State) {
       return state.netIncome;
+    },
+    revenue(state: State) {
+      return state.revenue;
+    },
+    expense(state: State) {
+      return state.expense;
     },
     transactionCategories(state: State) {
       return state.transactionCategories;

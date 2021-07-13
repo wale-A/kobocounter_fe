@@ -8,6 +8,8 @@ export type State = {
   recurringExpenditure: RecurrentExpense[] | undefined;
   establishmentActivities: EstablishmentActivity[] | undefined;
   establishments: Record<string, string[]> | undefined;
+  expense?: Array<{ date: string; amount: number }>;
+  revenue?: Array<{ date: string; amount: number }>;
 };
 
 export type User = {
@@ -67,4 +69,13 @@ export type RecurrentExpense = {
 export type EstablishmentActivity = {
   activity: string;
   transactionIds: string[];
+};
+
+export type FacebookLoginResponse = {
+  authResponse: {
+    accessToken: string;
+    expiresIn: number;
+    userId: string;
+  };
+  status: string;
 };

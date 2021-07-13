@@ -1,7 +1,7 @@
 import axios from "axios";
 import { store } from "@/store";
 
-export function unauthorizedInterceptor(): void {
+function unauthorizedResponseInterceptor(): void {
   axios.interceptors.response.use(undefined, (error) => {
     const { response } = error;
 
@@ -16,3 +16,18 @@ export function unauthorizedInterceptor(): void {
     }
   });
 }
+
+function authHeaderInterceptor() {
+  axios.interceptors.request.use((request) => {
+    if (store.state.user?.token?.token) {
+      request.headers.common.Authorization = `Bearer ${store.state.user?.token?.token}`;
+    }
+
+    return request;
+  });
+}
+
+export default {
+  unauthorizedInterceptor: unauthorizedResponseInterceptor,
+  authInterceptor: authHeaderInterceptor,
+};

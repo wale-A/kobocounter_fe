@@ -56,7 +56,7 @@
     </section>
 
     <!-- net-income -->
-    <section>
+    <!-- <section>
       <p class="mid-text darker-color">
         Net Income
         <span class="small-text" style="color: black"> (&#8358; '000)</span>
@@ -79,10 +79,19 @@
         :legend="false"
         label="Net Income (in thousands)"
       ></line-chart>
-    </section>
+    </section> -->
+
+    <IncomeChart
+      :height="'500px'"
+      :width="'100%'"
+      :fileName="'income_summary__' + from + '_to_' + to"
+      :revenue="revenue"
+      :expense="expense"
+      v-if="revenue || expense"
+    />
 
     <!-- transaction categories -->
-    <section>
+    <!-- <section>
       <p class="mid-text darker-color">Transaction Category</p>
       <pie-chart
         :donut="true"
@@ -99,7 +108,15 @@
           onClick: transactionCategoriesEventHandler,
         }"
       ></pie-chart>
-    </section>
+    </section> -->
+
+    <DonutChart
+      :inputData="transactionCategories"
+      :onClick="transactionCategoriesEventHandler"
+      :height="'500px'"
+      :width="'100%'"
+      :fileName="'spending_category_summary__' + from + '_to_' + to"
+    />
 
     <!-- recurrent expenditure -->
     <section>
@@ -157,12 +174,20 @@
     </section>
 
     <!-- word cloud -->
-    <section
+    <!-- <section
       v-show="establishmentActivities && establishmentActivities.length > 0"
     >
       <p class="mid-text darker-color">Spending Pattern</p>
       <canvas id="word-cloud"> </canvas>
-    </section>
+    </section> -->
+
+    <WordCloudChart
+      v-if="establishmentActivities"
+      :inputData="establishmentActivities"
+      :height="'450px'"
+      :width="'100%'"
+      :fileName="'spending pattern'"
+    />
   </main>
 
   <AddNewAccount :hasAccounts="!(accounts && accounts?.length == 0)" />
@@ -311,6 +336,9 @@ import { add, sub, subMonths } from "date-fns";
 import WordCloud from "wordcloud";
 import AddNewAccount from "@/components/AddNewAccount.vue";
 import SingleTransaction from "@/components/SingleTransaction.vue";
+import DonutChart from "@/components/charts/DonutChart.vue";
+import IncomeChart from "@/components/charts/IncomeChart.vue";
+import WordCloudChart from "@/components/charts/WordCloudChart.vue";
 import { subscribeUser } from "@/_helpers/pushNotification";
 import { notify } from "@kyvg/vue3-notification";
 
@@ -355,6 +383,8 @@ import { notify } from "@kyvg/vue3-notification";
       "accountCreateStatus",
       "recurrentExpenses",
       "establishmentActivities",
+      "revenue",
+      "expense",
     ]),
   },
   components: {
@@ -362,6 +392,9 @@ import { notify } from "@kyvg/vue3-notification";
     Multiselect,
     AddNewAccount,
     SingleTransaction,
+    DonutChart,
+    IncomeChart,
+    WordCloudChart,
   },
   methods: {
     getTimeForTimeZone(date: number) {
@@ -517,6 +550,16 @@ import { notify } from "@kyvg/vue3-notification";
         start,
         end,
       });
+      this.$store.dispatch("getExpense", {
+        accountId,
+        start,
+        end,
+      });
+      this.$store.dispatch("getRevenue", {
+        accountId,
+        start,
+        end,
+      });
       this.$store.dispatch("getTransactionCategories", {
         accountId,
         start,
@@ -624,39 +667,39 @@ import { notify } from "@kyvg/vue3-notification";
         this.enableSearchButtons();
       }
     },
-    establishmentActivities(newVal?: EstablishmentActivity[]) {
-      if (!newVal) return;
-      const counts = newVal.map((x) => x.transactionIds.length);
-      const max = Math.max(...counts);
-      const min = Math.min(...counts);
+    // establishmentActivities(newVal?: EstablishmentActivity[]) {
+    //   if (!newVal) return;
+    //   const counts = newVal.map((x) => x.transactionIds.length);
+    //   const max = Math.max(...counts);
+    //   const min = Math.min(...counts);
 
-      function scaleValue(value: number, from: [number, number], to = [2, 10]) {
-        if (from[0] === from[1]) return to[1];
+    //   function scaleValue(value: number, from: [number, number], to = [2, 10]) {
+    //     if (from[0] === from[1]) return to[1];
 
-        var scale = (to[1] - to[0]) / (from[1] - from[0]);
-        var capped = Math.min(from[1], Math.max(from[0], value)) - from[0];
-        return capped * scale + to[0];
-      }
+    //     var scale = (to[1] - to[0]) / (from[1] - from[0]);
+    //     var capped = Math.min(from[1], Math.max(from[0], value)) - from[0];
+    //     return capped * scale + to[0];
+    //   }
 
-      const node = document.getElementById("word-cloud") as any;
-      node.width = node.offsetWidth || window.innerWidth * 0.9;
-      node.height = node.offsetHeight || window.innerHeight * 0.5;
+    //   const node = document.getElementById("word-cloud") as any;
+    //   node.width = node.offsetWidth || window.innerWidth * 0.9;
+    //   node.height = node.offsetHeight || window.innerHeight * 0.5;
 
-      WordCloud(node, {
-        list: newVal?.map((x) => {
-          return [x.activity, scaleValue(x.transactionIds.length, [min, max])];
-        }),
-        backgroundColor: "#fff",
-        fontFamily: "Times, serif",
-        fontWeight: "normal",
-        minRotation: 1.57,
-        clearCanvas: true,
-        gridSize: 2,
-        weightFactor: (weight) => Math.log2(weight) * 15,
-        click: this.spendingPatternEventHandler,
-        drawOutOfBound: true,
-      });
-    },
+    //   WordCloud(node, {
+    //     list: newVal?.map((x) => {
+    //       return [x.activity, scaleValue(x.transactionIds.length, [min, max])];
+    //     }),
+    //     backgroundColor: "#fff",
+    //     fontFamily: "Times, serif",
+    //     fontWeight: "normal",
+    //     minRotation: 1.57,
+    //     clearCanvas: true,
+    //     gridSize: 2,
+    //     weightFactor: (weight) => Math.log2(weight) * 15,
+    //     click: this.spendingPatternEventHandler,
+    //     drawOutOfBound: true,
+    //   });
+    // },
   },
 })
 export default class Dashboard extends Vue {}

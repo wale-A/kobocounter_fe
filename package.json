@@ -9,6 +9,8 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@amcharts/amcharts4": "^4.10.20",
+    "@amcharts/amcharts4-fonts": "^4.0.1",
     "@kyvg/vue3-notification": "^2.3.3",
     "@types/wordcloud": "^1.1.2",
     "@vueform/multiselect": "^1.4.0",
@@ -26,6 +28,7 @@
     "vue": "^3.0.0",
     "vue-chartkick": "^1.1.0",
     "vue-class-component": "^8.0.0-0",
+    "vue-facebook-login-component-next": "^1.0.4",
     "vue-mono": "^1.1.0",
     "vue-router": "^4.0.0-0",
     "vuex": "^4.0.0",
