@@ -141,16 +141,25 @@
           border: 1px solid #1c5298;
           border-radius: 10px;
           margin-bottom: 5px;
+          cursor: pointer;
         "
         :data-index="index"
         class="expense"
         @click.prevent="recurrentExpenseClickHandler"
       >
         <div style="text-align: start; width: 85%">
-          <p class="small-text" style="line-height: 20px; margin-top: 0">
+          <p
+            class="small-text"
+            style="
+              line-height: 20px;
+              margin-top: 0;
+              overflow: hidden;
+              height: 20px;
+            "
+          >
             {{ exp.narration }}
           </p>
-          <span class="small-text darker-color">
+          <span class="small-text darker-color" style="line-height: 25px">
             {{ exp.transactionCategory }}
           </span>
         </div>
