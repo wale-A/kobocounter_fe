@@ -56,12 +56,12 @@
     </section>
 
     <!-- net-income -->
-    <!-- <section>
+    <section>
       <p class="mid-text darker-color">
         Net Income
         <span class="small-text" style="color: black"> (&#8358; '000)</span>
       </p>
-      <line-chart
+      <!-- <line-chart
         :data="netIncomeData"
         :pointRadius="0"
         thousands=","
@@ -78,22 +78,22 @@
         }"
         :legend="false"
         label="Net Income (in thousands)"
-      ></line-chart>
-    </section> -->
+      ></line-chart> -->
 
-    <IncomeChart
-      :height="'500px'"
-      :width="'100%'"
-      :fileName="'income_summary__' + from + '_to_' + to"
-      :revenue="revenue"
-      :expense="expense"
-      v-if="revenue || expense"
-    />
+      <IncomeChart
+        :height="'500px'"
+        :width="'100%'"
+        :fileName="'income_summary__' + from + '_to_' + to"
+        :revenue="revenue"
+        :expense="expense"
+        v-if="revenue || expense"
+      />
+    </section>
 
     <!-- transaction categories -->
-    <!-- <section>
+    <section>
       <p class="mid-text darker-color">Transaction Category</p>
-      <pie-chart
+      <!-- <pie-chart
         :donut="true"
         :data="transactionCategoryData"
         class="chart"
@@ -107,16 +107,16 @@
         :library="{
           onClick: transactionCategoriesEventHandler,
         }"
-      ></pie-chart>
-    </section> -->
+      ></pie-chart> -->
 
-    <DonutChart
-      :inputData="transactionCategories"
-      :onClick="transactionCategoriesEventHandler"
-      :height="'500px'"
-      :width="'100%'"
-      :fileName="'spending_category_summary__' + from + '_to_' + to"
-    />
+      <DonutChart
+        :inputData="transactionCategories"
+        :onClick="transactionCategoriesEventHandler"
+        :height="'500px'"
+        :width="'100%'"
+        :fileName="'spending_category_summary__' + from + '_to_' + to"
+      />
+    </section>
 
     <!-- recurrent expenditure -->
     <section>
@@ -174,20 +174,20 @@
     </section>
 
     <!-- word cloud -->
-    <!-- <section
+    <section
       v-show="establishmentActivities && establishmentActivities.length > 0"
     >
       <p class="mid-text darker-color">Spending Pattern</p>
-      <canvas id="word-cloud"> </canvas>
-    </section> -->
+      <!-- <canvas id="word-cloud"> </canvas> -->
 
-    <WordCloudChart
-      v-if="establishmentActivities"
-      :inputData="establishmentActivities"
-      :height="'450px'"
-      :width="'100%'"
-      :fileName="'spending pattern'"
-    />
+      <WordCloudChart
+        v-if="establishmentActivities"
+        :inputData="establishmentActivities"
+        :height="'450px'"
+        :width="'100%'"
+        :fileName="'spending pattern'"
+      />
+    </section>
   </main>
 
   <AddNewAccount :hasAccounts="!(accounts && accounts?.length == 0)" />

@@ -28,7 +28,7 @@ import * as am4charts from "@amcharts/amcharts4/charts";
       chart.fontSize = "14px";
 
       chart.legend = new am4charts.Legend();
-      chart.legend.position = "bottom";
+      chart.legend.position = "right";
       chart.legend.valueLabels.template.align = "left";
       chart.legend.valueLabels.template.textAlign = "start";
       chart.legend.scrollable = true;
@@ -60,6 +60,7 @@ import * as am4charts from "@amcharts/amcharts4/charts";
       series.tooltip.exportable = true;
 
       series.labels.template.disabled = false;
+      series.labels.template.wrap = true;
       series.ticks.template.disabled = false;
       series.legendSettings.itemValueText = "[bold]N {amount}[/]";
       series.slices.template.fillOpacity = 1;
@@ -84,6 +85,39 @@ import * as am4charts from "@amcharts/amcharts4/charts";
             target.ticks.template.states.create(
               stateId
             ).properties.disabled = true;
+            return state;
+          }
+          if (target instanceof am4charts.PieChart3D) {
+            const state = target.states.create(stateId);
+            const legendProperties = target.legend.states.create(stateId)
+              .properties;
+            legendProperties.position = "bottom";
+            legendProperties.fontSize = 13;
+            return state;
+          }
+        },
+      });
+      chart.responsive.rules.push({
+        relevant: am4core.ResponsiveBreakpoints.widthXL,
+        state: (target, stateId) => {
+          if (target instanceof am4charts.PieChart3D) {
+            const state = target.states.create(stateId);
+            const legendProperties = target.legend.states.create(stateId)
+              .properties;
+            legendProperties.position = "bottom";
+            return state;
+          }
+          if (target instanceof am4charts.PieSeries3D) {
+            const state = target.states.create(stateId);
+            const labelProperties = target.labels.template.states.create(
+              stateId
+            ).properties;
+            labelProperties.marginLeft = labelProperties.marginRight = labelProperties.paddingLeft = labelProperties.paddingRight = 0;
+            labelProperties.fontSize = 13;
+            labelProperties.maxWidth = 150;
+            const tickProperties = target.ticks.template.states.create(stateId)
+              .properties;
+            tickProperties.maxWidth = 5;
             return state;
           }
         },
