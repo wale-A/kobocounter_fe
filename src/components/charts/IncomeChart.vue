@@ -22,7 +22,6 @@ import * as am4charts from "@amcharts/amcharts4/charts";
   methods: {
     draw() {
       const chart = am4core.create("incomeChartDiv", am4charts.XYChart);
-      //   chart.scrollbarX = new am4core.Scrollbar();
       chart.cursor = new am4charts.XYCursor();
       chart.hiddenState.properties.opacity = 0;
 
@@ -34,6 +33,9 @@ import * as am4charts from "@amcharts/amcharts4/charts";
       ] as string[])
         .map((x) => new Date(x).getTime())
         .sort();
+      const months =
+        (dates[dates.length - 1] - dates[0]) / (1000 * 60 * 60 * 24 * 30);
+
       chart.data = dates.map((x) => {
         return {
           date: new Date(x),
@@ -83,16 +85,21 @@ import * as am4charts from "@amcharts/amcharts4/charts";
       chart.legend = new am4charts.Legend();
       chart.legend.position = "bottom";
 
-      chart.exporting.menu = new am4core.ExportMenu();
-      chart.exporting.menu.items = [
-        {
-          label: "...",
-          menu: [
-            { type: "png", label: "PNG" },
-            { type: "print", label: "PDF" },
-          ],
-        },
-      ];
+      if (months > 3) {
+        chart.scrollbarX = new am4core.Scrollbar();
+      } else {
+        chart.exporting.menu = new am4core.ExportMenu();
+        chart.exporting.menu.items = [
+          {
+            label: "...",
+            menu: [
+              { type: "png", label: "PNG" },
+              { type: "print", label: "PDF" },
+            ],
+          },
+        ];
+      }
+
       chart.fontFamily = "Poppins";
       chart.fontSize = "14px";
 
