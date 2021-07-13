@@ -37,16 +37,15 @@ import * as am4charts from "@amcharts/amcharts4/charts";
         (dates[dates.length - 1] - dates[0]) / (1000 * 60 * 60 * 24 * 30);
 
       chart.data = dates.map((x) => {
+        const expense = this.expense?.find(
+          (y: { date: string }) => new Date(y.date).getTime() === x
+        )?.amount;
         return {
           date: new Date(x),
           revenue: this.revenue?.find(
             (y: { date: string }) => new Date(y.date).getTime() === x
           )?.amount,
-          expense: Math.abs(
-            this.expense?.find(
-              (y: { date: string }) => new Date(y.date).getTime() === x
-            )?.amount
-          ),
+          expense: expense ? Math.abs(expense) : undefined,
         };
       });
 
@@ -80,13 +79,15 @@ import * as am4charts from "@amcharts/amcharts4/charts";
       }
 
       createSeries("revenue", "Income", "#33ff33");
-      createSeries("expense", "Expenses", "#ff3333");
+      createSeries("expense", "Expense", "#ff3333");
 
       chart.legend = new am4charts.Legend();
       chart.legend.position = "bottom";
+      chart.scrollbarX = new am4core.Scrollbar();
+      chart.scrollbarX.properties.disabled = true;
 
       if (months > 3) {
-        chart.scrollbarX = new am4core.Scrollbar();
+        chart.scrollbarX.properties.disabled = false;
       } else {
         chart.exporting.menu = new am4core.ExportMenu();
         chart.exporting.menu.items = [
@@ -109,16 +110,20 @@ import * as am4charts from "@amcharts/amcharts4/charts";
         state: (target, stateId) => {
           if (target instanceof am4charts.Chart) {
             const state = target.states.create(stateId);
+            chart.scrollbarX = new am4core.Scrollbar();
             state.properties.paddingLeft = state.properties.paddingRight = 10;
+            state.properties.paddingTop = 50;
             return state;
           }
 
-          //   if (target instanceof am4core.Scrollbar) {
-          //     const state = target.states.create(stateId);
-          //     //   state.properties.marginBottom = -10;
-          //     state.properties.disabled = true;
-          //     return state;
-          //   }
+          if (target instanceof am4core.Scrollbar) {
+            const state = target.states.create(stateId);
+            // target.marginTop = 35;
+            state.properties.marginTop = 0;
+            state.properties.disabled = false;
+            // state.properties.zIndex = 10;
+            return state;
+          }
 
           //   if (target instanceof am4charts.Legend) {
           //     const state = target.states.create(stateId);

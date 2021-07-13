@@ -81,7 +81,7 @@
       ></line-chart> -->
 
       <IncomeChart
-        :height="'500px'"
+        :height="'550px'"
         :width="'100%'"
         :fileName="'income_summary__' + from + '_to_' + to"
         :revenue="revenue"
@@ -115,6 +115,22 @@
         :height="'500px'"
         :width="'100%'"
         :fileName="'spending_category_summary__' + from + '_to_' + to"
+      />
+    </section>
+
+    <!-- word cloud -->
+    <section
+      v-show="establishmentActivities && establishmentActivities.length > 0"
+    >
+      <p class="mid-text darker-color">Spending Pattern</p>
+      <!-- <canvas id="word-cloud"> </canvas> -->
+
+      <WordCloudChart
+        v-if="establishmentActivities"
+        :inputData="establishmentActivities"
+        :height="establishmentActivities.length <= 5 ? '300px' : '450px'"
+        :width="'100%'"
+        :fileName="'spending pattern'"
       />
     </section>
 
@@ -180,22 +196,6 @@
           </p>
         </div>
       </div>
-    </section>
-
-    <!-- word cloud -->
-    <section
-      v-show="establishmentActivities && establishmentActivities.length > 0"
-    >
-      <p class="mid-text darker-color">Spending Pattern</p>
-      <!-- <canvas id="word-cloud"> </canvas> -->
-
-      <WordCloudChart
-        v-if="establishmentActivities"
-        :inputData="establishmentActivities"
-        :height="'450px'"
-        :width="'100%'"
-        :fileName="'spending pattern'"
-      />
     </section>
   </main>
 
