@@ -27,8 +27,12 @@ import * as am4charts from "@amcharts/amcharts4/charts";
 
       const dates = ([
         ...new Set([
-          ...(this.revenue || []).map((x: { date: string }) => x.date),
-          ...(this.expense || []).map((x: { date: string }) => x.date),
+          ...(this.revenue || []).map((x: { date: string }) =>
+            x.date.replace(/-/g, "/")
+          ),
+          ...(this.expense || []).map((x: { date: string }) =>
+            x.date.replace(/-/g, "/")
+          ),
         ]),
       ] as string[])
         .map((x) => new Date(x).getTime())
@@ -41,13 +45,14 @@ import * as am4charts from "@amcharts/amcharts4/charts";
           (y: { date: string }) => new Date(y.date).getTime() === x
         )?.amount;
         return {
-          date: new Date(x),
+          date: x,
           revenue: this.revenue?.find(
             (y: { date: string }) => new Date(y.date).getTime() === x
           )?.amount,
           expense: expense ? Math.abs(expense) : undefined,
         };
       });
+      // chat.da
 
       const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
       //   dateAxis.renderer.grid.template.location = 0;

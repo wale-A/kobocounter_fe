@@ -342,7 +342,7 @@ import {
 } from "@/types";
 import Multiselect from "@vueform/multiselect";
 import { add, sub, subMonths } from "date-fns";
-import WordCloud from "wordcloud";
+// import WordCloud from "wordcloud";
 import AddNewAccount from "@/components/AddNewAccount.vue";
 import SingleTransaction from "@/components/SingleTransaction.vue";
 import DonutChart from "@/components/charts/DonutChart.vue";
