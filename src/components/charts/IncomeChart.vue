@@ -8,9 +8,6 @@ import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 
 @Options({
-  beforeUpdate() {
-    this.draw();
-  },
   props: {
     revenue: Array,
     expense: Array,
@@ -42,17 +39,18 @@ import * as am4charts from "@amcharts/amcharts4/charts";
 
       chart.data = dates.map((x) => {
         const expense = this.expense?.find(
-          (y: { date: string }) => new Date(y.date).getTime() === x
+          (y: { date: string }) =>
+            new Date(y.date.replace(/-/g, "/")).getTime() === x
         )?.amount;
         return {
           date: x,
           revenue: this.revenue?.find(
-            (y: { date: string }) => new Date(y.date).getTime() === x
+            (y: { date: string }) =>
+              new Date(y.date.replace(/-/g, "/")).getTime() === x
           )?.amount,
           expense: expense ? Math.abs(expense) : undefined,
         };
       });
-      // chat.da
 
       const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
       //   dateAxis.renderer.grid.template.location = 0;
@@ -167,14 +165,14 @@ import * as am4charts from "@amcharts/amcharts4/charts";
       });
     },
   },
-  //   watch: {
-  //     revenue() {
-  //       this.draw();
-  //     },
-  //     expense() {
-  //       this.draw();
-  //     },
-  //   },
+  watch: {
+    revenue() {
+      this.draw();
+    },
+    expense() {
+      this.draw();
+    },
+  },
 })
 export default class IncomeChart extends Vue {}
 </script>

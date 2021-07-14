@@ -91,8 +91,11 @@ import * as am4charts from "@amcharts/amcharts4/charts";
             const state = target.states.create(stateId);
             const legendProperties = target.legend.states.create(stateId)
               .properties;
-            legendProperties.position = "bottom";
+            legendProperties.position = "top";
             legendProperties.fontSize = 13;
+            legendProperties.paddingBottom = legendProperties.paddingTop = 0;
+            legendProperties.marginTop = legendProperties.marginBottom = 0;
+            legendProperties.maxHeight = 150;
             return state;
           }
         },
