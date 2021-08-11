@@ -1,8 +1,10 @@
 <template>
-  <Header />
+  <!-- <Header /> -->
   <div id="register">
-    <aside>
-      <img src="@/assets/phone.svg" alt="phone screen" />
+    <aside style="background: #007cff">
+      <!-- <img src="@/assets/phone.svg" alt="phone screen" /> -->
+      <img src="@/assets/logo-white.svg" alt="logo" class="logo-img" />
+      <div></div>
     </aside>
     <form @submit.prevent="registerUser">
       <section v-if="stage == 1">
@@ -96,15 +98,19 @@
 
 <style scoped>
 #register {
-  margin-top: 6%;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  height: 100vh;
 }
 aside {
-  width: 15%;
+  background: rgb(0, 124, 255);
+  /* height: 100vh; */
+  width: 30%;
+  padding: 5%;
 }
 form {
-  width: 45%;
+  width: 70%;
+  padding: 3% 6%;
   text-align: center;
 }
 section {

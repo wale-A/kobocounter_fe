@@ -1,43 +1,71 @@
 <template>
-  <Header />
-  <div id="login">
-    <aside id="empty"></aside>
-    <main id="content">
-      <div class="form-container">
-        <h2>Log in</h2>
-        <form @submit.prevent="loginUser">
-          <section class="form-row">
-            <label for="email">Email</label>
-            <input
-              type="email"
-              name="email"
-              placeholder="abc@xyz.com"
-              v-model="email"
-            />
-          </section>
-          <section class="form-row">
-            <label for="password">Password</label>
-            <Password v-model:password="password" />
-          </section>
-          <section>
-            <button
-              type="submit"
-              id="login_button"
-              :disabled="!(email && password)"
-            >
-              LOGIN
-            </button>
-          </section>
-        </form>
-        <p class="small-text lighter-color">
-          Don't have an account ?
-          <router-link :to="{ name: 'Register' }" class="accent-color"
-            >Register here</router-link
-          >
+  <header id="lg">
+    <div class="logo"><img src="@/assets/logo.png" style="width: 30px" /></div>
+    <div class="title">kobocounter</div>
+  </header>
+  <section>
+    <div class="bw">
+      <div class="name">
+        <div class="logo">
+          <img src="@/assets/logo.png" style="width: 50px" />
+        </div>
+        <div class="title">kobocounter</div>
+      </div>
+      <div class="ilus"><img src="@/assets/coin.png" /></div>
+      <div class="text">
+        <h2>Track Your Coins</h2>
+        <p>Tired of wondering where all your money went?</p>
+        <p>
+          Track your spending and expenses across all your bank accounts with a
+          single app.
         </p>
       </div>
-    </main>
-  </div>
+      <div class="buttons">
+        <router-link
+          :to="{ name: 'Register' }"
+          style="border-bottom: 1px solid black"
+        >
+          <button id="gs">Get Started</button>
+        </router-link>
+        <a href="#"><button id="login">Login</button></a>
+      </div>
+    </div>
+    <div class="wb">
+      <div>
+        <h1 id="wb">Welcome Back!</h1>
+      </div>
+      <div class="formBx">
+        <form @submit.prevent="loginUser">
+          <p>Enter your email address</p>
+          <input type="Email" required name="Email" v-model="email" />
+          <p>Enter your password</p>
+          <!-- <input type="Password" required name="Password" minlength="8"  /> -->
+          <Password v-model:password="password" />
+          <div class="create">
+            <input
+              type="submit"
+              value="Login"
+              id="login_button"
+              :disabled="!(email && password)"
+            />
+            <div class="question">
+              <p>
+                Don't have an account?
+                <router-link :to="{ name: 'Register' }" class="accent-color"
+                  >Sign up here</router-link
+                >
+              </p>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="forgot">
+        <p>
+          <a href="#">Forgot password?</a>
+        </p>
+      </div>
+    </div>
+  </section>
 </template>
 
 <script lang="ts">
@@ -96,43 +124,3 @@ import router from "@/router";
 })
 export default class Login extends Vue {}
 </script>
-
-<style scoped>
-#login {
-  display: flex;
-  justify-content: space-between;
-  height: 94vh;
-}
-aside {
-  flex: 1 1 0;
-}
-main {
-  flex: 1 0 350px;
-  background-color: #f2f6fa;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.form-container {
-  margin-top: -20%;
-  text-align: center;
-}
-h2 {
-  font-family: Poppins;
-  font-size: 40px;
-  font-weight: 600;
-}
-section {
-  margin: 2% 20% 5% 20%;
-}
-
-@media screen and (max-width: 600px) {
-  section {
-    margin: 5% 10% 7% 10%;
-  }
-  button {
-    width: 100%;
-    margin-top: 35px;
-  }
-}
-</style>

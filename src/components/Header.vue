@@ -2,8 +2,7 @@
   <header>
     <nav>
       <router-link :to="{ name: 'Home' }" id="logo">
-        <img src="/img/logo.svg" alt="logo" />
-        <span id="logo-text" class="darker-color">kobocounter</span>
+        <img src="@/assets/logo-blue.svg" alt="logo" class="logo-img" />
       </router-link>
       <div v-if="showMenu" id="menu" class="">
         <div class="dropdown" v-if="isLoggedIn">

@@ -1,231 +1,717 @@
-body,
-section,
-article,
-aside,
-header,
-footer,
-main {
-  display: block;
+* {
   margin: 0;
-}
-
-nav {
-  padding: 1% 12%;
-  border-bottom: 1px solid #1c5298;
-  display: flex;
-  justify-content: space-between;
-}
-#logo {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-}
-#logo-text {
-  font-family: "Paytone One";
-  margin-left: 10px;
-  font-size: 20px;
-}
-
-#option {
-  font-family: Poppins;
-  font-size: 20px;
-  color: #007cff;
-}
-
-footer {
-  min-height: 13vh;
-  background-color: #007cff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: Poppins;
-  font-size: 20px;
-  color: white;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-}
-
-button {
-  padding: 15px 70px;
-  border-radius: 5px;
-  border-color: transparent;
-  font-family: Poppins;
-  color: white;
-  background-color: #007cff;
-  font-size: 16px;
-  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.05);
-  cursor: pointer;
-}
-button:disabled {
-  background-color: #fff;
-  color: black;
-  cursor: no-drop;
-  border: 1px solid #007cff;
-}
-
-input[type="email"],
-input[type="text"],
-input[type="date"],
-input[type="password"] {
-  height: 48px;
-  width: 100%;
-  background-color: #fff;
-  border: 2px solid #bfdeff;
+  padding: 0;
   box-sizing: border-box;
-  border-radius: 5px;
-  padding-left: 10px;
-  margin: 5px auto;
-  color: black;
-  font-size: large;
+  font-family: "Nunito Sans";
+  scroll-behavior: smooth;
 }
-
-.accent-color {
-  color: #007cff;
-}
-.lighter-color {
-  color: #19365e;
-}
-.darker-color {
-  color: #1c5298;
-}
-.major-text {
-  font-family: "Paytone One";
-  font-size: 64px;
-  line-height: 64px;
-  margin-bottom: 20px;
-}
-.mid-text {
-  font-family: "Poppins";
-  font-size: 20px;
-  line-height: 30px;
-}
-.small-text {
-  font-family: "Poppins";
-  font-size: 15px;
-  line-height: 30px;
-}
-.info-text {
-  display: block;
-  text-align: start;
-  color: #f13148;
-}
-
-label {
-  display: block;
-  text-align: start;
-  font-size: 16px;
-  line-height: 24px;
-  font-family: Poppins;
-  font-weight: 500;
-  margin-bottom: 0;
-}
-
-.no-break {
-  white-space: nowrap;
-}
-
-.pointer {
-  cursor: pointer;
-}
-
-/* modal */
-.modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0, 0, 0); /* Fallback color */
-  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
-}
-.modal-content {
-  background-color: #fefefe;
-  margin: 8% auto; /* 11% from the top and centered */
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
-  border-radius: 15px;
-  display: flex;
-  flex-direction: column;
-}
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 15px;
-}
-.close-modal {
-  color: #19365e;
-  float: right;
-  font-weight: bold !important;
-  align-self: center;
-}
-.close-modal:hover,
-.close-modal:focus {
-  color: rgba(255, 10, 10, 0.7);
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.notification-title {
-  font-weight: 500;
-  font-family: "Poppins";
-}
-.notification-content {
-  font-family: "Poppins";
-}
-
-.input-left-icon {
-  position: absolute;
-  margin-top: 15px;
-  margin-left: -35px;
-  cursor: pointer;
-}
-
-.input-left-icon:hover {
-  color: #007cff;
-}
-
-@media screen and (max-width: 700px) {
-  #menu-option {
-    font-size: 1.4em;
+/*Responsive*/
+@media (max-width: 3000px) {
+  section {
+    display: flex;
   }
-  footer {
-    position: unset;
+  .nbs section {
+    display: flex;
+    min-height: 100vh;
   }
-  nav {
-    padding: 3% 5%;
+  .nbs .b {
+    background-color: #007cff;
+    width: 20%;
+    min-width: fit-content;
+    padding-top: 1%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0.5em;
+    position: fixed;
   }
-  .major-text {
-    font-size: 45px;
-    line-height: 60px;
+  .nbs .name {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5em;
+    padding: 1em;
   }
-  .mid-text {
-    font-size: 17px;
-    line-height: 25px;
+  .nbs .title {
+    color: white;
+    font-family: "Nunito Sans";
+    font-weight: 600;
+    font-size: 1.5em;
   }
-  .small-text {
-    font-size: 13px;
-    line-height: 23px;
+  .nbs .logo {
+    padding: 0.5em;
   }
-  button,
-  .button {
+  .nbs .menu p {
+    background: transparent;
+    color: #fff;
     width: 100%;
-    margin-top: 35px;
+    padding-top: 0.8em;
+    padding-bottom: 0.8em;
+    padding-left: 0.5em;
+    font-size: 0.75em;
+    font-weight: 400;
   }
-  input[type="email"],
-  input[type="text"],
-  input[type="password"] {
-    font-size: medium;
+  .nbs .d:hover {
+    background: rgba(0, 0, 0, 0.35);
   }
-
-  /* modal */
-  .modal-content {
-    padding: 10px;
+  .nbs .d {
+    display: flex;
+    flex-direction: row;
+    padding-left: 1.5em;
+    align-items: center;
+  }
+  .nbs .menu hr {
+    margin-left: 1.5em;
+    margin-right: 1.5em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    border-top-width: 0px;
+    border-bottom-width: 0.1em;
+    border-left-width: 0px;
+    border-right-width: 0px;
+    border-color: rgba(255, 255, 255, 0.35);
+  }
+  .nbs .menu2 hr {
+    margin-left: 1.5em;
+    margin-right: 1.5em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    border-top-width: 0px;
+    border-bottom-width: 0.1em;
+    border-left-width: 0px;
+    border-right-width: 0px;
+    border-color: rgba(255, 255, 255, 0.35);
+  }
+  .nbs .menu2 p {
+    background: transparent;
+    color: #fff;
+    width: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 0.5em;
+    font-size: 12px;
+    font-weight: 400;
+  }
+  .nbs .menu2 p1 {
+    margin-left: 2em;
+    font-size: 0.75em;
+    font-weight: 200;
+    color: #fff;
+    padding-top: 1em;
+    padding-bottom: 1em;
+  }
+  .nbs .lowermenu {
+    vertical-align: bottom;
+  }
+  .nbs .footer a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.75em;
+    font-weight: 200;
+  }
+  .nbs .b .footer {
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    margin-top: 1em;
+    margin-right: 1em;
+    margin-bottom: 1em;
+    margin-left: 1.5em;
+  }
+  .nbh header.sticky {
+    background: #fff;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    padding: 0.5em 0.5em;
+  }
+  .b {
+    background-color: #007cff;
+    max-width: 30%;
+    min-width: fit-content;
+    align-content: center;
+    padding: 4em;
+    max-height: 100vh;
+  }
+  .bw {
+    background-color: #007cff;
+    max-width: 30%;
+    min-width: fit-content;
+    align-content: center;
+    padding: 4em;
+    min-height: 100vh;
+  }
+  .nbh header {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 1em 1em;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: 0.5s;
+  }
+  .nbh header .logo {
+    color: #007cff;
+    font-size: 24px;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-weight: 700;
+    letter-spacing: 2px;
+  }
+  .nbh header ul {
+    position: relative;
+    display: flex;
+  }
+  .nbh header ul li {
+    position: relative;
+    list-style: none;
+  }
+  .nbh header ul li a {
+    position: relative;
+    display: inline-block;
+    margin: 1em 1em;
+    color: #007cff;
+    text-decoration: none;
+  }
+  .nbh header ul li a p {
+    font-size: 1em;
+    padding-left: 0.3em;
+  }
+  .nbs .w {
+    background-color: white;
+    width: 80%;
+    min-width: fit-content;
+    padding-left: 2%;
+    padding-top: 1%;
+    margin-left: 25%;
+  }
+  a {
+    text-decoration: none;
+  }
+  .nbs .greeting p {
+    font-size: 0.9em;
+    font-weight: 400;
+    letter-spacing: 1px;
+    color: #2a2a2a;
+    padding-left: 1.65em;
+  }
+  .nbs .w .card {
+    text-align: center;
+    margin-top: 80px;
+  }
+  .nbs .card p {
+    font-size: 14px;
+    font-weight: 400;
+    color: #2a2a2a;
+    margin: 0.5em;
+  }
+  .nbs button {
+    background-color: #007cff;
+    border: none;
+    padding: 0.5em;
+    border-radius: 0.4em;
+    color: #fff;
+    padding-inline-start: 1.5em;
+    padding-inline-end: 1.5em;
+    margin: 0.5em;
+    cursor: pointer;
+  }
+  .nbs h1 {
+    padding-top: 1em;
+    padding-left: 1em;
+  }
+  .name {
+    display: flex;
+    align-items: center;
+  }
+  .title {
+    color: white;
+    font-family: "Nunito Sans";
+    font-weight: 600;
+    font-size: 3.5em;
+  }
+  .logo {
+    padding-right: 0.5em;
+  }
+  .ilus {
+    margin-bottom: 2em;
+    margin-top: 2em;
+  }
+  .ilus img {
+    width: 70%;
+  }
+  .text {
+    color: white;
+    width: 35em;
+  }
+  h2 {
+    margin-bottom: 2em;
+    color: #bfdeff;
+    font-weight: 1000;
+    font-size: 4em;
+  }
+  .text p {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 2.5em;
+    line-height: 1.5;
+  }
+  .buttons {
+    display: none;
+  }
+  .w {
+    background-color: #fff;
+    width: 70%;
+    padding-left: 10%;
+    padding-top: 3%;
+    min-height: 100vh;
+  }
+  .wb {
+    background-color: #fff;
+    width: 70%;
+    padding: 3% 5% 0% 5%;
+    min-height: 100vh;
+  }
+  h1 {
+    font-size: 4em;
+  }
+  .formBx {
+    padding-bottom: 1%;
+  }
+  form input {
+    padding: 2%;
+    font-size: 2em;
+    border: none;
+    outline: none;
+    background: #f4f7f9;
+    color: #007cff;
+    resize: both;
+    border-radius: 0.5em;
+    width: 60%;
+    height: 2.5em;
+    margin-top: 0.2em;
+  }
+  form p {
+    color: #2a2a2a;
+    padding-top: 0.5em;
+    font-size: 2em;
+    font-weight: 400;
+  }
+  input[type="submit"] {
+    background-color: #007cff;
+    color: white;
+    resize: none;
+    width: 10em;
+    border: none;
+    outline: none;
+    border-radius: 0.5em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    cursor: pointer;
+    margin-top: 1.5em;
+    margin-bottom: 1em;
+  }
+  a {
+    text-decoration: none;
+    color: #007cff;
+  }
+  .check p {
+    font-size: 2em;
+    font-weight: 400;
+    margin-bottom: 2em;
+    align-items: center;
+  }
+  .check {
+    display: flex;
+    align-items: center;
+  }
+  .check a {
+    padding: 0px 5px 0px 5px;
+  }
+  .create {
+    display: flex;
+    align-items: center;
+    font-size: 2em;
+  }
+  .question {
+    padding-left: 0.75em;
+  }
+  .forgot p {
+    font-size: 2em;
+    font-weight: 400;
+  }
+  form p input[type="checkbox"] {
+    background-color: #007cff;
+    color: white;
+    width: 1.2em;
+    margin-right: 1em;
+    border: none;
+    outline: none;
+    cursor: pointer;
+  }
+  #lg {
+    display: none;
+  }
+}
+/*responsive*/
+@media (max-width: 2000px) {
+  .b {
+    background-color: #007cff;
+    max-width: 30%;
+    min-width: fit-content;
+    align-content: center;
+    padding: 2em;
+  }
+  .bw {
+    background-color: #007cff;
+    max-width: 30%;
+    min-width: fit-content;
+    align-content: center;
+    padding: 2em;
+  }
+  .nbh header {
+    display: none;
+  }
+  .name {
+    display: flex;
+    align-items: center;
+  }
+  .title {
+    color: white;
+    font-family: "Nunito Sans";
+    font-weight: 600;
+    font-size: 1.5em;
+  }
+  .logo {
+    padding-right: 0.5em;
+  }
+  .ilus {
+    margin-bottom: 2em;
+    margin-top: 2em;
+  }
+  .ilus img {
+    width: 40%;
+  }
+  .text {
+    color: white;
+    width: 15em;
+  }
+  h2 {
+    margin-bottom: 1em;
+    color: #bfdeff;
+    font-weight: 1000;
+    font-size: 2em;
+  }
+  .text p {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 1.25em;
+  }
+  .buttons {
+    display: none;
+  }
+  .w {
+    background-color: #fff;
+    width: 70%;
+    padding-left: 10%;
+    margin-right: 5%;
+    padding-top: 5%;
+    min-height: 100vh;
+  }
+  .wb {
+    padding-left: 10%;
+    padding-top: 5%;
+  }
+  h1 {
+    font-size: 1.5em;
+  }
+  form input {
+    padding: 2%;
+    font-size: 1.1em;
+    border: none;
+    outline: none;
+    background: #f4f7f9;
+    color: #007cff;
+    resize: both;
+    border-radius: 0.5em;
+    width: 100%;
+    height: 3em;
+    margin-top: 1%;
+  }
+  form p {
+    color: #2a2a2a;
+    padding-top: 2em;
+    font-size: 1.1em;
+    font-weight: 400;
+  }
+  input[type="submit"] {
+    background-color: #007cff;
+    color: white;
+    resize: none;
+    width: 10em;
+    border: none;
+    outline: none;
+    border-radius: 0.3em;
+    padding-top: 0.6em;
+    padding-bottom: 0.6em;
+    font-size: 1em;
+    cursor: pointer;
+    margin-top: 1.2em;
+    margin-bottom: 1em;
+  }
+  form p input[type="checkbox"] {
+    background-color: #007cff;
+    color: white;
+    width: 1.3em;
+    margin-right: 1em;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    height: 1.3em;
+    margin-bottom: 0.3em;
+  }
+  a {
+    text-decoration: none;
+    color: #007cff;
+  }
+  .check p {
+    font-size: 1em;
+    font-weight: 400;
+    width: 100%;
+  }
+  .check {
+    width: 100%;
+  }
+  .create {
+    font-size: 1em;
+  }
+  .forgot p {
+    font-size: 1em;
+    font-weight: 400;
+  }
+  #lg {
+    display: none;
+  }
+}
+/*responsive*/
+@media (max-width: 800px) {
+  .w {
+    display: none;
+  }
+  #lg {
+    display: flex;
+    padding-left: 5%;
+  }
+  .bw {
+    display: none;
+  }
+  .b {
+    min-width: 100%;
+    width: 100%;
+    max-width: none;
+    background-color: #fff;
+    margin: 0.3em;
+    height: 100vh;
+    flex-direction: column;
+  }
+  .wb {
+    width: 100%;
+    padding: 2em;
+    min-height: 50vh;
+  }
+  .wb input {
+    width: 100%;
+  }
+  .title {
+    color: #007cff;
+    font-family: "Nunito Sans";
+    font-weight: 600;
+    font-size: 1.1em;
+  }
+  h2 {
+    margin-bottom: 0.5em;
+    color: #007cff;
+    font-weight: 800;
+    font-size: 1.5em;
+  }
+  .text p {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 1em;
+    color: #5b5b5b;
+  }
+  .text {
+    text-align: center;
+    width: 100%;
+  }
+  .ilus {
+    text-align: center;
+  }
+  .ilus img {
+    width: 30%;
+  }
+  .buttons {
+    display: flex;
+    justify-content: center;
+  }
+  .buttons button {
+    margin: 1em 3em;
+    background-color: #007cff;
+    color: #fff;
+    border: none;
+    border-radius: 0.3em;
+    padding: 1em 2em;
+    cursor: pointer;
+    width: max-content;
+  }
+  #login {
+    background-color: #f4f7f9;
+    color: #007cff;
+  }
+  .m {
+    margin: 1em;
+    background-color: #fff;
     width: 90%;
-    margin: 11% auto;
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-top: 2%;
+    justify-items: space-around;
+  }
+  header {
+    display: flex;
+    flex-direction: row;
+    justify-items: space-between;
+    align-items: center;
+    padding: 2em 10%;
+  }
+  form input {
+    padding: 2%;
+    padding-left: 4%;
+    font-size: 1em;
+    border: none;
+    outline: none;
+    background: #f4f7f9;
+    color: #007cff;
+    resize: both;
+    border-radius: 0.5em;
+    width: 100%;
+    height: 3em;
+    margin-top: 1%;
+  }
+  form p {
+    color: #2a2a2a;
+    padding-top: 2em;
+    font-size: 1em;
+    font-weight: 400;
+  }
+  input[type="submit"] {
+    border-radius: 0.5em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+  a {
+    text-decoration: none;
+    color: #007cff;
+  }
+  .check p {
+    font-size: 0.9em;
+    font-weight: 400;
+    margin-bottom: 1.5em;
+    align-items: center;
+  }
+  .check {
+    display: flex;
+    align-items: center;
+  }
+  .create {
+    display: block;
+    font-size: 0.9em;
+    padding-top: 0.5em;
+  }
+  .question {
+    padding: 0.5em 0em 0.5em 0em;
+    font-size: 0.9em;
+  }
+  .forgot p {
+    font-size: 0.9em;
+    font-weight: 400;
+    margin-top: 0.5em;
+  }
+  #ff {
+    display: flex;
+    justify-content: space-between;
+  }
+  #cc input[type="submit"] {
+    width: 100%;
+  }
+  #fp p {
+    font-size: 1em;
+    font-weight: 400;
+    margin-top: 0.5em;
+  }
+  .wb input[type="submit"] {
+    margin: 1em 0em 1em 0em;
+  }
+  .nbh header {
+    display: flex;
+  }
+  .nbh header.sticky {
+    padding: 1em 1em;
+    z-index: 1000;
+  }
+  .nbh .menu {
+    position: fixed;
+    top: 5em;
+    left: -100%;
+    display: block;
+    padding: 1em 1em;
+    text-align: left;
+    max-width: 50%;
+    min-width: fit-content;
+    height: 100vh;
+    background: #007cff;
+    transition: 0.5s;
+    z-index: 999;
+  }
+  .nbh .menu.active {
+    left: 0;
+  }
+  .nbh header ul li a {
+    color: #fff;
+    font-size: 1em;
+    display: flex;
+    align-items: center;
+  }
+  .toggle {
+    width: 40px;
+    height: 40px;
+    background: url(image/menu.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 30px;
+    cursor: pointer;
+  }
+  .toggle.active {
+    background: url(image/close.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 40px;
+    cursor: pointer;
+  }
+  .nbs .b {
+    display: none;
+  }
+  .nbs .w {
+    width: 100%;
+    margin: 3.5em 5% 0% 5%;
+    display: initial;
+  }
+  .nbs .w .card {
+    align-items: center;
   }
 }

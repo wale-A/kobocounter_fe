@@ -6,6 +6,7 @@
       :value="password"
       @input="$emit('update:password', $event.target.value)"
       id="password"
+      required
     />
     <span
       class="material-icons input-left-icon"
@@ -52,3 +53,22 @@ import { Options, Vue } from "vue-class-component";
 })
 export default class Password extends Vue {}
 </script>
+
+<style scoped>
+.input-left-icon {
+  position: absolute;
+  margin-top: 0.5em;
+  margin-left: -35px;
+  cursor: pointer;
+}
+
+.input-left-icon:hover {
+  color: #007cff;
+}
+
+@media (min-width: 800px) {
+  .input-left-icon {
+    margin-top: 1em;
+  }
+}
+</style>
