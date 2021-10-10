@@ -1,338 +1,469 @@
 <template>
-  <Header :display-menu="true" />
-  <main v-show="accounts && accounts.length > 0">
-    <section id="filter-section">
-      <div id="filters">
-        <div id="select-button">
-          <Multiselect
-            :searchable="true"
-            v-model="selectedAccounts"
-            placeholder="All accounts"
-            :options="transformedAccountInfo"
-            mode="tags"
-            :multipleLabel="
-              (params) => params.map((x) => x.label.split(/\W/)[0]).join(', ')
-            "
-            noOptionsText="The list is empty"
-            noResultsText="No results found"
-          />
-          <button
-            id="small-search-button"
-            style="padding: 5px; padding-bottom: 0px; width: unset"
-            @click="refreshDashboardData"
-            disabled
-          >
-            <i class="material-icons">search</i>
-          </button>
-        </div>
-        <div id="account-info-container">
-          <div id="account-info">
-            <div>
-              <p class="mid-text darker-color" style="margin: 0">
-                <span style="color: black">&#8358;</span>
-                {{ accountBalance }}
-              </p>
-              <p class="small-text darker-color" style="margin: 0">
-                Account Balance
-              </p>
-            </div>
-          </div>
-          <div id="time-filter">
-            <input type="date" v-model="from" :max="to" />
-            <input type="date" v-model="to" :min="from" />
-          </div>
+  <div class="nbh">
+    <header>
+      <div class="mtop">
+        <img src="/img/assets/logo.png" />
+        <div class="greeting">
+          <h1>Hi Tunde!</h1>
+          <p>Welcome!</p>
         </div>
       </div>
-      <div id="filter-button">
-        <button
-          id="big-search-button"
-          style="padding: 5px; padding-bottom: 0px"
-          @click="refreshDashboardData"
-          disabled
-        >
-          <i class="material-icons">search</i>
-        </button>
+      <div class="dpp">
+        <img src="/img/assets/pic.jpg" />
       </div>
-    </section>
-
-    <!-- net-income -->
-    <section>
-      <p class="mid-text darker-color">
-        Daily Summary
-        <!-- <span class="small-text" style="color: black"> (&#8358; '000)</span> -->
-      </p>
-      <!-- <line-chart
-        :data="netIncomeData"
-        :pointRadius="0"
-        thousands=","
-        loading="Loading..."
-        empty="We don't have data for the selected period..."
-        class="chart margin-left"
-        :library="{
-          showLines: false,
-          onClick: netIncomeEventHandler,
-        }"
-        :download="{
-          background: '#fff',
-          filename: 'net-income',
-        }"
-        :legend="false"
-        label="Net Income (in thousands)"
-      ></line-chart> -->
-
-      <IncomeChart
-        :height="'550px'"
-        :width="'100%'"
-        :fileName="'income_summary__' + from + '_to_' + to"
-        :revenue="revenue"
-        :expense="expense"
-        v-if="revenue || expense"
-      />
-    </section>
-
-    <!-- transaction categories -->
-    <section>
-      <p class="mid-text darker-color">Transaction Category</p>
-      <!-- <pie-chart
-        :donut="true"
-        :data="transactionCategoryData"
-        class="chart"
-        loading="Loading..."
-        empty="We don't have data for the selected period..."
-        :download="{
-          background: '#fff',
-          filename: 'account-expenses',
-        }"
-        legend="bottom"
-        :library="{
-          onClick: transactionCategoriesEventHandler,
-        }"
-      ></pie-chart> -->
-
-      <DonutChart
-        :inputData="transactionCategories"
-        :onClick="transactionCategoriesEventHandler"
-        :height="'500px'"
-        :width="'100%'"
-        :fileName="'spending_category_summary__' + from + '_to_' + to"
-      />
-    </section>
-
-    <!-- word cloud -->
-    <section
-      v-show="establishmentActivities && establishmentActivities.length > 0"
-    >
-      <p class="mid-text darker-color">Spending Pattern</p>
-      <!-- <canvas id="word-cloud"> </canvas> -->
-
-      <WordCloudChart
-        v-if="establishmentActivities"
-        :inputData="establishmentActivities"
-        :height="establishmentActivities.length <= 5 ? '300px' : '450px'"
-        :width="'100%'"
-        :fileName="'spending pattern'"
-      />
-    </section>
-
-    <!-- recurrent expenditure -->
-    <section>
-      <p class="mid-text darker-color">
-        Recurring Expense
-        <span class="small-text"> (last 3 months) </span>
-      </p>
-      <div v-if="recurrentExpenses.length == 0" class="small-text accent-color">
-        <span>
-          You don't have recurring transactions in the last 3 months
-        </span>
-        <span v-if="selectedAccounts"> for selected account(s)</span>
-      </div>
-
-      <div
-        v-for="(exp, index) in recurrentExpenses"
-        :key="index"
-        style="
-          display: flex;
-          justify-content: space-between;
-          padding: 5px 5px;
-          border: 1px solid #1c5298;
-          border-radius: 10px;
-          margin-bottom: 5px;
-          cursor: pointer;
-        "
-        :data-index="index"
-        class="expense"
-        @click.prevent="recurrentExpenseClickHandler"
-      >
-        <div style="text-align: start; width: 85%">
-          <p
-            class="small-text"
-            style="
-              line-height: 20px;
-              margin-top: 0;
-              overflow: hidden;
-              height: 20px;
-            "
-          >
-            {{ exp.narration }}
-          </p>
-          <span class="small-text darker-color" style="line-height: 25px">
-            {{ exp.transactionCategory }}
-          </span>
+    </header>
+  </div>
+  <section class="bs">
+    <div class="b">
+      <div class="uppermenu">
+        <div class="name">
+          <div class="logo"><img src="/img/assets/logo.png" /></div>
+          <div class="title">kobocounter</div>
         </div>
-        <div style="text-align: end; max-width: 15%">
-          <p
-            class="small-text"
-            style="
-              font-weight: 700;
-              margin-top: 0;
-              color: white;
-              background-color: gray;
-              text-align: center;
-              padding: 5px 13px;
-              border-radius: 18px;
-            "
+        <div class="menu">
+          <a href="#"
+            ><div class="d">
+              <img src="/img/assets/1.png" />
+              <p>Dashboard</p>
+            </div></a
           >
-            {{ exp.frequency }}
-          </p>
+          <a href="#"
+            ><div class="d">
+              <img src="/img/assets/2.png" />
+              <p>Insights</p>
+            </div></a
+          >
+          <a href="#"
+            ><div class="d">
+              <img src="/img/assets/3.png" />
+              <p>Manage Finances</p>
+            </div></a
+          >
+          <a href="#"
+            ><div class="d">
+              <img src="/img/assets/4.png" />
+              <p>Accounts</p>
+            </div></a
+          >
+          <a href="#"
+            ><div class="d">
+              <img src="/img/assets/5.png" />
+              <p>Settings</p>
+            </div></a
+          >
+          <hr />
+          <a href="#"
+            ><div class="d">
+              <img src="/img/assets/6.png" />
+              <p>Invite Friends</p>
+            </div></a
+          >
         </div>
       </div>
-    </section>
-  </main>
-
-  <AddNewAccount :hasAccounts="!(accounts && accounts?.length == 0)" />
-
-  <img
-    style="width: 30%; margin: 5% 35%"
-    v-show="!accounts"
-    src="@/assets/loading.gif"
-    alt="loading image"
-  />
-
-  <!-- Multiple Transactions Modal -->
-  <div id="multiple-transaction-modal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div>
-          <p class="mid-text darker-color" style="margin: 0">
-            {{ multipleTransactionModalTitle }}
-          </p>
-          <p
-            v-show="
-              multipleTransactionModalSubtitle &&
-              multipleTransactionModalSubtitle.length > 0
-            "
-            class="small-text lighter-color"
-            style="margin: 0"
+      <div class="lowermenu">
+        <div class="menu2">
+          <a href="login.html"
+            ><div class="d">
+              <img src="/img/assets/7.png" />
+              <p id="lp">Logout</p>
+            </div></a
           >
-            {{ multipleTransactionModalSubtitle }}
-          </p>
+          <hr />
         </div>
-        <span
-          id="multiple-transaction-close-modal"
-          class="close-modal material-icons"
-        >
-          close
-        </span>
-      </div>
-      <div
-        v-show="modalTransactions && modalTransactions.transactions.length > 0"
-        v-for="(txn, index) in modalTransactions.transactions"
-        :key="index"
-        style="
-          display: flex;
-          justify-content: space-between;
-          padding: 5px 5px;
-          border: 1px solid #1c5298;
-          border-radius: 10px;
-          margin-bottom: 5px;
-        "
-      >
-        <div style="text-align: start; width: 67%">
-          <p
-            class="small-text"
-            style="line-height: 20px; margin: 0; overflow: hidden"
-          >
-            {{ txn.narration }}
-          </p>
-          <span class="small-text darker-color">
-            {{
-              txn?.establishment?.name || txn?.recipient || txn.displayCategory
-            }}
-          </span>
+        <div class="footer">
+          <div><a href="#">Terms</a></div>
+          <div><a href="#">Privacy</a></div>
+          <div><a href="#">Support</a></div>
         </div>
-        <div
-          style="
-            text-align: end;
-            width: 33%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: flex-end;
-          "
-        >
-          <p
-            class="small-text darker-color"
-            :style="{
-              'font-weight': 500,
-              color:
-                txn.amount < 0 ? 'rgba(255, 10, 10, 0.7)' : 'rgb(20, 180, 20)',
-              'line-height': '20px',
-              height: '20px',
-              margin: 0,
-            }"
-          >
-            {{ Math.abs(txn.amount).toLocaleString() }}
-          </p>
-          <span class="small-text darker-color" style="display: block">
-            {{ new Date(txn.date).toLocaleDateString("en-GB") }}
-          </span>
-          <span
-            v-show="transactions.some((x) => x.id === txn.id)"
-            class="material-icons expand-transaction"
-            :data_txnId="txn.id"
-            style="
-              padding: 5px;
-              background-color: #aaa;
-              color: white;
-              border-radius: 5px;
-              cursor: pointer;
-              font-size: 10px;
-            "
-            @click="() => singleTransactionEventHandler(txn.id)"
-          >
-            open_in_full
-          </span>
-        </div>
-      </div>
-      <div style="display: flex; justify-content: space-between">
-        <p class="mid-text">Total</p>
-        <p class="mid-text">
-          <span style="font-weight: 800; font-size: large">&#8358; </span>
-          <span
-            :style="{
-              color:
-                modalTransactions.total < 0
-                  ? 'rgba(255, 10, 10, 0.7)'
-                  : 'rgb(20, 180, 20)',
-            }"
-          >
-            {{ Math.abs(modalTransactions.total).toLocaleString() }}
-          </span>
-        </p>
       </div>
     </div>
+    <div class="q">
+      <div class="top">
+        <div class="greet">
+          <h1>Hi Tunde!</h1>
+          <p>Welcome!</p>
+        </div>
+        <div class="dp">
+          <img src="/img/assets/pic.jpg" />
+        </div>
+      </div>
+      <div class="screen">
+        <div class="ef">
+          <div class="e">
+            <div>
+              <p>Account activity</p>
+              <hr />
+              <IncomeChart
+                :height="'26vh'"
+                :width="'98%'"
+                :fileName="'income_summary__' + from + '_to_' + to"
+                :netIncome="netIncome"
+              />
+            </div>
+          </div>
+          <div class="f">
+            <div>
+              <p>Recent categories</p>
+              <hr />
+              <WordCloudChart
+                :inputData="establishmentActivities"
+                :height="'54vh'"
+                :width="'90%'"
+                :fileName="'spending pattern'"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="gh">
+          <div class="g">
+            <div>
+              <p>Account summary</p>
+              <hr />
+            </div>
+            <div class="balance">
+              <p>Your current balance</p>
+              <p class="account-balance figure">N{{ accountBalance || 0 }}</p>
+            </div>
+            <div class="ud">
+              <div class="in">
+                <img src="/img/assets/income.png" />
+                <div>
+                  <p>Income</p>
+                  <p class="figure">
+                    N{{
+                      parseFloat(
+                        revenue?.reduce((acc, val) => (acc += val.amount), 0) ||
+                          0
+                      ).toLocaleString()
+                    }}
+                  </p>
+                </div>
+              </div>
+              <div class="de">
+                <img src="/img/assets/expense.png" />
+                <div>
+                  <p>Expenses</p>
+                  <p class="figure">
+                    N{{
+                      parseFloat(
+                        Math.abs(
+                          expense?.reduce(
+                            (acc, val) => (acc += val.amount),
+                            0
+                          ) || 0
+                        )
+                      ).toLocaleString()
+                    }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="h">
+            <div class="ft">
+              <div>
+                <p>Transactions</p>
+                <hr />
+              </div>
+              <div class="rrsa">
+                <button class="rc"><a href="recent.html">Recent</a></button>
+                <button class="rr">
+                  <a href="recurrent.html">Recurrent</a>
+                </button>
+                <button class="s">
+                  <a href="subscription.html">Subscription</a>
+                </button>
+              </div>
+              <hr />
+            </div>
+            <div class="list">
+              <div class="item">
+                <img src="/img/assets/accomodation.png" />
+                <div class="txt">
+                  <div class="btxt">
+                    <p>Accomodation</p>
+                    <p>N3500</p>
+                  </div>
+                  <div class="stxt">
+                    <p>Entertainment</p>
+                    <p>April 30, 2021</p>
+                  </div>
+                </div>
+              </div>
+              <hr />
+              <div class="item">
+                <img src="/img/assets/transportation.png" />
+                <div class="txt">
+                  <div class="btxt">
+                    <p>Transportation</p>
+                    <p>N3500</p>
+                  </div>
+                  <div class="stxt">
+                    <p>Productivity</p>
+                    <p>April 30, 2021</p>
+                  </div>
+                </div>
+              </div>
+              <hr />
+              <div class="item">
+                <img src="/img/assets/food.png" />
+                <div class="txt">
+                  <div class="btxt">
+                    <p>Food</p>
+                    <p>N3500</p>
+                  </div>
+                  <div class="stxt">
+                    <p>Productivity</p>
+                    <p>April 30, 2021</p>
+                  </div>
+                </div>
+              </div>
+              <hr />
+              <div class="item">
+                <img src="/img/assets/utility.png" />
+                <div class="txt">
+                  <div class="btxt">
+                    <p>Utilities</p>
+                    <p>N3500</p>
+                  </div>
+                  <div class="stxt">
+                    <p>Services</p>
+                    <p>April 30, 2021</p>
+                  </div>
+                </div>
+              </div>
+              <hr />
+              <div class="item">
+                <img src="/img/assets/clothing.png" />
+                <div class="txt">
+                  <div class="btxt">
+                    <p>Clothing</p>
+                    <p>N3500</p>
+                  </div>
+                  <div class="stxt">
+                    <p>Entertainment</p>
+                    <p>April 30, 2021</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="mobileview">
+    <div class="all">
+      <div class="actsmry">
+        <div class="mtm">
+          <div><h7>Account summary</h7></div>
+          <div><h8>30 Days</h8></div>
+        </div>
+        <hr />
+        <div class="mbal">
+          <div class="ybal">Your balance</div>
+          <div class="yfig">N123,450.00</div>
+        </div>
+        <div class="inout">
+          <div class="inm">
+            <img src="/img/assets/green.png" />
+            <div class="inval">
+              <div class="labm">income</div>
+              <div class="valm">N432,450.00</div>
+            </div>
+          </div>
+          <div class="outm">
+            <img src="/img/assets/red.png" />
+            <div class="outval">
+              <div class="labm">Expenses</div>
+              <div class="valm">N300,000.00</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="actavt">
+        <div><h7>Account activity</h7></div>
+        <div class="actgraph"></div>
+      </div>
+      <div class="actexp">
+        <div><h7>Account expenses</h7></div>
+        <div class="pich"><img src="/img/assets/piechart.png" /></div>
+      </div>
+      <div class="rctcat">
+        <div><h7>Recent category</h7></div>
+        <hr />
+        <div class="actgraph"></div>
+      </div>
+      <div class="subt">
+        <div><h7>Subscriptions</h7></div>
+        <div class="slist">
+          <div class="alist">
+            <div class="item">
+              <img src="/img/assets/netflix.png" />
+              <div class="txt">
+                <div class="btxt">
+                  <p>Netflix</p>
+                  <p>N3500</p>
+                </div>
+                <div class="stxt">
+                  <p>Entertainment</p>
+                  <p>April 30, 2021</p>
+                </div>
+              </div>
+            </div>
+            <hr />
+            <div class="item">
+              <img src="/img/assets/xd.png" />
+              <div class="txt">
+                <div class="btxt">
+                  <p>Adobe XD</p>
+                  <p>N3500</p>
+                </div>
+                <div class="stxt">
+                  <p>Productivity</p>
+                  <p>April 30, 2021</p>
+                </div>
+              </div>
+            </div>
+            <hr />
+            <div class="item">
+              <img src="/img/assets/canva.png" />
+              <div class="txt">
+                <div class="btxt">
+                  <p>Canva</p>
+                  <p>N3500</p>
+                </div>
+                <div class="stxt">
+                  <p>Productivity</p>
+                  <p>April 30, 2021</p>
+                </div>
+              </div>
+            </div>
+            <hr />
+            <div class="item">
+              <img src="/img/assets/eden.png" />
+              <div class="txt">
+                <div class="btxt">
+                  <p>Services</p>
+                  <p>N3500</p>
+                </div>
+                <div class="stxt">
+                  <p>Entertainment</p>
+                  <p>April 30, 2021</p>
+                </div>
+              </div>
+            </div>
+            <hr />
+            <div class="item">
+              <img src="/img/assets/applemusic.png" />
+              <div class="txt">
+                <div class="btxt">
+                  <p>Apple Music</p>
+                  <p>N3500</p>
+                </div>
+                <div class="stxt">
+                  <p>Entertainment</p>
+                  <p>April 30, 2021</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="expd">
+        <div class="blist">
+          <div class="item">
+            <img src="/img/assets/accomodationb.png" />
+            <div class="txt">
+              <div class="btxt">
+                <p>Accomodation</p>
+                <p>N35,000</p>
+              </div>
+              <hr />
+            </div>
+          </div>
+          <hr />
+          <div class="item">
+            <img src="/img/assets/transportationb.png" />
+            <div class="txt">
+              <div class="btxt">
+                <p>Transportation</p>
+                <p>N55,500</p>
+              </div>
+              <hr />
+            </div>
+          </div>
+          <hr />
+          <div class="item">
+            <img src="/img/assets/foodb.png" />
+            <div class="txt">
+              <div class="btxt">
+                <p>Food</p>
+                <p>N43,500</p>
+              </div>
+              <hr />
+            </div>
+          </div>
+          <hr />
+          <div class="item">
+            <img src="/img/assets/utilityb.png" />
+            <div class="txt">
+              <div class="btxt">
+                <p>Utilities</p>
+                <p>N33,500</p>
+              </div>
+              <hr />
+            </div>
+          </div>
+          <hr />
+          <div class="item">
+            <img src="/img/assets/clothingb.png" />
+            <div class="txt">
+              <div class="btxt">
+                <p>Clothing</p>
+                <p>N18,500</p>
+              </div>
+              <hr />
+            </div>
+          </div>
+        </div>
+        <div class="bgt">
+          <p>USE BUDGET PLANNER</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="bnav">
+    <div class="dbot">
+      <img src="/img/assets/n1.png" />
+      <p>Dashboard</p>
+    </div>
+    <div class="dbot">
+      <img src="/img/assets/n2.png" />
+      <p>Insights</p>
+    </div>
+    <div class="dbot">
+      <img src="/img/assets/n3.png" />
+      <p>Finances</p>
+    </div>
+    <div class="dbot">
+      <img src="/img/assets/n4.png" />
+      <p>Accounts</p>
+    </div>
+    <div class="dbot">
+      <img src="/img/assets/n5.png" />
+      <p>Settings</p>
+    </div>
   </div>
-
-  <SingleTransaction
-    :singleTransaction="singleTransaction"
-    :closeFunction="() => (singleTransaction = undefined)"
-  />
 </template>
+
+<style scoped></style>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import Header from "@/components/Header.vue";
 import { mapGetters } from "vuex";
+import { deleteSubscription } from "@/_helpers/pushNotification";
 import {
   NetIncome,
   TransactionCategories,
@@ -342,7 +473,6 @@ import {
 } from "@/types";
 import Multiselect from "@vueform/multiselect";
 import { add, sub, subMonths } from "date-fns";
-// import WordCloud from "wordcloud";
 import AddNewAccount from "@/components/AddNewAccount.vue";
 import SingleTransaction from "@/components/SingleTransaction.vue";
 import DonutChart from "@/components/charts/DonutChart.vue";
@@ -365,7 +495,7 @@ import { notify } from "@kyvg/vue3-notification";
     return {
       accountBalance: 0,
       accountBalanceData: {},
-      netIncomeData: {},
+      netIncomeData: [],
       transactionCategoryData: {},
       selectedAccounts: [],
       transformedAccountInfo: [],
@@ -387,17 +517,18 @@ import { notify } from "@kyvg/vue3-notification";
     ...mapGetters([
       "accounts",
       "transactions",
-      "income",
+      "netIncome",
       "transactionCategories",
       "accountCreateStatus",
       "recurrentExpenses",
       "establishmentActivities",
       "revenue",
       "expense",
+      "avatarUrl",
+      "username",
     ]),
   },
   components: {
-    Header,
     Multiselect,
     AddNewAccount,
     SingleTransaction,
@@ -406,6 +537,24 @@ import { notify } from "@kyvg/vue3-notification";
     WordCloudChart,
   },
   methods: {
+    scrollPage() {
+      window.addEventListener("scroll", function () {
+        const header = document.querySelector("header");
+        if (header) header.classList.toggle("sticky", window.scrollY > 0);
+      });
+    },
+    toggleMenu() {
+      var menuToggle = document.querySelector(".toggle");
+      var menu = document.querySelector(".menu");
+      if (menuToggle && menu) {
+        menuToggle.classList.toggle("active");
+        menu.classList.toggle("active");
+      }
+    },
+    logoutUser() {
+      deleteSubscription();
+      this.$store.commit("logoutUser");
+    },
     getTimeForTimeZone(date: number) {
       return add(new Date(date), {
         minutes: new Date().getTimezoneOffset() + 60,
@@ -424,21 +573,20 @@ import { notify } from "@kyvg/vue3-notification";
       this.showMultipleTransactionsModal();
     },
     modalMethods() {
-      const multipleTransactionCloseModal = document.getElementById(
-        "multiple-transaction-close-modal"
-      )!;
-      const multipleTransactionModal = document.getElementById(
-        "multiple-transaction-modal"
-      )!;
-
-      multipleTransactionCloseModal.onclick = function () {
-        multipleTransactionModal.style.display = "none";
-      };
-      window.onclick = function (event: MouseEvent) {
-        if (event.target == multipleTransactionModal) {
-          multipleTransactionModal.style.display = "none";
-        }
-      };
+      // const multipleTransactionCloseModal = document.getElementById(
+      //   "multiple-transaction-close-modal"
+      // )!;
+      // const multipleTransactionModal = document.getElementById(
+      //   "multiple-transaction-modal"
+      // )!;
+      // multipleTransactionCloseModal.onclick = function () {
+      //   multipleTransactionModal.style.display = "none";
+      // };
+      // window.onclick = function (event: MouseEvent) {
+      //   if (event.target == multipleTransactionModal) {
+      //     multipleTransactionModal.style.display = "none";
+      //   }
+      // };
     },
     netIncomeEventHandler(
       _: number,
@@ -520,8 +668,8 @@ import { notify } from "@kyvg/vue3-notification";
       };
     },
     showMultipleTransactionsModal() {
-      document.getElementById("multiple-transaction-modal")!.style.display =
-        "block";
+      // document.getElementById("multiple-transaction-modal")!.style.display =
+      //   "block";
     },
     multipleLabel(params: { label: string }[]) {
       return params.map((x) => x.label.split(/\W/)[0]).join(", ");
@@ -585,13 +733,18 @@ import { notify } from "@kyvg/vue3-notification";
       this.disableSearchButtons();
     },
     parseNetIncome() {
-      let result: Record<string, string> = {};
-      for (var i = 0; i < (this.income as NetIncome[]).length; i++) {
-        result[this.income[i].date] = (
-          (this.income[i].amount as number) / 1000
-        ).toFixed(2);
+      // let result: Record<string, string> = {};
+      let sum = 0;
+      for (var i = 0; i < (this.netIncome as NetIncome[]).length; i++) {
+        // hold the value of netIncome for that day
+        sum += this.netIncome[i].amount;
+        // add it to the last netIncome value we have, if it is not the first item in the index
+        // result[this.netIncome[i].date] = (sum / 1000).toFixed(2);
+        this.netIncomeData.push({
+          date: this.netIncome[i].date,
+          amount: sum,
+        });
       }
-      this.netIncomeData = result;
     },
     parseTransactionCategories() {
       this.transactionCategoryData = {};
@@ -628,8 +781,8 @@ import { notify } from "@kyvg/vue3-notification";
     },
   },
   watch: {
-    income() {
-      this.parseNetIncome();
+    netIncome() {
+      // this.parseNetIncome();
     },
     transactionCategories() {
       this.parseTransactionCategories();
@@ -713,137 +866,3 @@ import { notify } from "@kyvg/vue3-notification";
 })
 export default class Dashboard extends Vue {}
 </script>
-
-<style src="@vueform/multiselect/themes/default.css"></style>
-<style scoped>
-body {
-  background-color: #ededf0;
-}
-main {
-  width: 80%;
-  margin-right: 10%;
-  margin-left: 10%;
-  margin-top: 3%;
-}
-section {
-  margin-top: 15px;
-  margin-bottom: 35px;
-  background-color: white;
-}
-section p {
-  margin-bottom: 0;
-}
-#filter-section {
-  display: flex;
-}
-#filters {
-  width: 95%;
-  padding-right: 5%;
-}
-#filter-button {
-  width: 5%;
-}
-#small-search-button {
-  display: none;
-}
-#account-info-container {
-  display: flex;
-  justify-content: space-between;
-  padding: 1% 5%;
-  align-items: center;
-}
-#account-info {
-  width: 70%;
-}
-#time-filter {
-  width: 30%;
-  padding-left: 2%;
-  padding-top: 5px;
-}
-input[type="date"] {
-  height: 30px !important;
-  font-size: 15px;
-  font-family: "Poppins";
-  margin-top: 0;
-}
-
-@media screen and (max-width: 700px) {
-  main {
-    width: 90%;
-    margin-right: 5%;
-    margin-left: 5%;
-    margin-top: 3%;
-  }
-  section > .chart {
-    height: 230px !important;
-  }
-  #filters {
-    width: 100%;
-    padding: 0;
-  }
-  #account-info-container {
-    padding-left: 0;
-    padding-right: 0;
-  }
-  #account-info {
-    width: 57%;
-  }
-  #time-filter {
-    width: 43%;
-    padding-left: 0;
-  }
-  input[type="date"] {
-    height: 27px !important;
-    font-size: 13px;
-    font-family: "Poppins";
-    margin-top: 0;
-    padding-left: 0;
-  }
-  #filter-button {
-    display: none;
-  }
-  #small-search-button {
-    display: unset;
-    max-height: 40px;
-  }
-  #select-button {
-    display: flex;
-  }
-  button {
-    margin-top: 0;
-  }
-}
-</style>
-<style>
-div.multiselect-input {
-  border: 0;
-  border-bottom: 1px solid grey;
-}
-div.multiselect {
-  font-family: "Poppins";
-}
-#word-cloud {
-  width: 100%;
-  height: 40%;
-  border-color: rgba(0, 0, 0, 0.1);
-  border-width: 1px;
-  border-style: solid;
-}
-.margin-left {
-  margin-left: -15px;
-}
-
-@media screen and (max-width: 700px) {
-  #multiselect {
-    margin-left: 0;
-  }
-  #word-cloud {
-    width: 100%;
-    height: 45%;
-  }
-  .multiselect.is-searchable {
-    /* margin-right: 25px !important; */
-    width: 85%;
-  }
-}
-</style>

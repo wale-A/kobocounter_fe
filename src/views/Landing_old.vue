@@ -24,7 +24,7 @@
         >
       </section>
       <section id="landing-image">
-        <img src="/img/assets/phone.svg" alt="phone screen" />
+        <img src="@/assets/phone.svg" alt="phone screen" />
         <router-link
           :to="{ name: isLoggedIn ? 'Dashboard' : 'Login' }"
           class="submit-link-image"

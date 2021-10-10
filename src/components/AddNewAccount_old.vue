@@ -1,14 +1,12 @@
 <template>
-  <div class="nbs-card" v-show="!hasAccounts">
-    <img src="@/assets/8.png" />
-    <h3>You have not added any bank accounts</h3>
-    <p>Bank accounts you add will be displayed here</p>
-    <a href="profile.html">
-      <button type="button" class="button" @click="addAccount">
-        Add Bank Account
-      </button>
-    </a>
-  </div>
+  <aside v-show="!hasAccounts">
+    <img src="/img/logo.svg" alt="logo" />
+    <p class="accent-color mid-text">You have not added any account</p>
+    <p class="lighter-color small-text">
+      Add an account to start tracking your leaks
+    </p>
+    <button type="button" @click="addAccount">ADD AN ACCOUNT</button>
+  </aside>
 
   <button class="floating-button" @click="addAccount" title="Add an account">
     +
@@ -44,20 +42,34 @@ export default class AddNewAccount extends Vue {}
   font-size: 2em;
   border-radius: 50%;
   position: fixed;
-  top: 93%;
-  left: 96%;
+  top: 90%;
+  left: 90%;
   transition: all 0.2s ease-in 0s;
   z-index: 9999;
   cursor: pointer;
   margin: 0;
-  color: white;
-  background-color: #007cff;
-  border-color: transparent;
 }
 
-.card {
-  text-align: center;
-  margin-top: 90px;
+aside {
+  position: absolute;
+  margin: 10% 20%;
+  width: 60%;
+  height: 45%;
+  background-color: rgba(240, 248, 255, 0.6);
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+}
+aside img {
+  height: 135px;
+  margin-top: 5%;
+  margin-bottom: 30px;
+}
+aside p {
+  margin: 0;
+}
+aside button {
+  margin-top: 50px;
 }
 
 @media screen and (max-width: 700px) {
@@ -65,8 +77,10 @@ export default class AddNewAccount extends Vue {}
     top: 90%;
     left: 83%;
   }
-  .card {
-    margin-top: 50px;
+
+  aside {
+    margin: 10% 5%;
+    width: 90%;
   }
 }
 </style>

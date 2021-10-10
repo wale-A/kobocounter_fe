@@ -45,7 +45,7 @@
             <input
               type="submit"
               value="Login"
-              id="login_button"
+              id="login-button"
               :disabled="!(email && password)"
             />
             <div class="question">
@@ -88,7 +88,7 @@ import router from "@/router";
   },
   methods: {
     async loginUser() {
-      const loginButton = document.getElementById("login_button") as any;
+      const loginButton = document.getElementById("login-button") as any;
       const nextUrl = this.$route.params.nextUrl;
       loginButton.disabled = true;
 

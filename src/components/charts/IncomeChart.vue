@@ -11,6 +11,7 @@ import * as am4charts from "@amcharts/amcharts4/charts";
   props: {
     revenue: Array,
     expense: Array,
+    netIncome: Array,
     click: Function,
     height: String,
     width: String,
@@ -21,13 +22,15 @@ import * as am4charts from "@amcharts/amcharts4/charts";
       const chart = am4core.create("incomeChartDiv", am4charts.XYChart);
       chart.cursor = new am4charts.XYCursor();
       chart.hiddenState.properties.opacity = 0;
-
       const dates = ([
         ...new Set([
           ...(this.revenue || []).map((x: { date: string }) =>
             x.date.replace(/-/g, "/")
           ),
           ...(this.expense || []).map((x: { date: string }) =>
+            x.date.replace(/-/g, "/")
+          ),
+          ...(this.netIncome || []).map((x: { date: string }) =>
             x.date.replace(/-/g, "/")
           ),
         ]),
@@ -49,6 +52,10 @@ import * as am4charts from "@amcharts/amcharts4/charts";
               new Date(y.date.replace(/-/g, "/")).getTime() === x
           )?.amount,
           expense: expense ? Math.abs(expense) : undefined,
+          netIncome: this.netIncome?.find(
+            (y: { date: string }) =>
+              new Date(y.date.replace(/-/g, "/")).getTime() === x
+          )?.amount,
         };
       });
 
@@ -57,6 +64,13 @@ import * as am4charts from "@amcharts/amcharts4/charts";
       //   dateAxis.renderer.minGridDistance = 30;
 
       const valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+      // display the lines for the horizontal axis and not the vertical axis
+      dateAxis.renderer.grid.template.disabled = true;
+      valueAxis.renderer.grid.template.disabled = false;
+      // hides the X and Y axis lines, set value to 1 to show axis
+      dateAxis.renderer.line.strokeOpacity = 0;
+      valueAxis.renderer.line.strokeOpacity = 0;
+
       dateAxis.fontFamily = "Poppins";
       valueAxis.fontFamily = "Poppins";
 
@@ -66,6 +80,7 @@ import * as am4charts from "@amcharts/amcharts4/charts";
         series.dataFields.dateX = "date";
         series.name = title;
         series.tooltipText = "{dateX}: [bold]N {valueY}[/]";
+        // width of the line chart, increase value to increase thickness of the line
         series.strokeWidth = 2;
         series.smoothing = "monotoneX";
         series.fill = am4core.color(color);
@@ -74,38 +89,47 @@ import * as am4charts from "@amcharts/amcharts4/charts";
         series.tooltip = new am4core.Tooltip();
         series.tooltip.fontFamily = "Poppins";
 
-        const bullet = series.bullets.push(new am4charts.CircleBullet());
-        bullet.circle.strokeWidth = 1;
-        bullet.fontFamily = "Poppins";
+        // hides the bullets showing each point of the line, uncomment code below to show the points
+        // const bullet = series.bullets.push(new am4charts.CircleBullet());
+        // bullet.circle.strokeWidth = 1;
+        // bullet.fontFamily = "Poppins";
 
         return series;
       }
 
-      createSeries("revenue", "Income", "#33ff33");
-      createSeries("expense", "Expense", "#ff3333");
+      if (this.revenue) {
+        createSeries("revenue", "Income", "#33ff33");
+      }
+      if (this.expense) {
+        createSeries("expense", "Expense", "#ff3333");
+      }
+      if (this.netIncome) {
+        createSeries("netIncome", "Net Income", "#007cff");
+      }
 
       chart.legend = new am4charts.Legend();
       chart.legend.position = "bottom";
       chart.scrollbarX = new am4core.Scrollbar();
       chart.scrollbarX.properties.disabled = true;
 
-      if (months > 3) {
-        chart.scrollbarX.properties.disabled = false;
-      } else {
-        chart.exporting.menu = new am4core.ExportMenu();
-        chart.exporting.menu.items = [
-          {
-            label: "...",
-            menu: [
-              { type: "png", label: "PNG" },
-              { type: "print", label: "PDF" },
-            ],
-          },
-        ];
-      }
+      // do not allow scrollbar, do not export chart
+      // if (months > 3) {
+      //   chart.scrollbarX.properties.disabled = false;
+      // } else {
+      //   chart.exporting.menu = new am4core.ExportMenu();
+      //   chart.exporting.menu.items = [
+      //     {
+      //       label: "...",
+      //       menu: [
+      //         { type: "png", label: "PNG" },
+      //         { type: "print", label: "PDF" },
+      //       ],
+      //     },
+      //   ];
+      // }
 
       chart.fontFamily = "Poppins";
-      chart.fontSize = "14px";
+      chart.fontSize = "14";
 
       chart.responsive.enabled = true;
       chart.responsive.rules.push({
@@ -170,6 +194,9 @@ import * as am4charts from "@amcharts/amcharts4/charts";
       this.draw();
     },
     expense() {
+      this.draw();
+    },
+    netIncome() {
       this.draw();
     },
   },

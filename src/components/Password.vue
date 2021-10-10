@@ -6,6 +6,7 @@
       :value="password"
       @input="$emit('update:password', $event.target.value)"
       id="password"
+      minlength="8"
       required
     />
     <span
@@ -68,7 +69,7 @@ export default class Password extends Vue {}
 
 @media (min-width: 800px) {
   .input-left-icon {
-    margin-top: 1em;
+    margin-top: 0.7em;
   }
 }
 </style>

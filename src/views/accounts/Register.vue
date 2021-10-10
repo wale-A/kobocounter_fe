@@ -1,163 +1,69 @@
 <template>
-  <!-- <Header /> -->
-  <div id="register">
-    <aside style="background: #007cff">
-      <!-- <img src="@/assets/phone.svg" alt="phone screen" /> -->
-      <img src="@/assets/logo-white.svg" alt="logo" class="logo-img" />
-      <div></div>
-    </aside>
-    <form @submit.prevent="registerUser">
-      <section v-if="stage == 1">
-        <div class="texts">
-          <h2 class="major-text accent-color">Holla!</h2>
-          <p class="mid-text lighter-color">Tell us your name</p>
-          <p class="small-text accent-color">This is what we will call you</p>
+  <section>
+    <div class="b">
+      <div class="name">
+        <div class="logo">
+          <img src="@/assets/logo.png" style="width: 50px" />
         </div>
-        <div class="inputs">
-          <label for="name" class="lighter-color">
-            <span class="mid-text">Your firstname or a nick-name</span>
-          </label>
-          <input
-            type="text"
-            name="name"
-            v-model="name"
-            placeholder="james-bond"
-          />
-          <span class="small-text info-text no-break">
-            between 2 and 30 characters
-          </span>
-          <button
-            @click="stage++"
-            :disabled="name.length < 2 || name.length > 30"
-          >
-            NEXT
-          </button>
-        </div>
-      </section>
-
-      <section v-if="stage == 2">
-        <div class="texts">
-          <h2 class="major-text accent-color">Holla {{ shortName }}</h2>
-          <p class="mid-text lighter-color">Enter your email</p>
-          <p class="small-text accent-color">This helps us verify you</p>
-        </div>
-        <div class="inputs">
-          <label for="email" class="mid-text lighter-color"> Your email </label>
-          <input
-            type="email"
-            name="email"
-            v-model="email"
-            placeholder="007@MI6.com"
-          />
-          <button @click="stage++" :disabled="email.length < 5">NEXT</button>
-        </div>
-      </section>
-
-      <section v-if="stage == 3">
-        <div class="texts">
-          <h2 class="major-text accent-color">Holla {{ shortName }}</h2>
-          <p class="mid-text lighter-color">Enter your password</p>
-        </div>
-        <div class="inputs">
-          <label for="password" class="small-text lighter-color">
-            <span class="mid-text">Your password</span>
-          </label>
-          <Password v-model:password="password" />
-          <span class="small-text info-text no-break"> min. 8 characters </span>
-          <button
-            id="register-button"
-            type="submit"
-            :disabled="password.length < 8"
-          >
-            SUBMIT
-          </button>
-        </div>
-      </section>
-
-      <a
-        href="#"
-        v-if="stage > 1"
-        style="text-decoration: none; display: block"
-        class="mid-text darker-color"
-        @click.prevent="stage--"
-      >
-        &lt;&lt; PREVIOUS</a
-      >
-
-      <br /><br /><br />
-
-      <p class="small-text lighter-color">
-        Already have an account ?
+        <div class="title">kobocounter</div>
+      </div>
+      <div class="ilus"><img src="@/assets/coin.png" /></div>
+      <div class="text">
+        <h2>Track Your Coins</h2>
+        <p>Tired of wondering where all your money went?</p>
+        <p>
+          Track your spending and expenses across all your bank accounts with a
+          single app.
+        </p>
+      </div>
+      <div class="buttons">
+        <router-link :to="{ name: 'Register' }">
+          <button id="gs">Get Started</button>
+        </router-link>
         <router-link :to="{ name: 'Login' }" class="accent-color"
-          >Login here</router-link
+          ><button id="login">Login</button></router-link
         >
-      </p>
-    </form>
-  </div>
+      </div>
+    </div>
+    <div class="w">
+      <div>
+        <h1>Sign up</h1>
+      </div>
+      <div class="formBx">
+        <form @submit.prevent="registerUser">
+          <p>Hola! What's your name?</p>
+          <input type="name" required name="Name" v-model="name" />
+          <p>Enter your email address</p>
+          <input type="email" required name="Email" v-model="email" />
+          <p>Choose a Password (min. of 8 characters)</p>
+          <Password v-model:password="password" />
+          <div class="check">
+            <p>
+              <input type="checkbox" required /> I accept the
+              <a href="#"> Terms & Conditions </a>
+              and
+              <a href="#"> Privacy Policy</a>
+            </p>
+          </div>
+          <div class="create">
+            <input type="submit" value="Create Account" id="register-button" />
+            <div class="question">
+              Already have an account?
+              <router-link :to="{ name: 'Login' }" class="accent-color"
+                >Login here</router-link
+              >
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="forgot">
+        <p>
+          <a href="#">Forgot password?</a>
+        </p>
+      </div>
+    </div>
+  </section>
 </template>
-
-<style scoped>
-#register {
-  display: flex;
-  justify-content: space-between;
-  height: 100vh;
-}
-aside {
-  background: rgb(0, 124, 255);
-  /* height: 100vh; */
-  width: 30%;
-  padding: 5%;
-}
-form {
-  width: 70%;
-  padding: 3% 6%;
-  text-align: center;
-}
-section {
-  display: flex;
-  flex-direction: column;
-}
-.texts h2 {
-  margin-bottom: 0;
-}
-.texts p {
-  margin: 0;
-}
-.inputs {
-  margin: 5% 10%;
-  margin-bottom: 0;
-}
-button {
-  margin: 25px auto;
-}
-
-@media screen and (max-width: 1200px) {
-  aside {
-    display: none;
-  }
-  #register {
-    flex-flow: column;
-  }
-  form {
-    width: 80%;
-    padding-left: 10%;
-    padding-right: 10%;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  aside {
-    display: none;
-  }
-  #register {
-    flex-flow: column;
-  }
-  form {
-    width: 100%;
-    padding: 0;
-  }
-}
-</style>
 
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-explicit-any */

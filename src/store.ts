@@ -452,13 +452,16 @@ export const store = createStore({
         2
       )}`;
     },
+    username(state: State) {
+      return state.user?.name;
+    },
     accounts(state: State) {
       return state.accounts;
     },
     transactions(state: State) {
       return state.transactions;
     },
-    income(state: State) {
+    netIncome(state: State) {
       return state.netIncome;
     },
     revenue(state: State) {

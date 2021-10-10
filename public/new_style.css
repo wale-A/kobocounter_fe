@@ -5,11 +5,17 @@
   font-family: "Nunito Sans";
   scroll-behavior: smooth;
 }
-.account-balance {
-  font-size: 2em;
-  font-weight: 700;
-  color: black;
+
+.e .card p,
+.f .card p {
+  font-size: 1.2em;
+  font-weight: 600;
+  margin-bottom: 1em;
 }
+/*Responsive*/
+@media (max-width: 3000px) {
+}
+
 .top {
   display: flex;
   justify-content: space-between;
@@ -47,7 +53,9 @@ section {
 .nbs .b,
 .bs .b {
   background-color: #007cff;
-  width: 14%;
+  width: 15%;
+  min-width: fit-content;
+  padding-top: 1%;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -62,15 +70,26 @@ section {
   margin-bottom: 1.5em;
   padding: 1em;
 }
+.nbs .title,
+.bs .title {
+  color: white;
+  font-family: "Nunito Sans";
+  font-weight: 600;
+  font-size: 1.5em;
+}
+.nbs .logo,
+.bs .logo {
+  padding: 0.5em;
+}
 .nbs .menu p,
 .bs .menu p {
   background: transparent;
   color: #fff;
   width: 100%;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  padding-left: 10px;
-  font-size: 1.1em;
+  padding-top: 0.8em;
+  padding-bottom: 0.8em;
+  padding-left: 0.5em;
+  font-size: 0.75em;
   font-weight: 400;
 }
 .nbs .d:hover,
@@ -80,7 +99,8 @@ section {
 .nbs .d,
 .bs .d {
   display: flex;
-  padding-left: 20px;
+  flex-direction: row;
+  padding-left: 1.5em;
   align-items: center;
 }
 .nbs .menu hr,
@@ -115,7 +135,7 @@ section {
   padding-top: 10px;
   padding-bottom: 10px;
   padding-left: 0.5em;
-  font-size: 1em;
+  font-size: 12px;
   font-weight: 400;
 }
 .nbs .menu2 p1,
@@ -165,11 +185,11 @@ section {
 }
 .bw {
   background-color: #007cff;
-  width: 30%;
-  min-width: 380px;
   max-width: 30%;
+  min-width: fit-content;
   align-content: center;
-  padding: 20px 30px 0px 30px;
+  padding: 4em;
+  min-height: 100vh;
 }
 .nbh header {
   display: none;
@@ -181,6 +201,7 @@ section {
   box-shadow: 0px 2px 4px rgba(28, 82, 152, 0.15);
   padding: 1em 1em;
   z-index: 1000;
+  display: flex;
   justify-content: space-between;
   align-items: center;
   transition: 0.5s;
@@ -214,44 +235,45 @@ section {
 }
 .nbs .w {
   background-color: white;
-  width: 100%;
+  width: 85%;
   min-width: fit-content;
-  padding: 2%;
+  padding-left: 1%;
+  padding-top: 1%;
+  margin-left: 15%;
   margin-right: 0;
-  margin-left: 206px;
 }
 .bs {
   display: flex;
+  position: fixed;
   width: 100%;
   height: 100vh;
-  min-width: 795px;
 }
 .bs .q {
   background-color: white;
   width: 100%;
-  padding: 30px 30px 0px 30px;
-  margin-left: 13.5%;
+  padding-left: 16.5em;
+  padding-top: 1em;
+  padding-right: 1.5em;
 }
 a {
   text-decoration: none;
-  color: #007cff;
 }
 .nbs .greeting p {
   font-size: 0.9em;
   font-weight: 400;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   color: #2a2a2a;
   padding-left: 1.65em;
 }
 .nbs .w .card {
   text-align: center;
-  margin-top: 60px;
+  margin-top: 80px;
 }
 .nbs .card p {
   font-size: 1em;
   font-weight: 400;
   color: #2a2a2a;
-  margin: 5px;
+  margin: 0.5em;
 }
 .nbs button {
   background-color: #007cff;
@@ -266,8 +288,8 @@ a {
   cursor: pointer;
 }
 .nbs h1 {
-  padding-top: 20px;
-  padding-left: 20px;
+  padding-top: 0.3em;
+  padding-left: 0.3em;
 }
 .name {
   display: flex;
@@ -275,39 +297,38 @@ a {
 }
 .title {
   color: white;
+  font-family: "Nunito Sans";
   font-weight: 600;
-  font-size: 24px;
+  font-size: 3.5em;
 }
 .logo {
-  padding-right: 10px;
-}
-.logo img {
-  width: 30px;
+  padding-right: 0.5em;
 }
 .ilus {
-  margin-bottom: 50px;
-  margin-top: 50px;
+  margin-bottom: 2em;
+  margin-top: 2em;
 }
 .ilus img {
-  width: 96px;
+  width: 70%;
 }
 .text {
   color: white;
+  width: 35em;
 }
 h2 {
-  margin-bottom: 40px;
+  margin-bottom: 2em;
   color: #bfdeff;
   font-weight: 1000;
-  font-size: 36px;
+  font-size: 4em;
 }
 .text p {
   padding-top: 5px;
   padding-bottom: 5px;
-  font-size: 20px;
+  font-size: 2.5em;
   line-height: 1.5;
 }
 .buttons {
-  display: flex;
+  display: none;
 }
 .w {
   background-color: #fff;
@@ -318,52 +339,67 @@ h2 {
 }
 .wb {
   background-color: #fff;
-  width: 100%;
-  padding: 20px 20px 0px 30px;
+  width: 70%;
+  padding: 3% 5% 0% 5%;
   min-height: 100vh;
 }
 .wb .wbb {
   align-content: center;
 }
 h1 {
-  font-size: 32px;
+  font-size: 1.8em;
+}
+.formBx {
+  padding-bottom: 1%;
 }
 #ques {
   margin: 10px 0 0 0;
 }
 form input {
-  font-size: 1em;
+  padding: 2%;
+  font-size: 2em;
   border: none;
   outline: none;
   background: #f4f7f9;
   color: #007cff;
-  border-radius: 5px;
-  width: 444px;
+  resize: both;
+  border-radius: 0.5em;
+  width: 60%;
   height: 2.5em;
-  margin-top: 5px;
+  margin-top: 0.2em;
 }
-form input[type="text"],
-form input[type="password"],
-form input[type="email"] {
-  padding: 0.3em 1em;
-  color: black;
-}
-
 form p {
   color: #2a2a2a;
-  padding-top: 20px;
-  font-size: 16px;
+  padding-top: 0.5em;
+  font-size: 2em;
   font-weight: 400;
 }
 input[type="submit"] {
   background-color: #007cff;
   color: white;
-  width: fit-content;
-  min-width: 150px;
+  resize: none;
+  width: 10em;
+  border: none;
+  outline: none;
+  border-radius: 0.5em;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
   cursor: pointer;
-  margin: 0;
+  margin-top: 1.5em;
+  margin-bottom: 1em;
+}
+a {
+  text-decoration: none;
+  color: #007cff;
+}
+.check p {
+  font-size: 2em;
+  font-weight: 400;
+  margin-bottom: 2em;
+  align-items: center;
 }
 .check {
+  display: flex;
   align-items: center;
 }
 .check a {
@@ -372,13 +408,15 @@ input[type="submit"] {
 .create {
   display: flex;
   align-items: center;
-  margin-top: 10px;
+  font-size: 2em;
+  margin-top: 1em;
+}
+.question {
+  padding-left: 0.75em;
 }
 .forgot p {
-  font-size: 16px;
+  font-size: 2em;
   font-weight: 400;
-  margin-left: 10px;
-  padding: 0;
 }
 form p input[type="checkbox"] {
   width: auto;
@@ -404,8 +442,8 @@ form p input[type="checkbox"] {
 }
 .screen {
   width: 100%;
-  /* height: 75vh; */
-  margin-top: 10px;
+  height: 75vh;
+  margin-top: 30px;
   display: flex;
 }
 .ef {
@@ -431,7 +469,7 @@ hr {
   margin: 5px;
   box-shadow: 0px 0px 15px 5px rgba(54, 65, 86, 0.1);
   border-radius: 5px;
-  /* height: 43vh; */
+  height: 36vh;
   padding: 20px 10px 5px 10px;
 }
 .g,
@@ -439,17 +477,8 @@ hr {
   margin: 5px;
   box-shadow: 0px 0px 15px 5px rgba(54, 65, 86, 0.1);
   border-radius: 5px;
-  /* height: 43vh; */
+  height: 36vh;
   padding: 20px 10px 5px 10px;
-}
-
-.e,
-.g {
-  height: 30vh;
-}
-.f,
-.h {
-  height: 58vh;
 }
 .d img {
   width: 12px;
@@ -458,20 +487,17 @@ hr {
 .balance {
   background-color: #f5fbff;
   width: 100%;
-  margin-top: 2em;
+  margin-top: 0.8em;
   border-radius: 0.5em;
   height: 40%;
   text-align: center;
   padding: 1em;
-  padding-top: 2em;
 }
 .ud {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
   margin-top: 20px;
-  margin-left: 2.5em;
-  margin-right: 3em;
 }
 .in,
 .de {
@@ -488,17 +514,13 @@ hr {
 .in img,
 .de img {
   margin-right: 5px;
-  height: 3em;
 }
 .ud p {
-  font-size: 1em;
-}
-.ud .figure {
-  font-weight: 600;
+  font-size: 14px;
 }
 .rrsa .rr,
 .rrsa .s {
-  font-size: 1em;
+  font-size: 12px;
   margin: 5px 5px 5px 0px;
   outline: none;
   border: none;
@@ -508,7 +530,7 @@ hr {
 }
 .rrsb .rc,
 .rrsb .s {
-  font-size: 1em;
+  font-size: 12px;
   margin: 5px 5px 5px 0px;
   outline: none;
   border: none;
@@ -518,7 +540,7 @@ hr {
 }
 .rrsc .rc,
 .rrsc .rr {
-  font-size: 1em;
+  font-size: 12px;
   margin: 5px 5px 5px 0px;
   outline: none;
   border: none;
@@ -527,7 +549,7 @@ hr {
   padding: 3px 7px 3px 7px;
 }
 .rrsa .rc {
-  font-size: 1em;
+  font-size: 12px;
   margin: 5px 5px 5px 0px;
   outline: none;
   border-color: #007cff;
@@ -537,7 +559,7 @@ hr {
   padding: 3px 7px 3px 7px;
 }
 .rrsb .rr {
-  font-size: 1em;
+  font-size: 12px;
   margin: 5px 5px 5px 0px;
   outline: none;
   border-color: #007cff;
@@ -547,7 +569,7 @@ hr {
   padding: 3px 7px 3px 7px;
 }
 .rrsc .s {
-  font-size: 1em;
+  font-size: 12px;
   margin: 5px 5px 5px 0px;
   outline: none;
   border-color: #007cff;
@@ -575,13 +597,13 @@ hr {
 }
 .btxt {
   display: flex;
-  font-size: 1em;
+  font-size: 13px;
   font-weight: 600;
   justify-content: space-between;
 }
 .stxt {
   display: flex;
-  font-size: 1em;
+  font-size: 11px;
   font-weight: 400;
   justify-content: space-between;
 }
@@ -593,51 +615,6 @@ hr {
 }
 .mobileview {
   display: none;
-}
-#myBtn {
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  margin: 20px;
-  padding-right: 20px;
-  cursor: pointer;
-  transition: 0.5s;
-}
-#myBtn:hover,
-#myBtn:focus {
-  transform: scale(0.9);
-  transition: 0.5s;
-}
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgb(0, 0, 0);
-  background-color: rgba(0, 0, 0, 0.4);
-}
-.modal-content {
-  background-color: #fefefe;
-  margin: 15% auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
-}
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-.close:hover,
-.close:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
 }
 /*responsive*/
 @media (max-width: 991px) {
@@ -716,7 +693,7 @@ hr {
   }
   .b {
     background-color: #007cff;
-    max-width: 30%;
+    max-width: 15%;
     min-width: fit-content;
     align-content: center;
     padding: 2em;
@@ -724,11 +701,28 @@ hr {
   .nbh header {
     display: none;
   }
+  .name {
+    display: flex;
+    align-items: center;
+  }
   .title {
     color: white;
     font-family: "Nunito Sans";
     font-weight: 600;
     font-size: 1.5em;
+  }
+  .logo {
+    padding-right: 0.5em;
+  }
+  .logo img {
+    width: 45px;
+  }
+  .ilus {
+    margin-bottom: 2em;
+    margin-top: 2em;
+  }
+  .ilus img {
+    width: 40%;
   }
   .text {
     color: white;
@@ -740,7 +734,7 @@ hr {
     font-size: 16px;
   }
   .buttons {
-    display: flex;
+    display: none;
   }
   .w {
     background-color: #fff;
@@ -750,6 +744,26 @@ hr {
     padding-top: 5%;
     min-height: 100vh;
   }
+  .wb {
+    padding-left: 10%;
+    padding-top: 5%;
+  }
+  h2 {
+    font-size: 1.5em;
+  }
+  form input {
+    padding: 2%;
+    font-size: 1.1em;
+    border: none;
+    outline: none;
+    background: #f4f7f9;
+    color: #007cff;
+    resize: both;
+    border-radius: 0.5em;
+    width: 100%;
+    height: 3em;
+    margin-top: 1%;
+  }
   form p {
     color: #2a2a2a;
     padding-top: 20px;
@@ -758,15 +772,27 @@ hr {
   }
   input[type="submit"] {
     resize: none;
-    font-size: 14px;
-  }
-  form input {
-    width: 100%;
-    max-width: 395px;
+    width: 10em;
+    border: none;
+    outline: none;
+    border-radius: 0.3em;
+    padding-top: 0.6em;
+    padding-bottom: 0.6em;
+    font-size: 1em;
+    cursor: pointer;
+    margin-top: 1.2em;
+    margin-bottom: 1em;
   }
   form p input[type="checkbox"] {
     background-color: #007cff;
     color: white;
+    width: 1.3em;
+    margin-right: 1em;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    height: 1.3em;
+    margin-bottom: 0.3em;
   }
   a {
     text-decoration: none;
@@ -801,6 +827,7 @@ hr {
     width: 100%;
   }
   .dp {
+    width: 3em;
     text-align: right;
   }
   .dp img {
@@ -845,6 +872,12 @@ hr {
     margin: 0;
     box-shadow: 0px 0px 15px 5px rgba(54, 65, 86, 0.1);
     border-radius: 5px;
+  }
+  .ef-top {
+    height: 35vh;
+  }
+  .ef-bottom {
+    height: 55vh;
   }
   .d img {
     width: 12px;
@@ -927,13 +960,13 @@ hr {
     color: #007cff;
     font-family: "Nunito Sans";
     font-weight: 600;
-    font-size: 1.2em;
+    font-size: 1.1em;
   }
   h2 {
     margin-bottom: 0.5em;
     color: #007cff;
     font-weight: 800;
-    font-size: 2em;
+    font-size: 1.5em;
   }
   .text p {
     padding-top: 5px;
@@ -1028,17 +1061,15 @@ hr {
   }
   .create {
     display: block;
-    font-size: 0.75em;
-    padding-top: 0.5em;
+    font-size: 14px;
+    margin-top: 15px;
   }
   #ques {
     margin: 0;
   }
   .question {
-    padding-top: 10px;
     padding: 0.5em 0em 0.5em 0em;
     font-size: 0.9em;
-    margin: 0;
   }
   .forgot p {
     font-size: 0.9em;
@@ -1054,15 +1085,15 @@ hr {
     width: 100%;
   }
   #fp p {
-    font-size: 1em;
+    font-size: 16px;
     font-weight: 400;
     margin-top: 0.5em;
   }
   .wb input[type="submit"] {
-    font-size: 0.8em;
+    font-size: 12px;
   }
   .wb h1 {
-    font-size: 1.2em;
+    font-size: 18px;
   }
   .nbh header {
     display: flex;
@@ -1090,7 +1121,7 @@ hr {
   }
   .nbh header ul li a {
     color: #fff;
-    font-size: 1em;
+    font-size: 16px;
     display: flex;
     align-items: center;
   }
@@ -1127,12 +1158,12 @@ hr {
     box-shadow: 0px -2px 4px rgba(54, 65, 86, 0.1);
     border-radius: 10px 10px 0px 0px;
     align-items: center;
-    cursor: pointer;
   }
   .dbot {
-    font-size: 0.7em;
+    font-size: 10px;
     padding: 10px;
     text-align: center;
+    cursor: pointer;
   }
   .mobileview {
     padding: 90px 0px 50px 0px;
