@@ -63,10 +63,6 @@ export default class Password extends Vue {}
   cursor: pointer;
 }
 
-.input-left-icon:hover {
-  color: #007cff;
-}
-
 @media (min-width: 800px) {
   .input-left-icon {
     margin-top: 0.7em;

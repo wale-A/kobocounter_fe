@@ -25,26 +25,26 @@ import * as am4charts from "@amcharts/amcharts4/charts";
       chart.data = chartData || [];
       chart.innerRadius = am4core.percent(40);
       chart.fontFamily = "Poppins";
-      chart.fontSize = "14px";
+      chart.fontSize = "0.8em";
 
       chart.legend = new am4charts.Legend();
-      chart.legend.position = "right";
+      chart.legend.position = "bottom";
       chart.legend.valueLabels.template.align = "left";
       chart.legend.valueLabels.template.textAlign = "start";
       chart.legend.scrollable = true;
 
-      chart.exporting.menu = new am4core.ExportMenu();
-      chart.exporting.menu.items = [
-        {
-          label: "...",
-          menu: [
-            { type: "png", label: "PNG" },
-            { type: "print", label: "PDF" },
-          ],
-        },
-      ];
-      chart.exporting.title = "category";
-      chart.exporting.filePrefix = this.fileName;
+      // chart.exporting.menu = new am4core.ExportMenu();
+      // chart.exporting.menu.items = [
+      //   {
+      //     label: "...",
+      //     menu: [
+      //       { type: "png", label: "PNG" },
+      //       { type: "print", label: "PDF" },
+      //     ],
+      //   },
+      // ];
+      // chart.exporting.title = "category";
+      // chart.exporting.filePrefix = this.fileName;
 
       const series = chart.series.push(new am4charts.PieSeries3D());
       series.slices.template.fontFamily = "Poppins";

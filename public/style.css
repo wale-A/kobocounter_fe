@@ -10,6 +10,20 @@
   font-weight: 700;
   color: black;
 }
+.input-left-icon {
+  cursor: pointer;
+  color: black;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+.input-left-icon:hover {
+  color: #007cff;
+  font-weight: 700 !important;
+}
+.input-left-icon[disabled],
+.input-left-icon[disabled]:hover {
+  color: gray;
+}
 .top {
   display: flex;
   justify-content: space-between;
@@ -229,7 +243,7 @@ section {
 .bs .q {
   background-color: white;
   width: 100%;
-  padding: 30px 30px 0px 30px;
+  padding: 15px 30px 0px 30px;
   margin-left: 13.5%;
 }
 a {

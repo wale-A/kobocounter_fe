@@ -103,13 +103,51 @@
           </div>
           <div class="f">
             <div>
-              <p>Recent categories</p>
+              <div
+                class="dashboard-section-container"
+                style="
+                  display: flex;
+                  align-content: space-between;
+                  flex-direction: row;
+                  justify-content: space-between;
+                "
+              >
+                <p>Recent categories</p>
+                <div>
+                  <span
+                    class="material-icons input-left-icon"
+                    @click="() => (displayChart = 'wordcloud')"
+                    :enabled="displayChart === 'wordcloud'"
+                    style="font-size: 1.5em"
+                  >
+                    chevron_left
+                  </span>
+                  <span>&nbsp;</span>
+                  <span
+                    class="material-icons input-left-icon"
+                    @click="() => (displayChart = 'piechart')"
+                    :enabled="displayChart === 'piechart'"
+                    style="font-size: 1.5em"
+                  >
+                    chevron_right
+                  </span>
+                </div>
+              </div>
               <hr />
               <WordCloudChart
                 :inputData="establishmentActivities"
                 :height="'54vh'"
                 :width="'90%'"
                 :fileName="'spending pattern'"
+                v-show="displayChart === 'wordcloud'"
+              />
+
+              <DonutChart
+                :inputData="transactionCategories"
+                :height="'52vh'"
+                :width="'95%'"
+                :fileName="'spending_category_summary__' + from + '_to_' + to"
+                v-show="displayChart === 'piechart'"
               />
             </div>
           </div>
@@ -511,6 +549,7 @@ import { notify } from "@kyvg/vue3-notification";
       multipleTransactionModalTitle: "",
       multipleTransactionModalSubtitle: "",
       singleTransaction: undefined,
+      displayChart: "piechart",
     };
   },
   computed: {
