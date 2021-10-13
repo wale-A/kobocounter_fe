@@ -4,12 +4,11 @@
       <div class="mtop">
         <img src="/img/assets/logo.png" />
         <div class="greeting">
-          <h1>Hi Tunde!</h1>
-          <p>Welcome!</p>
+          <h1>Hi {{ username }} !</h1>
         </div>
       </div>
       <div class="dpp">
-        <img src="/img/assets/pic.jpg" />
+        <img :src="avatarUrl" alt="avatar" class="pointer" />
       </div>
     </header>
   </div>
@@ -65,7 +64,11 @@
           <a href="login.html"
             ><div class="d">
               <img src="/img/assets/7.png" />
-              <p id="lp">Logout</p>
+              <p id="lp">
+                <a href="#" @click.prevent="logoutUser" style="color: white">
+                  Logout
+                </a>
+              </p>
             </div></a
           >
           <hr />
@@ -80,11 +83,10 @@
     <div class="q">
       <div class="top">
         <div class="greet">
-          <h1>Hi Tunde!</h1>
-          <p>Welcome!</p>
+          <h1>Hi {{ username }} !</h1>
         </div>
         <div class="dp">
-          <img src="/img/assets/pic.jpg" />
+          <img :src="avatarUrl" alt="avatar" class="pointer" />
         </div>
       </div>
       <div class="screen">

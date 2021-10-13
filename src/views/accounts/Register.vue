@@ -16,14 +16,14 @@
           single app.
         </p>
       </div>
-      <div class="buttons">
+      <!-- <div class="buttons">
         <router-link :to="{ name: 'Register' }">
           <button id="gs">Get Started</button>
         </router-link>
         <router-link :to="{ name: 'Login' }" class="accent-color"
           ><button id="login">Login</button></router-link
         >
-      </div>
+      </div> -->
     </div>
     <div class="w">
       <div>
@@ -32,34 +32,37 @@
       <div class="formBx">
         <form @submit.prevent="registerUser">
           <p>Hola! What's your name?</p>
-          <input type="name" required name="Name" v-model="name" />
+          <input type="text" required name="Name" v-model="name" />
           <p>Enter your email address</p>
           <input type="email" required name="Email" v-model="email" />
           <p>Choose a Password (min. of 8 characters)</p>
           <Password v-model:password="password" />
           <div class="check">
             <p>
-              <input type="checkbox" required /> I accept the
+              <input type="checkbox" v-model="acceptPreCondition" required /> I
+              accept the
               <a href="#"> Terms & Conditions </a>
               and
               <a href="#"> Privacy Policy</a>
             </p>
           </div>
           <div class="create">
-            <input type="submit" value="Create Account" id="register-button" />
+            <input
+              type="submit"
+              value="Create Account"
+              id="register-button"
+              :disabled="!(name && email && password && acceptPreCondition)"
+            />
             <div class="question">
-              Already have an account?
-              <router-link :to="{ name: 'Login' }" class="accent-color"
-                >Login here</router-link
-              >
+              <p>
+                Already have an account?
+                <router-link :to="{ name: 'Login' }" class="accent-color"
+                  >Login here</router-link
+                >
+              </p>
             </div>
           </div>
         </form>
-      </div>
-      <div class="forgot">
-        <p>
-          <a href="#">Forgot password?</a>
-        </p>
       </div>
     </div>
   </section>
@@ -80,10 +83,10 @@ import Password from "@/components/Password.vue";
   },
   data() {
     return {
-      stage: 1,
       email: "",
       name: "",
       password: "",
+      acceptPreCondition: false,
     };
   },
   methods: {
@@ -121,12 +124,6 @@ import Password from "@/components/Password.vue";
           }
         },
       });
-    },
-  },
-  computed: {
-    shortName() {
-      let _ = this.name.split(/\W/)[0];
-      return _.length > 7 ? `${this.name.slice(0, 5)}..` : _;
     },
   },
 })

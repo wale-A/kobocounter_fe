@@ -20,7 +20,7 @@
           single app.
         </p>
       </div>
-      <div class="buttons">
+      <!-- <div class="buttons">
         <router-link
           :to="{ name: 'Register' }"
           style="border-bottom: 1px solid black"
@@ -28,11 +28,11 @@
           <button id="gs">Get Started</button>
         </router-link>
         <a href="#"><button id="login">Login</button></a>
-      </div>
+      </div> -->
     </div>
     <div class="wb">
       <div>
-        <h1 id="wb">Welcome Back!</h1>
+        <h1 id="wb">Welcome</h1>
       </div>
       <div class="formBx">
         <form @submit.prevent="loginUser">
@@ -61,7 +61,8 @@
       </div>
       <div class="forgot">
         <p>
-          <a href="#">Forgot password?</a>
+          Forgot password?
+          <a href="#"> Please use this link</a>
         </p>
       </div>
     </div>
