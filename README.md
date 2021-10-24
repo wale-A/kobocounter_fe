@@ -1,4 +1,4 @@
-# kobo_hunter
+# kobo-counter
 
 ## Project setup
 ```
