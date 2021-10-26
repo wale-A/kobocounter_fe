@@ -1,5 +1,5 @@
 <template>
-  <div id="incomeChartDiv" :style="{ height: height, width: width }"></div>
+  <div class="incomeChartDiv" :style="{ height: height, width: width }"></div>
 </template>
 
 <script lang="ts">
@@ -131,7 +131,9 @@ import * as am4charts from "@amcharts/amcharts4/charts";
       chart.fontFamily = "Poppins";
       chart.fontSize = "14";
 
-      chart.responsive.enabled = true;
+      // this adds a scrollbar to the which might be useful for small screens
+      // chart.responsive.enabled = true;
+
       chart.responsive.rules.push({
         relevant: am4core.ResponsiveBreakpoints.widthL,
         state: (target, stateId) => {

@@ -5,6 +5,9 @@
   font-family: "Nunito Sans";
   scroll-behavior: smooth;
 }
+.greeting {
+  align-self: center;
+}
 .account-balance {
   font-size: 2em;
   font-weight: 700;
@@ -61,7 +64,7 @@ section {
 .nbs .b,
 .bs .b {
   background-color: #007cff;
-  width: 14%;
+  width: 17%;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -149,7 +152,7 @@ section {
 .bs .footer a {
   color: #fff;
   text-decoration: none;
-  font-size: 0.75em;
+  font-size: 0.9em;
   font-weight: 200;
 }
 .nbs .b .footer,
@@ -242,8 +245,8 @@ section {
 .bs .q {
   background-color: white;
   width: 100%;
-  padding: 1em 1.2em 0px 1.5em;
-  margin-left: 13.5%;
+  padding: 1em 0.5em 0px 1em;
+  margin-left: 16.5%;
 }
 a {
   text-decoration: none;
@@ -422,9 +425,11 @@ form p input[type="checkbox"] {
 }
 .screen {
   width: 100%;
-  /* height: 75vh; */
-  margin-top: 10px;
+  margin-top: 1em;
   display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  flex-grow: 1;
 }
 .ef {
   background: #ffffff;
@@ -449,25 +454,38 @@ hr {
   margin: 5px;
   box-shadow: 0px 0px 15px 5px rgba(54, 65, 86, 0.1);
   border-radius: 5px;
-  /* height: 43vh; */
   padding: 20px 10px 5px 10px;
+  width: 60%;
 }
 .g,
 .h {
   margin: 5px;
   box-shadow: 0px 0px 15px 5px rgba(54, 65, 86, 0.1);
   border-radius: 5px;
-  /* height: 43vh; */
+  width: 38%;
   padding: 20px 10px 5px 10px;
 }
 
 .e,
 .g {
-  height: 30vh;
+  height: 32vh;
 }
 .f,
 .h {
-  height: 58vh;
+  height: 56vh;
+}
+
+.e {
+  order: 1;
+}
+.f {
+  order: 3;
+}
+.g {
+  order: 2;
+}
+.h {
+  order: 4;
 }
 .d img {
   width: 12px;
@@ -506,7 +524,7 @@ hr {
 .in img,
 .de img {
   margin-right: 5px;
-  height: 3em;
+  height: 2.5em;
 }
 .ud p {
   font-size: 1em;
@@ -659,6 +677,10 @@ hr {
 }
 /*responsive*/
 @media (max-width: 991px) {
+  .bs .q {
+    margin-left: 0;
+  }
+
   #ind .i {
     margin: 1em;
     text-align: center;
@@ -733,14 +755,11 @@ hr {
     align-items: center;
   }
   .b {
-    background-color: #007cff;
-    max-width: 30%;
-    min-width: fit-content;
-    align-content: center;
-    padding: 2em;
+    display: none !important;
   }
-  .nbh header {
-    display: none;
+  .bs {
+    display: flex;
+    width: 100%;
   }
   .title {
     color: white;
@@ -826,9 +845,8 @@ hr {
     border-radius: 100%;
   }
   .screen {
-    height: 800px;
     margin-top: 20px;
-    flex-direction: column;
+    flex-direction: row;
   }
   .ef {
     margin-top: 0;
@@ -851,19 +869,31 @@ hr {
     justify-content: space-between;
   }
   .e,
-  .f {
-    width: 100%;
-    height: 100%;
-    margin: 5px 0px 5px 0px;
-  }
+  .f,
   .g,
   .h {
-    width: 49%;
-    min-height: 36vh;
-    margin: 0;
-    box-shadow: 0px 0px 15px 5px rgba(54, 65, 86, 0.1);
-    border-radius: 5px;
+    width: 100%;
+    margin: 0.5em;
   }
+  .e {
+    height: 36vh;
+  }
+  .f {
+    height: 57vh;
+  }
+  .e {
+    order: 2;
+  }
+  .f {
+    order: 3;
+  }
+  .g {
+    order: 1;
+  }
+  .h {
+    order: 4;
+  }
+
   .d img {
     width: 12px;
     height: 12px;
@@ -876,6 +906,26 @@ hr {
     height: 40%;
     text-align: center;
     padding: 1em;
+  }
+
+  .bnav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    justify-content: space-between;
+    width: 100%;
+    background: #ffffff;
+    box-shadow: 0px -2px 4px rgba(54, 65, 86, 0.1);
+    border-radius: 10px 10px 0px 0px;
+    align-items: center;
+    padding: 0.5em 1em;
+  }
+  .dbot {
+    font-size: 1.3em;
+    font-weight: 500;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
   }
 }
 /*responsive*/
@@ -918,18 +968,6 @@ hr {
     display: block;
   }
   .bw {
-    display: none;
-  }
-  .b {
-    min-width: 100%;
-    width: 100%;
-    max-width: none;
-    background-color: #fff;
-    margin: 0.3em;
-    height: 100vh;
-    flex-direction: column;
-  }
-  .bs {
     display: none;
   }
   .wb {
@@ -1135,23 +1173,7 @@ hr {
   .nbs .card p {
     font-size: 12px;
   }
-  .bnav {
-    display: flex;
-    position: fixed;
-    bottom: 0;
-    justify-content: space-between;
-    width: 100%;
-    background: #ffffff;
-    box-shadow: 0px -2px 4px rgba(54, 65, 86, 0.1);
-    border-radius: 10px 10px 0px 0px;
-    align-items: center;
-    cursor: pointer;
-  }
-  .dbot {
-    font-size: 0.7em;
-    padding: 10px;
-    text-align: center;
-  }
+
   .mobileview {
     padding: 90px 0px 50px 0px;
     background-color: #f4f7f9;
@@ -1222,7 +1244,7 @@ hr {
   .inout {
     display: flex;
     justify-content: space-between;
-    margin-top: 20px;
+    margin: 20px 15px 0;
   }
   .inm,
   .outm {
@@ -1243,7 +1265,7 @@ hr {
     font-weight: 600;
   }
   .actgraph {
-    height: 184px;
+    height: 190px;
   }
   .actexp .pich {
     text-align: center;

@@ -1,5 +1,5 @@
 <template>
-  <div id="donutChartDiv" :style="{ height: height, width: width }"></div>
+  <div class="donutChartDiv" :style="{ height: height, width: width }"></div>
 </template>
 
 <script lang="ts">

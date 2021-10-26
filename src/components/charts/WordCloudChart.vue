@@ -1,5 +1,8 @@
 <template>
-  <div id="wordCloudChartDiv" :style="{ height: height, width: width }"></div>
+  <div
+    class="wordCloudChartDiv"
+    :style="{ height: height, width: width }"
+  ></div>
 </template>
 
 <script lang="ts">

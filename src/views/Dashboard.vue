@@ -15,9 +15,10 @@
   <section class="bs">
     <div class="b">
       <div class="uppermenu">
-        <div class="name">
-          <div class="logo"><img src="/img/assets/logo.png" /></div>
-          <div class="title">kobocounter</div>
+        <div class="name" style="background-color: white">
+          <div class="logo">
+            <img src="/img/assets/kb.png" style="width: 90%" />
+          </div>
         </div>
         <div class="menu">
           <a href="#"
@@ -82,7 +83,7 @@
     </div>
     <div class="q">
       <div class="top">
-        <div class="greet">
+        <div class="greeting">
           <h1>Hi {{ username }} !</h1>
         </div>
         <div class="dp">
@@ -90,260 +91,117 @@
         </div>
       </div>
       <div class="screen">
-        <div class="ef">
-          <div class="e">
-            <div>
-              <p>Account activity</p>
-              <hr />
-              <IncomeChart
-                :height="'26vh'"
-                :width="'98%'"
-                :fileName="'income_summary__' + from + '_to_' + to"
-                :netIncome="netIncome"
-              />
-            </div>
-          </div>
-          <div class="f">
-            <div>
-              <div
-                class="dashboard-section-container"
-                style="
-                  display: flex;
-                  align-content: space-between;
-                  flex-direction: row;
-                  justify-content: space-between;
-                "
-              >
-                <p>Recent categories</p>
-                <div>
-                  <span
-                    class="material-icons input-left-icon"
-                    @click="() => (displayChart = 'wordcloud')"
-                    :enabled="displayChart === 'wordcloud'"
-                    style="font-size: 1.5em"
-                  >
-                    chevron_left
-                  </span>
-                  <span>&nbsp;</span>
-                  <span
-                    class="material-icons input-left-icon"
-                    @click="() => (displayChart = 'piechart')"
-                    :enabled="displayChart === 'piechart'"
-                    style="font-size: 1.5em"
-                  >
-                    chevron_right
-                  </span>
-                </div>
-              </div>
-              <hr />
-              <WordCloudChart
-                :inputData="establishmentActivities"
-                :height="'54vh'"
-                :width="'90%'"
-                :fileName="'spending pattern'"
-                v-show="displayChart === 'wordcloud'"
-              />
-
-              <DonutChart
-                :inputData="transactionCategories"
-                :height="'52vh'"
-                :width="'95%'"
-                :fileName="'spending_category_summary__' + from + '_to_' + to"
-                v-show="displayChart === 'piechart'"
-              />
-            </div>
+        <div class="e">
+          <div>
+            <p>Account activity</p>
+            <hr />
+            <IncomeChart
+              :height="'30vh'"
+              :width="'98%'"
+              :fileName="'income_summary__' + from + '_to_' + to"
+              :netIncome="netIncome"
+            />
           </div>
         </div>
-        <div class="gh">
-          <div class="g">
-            <div>
-              <p>Account summary</p>
-              <hr />
-            </div>
-            <div class="balance">
-              <p>Your current balance</p>
-              <p class="account-balance figure">N{{ accountBalance || 0 }}</p>
-            </div>
-            <div class="ud">
-              <div class="in">
-                <img src="/img/assets/income.png" />
-                <div>
-                  <p>Income</p>
-                  <p class="figure">
-                    N{{
-                      parseFloat(
-                        revenue?.reduce((acc, val) => (acc += val.amount), 0) ||
-                          0
-                      ).toLocaleString()
-                    }}
-                  </p>
-                </div>
-              </div>
-              <div class="de">
-                <img src="/img/assets/expense.png" />
-                <div>
-                  <p>Expenses</p>
-                  <p class="figure">
-                    N{{
-                      parseFloat(
-                        Math.abs(
-                          expense?.reduce(
-                            (acc, val) => (acc += val.amount),
-                            0
-                          ) || 0
-                        )
-                      ).toLocaleString()
-                    }}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="h">
-            <div class="ft">
+        <div class="f">
+          <div>
+            <div
+              class="dashboard-section-container"
+              style="
+                display: flex;
+                align-content: space-between;
+                flex-direction: row;
+                justify-content: space-between;
+              "
+            >
+              <p>Recent categories</p>
               <div>
-                <p>Transactions</p>
-                <hr />
-              </div>
-              <div class="rrsa">
-                <button class="rc"><a href="recent.html">Recent</a></button>
-                <button class="rr">
-                  <a href="recurrent.html">Recurrent</a>
-                </button>
-                <button class="s">
-                  <a href="subscription.html">Subscription</a>
-                </button>
-              </div>
-              <hr />
-            </div>
-            <div class="list">
-              <div class="item">
-                <img src="/img/assets/accomodation.png" />
-                <div class="txt">
-                  <div class="btxt">
-                    <p>Accomodation</p>
-                    <p>N3500</p>
-                  </div>
-                  <div class="stxt">
-                    <p>Entertainment</p>
-                    <p>April 30, 2021</p>
-                  </div>
-                </div>
-              </div>
-              <hr />
-              <div class="item">
-                <img src="/img/assets/transportation.png" />
-                <div class="txt">
-                  <div class="btxt">
-                    <p>Transportation</p>
-                    <p>N3500</p>
-                  </div>
-                  <div class="stxt">
-                    <p>Productivity</p>
-                    <p>April 30, 2021</p>
-                  </div>
-                </div>
-              </div>
-              <hr />
-              <div class="item">
-                <img src="/img/assets/food.png" />
-                <div class="txt">
-                  <div class="btxt">
-                    <p>Food</p>
-                    <p>N3500</p>
-                  </div>
-                  <div class="stxt">
-                    <p>Productivity</p>
-                    <p>April 30, 2021</p>
-                  </div>
-                </div>
-              </div>
-              <hr />
-              <div class="item">
-                <img src="/img/assets/utility.png" />
-                <div class="txt">
-                  <div class="btxt">
-                    <p>Utilities</p>
-                    <p>N3500</p>
-                  </div>
-                  <div class="stxt">
-                    <p>Services</p>
-                    <p>April 30, 2021</p>
-                  </div>
-                </div>
-              </div>
-              <hr />
-              <div class="item">
-                <img src="/img/assets/clothing.png" />
-                <div class="txt">
-                  <div class="btxt">
-                    <p>Clothing</p>
-                    <p>N3500</p>
-                  </div>
-                  <div class="stxt">
-                    <p>Entertainment</p>
-                    <p>April 30, 2021</p>
-                  </div>
-                </div>
+                <span
+                  class="material-icons input-left-icon"
+                  @click="() => (displayChart = 'wordcloud')"
+                  :enabled="displayChart === 'wordcloud'"
+                  style="font-size: 1.5em"
+                >
+                  chevron_left
+                </span>
+                <span>&nbsp;</span>
+                <span
+                  class="material-icons input-left-icon"
+                  @click="() => (displayChart = 'piechart')"
+                  :enabled="displayChart === 'piechart'"
+                  style="font-size: 1.5em"
+                >
+                  chevron_right
+                </span>
               </div>
             </div>
             <hr />
+            <WordCloudChart
+              :inputData="establishmentActivities"
+              :height="'50vh'"
+              :width="'90%'"
+              :fileName="'spending pattern'"
+              v-show="displayChart === 'wordcloud'"
+            />
+
+            <DonutChart
+              :inputData="transactionCategories"
+              :height="'50vh'"
+              :width="'95%'"
+              :fileName="'spending_category_summary__' + from + '_to_' + to"
+              v-show="displayChart === 'piechart'"
+            />
           </div>
         </div>
-      </div>
-    </div>
-  </section>
-  <section class="mobileview">
-    <div class="all">
-      <div class="actsmry">
-        <div class="mtm">
-          <div><h7>Account summary</h7></div>
-          <div><h8>30 Days</h8></div>
-        </div>
-        <hr />
-        <div class="mbal">
-          <div class="ybal">Your balance</div>
-          <div class="yfig">N123,450.00</div>
-        </div>
-        <div class="inout">
-          <div class="inm">
-            <img src="/img/assets/green.png" />
-            <div class="inval">
-              <div class="labm">income</div>
-              <div class="valm">N432,450.00</div>
+        <div class="g">
+          <div>
+            <p>Account summary</p>
+            <hr />
+          </div>
+          <div class="balance">
+            <p>Your current balance</p>
+            <p class="account-balance figure">N{{ accountBalance || 0 }}</p>
+          </div>
+          <div class="ud">
+            <div class="in">
+              <img src="/img/assets/income.png" />
+              <div>
+                <p>Income</p>
+                <p class="figure">N{{ totalRevenue }}</p>
+              </div>
+            </div>
+            <div class="de">
+              <img src="/img/assets/expense.png" />
+              <div>
+                <p>Expenses</p>
+                <p class="figure">N{{ totalExpenses }}</p>
+              </div>
             </div>
           </div>
-          <div class="outm">
-            <img src="/img/assets/red.png" />
-            <div class="outval">
-              <div class="labm">Expenses</div>
-              <div class="valm">N300,000.00</div>
-            </div>
-          </div>
         </div>
-      </div>
-      <div class="actavt">
-        <div><h7>Account activity</h7></div>
-        <div class="actgraph"></div>
-      </div>
-      <div class="actexp">
-        <div><h7>Account expenses</h7></div>
-        <div class="pich"><img src="/img/assets/piechart.png" /></div>
-      </div>
-      <div class="rctcat">
-        <div><h7>Recent category</h7></div>
-        <hr />
-        <div class="actgraph"></div>
-      </div>
-      <div class="subt">
-        <div><h7>Subscriptions</h7></div>
-        <div class="slist">
-          <div class="alist">
+        <div class="h">
+          <div class="ft">
+            <div>
+              <p>Transactions</p>
+              <hr />
+            </div>
+            <div class="rrsa">
+              <button class="rc"><a href="recent.html">Recent</a></button>
+              <button class="rr">
+                <a href="recurrent.html">Recurrent</a>
+              </button>
+              <button class="s">
+                <a href="subscription.html">Subscription</a>
+              </button>
+            </div>
+            <hr />
+          </div>
+          <div class="list">
             <div class="item">
-              <img src="/img/assets/netflix.png" />
+              <img src="/img/assets/accomodation.png" />
               <div class="txt">
                 <div class="btxt">
-                  <p>Netflix</p>
+                  <p>Accomodation</p>
                   <p>N3500</p>
                 </div>
                 <div class="stxt">
@@ -354,10 +212,10 @@
             </div>
             <hr />
             <div class="item">
-              <img src="/img/assets/xd.png" />
+              <img src="/img/assets/transportation.png" />
               <div class="txt">
                 <div class="btxt">
-                  <p>Adobe XD</p>
+                  <p>Transportation</p>
                   <p>N3500</p>
                 </div>
                 <div class="stxt">
@@ -368,10 +226,10 @@
             </div>
             <hr />
             <div class="item">
-              <img src="/img/assets/canva.png" />
+              <img src="/img/assets/food.png" />
               <div class="txt">
                 <div class="btxt">
-                  <p>Canva</p>
+                  <p>Food</p>
                   <p>N3500</p>
                 </div>
                 <div class="stxt">
@@ -382,24 +240,24 @@
             </div>
             <hr />
             <div class="item">
-              <img src="/img/assets/eden.png" />
+              <img src="/img/assets/utility.png" />
               <div class="txt">
                 <div class="btxt">
+                  <p>Utilities</p>
+                  <p>N3500</p>
+                </div>
+                <div class="stxt">
                   <p>Services</p>
-                  <p>N3500</p>
-                </div>
-                <div class="stxt">
-                  <p>Entertainment</p>
                   <p>April 30, 2021</p>
                 </div>
               </div>
             </div>
             <hr />
             <div class="item">
-              <img src="/img/assets/applemusic.png" />
+              <img src="/img/assets/clothing.png" />
               <div class="txt">
                 <div class="btxt">
-                  <p>Apple Music</p>
+                  <p>Clothing</p>
                   <p>N3500</p>
                 </div>
                 <div class="stxt">
@@ -409,67 +267,7 @@
               </div>
             </div>
           </div>
-        </div>
-      </div>
-      <div class="expd">
-        <div class="blist">
-          <div class="item">
-            <img src="/img/assets/accomodationb.png" />
-            <div class="txt">
-              <div class="btxt">
-                <p>Accomodation</p>
-                <p>N35,000</p>
-              </div>
-              <hr />
-            </div>
-          </div>
           <hr />
-          <div class="item">
-            <img src="/img/assets/transportationb.png" />
-            <div class="txt">
-              <div class="btxt">
-                <p>Transportation</p>
-                <p>N55,500</p>
-              </div>
-              <hr />
-            </div>
-          </div>
-          <hr />
-          <div class="item">
-            <img src="/img/assets/foodb.png" />
-            <div class="txt">
-              <div class="btxt">
-                <p>Food</p>
-                <p>N43,500</p>
-              </div>
-              <hr />
-            </div>
-          </div>
-          <hr />
-          <div class="item">
-            <img src="/img/assets/utilityb.png" />
-            <div class="txt">
-              <div class="btxt">
-                <p>Utilities</p>
-                <p>N33,500</p>
-              </div>
-              <hr />
-            </div>
-          </div>
-          <hr />
-          <div class="item">
-            <img src="/img/assets/clothingb.png" />
-            <div class="txt">
-              <div class="btxt">
-                <p>Clothing</p>
-                <p>N18,500</p>
-              </div>
-              <hr />
-            </div>
-          </div>
-        </div>
-        <div class="bgt">
-          <p>USE BUDGET PLANNER</p>
         </div>
       </div>
     </div>
@@ -568,6 +366,24 @@ import { notify } from "@kyvg/vue3-notification";
       "avatarUrl",
       "username",
     ]),
+    totalRevenue: function () {
+      const rev =
+        this.revenue?.reduce(
+          (acc: number, val: { amount: number }) => (acc += val.amount),
+          0
+        ) || 0;
+
+      return rev.toLocaleString();
+    },
+    totalExpenses: function () {
+      const exp = Math.abs(
+        this.expense?.reduce(
+          (acc: number, val: { amount: number }) => (acc += val.amount),
+          0
+        ) || 0
+      );
+      return exp.toLocaleString();
+    },
   },
   components: {
     Multiselect,
