@@ -174,15 +174,15 @@ section {
 }
 .b {
   background-color: #007cff;
-  max-width: 25%;
+  width: 25%;
   align-content: center;
-  padding: 3.5em;
-  max-height: 100vh;
+  padding: 3em 2em 2em 2em;
+  height: 100vh;
 }
 .bw {
   background-color: #007cff;
   width: 30%;
-  min-width: 380px;
+  /* min-width: 380px; */
   max-width: 30%;
   align-content: center;
   padding: 20px 30px 0px 30px;
@@ -363,6 +363,8 @@ form input[type="password"],
 form input[type="email"] {
   padding: 0.3em 1em;
   color: black;
+  width: 60%;
+  height: 3em;
 }
 
 form p {
@@ -790,16 +792,15 @@ hr {
   form p {
     color: #2a2a2a;
     padding-top: 20px;
-    font-size: 14px;
+    font-size: 1em;
     font-weight: 400;
   }
   input[type="submit"] {
     resize: none;
-    font-size: 14px;
+    font-size: 1em;
   }
   form input {
-    width: 100%;
-    max-width: 395px;
+    width: 100% !important;
   }
   form p input[type="checkbox"] {
     background-color: #007cff;
@@ -810,7 +811,7 @@ hr {
     color: #007cff;
   }
   .check p {
-    font-size: 14px;
+    font-size: 1em;
     font-weight: 400;
     width: 100%;
     margin-bottom: 10px;
@@ -819,13 +820,13 @@ hr {
     width: 100%;
   }
   .create {
-    font-size: 14px;
+    font-size: 1em;
   }
   .question {
-    font-size: 14px;
+    font-size: 1em;
   }
   .forgot p {
-    font-size: 14px;
+    font-size: 1em;
     font-weight: 400;
   }
   #lg {
@@ -955,7 +956,7 @@ hr {
     font-weight: 700;
   }
   .mtop .greeting p {
-    font-size: 14px;
+    font-size: 1em;
     font-weight: 400;
   }
   .mtop img {
@@ -1167,7 +1168,7 @@ hr {
     width: 100%;
   }
   .card h3 {
-    font-size: 14px;
+    font-size: 1em;
     font-weight: 700;
   }
   .nbs .card p {
@@ -1221,7 +1222,7 @@ hr {
     font-weight: 700;
   }
   .mtm h8 {
-    font-size: 14px;
+    font-size: 1em;
     color: rgba(114, 115, 118, 1);
     font-weight: 500;
   }
@@ -1260,7 +1261,7 @@ hr {
     color: #727376;
   }
   .valm {
-    font-size: 14px;
+    font-size: 1em;
     color: #364156;
     font-weight: 600;
   }

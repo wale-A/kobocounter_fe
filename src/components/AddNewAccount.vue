@@ -1,6 +1,6 @@
 <template>
   <div class="nbs-card" v-show="!hasAccounts">
-    <img src="@/assets/8.png" />
+    <img src="/img/assets/8.png" />
     <h3>You have not added any bank accounts</h3>
     <p>Bank accounts you add will be displayed here</p>
     <a href="profile.html">

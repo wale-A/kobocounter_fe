@@ -3,11 +3,11 @@
     <div class="b">
       <div class="name">
         <div class="logo">
-          <img src="@/assets/logo.png" style="width: 50px" />
+          <img src="/img/assets/logo.png" style="width: 50px" />
         </div>
         <div class="title">kobocounter</div>
       </div>
-      <div class="ilus"><img src="@/assets/coin.png" /></div>
+      <div class="ilus"><img src="/img/assets/coin.png" /></div>
       <div class="text">
         <h2>Track Your Coins</h2>
         <p>Tired of wondering where all your money went?</p>

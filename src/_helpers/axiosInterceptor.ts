@@ -1,6 +1,8 @@
 import axios from "axios";
 import { store } from "@/store";
 
+// handles 401 and 403 responses from the server
+// it automatically logs the user out
 function unauthorizedResponseInterceptor(): void {
   axios.interceptors.response.use(undefined, (error) => {
     const { response } = error;
@@ -17,6 +19,7 @@ function unauthorizedResponseInterceptor(): void {
   });
 }
 
+// adds the authorization token to the request header
 function authHeaderInterceptor() {
   axios.interceptors.request.use((request) => {
     if (store.state.user?.token?.token) {

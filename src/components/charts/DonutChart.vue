@@ -1,3 +1,11 @@
+<!--
+This component helps draw a donut chart (piechart with a hole at the center)
+https://www.amcharts.com/docs/v4/chart-types/treemap/
+
+i left a bit more comment  on some of the code blocks in the new-ui branch.
+they will be brought in here on merge.
+-->
+
 <template>
   <div class="donutChartDiv" :style="{ height: height, width: width }"></div>
 </template>
