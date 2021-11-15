@@ -27,16 +27,21 @@ import * as am4plugins_wordCloud from "@amcharts/amcharts4/plugins/wordCloud";
         am4plugins_wordCloud.WordCloud
       );
       chart.fontFamily = "Poppins";
-      chart.exporting.menu = new am4core.ExportMenu();
-      chart.exporting.menu.items = [
-        {
-          label: "...",
-          menu: [
-            { type: "png", label: "PNG" },
-            { type: "print", label: "PDF" },
-          ],
-        },
-      ];
+
+      /**
+       *  This code block adds the download option to the chart,
+       *  allowing users download png image or pdf file
+       */
+      // chart.exporting.menu = new am4core.ExportMenu();
+      // chart.exporting.menu.items = [
+      //   {
+      //     label: "...",
+      //     menu: [
+      //       { type: "png", label: "PNG" },
+      //       { type: "print", label: "PDF" },
+      //     ],
+      //   },
+      // ];
       const series = chart.series.push(
         new am4plugins_wordCloud.WordCloudSeries()
       );

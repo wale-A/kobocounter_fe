@@ -1,57 +1,29 @@
 <template>
-  <header>
-    <nav>
-      <router-link :to="{ name: 'Home' }" id="logo">
-        <img src="/img/assets/logo-blue.svg" alt="logo" class="logo-img" />
-      </router-link>
-      <div v-if="showMenu" id="menu" class="">
-        <div class="dropdown" v-if="isLoggedIn">
-          <img :src="avatarUrl" alt="avatar" class="pointer" />
-          <div class="dropdown-content">
-            <span style="height: 12px; display: block">&nbsp;</span>
-            <router-link
-              :to="{ name: 'Dashboard' }"
-              style="border-bottom: 1px solid black"
-            >
-              Dashboard
-            </router-link>
-            <router-link
-              :to="{ name: 'Manage' }"
-              style="border-bottom: 1px solid black"
-            >
-              Manage Accounts
-            </router-link>
-            <a href="#" @click.prevent="logoutUser"> Logout </a>
-          </div>
-        </div>
-        <div class="dropdown" v-else>
-          <i class="material-icons accent-color pointer" id="menu-option"
-            >menu</i
-          >
-          <div class="dropdown-content">
-            <span style="height: 12px; display: block">&nbsp;</span>
-            <router-link
-              :to="{ name: 'Register' }"
-              style="border-bottom: 1px solid black"
-            >
-              Register
-            </router-link>
-            <router-link :to="{ name: 'Login' }"> Login </router-link>
-          </div>
-        </div>
+  <header id="menu" class="">
+    <h1>Hi {{ username }} !</h1>
+    <div class="dropdown">
+      <img :src="avatarUrl" alt="avatar" class="pointer header-avatar" />
+      <div class="dropdown-content">
+        <span style="height: 5px; display: block">&nbsp;</span>
+        <a href="#" @click.prevent="logoutUser"> Logout </a>
       </div>
-    </nav>
+    </div>
   </header>
 </template>
 
 <style scoped>
 #menu {
   display: flex;
-  justify-content: center;
-  flex-direction: column;
+  justify-content: space-between;
+  flex-direction: row;
+  padding-right: 10%;
+  padding-left: 3%;
 }
 #menu-option {
   font-size: 2em;
+}
+.header-avatar {
+  width: 40px;
 }
 .dropdown {
   position: relative;
@@ -62,9 +34,10 @@
   position: absolute;
   z-index: 1;
   margin-left: -25px;
+  background-color: green;
 }
 .dropdown-content a {
-  background-color: #fafafa;
+  /* background-color: #fafafa; */
   color: #1c5298;
   padding: 10px 20px;
   text-decoration: none;
@@ -82,10 +55,17 @@
 .dropdown:hover .dropbtn {
   background-color: #3e8e41;
 }
+.dropdown:hover {
+  /* padding: 0 1em; */
+  background-color: #3e8e41;
+}
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 900px) {
   .dropdown-content {
-    margin-left: -75px;
+    margin-left: -3em;
+  }
+  .header-avatar {
+    width: 32px;
   }
 }
 </style>
@@ -111,7 +91,7 @@ import { deleteSubscription } from "@/_helpers/pushNotification";
     },
   },
   computed: {
-    ...mapGetters(["avatarUrl", "isLoggedIn"]),
+    ...mapGetters(["avatarUrl", "isLoggedIn", "username"]),
   },
 })
 export default class Header extends Vue {}

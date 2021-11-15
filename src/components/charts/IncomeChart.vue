@@ -137,22 +137,22 @@ import * as am4charts from "@amcharts/amcharts4/charts";
       chart.responsive.rules.push({
         relevant: am4core.ResponsiveBreakpoints.widthL,
         state: (target, stateId) => {
-          if (target instanceof am4charts.Chart) {
-            const state = target.states.create(stateId);
-            chart.scrollbarX = new am4core.Scrollbar();
-            state.properties.paddingLeft = state.properties.paddingRight = 10;
-            state.properties.paddingTop = 50;
-            return state;
-          }
+          // if (target instanceof am4charts.Chart) {
+          //   const state = target.states.create(stateId);
+          //   chart.scrollbarX = new am4core.Scrollbar();
+          //   state.properties.paddingLeft = state.properties.paddingRight = 10;
+          //   state.properties.paddingTop = 50;
+          //   return state;
+          // }
 
-          if (target instanceof am4core.Scrollbar) {
-            const state = target.states.create(stateId);
-            // target.marginTop = 35;
-            state.properties.marginTop = 0;
-            state.properties.disabled = false;
-            // state.properties.zIndex = 10;
-            return state;
-          }
+          // if (target instanceof am4core.Scrollbar) {
+          //   const state = target.states.create(stateId);
+          //   // target.marginTop = 35;
+          //   state.properties.marginTop = 0;
+          //   state.properties.disabled = false;
+          //   // state.properties.zIndex = 10;
+          //   return state;
+          // }
 
           //   if (target instanceof am4charts.Legend) {
           //     const state = target.states.create(stateId);

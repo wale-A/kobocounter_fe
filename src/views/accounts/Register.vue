@@ -1,6 +1,6 @@
 <template>
   <section>
-    <div class="b">
+    <div class="bw">
       <div class="name">
         <div class="logo">
           <img src="/img/assets/logo.png" style="width: 50px" />

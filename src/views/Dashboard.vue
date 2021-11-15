@@ -1,102 +1,15 @@
 <template>
-  <div class="nbh">
-    <header>
-      <div class="mtop">
-        <img src="/img/assets/logo.png" />
-        <div class="greeting">
-          <h1>Hi {{ username }} !</h1>
-        </div>
-      </div>
-      <div class="dpp">
-        <img :src="avatarUrl" alt="avatar" class="pointer" />
-      </div>
-    </header>
-  </div>
-  <section class="bs">
-    <div class="b">
-      <div class="uppermenu">
-        <div class="name" style="background-color: white">
-          <div class="logo">
-            <img src="/img/assets/kb.png" style="width: 90%" />
-          </div>
-        </div>
-        <div class="menu">
-          <a href="#"
-            ><div class="d">
-              <img src="/img/assets/1.png" />
-              <p>Dashboard</p>
-            </div></a
-          >
-          <a href="#"
-            ><div class="d">
-              <img src="/img/assets/2.png" />
-              <p>Insights</p>
-            </div></a
-          >
-          <a href="#"
-            ><div class="d">
-              <img src="/img/assets/3.png" />
-              <p>Manage Finances</p>
-            </div></a
-          >
-          <a href="#"
-            ><div class="d">
-              <img src="/img/assets/4.png" />
-              <p>Accounts</p>
-            </div></a
-          >
-          <a href="#"
-            ><div class="d">
-              <img src="/img/assets/5.png" />
-              <p>Settings</p>
-            </div></a
-          >
-          <hr />
-          <a href="#"
-            ><div class="d">
-              <img src="/img/assets/6.png" />
-              <p>Invite Friends</p>
-            </div></a
-          >
-        </div>
-      </div>
-      <div class="lowermenu">
-        <div class="menu2">
-          <a href="login.html"
-            ><div class="d">
-              <img src="/img/assets/7.png" />
-              <p id="lp">
-                <a href="#" @click.prevent="logoutUser" style="color: white">
-                  Logout
-                </a>
-              </p>
-            </div></a
-          >
-          <hr />
-        </div>
-        <div class="footer">
-          <div><a href="#">Terms</a></div>
-          <div><a href="#">Privacy</a></div>
-          <div><a href="#">Support</a></div>
-        </div>
-      </div>
-    </div>
-    <div class="q">
-      <div class="top">
-        <div class="greeting">
-          <h1>Hi {{ username }} !</h1>
-        </div>
-        <div class="dp">
-          <img :src="avatarUrl" alt="avatar" class="pointer" />
-        </div>
-      </div>
-      <div class="screen">
-        <div class="e">
+  <main v-show="accounts && accounts?.length" class="dashboard">
+    <SideBar />
+    <section class="dashboard-content-container">
+      <Header />
+      <div class="dashboard-content">
+        <div class="account-activity">
           <div>
-            <p>Account activity</p>
+            <p class="bold-text">Account activity</p>
             <hr />
             <IncomeChart
-              :height="'30vh'"
+              :height="'36vh'"
               :width="'98%'"
               :fileName="'income_summary__' + from + '_to_' + to"
               :netIncome="netIncome"
@@ -114,7 +27,7 @@
                 justify-content: space-between;
               "
             >
-              <p>Recent categories</p>
+              <p class="bold-text">Recent categories</p>
               <div>
                 <span
                   class="material-icons input-left-icon"
@@ -138,7 +51,6 @@
             <hr />
             <WordCloudChart
               :inputData="establishmentActivities"
-              :height="'50vh'"
               :width="'90%'"
               :fileName="'spending pattern'"
               v-show="displayChart === 'wordcloud'"
@@ -146,154 +58,100 @@
 
             <DonutChart
               :inputData="transactionCategories"
-              :height="'50vh'"
               :width="'95%'"
               :fileName="'spending_category_summary__' + from + '_to_' + to"
               v-show="displayChart === 'piechart'"
             />
           </div>
         </div>
-        <div class="g">
-          <div>
-            <p>Account summary</p>
-            <hr />
-          </div>
+        <div class="account-summary">
+          <p class="bold-text">Account summary</p>
+          <hr />
           <div class="balance">
             <p>Your current balance</p>
-            <p class="account-balance figure">N{{ accountBalance || 0 }}</p>
+            <p class="account-balance bold-text">N{{ accountBalance || 0 }}</p>
           </div>
-          <div class="ud">
-            <div class="in">
+          <div class="balance-detail">
+            <div class="balance-detail-section">
               <img src="/img/assets/income.png" />
               <div>
                 <p>Income</p>
-                <p class="figure">N{{ totalRevenue }}</p>
+                <p class="bold-text amount">N{{ totalRevenue }}</p>
               </div>
             </div>
-            <div class="de">
+            <div class="balance-detail-section">
               <img src="/img/assets/expense.png" />
               <div>
                 <p>Expenses</p>
-                <p class="figure">N{{ totalExpenses }}</p>
+                <p class="bold-text amount">N{{ totalExpenses }}</p>
               </div>
             </div>
           </div>
         </div>
-        <div class="h">
-          <div class="ft">
-            <div>
-              <p>Transactions</p>
-              <hr />
-            </div>
-            <div class="rrsa">
-              <button class="rc"><a href="recent.html">Recent</a></button>
-              <button class="rr">
-                <a href="recurrent.html">Recurrent</a>
-              </button>
-              <button class="s">
-                <a href="subscription.html">Subscription</a>
-              </button>
-            </div>
-            <hr />
-          </div>
-          <div class="list">
-            <div class="item">
-              <img src="/img/assets/accomodation.png" />
-              <div class="txt">
-                <div class="btxt">
-                  <p>Accomodation</p>
-                  <p>N3500</p>
-                </div>
-                <div class="stxt">
-                  <p>Entertainment</p>
-                  <p>April 30, 2021</p>
-                </div>
-              </div>
-            </div>
-            <hr />
-            <div class="item">
-              <img src="/img/assets/transportation.png" />
-              <div class="txt">
-                <div class="btxt">
-                  <p>Transportation</p>
-                  <p>N3500</p>
-                </div>
-                <div class="stxt">
-                  <p>Productivity</p>
-                  <p>April 30, 2021</p>
-                </div>
-              </div>
-            </div>
-            <hr />
-            <div class="item">
-              <img src="/img/assets/food.png" />
-              <div class="txt">
-                <div class="btxt">
-                  <p>Food</p>
-                  <p>N3500</p>
-                </div>
-                <div class="stxt">
-                  <p>Productivity</p>
-                  <p>April 30, 2021</p>
-                </div>
-              </div>
-            </div>
-            <hr />
-            <div class="item">
-              <img src="/img/assets/utility.png" />
-              <div class="txt">
-                <div class="btxt">
-                  <p>Utilities</p>
-                  <p>N3500</p>
-                </div>
-                <div class="stxt">
-                  <p>Services</p>
-                  <p>April 30, 2021</p>
-                </div>
-              </div>
-            </div>
-            <hr />
-            <div class="item">
-              <img src="/img/assets/clothing.png" />
-              <div class="txt">
-                <div class="btxt">
-                  <p>Clothing</p>
-                  <p>N3500</p>
-                </div>
-                <div class="stxt">
-                  <p>Entertainment</p>
-                  <p>April 30, 2021</p>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div class="budget-performance">
+          <p class="bold-text">Budget Performance</p>
           <hr />
+          <div class="balance">
+            <p>Your current balance</p>
+            <p class="account-balance bold-text">N{{ accountBalance || 0 }}</p>
+          </div>
+          <div class="balance-detail">
+            <div class="balance-detail-section">
+              <img src="/img/assets/income.png" />
+              <div>
+                <p>Income</p>
+                <p class="bold-text">N{{ totalRevenue }}</p>
+              </div>
+            </div>
+            <div class="balance-detail-section">
+              <img src="/img/assets/expense.png" />
+              <div>
+                <p>Expenses</p>
+                <p class="bold-text">N{{ totalExpenses }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="top-expenses">
+          <p class="bold-text">Top 3 Expenses</p>
+          <hr />
+          <div class="top-expenses-detail">
+            <table>
+              <tr>
+                <th></th>
+                <th>Category</th>
+                <th>% of Expenses</th>
+              </tr>
+              <tr>
+                <td><span class="bold-text"> Groceries </span></td>
+                <td>N18,000</td>
+                <td>30%</td>
+              </tr>
+              <tr>
+                <td><span class="bold-text"> Shopping </span></td>
+                <td>N12,000</td>
+                <td>25%</td>
+              </tr>
+              <tr>
+                <td><span class="bold-text"> Transport </span></td>
+                <td>N8,000</td>
+                <td>10%</td>
+              </tr>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
-  <div class="bnav">
-    <div class="dbot">
-      <img src="/img/assets/n1.png" />
-      <p>Dashboard</p>
-    </div>
-    <div class="dbot">
-      <img src="/img/assets/n2.png" />
-      <p>Insights</p>
-    </div>
-    <div class="dbot">
-      <img src="/img/assets/n3.png" />
-      <p>Finances</p>
-    </div>
-    <div class="dbot">
-      <img src="/img/assets/n4.png" />
-      <p>Accounts</p>
-    </div>
-    <div class="dbot">
-      <img src="/img/assets/n5.png" />
-      <p>Settings</p>
-    </div>
-  </div>
+    </section>
+  </main>
+
+  <AddNewAccount :hasAccounts="!(accounts && accounts?.length == 0)" />
+
+  <img
+    style="width: 30%; margin: 5% 35%"
+    v-show="!accounts"
+    src="/img/assets/loading.gif"
+    alt="loading image"
+  />
 </template>
 
 <style scoped></style>
@@ -318,6 +176,8 @@ import IncomeChart from "@/components/charts/IncomeChart.vue";
 import WordCloudChart from "@/components/charts/WordCloudChart.vue";
 import { subscribeUser } from "@/_helpers/pushNotification";
 import { notify } from "@kyvg/vue3-notification";
+import Header from "@/components/Header.vue";
+import SideBar from "@/components/SideBar.vue";
 
 @Options({
   created() {
@@ -363,8 +223,6 @@ import { notify } from "@kyvg/vue3-notification";
       "establishmentActivities",
       "revenue",
       "expense",
-      "avatarUrl",
-      "username",
     ]),
     totalRevenue: function () {
       const rev =
@@ -392,6 +250,8 @@ import { notify } from "@kyvg/vue3-notification";
     DonutChart,
     IncomeChart,
     WordCloudChart,
+    Header,
+    SideBar,
   },
   methods: {
     scrollPage() {

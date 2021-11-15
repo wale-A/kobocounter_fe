@@ -60,9 +60,9 @@ export default class AddNewAccount extends Vue {}
   margin-top: 90px;
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 900px) {
   .floating-button {
-    top: 90%;
+    top: 80%;
     left: 83%;
   }
   .card {
