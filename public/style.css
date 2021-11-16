@@ -9,6 +9,9 @@ header {
   padding-top: 5px;
   height: 4vh;
 }
+nav {
+  z-index: 1000;
+}
 .greeting {
   align-self: center;
 }

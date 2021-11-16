@@ -50,6 +50,7 @@
             </div>
             <hr />
             <WordCloudChart
+              :height="'50vh'"
               :inputData="establishmentActivities"
               :width="'90%'"
               :fileName="'spending pattern'"
@@ -57,6 +58,7 @@
             />
 
             <DonutChart
+              :height="'50vh'"
               :inputData="transactionCategories"
               :width="'95%'"
               :fileName="'spending_category_summary__' + from + '_to_' + to"
