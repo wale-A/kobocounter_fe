@@ -5,6 +5,9 @@
   font-family: "Nunito Sans";
   scroll-behavior: smooth;
 }
+.flex {
+  display: flex;
+}
 header {
   padding-top: 5px;
   height: 4vh;
@@ -179,7 +182,6 @@ table {
 .bw {
   background-color: #007cff;
   width: 25%;
-  max-width: 300px;
   align-content: center;
   padding: 20px 30px 0px 30px;
 }
@@ -284,7 +286,8 @@ a {
 .title {
   color: white;
   font-weight: 600;
-  font-size: 24px;
+  font-size: 1.5em;
+  margin-left: 0.3em;
 }
 .logo {
   padding: 1em;
@@ -359,20 +362,19 @@ form input[type="email"] {
   width: 60%;
   height: 3em;
 }
-
 form p {
   color: #2a2a2a;
-  padding-top: 20px;
-  font-size: 16px;
-  font-weight: 400;
+  margin-top: 1.5em;
+  font-size: 1em;
 }
 input[type="submit"] {
   background-color: #007cff;
   color: white;
-  width: fit-content;
   min-width: 150px;
   cursor: pointer;
   margin: 0;
+  padding: 1em;
+  height: unset;
 }
 input[type="submit"]:disabled,
 input[type="submit"][disabled] {
@@ -390,10 +392,8 @@ input[type="submit"][disabled] {
   margin-top: 2em;
 }
 .forgot p {
-  font-size: 16px;
   font-weight: 400;
   margin-left: 10px;
-  padding: 0;
 }
 form p input[type="checkbox"] {
   width: auto;
@@ -769,10 +769,8 @@ hr {
   }
   .w {
     background-color: #fff;
-    width: 70%;
-    padding-left: 10%;
-    margin-right: 5%;
-    padding-top: 5%;
+    width: 100%;
+    padding: 5% 7%;
     min-height: 100vh;
   }
   form p {
@@ -791,6 +789,7 @@ hr {
   form p input[type="checkbox"] {
     background-color: #007cff;
     color: white;
+    width: unset !important;
   }
   a {
     text-decoration: none;
@@ -921,9 +920,6 @@ hr {
 }
 /*responsive*/
 @media (max-width: 600px) {
-  .w {
-    display: none;
-  }
   #wb {
     padding-top: 5px;
   }
@@ -967,7 +963,6 @@ hr {
     min-height: 50vh;
   }
   .wb input {
-    width: 100%;
     max-width: none;
   }
   .title {
@@ -1028,7 +1023,6 @@ hr {
   form input {
     padding: 2%;
     padding-left: 4%;
-    font-size: 0.8em;
     border: none;
     outline: none;
     background: #f4f7f9;
@@ -1047,8 +1041,6 @@ hr {
   }
   input[type="submit"] {
     border-radius: 0.5em;
-    padding-top: 0.5em;
-    padding-bottom: 0.5em;
     margin-top: 1em;
     margin-bottom: 1em;
   }
@@ -1057,31 +1049,23 @@ hr {
     color: #007cff;
   }
   .check p {
-    font-size: 0.75em;
     font-weight: 400;
     margin-bottom: 1.5em;
     align-items: center;
   }
-  .check {
-    display: flex;
-    align-items: center;
-  }
   .create {
     display: block;
-    font-size: 0.75em;
     padding-top: 0.5em;
   }
   #ques {
     margin: 0;
   }
   .question {
-    padding-top: 10px;
     padding: 0.5em 0em 0.5em 0em;
-    font-size: 0.9em;
     margin: 0;
   }
   .forgot p {
-    font-size: 0.9em;
+    font-size: 1em;
     font-weight: 400;
     margin: 0;
     padding-top: 10px;
@@ -1097,9 +1081,6 @@ hr {
     font-size: 1em;
     font-weight: 400;
     margin-top: 0.5em;
-  }
-  .wb input[type="submit"] {
-    font-size: 0.8em;
   }
   .wb h1 {
     font-size: 1.2em;
@@ -1152,7 +1133,7 @@ hr {
     font-weight: 700;
   }
   .nbs .card p {
-    font-size: 12px;
+    font-size: 1em;
   }
 
   .mobileview {
@@ -1198,7 +1179,7 @@ hr {
     justify-content: space-between;
   }
   h7 {
-    font-size: 16px;
+    font-size: 1.1em;
     font-weight: 700;
   }
   .mtm h8 {
@@ -1216,10 +1197,10 @@ hr {
     margin-top: 20px;
   }
   .ybal {
-    font-size: 12px;
+    font-size: 1em;
   }
   .yfig {
-    font-size: 16px;
+    font-size: 1em;
     font-weight: 600;
   }
   .inout {

@@ -1,9 +1,9 @@
 <template>
-  <section>
+  <section class="flex">
     <div class="bw">
       <div class="name">
         <div class="logo">
-          <img src="/img/assets/logo.png" style="width: 50px" />
+          <img src="/img/assets/logo.png" />
         </div>
         <div class="title">kobocounter</div>
       </div>
@@ -37,15 +37,13 @@
           <input type="email" required name="Email" v-model="email" />
           <p>Choose a Password (min. of 8 characters)</p>
           <Password v-model:password="password" />
-          <div class="check">
-            <p>
-              <input type="checkbox" v-model="acceptPreCondition" required /> I
-              accept the
-              <a href="#"> Terms & Conditions </a>
-              and
-              <a href="#"> Privacy Policy</a>
-            </p>
-          </div>
+          <p>
+            <input type="checkbox" v-model="acceptPreCondition" required /> I
+            accept the
+            <a href="#"> Terms & Conditions </a>
+            and
+            <a href="#"> Privacy Policy</a>
+          </p>
           <div class="create">
             <input
               type="submit"

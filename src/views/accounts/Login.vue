@@ -1,17 +1,17 @@
 <template>
   <header id="lg">
     <div class="logo">
-      <img src="/img/assets/logo.png" style="width: 30px" />
+      <img src="/img/assets/logo.png" />
+      <span class="title">kobocounter</span>
     </div>
-    <div class="title">kobocounter</div>
   </header>
-  <section>
+  <section class="flex">
     <div class="bw">
       <div class="name">
         <div class="logo">
           <img src="/img/assets/logo.png" style="width: 50px" />
+          <span class="title">kobocounter</span>
         </div>
-        <div class="title">kobocounter</div>
       </div>
       <div class="ilus"><img src="/img/assets/coin.png" /></div>
       <div class="text">
@@ -59,13 +59,13 @@
               </p>
             </div>
           </div>
+          <div class="forgot">
+            <p>
+              Forgot password?
+              <a href="#"> Please use this link</a>
+            </p>
+          </div>
         </form>
-      </div>
-      <div class="forgot">
-        <p>
-          Forgot password?
-          <a href="#"> Please use this link</a>
-        </p>
       </div>
     </div>
   </section>
