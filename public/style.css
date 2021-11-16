@@ -444,7 +444,7 @@ hr {
   color: #727376;
 }
 .account-activity,
-.f {
+.recent-categories {
   margin: 0.4%;
   box-shadow: 0px 0px 15px 5px rgba(54, 65, 86, 0.1);
   border-radius: 5px;
@@ -463,7 +463,7 @@ hr {
 }
 
 .account-activity {
-  height: 36.4vh;
+  height: 42vh;
 }
 .account-summary {
   height: 23vh;
@@ -477,14 +477,14 @@ hr {
   height: 30vh;
   order: 3;
 }
-.f,
+.recent-categories,
 .h {
-  height: 56vh;
+  height: 51vh;
 }
 .account-activity {
   order: 4;
 }
-.f {
+.recent-categories {
   order: 5;
 }
 .h {
@@ -855,7 +855,7 @@ hr {
     justify-content: space-between;
   }
   .account-activity,
-  .f,
+  .recent-categories,
   .account-summary,
   .top-expenses,
   .budget-performance {
@@ -866,7 +866,7 @@ hr {
   .account-activity {
     order: 2;
   }
-  .f {
+  .recent-categories {
     order: 3;
   }
   .h {

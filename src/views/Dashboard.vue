@@ -9,14 +9,14 @@
             <p class="bold-text">Account activity</p>
             <hr />
             <IncomeChart
-              :height="'36vh'"
+              :height="'39vh'"
               :width="'98%'"
               :fileName="'income_summary__' + from + '_to_' + to"
               :netIncome="netIncome"
             />
           </div>
         </div>
-        <div class="f">
+        <div class="recent-categories">
           <div>
             <div
               class="dashboard-section-container"
@@ -50,17 +50,17 @@
             </div>
             <hr />
             <WordCloudChart
-              :height="'50vh'"
+              :height="'47vh'"
               :inputData="establishmentActivities"
-              :width="'90%'"
+              :width="'98%'"
               :fileName="'spending pattern'"
               v-show="displayChart === 'wordcloud'"
             />
 
             <DonutChart
-              :height="'50vh'"
+              :height="'47vh'"
               :inputData="transactionCategories"
-              :width="'95%'"
+              :width="'98%'"
               :fileName="'spending_category_summary__' + from + '_to_' + to"
               v-show="displayChart === 'piechart'"
             />

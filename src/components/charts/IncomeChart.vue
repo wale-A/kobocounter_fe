@@ -37,8 +37,8 @@ import * as am4charts from "@amcharts/amcharts4/charts";
       ] as string[])
         .map((x) => new Date(x).getTime())
         .sort();
-      const months =
-        (dates[dates.length - 1] - dates[0]) / (1000 * 60 * 60 * 24 * 30);
+      // const months =
+      //   (dates[dates.length - 1] - dates[0]) / (1000 * 60 * 60 * 24 * 30);
 
       chart.data = dates.map((x) => {
         const expense = this.expense?.find(
@@ -104,7 +104,23 @@ import * as am4charts from "@amcharts/amcharts4/charts";
         createSeries("expense", "Expense", "#ff3333");
       }
       if (this.netIncome) {
-        createSeries("netIncome", "Net Income", "#007cff");
+        const series = createSeries("netIncome", "Net Income", "#007cff");
+        // draw negative sections of the line in red
+        const negativeRange = valueAxis.createSeriesRange(series);
+        negativeRange.value = Math.min(
+          ...this.netIncome.map((x: { amount: number }) => x.amount)
+        );
+        negativeRange.endValue = -50;
+        negativeRange.contents.stroke = am4core.color("#ff3333");
+        // negativeRange.contents.fill = negativeRange.contents.stroke;
+
+        const positiveRange = valueAxis.createSeriesRange(series);
+        positiveRange.endValue = Math.max(
+          ...this.netIncome.map((x: { amount: number }) => x.amount)
+        );
+        positiveRange.value = 50;
+        positiveRange.contents.stroke = am4core.color("#33ff33");
+        // positiveRange.contents.fill = positiveRange.contents.stroke;
       }
 
       chart.legend = new am4charts.Legend();
