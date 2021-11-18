@@ -66,8 +66,9 @@ import * as am4charts from "@amcharts/amcharts4/charts";
       series.tooltip = new am4core.Tooltip();
       series.tooltip.fontFamily = "Poppins";
       series.tooltip.exportable = true;
-
+      series.fontSize = "1em";
       series.labels.template.disabled = false;
+      series.labels.template.fontSize = "1em";
       series.labels.template.wrap = true;
       series.ticks.template.disabled = false;
       series.legendSettings.itemValueText = "[bold]N {amount}[/]";

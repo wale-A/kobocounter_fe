@@ -51,7 +51,7 @@ import * as am4charts from "@amcharts/amcharts4/charts";
             (y: { date: string }) =>
               new Date(y.date.replace(/-/g, "/")).getTime() === x
           )?.amount,
-          expense: expense || undefined,
+          expense: Math.abs(expense) || undefined,
           netIncome: this.netIncome?.find(
             (y: { date: string }) =>
               new Date(y.date.replace(/-/g, "/")).getTime() === x
@@ -60,8 +60,9 @@ import * as am4charts from "@amcharts/amcharts4/charts";
       });
 
       const dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-      //   dateAxis.renderer.grid.template.location = 0;
-      //   dateAxis.renderer.minGridDistance = 30;
+      dateAxis.renderer.grid.template.location = 0;
+      dateAxis.renderer.minGridDistance = 40;
+      dateAxis.fontSize = "0.8em";
 
       const valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
       // display the lines for the horizontal axis and not the vertical axis
@@ -97,27 +98,12 @@ import * as am4charts from "@amcharts/amcharts4/charts";
         // // bullet.fontFamily = "Poppins";
         */
 
-        const dateCategoryAxis = chart.xAxes.push(new am4charts.DateAxis());
-        dateCategoryAxis.dataFields.date = "date";
-        // dateCategoryAxis.renderer.grid.template.location = 0;
-        // dateCategoryAxis.renderer.minGridDistance = 30;
-        // dateCategoryAxis.renderer.labels.template.adapter.add(
-        //   "dy",
-        //   function (dy, target) {
-        //     if (target.dataItem && target.dataItem.index) {
-        //       return (dy || 0) + 25;
-        //     }
-        //     return dy || 0;
-        //   }
-        // );
-
-        chart.yAxes.push(new am4charts.ValueAxis());
-
         const series = chart.series.push(new am4charts.ColumnSeries());
         series.dataFields.valueY = field;
         series.dataFields.dateX = "date";
         series.name = title;
-        series.columns.template.tooltipText = "{dateX}: [bold]N {valueY}[/]";
+        series.tooltipText = "{dateX}: [bold]N {valueY}[/]";
+        series.fontSize = "1em";
         series.strokeWidth = 1;
         series.fill = am4core.color(color);
         series.stroke = am4core.color(color);
@@ -125,15 +111,23 @@ import * as am4charts from "@amcharts/amcharts4/charts";
         series.fontFamily = "Poppins";
         series.tooltip = new am4core.Tooltip();
         series.tooltip.fontFamily = "Poppins";
+        // series.tooltip.ignoreBounds = true;
+        // series.stacked = true;
 
         return series;
       }
 
       if (this.revenue) {
-        createSeries("revenue", "Income", "#33ff33");
+        const revenueSeries = createSeries("revenue", "Income", "#33ff33");
+        // revenueSeries.columns.template.tooltipX = am4core.percent(100);
+        // revenueSeries.columns.template.tooltipY = am4core.percent(0);
+        revenueSeries.tooltip!.pointerOrientation = "down";
       }
       if (this.expense) {
-        createSeries("expense", "Expense", "#ff3333");
+        const expenseSeries = createSeries("expense", "Expense", "#ff3333");
+        // expenseSeries.columns.template.tooltipX = am4core.percent(0);
+        // expenseSeries.columns.template.tooltipY = am4core.percent(100);
+        expenseSeries.tooltip!.pointerOrientation = "up";
       }
       if (this.netIncome) {
         const series = createSeries("netIncome", "Income Minus Expenses", "");
@@ -145,6 +139,8 @@ import * as am4charts from "@amcharts/amcharts4/charts";
         negativeRange.endValue = 0;
         negativeRange.contents.stroke = am4core.color("#ff3333");
         negativeRange.contents.fill = negativeRange.contents.stroke;
+        // negativeRange.contents.tooltip!.getFillFromObject = false;
+        // negativeRange.contents.tooltip!.fill = am4core.color("#ff3333");
 
         const positiveRange = valueAxis.createSeriesRange(series);
         positiveRange.endValue = Math.max(
@@ -153,6 +149,8 @@ import * as am4charts from "@amcharts/amcharts4/charts";
         positiveRange.value = 0;
         positiveRange.contents.stroke = am4core.color("#33ff33");
         positiveRange.contents.fill = positiveRange.contents.stroke;
+        // negativeRange.contents.tooltip!.getFillFromObject = false;
+        // negativeRange.contents.tooltip!.fill = am4core.color("#33ff33");
       }
 
       chart.legend = new am4charts.Legend();

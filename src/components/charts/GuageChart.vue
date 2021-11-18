@@ -41,6 +41,7 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
       pieSeries.slices.template.propertyFields.disabled = "labelDisabled";
       pieSeries.labels.template.propertyFields.disabled = "labelDisabled";
       pieSeries.ticks.template.propertyFields.disabled = "labelDisabled";
+      pieSeries.labels.template.fontSize = "0.9em";
 
       // Add data
       pieSeries.data = [
@@ -60,26 +61,26 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
       pieSeries2.dataFields.value = "value";
       pieSeries2.dataFields.category = "category";
       pieSeries2.slices.template.propertyFields.fill = "fill";
-
+      pieSeries2.labels.template.fontSize = "0.9em";
       //   Add data
       pieSeries2.data = [
         {
-          category: "First",
+          category: "Food",
           value: 30,
           amount: 30000,
         },
         {
-          category: "Second",
+          category: "Transport",
           value: 20,
           amount: 20000,
         },
         {
-          category: "Third",
+          category: "Airtime & Data",
           value: 15,
           amount: 15000,
         },
         {
-          category: "Fourth",
+          category: "Fuel",
           value: 5,
           amount: 5000,
         },

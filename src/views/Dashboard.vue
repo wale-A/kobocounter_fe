@@ -12,8 +12,10 @@
               :height="'39vh'"
               :width="'98%'"
               :fileName="'income_summary__' + from + '_to_' + to"
-              :netIncome="netIncome"
+              :revenue="revenue"
+              :expense="expense"
             />
+            <!-- :netIncome="netIncome" -->
           </div>
         </div>
         <div class="recent-categories">
