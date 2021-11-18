@@ -24,16 +24,17 @@
               <p>Transactions</p>
             </div></a
           >
-          <!-- <a href="#"
-            ><div class="d">
-              <img src="/img/assets/4.png" />
-              <p>Accounts</p>
-            </div></a
-          >
           <a href="#"
             ><div class="d">
               <img src="/img/assets/5.png" />
               <p>Settings</p>
+            </div></a
+          >
+
+          <!-- <a href="#"
+            ><div class="d">
+              <img src="/img/assets/4.png" />
+              <p>Accounts</p>
             </div></a
           >
           <hr />
@@ -78,14 +79,15 @@
         <img src="/img/assets/n3.png" />
         <p>Transactions</p>
       </div>
-      <!-- <div class="dbot">
-        <img src="/img/assets/n4.png" />
-        <p>Accounts</p>
-      </div>
       <div class="dbot">
         <img src="/img/assets/n5.png" />
         <p>Settings</p>
-      </div> -->
+      </div>
+
+      <!-- <div class="dbot">
+        <img src="/img/assets/n4.png" />
+        <p>Accounts</p>
+      </div>-->
     </nav>
   </nav>
 </template>
