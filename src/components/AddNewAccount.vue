@@ -1,15 +1,12 @@
 <template>
-  <div class="nbs-card" v-show="!hasAccounts">
+  <section class="no-account" v-show="!hasAccounts">
     <img src="/img/assets/8.png" />
     <h3>You have not added any bank accounts</h3>
     <p>Bank accounts you add will be displayed here</p>
-    <a href="profile.html">
-      <button type="button" class="button" @click="addAccount">
-        Add Bank Account
-      </button>
-    </a>
-  </div>
-
+    <form @submit.prevent="addAccount">
+      <input type="submit" value="Add Bank Account" />
+    </form>
+  </section>
   <button class="floating-button" @click="addAccount" title="Add an account">
     +
   </button>
@@ -38,6 +35,23 @@ export default class AddNewAccount extends Vue {}
 </script>
 
 <style scoped>
+.no-account {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1;
+  padding: 8% 10%;
+}
+.no-account img {
+  width: 60%;
+}
+.no-account h3 {
+  margin-top: 1em;
+  margin-bottom: 0.4em;
+}
+.no-account input {
+  margin: 2em auto;
+}
 .floating-button {
   padding: 2px 15px;
   width: unset !important;
@@ -65,8 +79,14 @@ export default class AddNewAccount extends Vue {}
     top: 84%;
     left: 84%;
   }
-  .card {
-    margin-top: 50px;
+  .no-account form {
+    width: 100%;
+  }
+  .no-account {
+    padding-top: 15%;
+  }
+  .no-account img {
+    width: 100%;
   }
 }
 </style>

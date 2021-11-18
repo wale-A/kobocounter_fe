@@ -86,7 +86,8 @@ table {
   min-height: 100vh;
 }
 .nbs .menu p,
-.dashboard .menu p {
+.dashboard .menu p,
+.dashboard .lowermenu p {
   background: transparent;
   color: #fff;
   width: 100%;
@@ -97,8 +98,12 @@ table {
   font-weight: 400;
 }
 .nbs .d:hover,
-.dashboard .d:hover {
+.dashboard .d:hover,
+footer a:hover {
   background: rgba(0, 0, 0, 0.35);
+}
+.side-nav footer a:hover {
+  font-weight: 700;
 }
 .nbs .d,
 .dashboard .d {
@@ -159,6 +164,7 @@ table {
   text-decoration: none;
   font-size: 0.9em;
   font-weight: 200;
+  padding: 1em;
 }
 .nbh header.sticky,
 .dashboard header.sticky {
@@ -177,7 +183,7 @@ table {
 .side-nav footer {
   display: flex;
   justify-content: space-between;
-  padding: 1em 0.7em;
+  padding: 0.5em;
 }
 .bw {
   background-color: #007cff;

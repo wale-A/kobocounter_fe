@@ -1,7 +1,10 @@
 <template>
-  <main v-show="accounts && accounts?.length" class="dashboard">
+  <main class="dashboard">
     <SideBar />
-    <section class="dashboard-content-container">
+    <section
+      v-show="accounts && accounts?.length"
+      class="dashboard-content-container"
+    >
       <Header />
       <div class="dashboard-content">
         <div class="account-activity">
@@ -127,9 +130,8 @@
         </div>
       </div>
     </section>
+    <AddNewAccount :hasAccounts="!(accounts && accounts?.length == 0)" />
   </main>
-
-  <AddNewAccount :hasAccounts="!(accounts && accounts?.length == 0)" />
 
   <img
     style="width: 30%; margin: 5% 35%"

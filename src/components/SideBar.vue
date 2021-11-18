@@ -47,14 +47,10 @@
         </div>
       </nav>
       <nav class="lowermenu">
-        <a href="login.html"
+        <a href="#" @click.prevent="logoutUser"
           ><div class="d">
             <img src="/img/assets/7.png" />
-            <p id="lp">
-              <a href="#" @click.prevent="logoutUser" style="color: white">
-                Logout
-              </a>
-            </p>
+            <p>Logout</p>
           </div></a
         >
         <hr />
