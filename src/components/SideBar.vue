@@ -21,10 +21,10 @@
           <a href="#"
             ><div class="d">
               <img src="/img/assets/3.png" />
-              <p>Manage Finances</p>
+              <p>Transactions</p>
             </div></a
           >
-          <a href="#"
+          <!-- <a href="#"
             ><div class="d">
               <img src="/img/assets/4.png" />
               <p>Accounts</p>
@@ -42,7 +42,7 @@
               <img src="/img/assets/6.png" />
               <p>Invite Friends</p>
             </div></a
-          >
+          > -->
         </div>
       </nav>
       <nav class="lowermenu">
@@ -76,16 +76,16 @@
       </div>
       <div class="dbot">
         <img src="/img/assets/n3.png" />
-        <p>Finances</p>
+        <p>Transactions</p>
       </div>
-      <div class="dbot">
+      <!-- <div class="dbot">
         <img src="/img/assets/n4.png" />
         <p>Accounts</p>
       </div>
       <div class="dbot">
         <img src="/img/assets/n5.png" />
         <p>Settings</p>
-      </div>
+      </div> -->
     </nav>
   </nav>
 </template>

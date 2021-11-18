@@ -50,7 +50,7 @@
             </div>
             <hr />
             <WordCloudChart
-              :height="'47vh'"
+              :height="'46vh'"
               :inputData="establishmentActivities"
               :width="'98%'"
               :fileName="'spending pattern'"
@@ -58,7 +58,7 @@
             />
 
             <DonutChart
-              :height="'47vh'"
+              :height="'46vh'"
               :inputData="transactionCategories"
               :width="'98%'"
               :fileName="'spending_category_summary__' + from + '_to_' + to"
@@ -93,26 +93,7 @@
         <div class="budget-performance">
           <p class="bold-text">Budget Performance</p>
           <hr />
-          <div class="balance">
-            <p>Your current balance</p>
-            <p class="account-balance bold-text">N{{ accountBalance || 0 }}</p>
-          </div>
-          <div class="balance-detail">
-            <div class="balance-detail-section">
-              <img src="/img/assets/income.png" />
-              <div>
-                <p>Income</p>
-                <p class="bold-text">N{{ totalRevenue }}</p>
-              </div>
-            </div>
-            <div class="balance-detail-section">
-              <img src="/img/assets/expense.png" />
-              <div>
-                <p>Expenses</p>
-                <p class="bold-text">N{{ totalExpenses }}</p>
-              </div>
-            </div>
-          </div>
+          <GuageChart :height="'30vh'" :width="'100%'" />
         </div>
         <div class="top-expenses">
           <p class="bold-text">Top 3 Expenses</p>
@@ -174,6 +155,7 @@ import { add, sub, subMonths } from "date-fns";
 import AddNewAccount from "@/components/AddNewAccount.vue";
 import SingleTransaction from "@/components/SingleTransaction.vue";
 import DonutChart from "@/components/charts/DonutChart.vue";
+import GuageChart from "@/components/charts/GuageChart.vue";
 import IncomeChart from "@/components/charts/IncomeChart.vue";
 import WordCloudChart from "@/components/charts/WordCloudChart.vue";
 import { subscribeUser } from "@/_helpers/pushNotification";
@@ -254,6 +236,7 @@ import SideBar from "@/components/SideBar.vue";
     WordCloudChart,
     Header,
     SideBar,
+    GuageChart,
   },
   methods: {
     scrollPage() {

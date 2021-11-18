@@ -51,7 +51,7 @@ import * as am4charts from "@amcharts/amcharts4/charts";
             (y: { date: string }) =>
               new Date(y.date.replace(/-/g, "/")).getTime() === x
           )?.amount,
-          expense: expense ? Math.abs(expense) : undefined,
+          expense: expense || undefined,
           netIncome: this.netIncome?.find(
             (y: { date: string }) =>
               new Date(y.date.replace(/-/g, "/")).getTime() === x
@@ -75,24 +75,56 @@ import * as am4charts from "@amcharts/amcharts4/charts";
       valueAxis.fontFamily = "Poppins";
 
       function createSeries(field: string, title: string, color: string) {
-        const series = chart.series.push(new am4charts.LineSeries());
+        /**
+         * this code is for the line graph, before i made the change to a bar chart
+        // const series = chart.series.push(new am4charts.LineSeries());
+        // series.dataFields.valueY = field;
+        // series.dataFields.dateX = "date";
+        // series.name = title;
+        // series.tooltipText = "{dateX}: [bold]N {valueY}[/]";
+        // // width of the line chart, increase value to increase thickness of the line
+        // series.strokeWidth = 2;
+        // series.smoothing = "monotoneX";
+        // series.fill = am4core.color(color);
+        // series.stroke = am4core.color(color);
+        // series.fontFamily = "Poppins";
+        // series.tooltip = new am4core.Tooltip();
+        // series.tooltip.fontFamily = "Poppins";
+
+        // // hides the bullets showing each point of the line, uncomment code below to show the points
+        // // const bullet = series.bullets.push(new am4charts.CircleBullet());
+        // // bullet.circle.strokeWidth = 1;
+        // // bullet.fontFamily = "Poppins";
+        */
+
+        const dateCategoryAxis = chart.xAxes.push(new am4charts.DateAxis());
+        dateCategoryAxis.dataFields.date = "date";
+        // dateCategoryAxis.renderer.grid.template.location = 0;
+        // dateCategoryAxis.renderer.minGridDistance = 30;
+        // dateCategoryAxis.renderer.labels.template.adapter.add(
+        //   "dy",
+        //   function (dy, target) {
+        //     if (target.dataItem && target.dataItem.index) {
+        //       return (dy || 0) + 25;
+        //     }
+        //     return dy || 0;
+        //   }
+        // );
+
+        chart.yAxes.push(new am4charts.ValueAxis());
+
+        const series = chart.series.push(new am4charts.ColumnSeries());
         series.dataFields.valueY = field;
         series.dataFields.dateX = "date";
         series.name = title;
-        series.tooltipText = "{dateX}: [bold]N {valueY}[/]";
-        // width of the line chart, increase value to increase thickness of the line
-        series.strokeWidth = 2;
-        series.smoothing = "monotoneX";
+        series.columns.template.tooltipText = "{dateX}: [bold]N {valueY}[/]";
+        series.strokeWidth = 1;
         series.fill = am4core.color(color);
         series.stroke = am4core.color(color);
+        series.columns.template.fillOpacity = 0.8;
         series.fontFamily = "Poppins";
         series.tooltip = new am4core.Tooltip();
         series.tooltip.fontFamily = "Poppins";
-
-        // hides the bullets showing each point of the line, uncomment code below to show the points
-        // const bullet = series.bullets.push(new am4charts.CircleBullet());
-        // bullet.circle.strokeWidth = 1;
-        // bullet.fontFamily = "Poppins";
 
         return series;
       }
@@ -104,23 +136,23 @@ import * as am4charts from "@amcharts/amcharts4/charts";
         createSeries("expense", "Expense", "#ff3333");
       }
       if (this.netIncome) {
-        const series = createSeries("netIncome", "Net Income", "#007cff");
+        const series = createSeries("netIncome", "Income Minus Expenses", "");
         // draw negative sections of the line in red
         const negativeRange = valueAxis.createSeriesRange(series);
         negativeRange.value = Math.min(
           ...this.netIncome.map((x: { amount: number }) => x.amount)
         );
-        negativeRange.endValue = -50;
+        negativeRange.endValue = 0;
         negativeRange.contents.stroke = am4core.color("#ff3333");
-        // negativeRange.contents.fill = negativeRange.contents.stroke;
+        negativeRange.contents.fill = negativeRange.contents.stroke;
 
         const positiveRange = valueAxis.createSeriesRange(series);
         positiveRange.endValue = Math.max(
           ...this.netIncome.map((x: { amount: number }) => x.amount)
         );
-        positiveRange.value = 50;
+        positiveRange.value = 0;
         positiveRange.contents.stroke = am4core.color("#33ff33");
-        // positiveRange.contents.fill = positiveRange.contents.stroke;
+        positiveRange.contents.fill = positiveRange.contents.stroke;
       }
 
       chart.legend = new am4charts.Legend();
