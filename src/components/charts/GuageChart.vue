@@ -27,7 +27,6 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 
       // Create chart instance
       let chart = am4core.create("guageChartDiv", am4charts.PieChart);
-
       // Let's cut a hole in our Pie chart the size of 40% the radius
       chart.innerRadius = am4core.percent(40);
 
@@ -56,20 +55,10 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
         },
       ];
 
-      // Disable sliding out of slices
-      pieSeries.slices.template.states.getKey(
-        "hover"
-      )!.properties.shiftRadius = 0;
-      pieSeries.slices.template.states.getKey("hover")!.properties.scale = 1;
-
       //   Add second series
       let pieSeries2 = chart.series.push(new am4charts.PieSeries());
       pieSeries2.dataFields.value = "value";
       pieSeries2.dataFields.category = "category";
-      pieSeries2.slices.template.states.getKey(
-        "hover"
-      )!.properties.shiftRadius = 0;
-      pieSeries2.slices.template.states.getKey("hover")!.properties.scale = 1;
       pieSeries2.slices.template.propertyFields.fill = "fill";
 
       //   Add data
@@ -101,24 +90,30 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
           fill: "#dedede",
         },
       ];
-      pieSeries2.slices.template.tooltipText =
-        "{category}: \n[bold]N {amount}[/]";
-
       pieSeries.adapter.add("innerRadius", function (innerRadius, target) {
         return am4core.percent(40);
       });
-
-      pieSeries2.adapter.add("innerRadius", function (innerRadius, target) {
-        return am4core.percent(60);
-      });
-
       pieSeries.adapter.add("radius", function (innerRadius, target) {
         return am4core.percent(100);
       });
-
+      pieSeries2.slices.template.tooltipText =
+        "{category}: \n[bold]N {amount}[/]";
+      pieSeries2.adapter.add("innerRadius", function (innerRadius, target) {
+        return am4core.percent(60);
+      });
       pieSeries2.adapter.add("radius", function (innerRadius, target) {
         return am4core.percent(80);
       });
+
+      // Disable sliding out of slices
+      pieSeries.slices.template.states.getKey(
+        "active"
+      )!.properties.shiftRadius = 0;
+      pieSeries.slices.template.states.getKey("hover")!.properties.scale = 1;
+      pieSeries2.slices.template.states.getKey(
+        "active"
+      )!.properties.shiftRadius = 0;
+      pieSeries2.slices.template.states.getKey("hover")!.properties.scale = 1;
     },
   },
   watch: {
