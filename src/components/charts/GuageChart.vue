@@ -13,10 +13,11 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
     this.draw();
   },
   props: {
-    click: Function,
     height: String,
     width: String,
     fileName: String,
+    budgetSummary: Array,
+    budgetDetails: Array,
   },
   methods: {
     draw() {
@@ -41,56 +42,28 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
       pieSeries.slices.template.propertyFields.disabled = "labelDisabled";
       pieSeries.labels.template.propertyFields.disabled = "labelDisabled";
       pieSeries.ticks.template.propertyFields.disabled = "labelDisabled";
-      pieSeries.labels.template.fontSize = "0.9em";
-
+      pieSeries.labels.template.disabled = true;
       // Add data
-      pieSeries.data = [
-        {
-          category: "Budget Spent",
-          value: 70,
-        },
-        {
-          category: "Left",
-          value: 30,
-          labelDisabled: true,
-        },
-      ];
+      this.budgetSummary.find(
+        (x: { category: string; value: number; amount: number }) =>
+          x.category === "Budget Left"
+      ).labelDisabled = true;
+      pieSeries.data = this.budgetSummary;
 
       //   Add second series
       let pieSeries2 = chart.series.push(new am4charts.PieSeries());
       pieSeries2.dataFields.value = "value";
       pieSeries2.dataFields.category = "category";
       pieSeries2.slices.template.propertyFields.fill = "fill";
-      pieSeries2.labels.template.fontSize = "0.9em";
+      pieSeries2.labels.template.fontSize = "1em";
+
       //   Add data
-      pieSeries2.data = [
-        {
-          category: "Food",
-          value: 30,
-          amount: 30000,
-        },
-        {
-          category: "Transport",
-          value: 20,
-          amount: 20000,
-        },
-        {
-          category: "Airtime & Data",
-          value: 15,
-          amount: 15000,
-        },
-        {
-          category: "Fuel",
-          value: 5,
-          amount: 5000,
-        },
-        {
-          category: "Budget Left",
-          value: 30,
-          amount: 30000,
-          fill: "#dedede",
-        },
-      ];
+      this.budgetDetails.find(
+        (x: { category: string; value: number; amount: number }) =>
+          x.category === "Budget Left"
+      ).fill = "#dedede";
+      pieSeries2.data = this.budgetDetails;
+
       pieSeries.adapter.add("innerRadius", function (innerRadius, target) {
         return am4core.percent(40);
       });
@@ -118,11 +91,11 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
     },
   },
   watch: {
-    height() {
+    budgetDetails() {
       console.log("watchin..............");
       this.draw();
     },
-    width() {
+    budgetSummary() {
       console.log("watchin..............");
       this.draw();
     },

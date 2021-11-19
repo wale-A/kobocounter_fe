@@ -20,6 +20,7 @@ import * as am4charts from "@amcharts/amcharts4/charts";
   methods: {
     draw() {
       const chart = am4core.create("incomeChartDiv", am4charts.XYChart);
+      chart.responsive.enabled = true;
       chart.cursor = new am4charts.XYCursor();
       chart.hiddenState.properties.opacity = 0;
       const dates = ([
