@@ -104,7 +104,7 @@ import { sub } from "date-fns";
       );
     },
     getRandomCategory() {
-      return [
+      const categories = [
         "Food & Drinks",
         "Transportation",
         "Airtime & Data",
@@ -114,7 +114,12 @@ import { sub } from "date-fns";
         "Health",
         "Bills",
         "Other",
-      ][Math.floor(Math.random() * 9)];
+        "Transfer",
+        "ATM Withdrawal",
+        "POS Transaction",
+        "Bank Charges",
+      ];
+      return categories[Math.floor(Math.random() * (categories.length - 1))];
     },
   },
 })
@@ -175,7 +180,7 @@ td {
 /*responsive*/
 @media (max-width: 991px) {
   .transaction-expense-categories-item-info .amount {
-    font-size: 1em;
+    font-size: 0.9em;
   }
   .transaction-expense-categories-item-info .category {
     font-size: 0.9em;
@@ -184,7 +189,7 @@ td {
     font-size: 1em;
   }
   .transaction-expense-categories-item {
-    padding: 0.3em 1em;
+    padding: 0.2em 1em;
     width: 100%;
     margin: 0.2em 0;
   }
@@ -205,7 +210,7 @@ td {
   }
   tr {
     font-size: 0.8em;
-    height: 2em;
+    height: 3em;
   }
   table {
     border-spacing: 0 0.7em;
