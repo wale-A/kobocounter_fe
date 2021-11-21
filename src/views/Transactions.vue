@@ -60,7 +60,9 @@
                 <td>
                   <span> {{ getRandomCategory() }} </span>
                 </td>
-                <td>{{ getRandomDate().toDateString() }}</td>
+                <td class="date">
+                  {{ getRandomDate().toDateString() }}
+                </td>
                 <td>
                   N{{
                     parseFloat(
@@ -214,6 +216,9 @@ td {
   }
   table {
     border-spacing: 0 0.7em;
+  }
+  td.date {
+    font-size: 0.8em;
   }
 }
 </style>
