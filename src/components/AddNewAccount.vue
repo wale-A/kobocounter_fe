@@ -59,7 +59,7 @@ export default class AddNewAccount extends Vue {}
   border-radius: 50%;
   position: fixed;
   top: 93%;
-  left: 96%;
+  left: 95%;
   transition: all 0.2s ease-in 0s;
   z-index: 9999;
   cursor: pointer;

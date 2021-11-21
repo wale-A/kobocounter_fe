@@ -1,77 +1,73 @@
 <template>
   <main class="dashboard">
-    <SideBar />
+    <SideBar :section="'dashboard'" />
     <section
       v-show="accounts && accounts?.length"
       class="dashboard-content-container"
     >
       <Header />
       <div class="dashboard-content">
-        <div class="account-activity">
-          <div>
-            <p class="bold-text">Account activity</p>
-            <hr />
-            <IncomeChart
-              :height="'39vh'"
-              :width="'98%'"
-              :fileName="'income_summary__' + from + '_to_' + to"
-              :revenue="revenue"
-              :expense="expense"
-            />
-            <!-- :netIncome="netIncome" -->
-          </div>
+        <div class="account-activity bordered-container">
+          <p class="bold-text">Account activity</p>
+          <hr />
+          <IncomeChart
+            :height="'39vh'"
+            :width="'98%'"
+            :fileName="'income_summary__' + from + '_to_' + to"
+            :revenue="revenue"
+            :expense="expense"
+          />
+          <!-- :netIncome="netIncome" -->
         </div>
-        <div class="recent-categories">
-          <div>
-            <div
-              class="dashboard-section-container"
-              style="
-                display: flex;
-                align-content: space-between;
-                flex-direction: row;
-                justify-content: space-between;
-              "
-            >
-              <p class="bold-text">Recent categories</p>
-              <div>
-                <span
-                  class="material-icons input-left-icon"
-                  @click="() => (displayChart = 'wordcloud')"
-                  :enabled="displayChart === 'wordcloud'"
-                  style="font-size: 1.5em"
-                >
-                  chevron_left
-                </span>
-                <span>&nbsp;</span>
-                <span
-                  class="material-icons input-left-icon"
-                  @click="() => (displayChart = 'piechart')"
-                  :enabled="displayChart === 'piechart'"
-                  style="font-size: 1.5em"
-                >
-                  chevron_right
-                </span>
-              </div>
+        <div class="recent-categories bordered-container">
+          <div
+            class="dashboard-section-container"
+            style="
+              display: flex;
+              align-content: space-between;
+              flex-direction: row;
+              justify-content: space-between;
+            "
+          >
+            <p class="bold-text">Recent categories</p>
+            <div>
+              <span
+                class="material-icons input-left-icon"
+                @click="() => (displayChart = 'wordcloud')"
+                :enabled="displayChart === 'wordcloud'"
+                style="font-size: 1.5em"
+              >
+                chevron_left
+              </span>
+              <span>&nbsp;</span>
+              <span
+                class="material-icons input-left-icon"
+                @click="() => (displayChart = 'piechart')"
+                :enabled="displayChart === 'piechart'"
+                style="font-size: 1.5em"
+              >
+                chevron_right
+              </span>
             </div>
-            <hr />
-            <WordCloudChart
-              :height="'46vh'"
-              :inputData="establishmentActivities"
-              :width="'98%'"
-              :fileName="'spending pattern'"
-              v-show="displayChart === 'wordcloud'"
-            />
-
-            <DonutChart
-              :height="'46vh'"
-              :inputData="transactionCategories"
-              :width="'98%'"
-              :fileName="'spending_category_summary__' + from + '_to_' + to"
-              v-show="displayChart === 'piechart'"
-            />
           </div>
+          <hr />
+          <WordCloudChart
+            :height="'46vh'"
+            :inputData="establishmentActivities"
+            :width="'98%'"
+            :fileName="'spending pattern'"
+            v-show="displayChart === 'wordcloud'"
+          />
+
+          <DonutChart
+            :height="'46vh'"
+            :inputData="transactionCategories"
+            :width="'98%'"
+            :fileName="'spending_category_summary__' + from + '_to_' + to"
+            v-show="displayChart === 'piechart'"
+          />
         </div>
-        <div class="account-summary">
+        <div class="account-summary bordered-container">
           <p class="bold-text">Account summary</p>
           <hr />
           <div class="balance">
@@ -95,7 +91,7 @@
             </div>
           </div>
         </div>
-        <div class="budget-performance">
+        <div class="budget-performance bordered-container">
           <p class="bold-text">Budget Performance</p>
           <hr />
           <GuageChart
@@ -132,7 +128,7 @@
             </form>
           </section>
         </div>
-        <div class="top-expenses">
+        <div class="top-expenses bordered-container">
           <p class="bold-text">Top 3 Expenses</p>
           <hr />
           <div class="top-expenses-detail">

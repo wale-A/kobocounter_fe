@@ -2,7 +2,9 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Landing from "../views/Landing.vue";
 import { AccountRoutes } from "./account";
 import Dashboard from "../views/Dashboard.vue";
+import Insights from "../views/Insights.vue";
 import PageNotFound from "../views/PageNotFound.vue";
+import Transactions from "../views/Transactions.vue";
 import { store } from "@/store";
 
 const routes: Array<RouteRecordRaw> = [
@@ -25,6 +27,22 @@ const routes: Array<RouteRecordRaw> = [
     path: "/dashboard",
     name: "Dashboard",
     component: Dashboard,
+    meta: {
+      authorize: true,
+    },
+  },
+  {
+    path: "/insights",
+    name: "Insights",
+    component: Insights,
+    meta: {
+      authorize: true,
+    },
+  },
+  {
+    path: "/transactions",
+    name: "Transactions",
+    component: Transactions,
     meta: {
       authorize: true,
     },

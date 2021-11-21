@@ -92,11 +92,9 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
   },
   watch: {
     budgetDetails() {
-      console.log("watchin..............");
       this.draw();
     },
     budgetSummary() {
-      console.log("watchin..............");
       this.draw();
     },
   },

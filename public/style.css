@@ -19,16 +19,12 @@ nav {
   align-self: center;
 }
 .bold-text {
-  font-weight: 600;
+  font-weight: 800 !important;
 }
 th,
 td {
   padding: 1em;
   margin: 0.5em;
-}
-tr:not(:first-child) {
-  box-shadow: 0px 0px 15px 5px rgba(54, 65, 86, 0.1);
-  border-radius: 5px;
 }
 table {
   width: 100%;
@@ -99,11 +95,13 @@ table {
 }
 .nbs .d:hover,
 .dashboard .d:hover,
-footer a:hover {
+footer a:hover,
+.d.active {
   background: rgba(0, 0, 0, 0.35);
 }
-.side-nav footer a:hover {
-  font-weight: 700;
+.side-nav footer a:hover,
+.d.active p {
+  font-weight: 800;
 }
 .nbs .d,
 .dashboard .d {
@@ -452,8 +450,6 @@ hr {
 .account-activity,
 .recent-categories {
   margin: 0.4%;
-  box-shadow: 0px 0px 15px 5px rgba(54, 65, 86, 0.1);
-  border-radius: 5px;
   padding: 10px;
   width: 60%;
 }
@@ -462,12 +458,13 @@ hr {
 .budget-performance,
 .h {
   margin: 0.5% 0.4%;
-  box-shadow: 0px 0px 15px 5px rgba(54, 65, 86, 0.1);
-  border-radius: 5px;
   width: 38.4%;
   padding: 10px;
 }
-
+.bordered-container {
+  box-shadow: 0px 0px 15px 5px rgba(54, 65, 86, 0.1);
+  border-radius: 5px;
+}
 .account-activity {
   height: 42vh;
 }
@@ -849,26 +846,6 @@ hr {
   .dashboard-content {
     flex-wrap: nowrap;
   }
-  .ef {
-    margin-top: 0;
-    height: 500px;
-    background: #ffffff;
-    display: flex;
-    width: 100%;
-    margin-bottom: 5px;
-    color: #727376;
-  }
-  hr {
-    border-top: 0;
-    margin-top: 0.4em;
-  }
-  .gh {
-    background: #ffffff;
-    flex-direction: row;
-    width: 100%;
-    color: #727376;
-    justify-content: space-between;
-  }
   .account-activity,
   .recent-categories,
   .account-summary,
@@ -927,11 +904,20 @@ hr {
     padding: 1em;
     padding-top: 0.7em;
   }
-  .dbot {
+  .bottom-nav-link {
     font-size: 0.8em;
-    font-weight: 500;
+    font-weight: 400;
     text-align: center;
     cursor: pointer;
+    color: black;
+  }
+  .bottom-nav-link.active {
+    color: #007cff;
+    font-weight: 800;
+    font-size: 0.9em;
+  }
+  .bottom-nav-link:hover {
+    font-weight: 800;
   }
 }
 /*responsive*/
@@ -1276,8 +1262,6 @@ hr {
   }
   .bgt {
     background: #007cff;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.05);
-    border-radius: 5px;
     color: #fff;
     font-size: 16px;
     height: 64px;
