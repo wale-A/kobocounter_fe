@@ -294,8 +294,7 @@ a {
   margin-left: 0.3em;
 }
 .logo {
-  padding: 1em;
-  padding-right: 0;
+  padding: 0.5em 0;
 }
 .logo img {
   width: 30px;
@@ -788,7 +787,7 @@ hr {
   }
   form p {
     color: #2a2a2a;
-    padding-top: 20px;
+    padding-top: 1em;
     font-size: 1em;
     font-weight: 400;
   }

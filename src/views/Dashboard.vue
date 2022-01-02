@@ -646,7 +646,7 @@ export default class Dashboard extends Vue {}
 /*responsive*/
 @media (max-width: 991px) {
   .transaction-expense-categories {
-    margin-bottom: 5em;
+    margin-bottom: 8em;
     margin-top: 0.5em;
   }
   .transaction-expense-categories-item-info .category {
