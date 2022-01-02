@@ -181,7 +181,7 @@
   </main>
 
   <img
-    style="width: 30%; margin: 5% 35%"
+    style="width: 30%; position: absolute; top: 15%; left: 40%"
     v-show="!accounts"
     src="/img/assets/loading.gif"
     alt="loading image"
@@ -621,13 +621,15 @@ export default class Dashboard extends Vue {}
 </script>
 
 <style scoped>
+.transaction-expense-categories {
+  margin-top: 1em;
+}
 .transaction-expense-categories-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1em 0.5em;
+  padding: 0.5em;
   flex-flow: row;
-  margin: 0.8em auto;
   border-bottom: 1px solid #ddd;
 }
 .transaction-expense-categories-item:last-child {
@@ -646,10 +648,6 @@ export default class Dashboard extends Vue {}
   .transaction-expense-categories {
     margin-bottom: 5em;
     margin-top: 0.5em;
-  }
-  .transaction-expense-categories-item {
-    padding: 0.5em;
-    margin: 0.5em auto;
   }
   .transaction-expense-categories-item-info .category {
     font-size: 1.1em;
