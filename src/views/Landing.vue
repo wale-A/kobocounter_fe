@@ -1,9 +1,21 @@
 <template>
   <header class="landing-page">
     <div class="landing-logo"><img src="/img/assets/logo.png" /></div>
-    <div class="header-buttons">
-      <button class="land-login">Log In</button>
-      <button class="land-sign-up">Sign Up, its free!</button>
+    <div class="header-buttons" v-if="!isLoggedIn">
+      <router-link
+        :to="{ name: 'Login' }"
+        class="land-login"
+        style="text-align: center; line-height: 40px"
+      >
+        Login
+      </router-link>
+      <router-link
+        :to="{ name: 'Register' }"
+        style="text-align: center; line-height: 40px"
+        class="land-sign-up"
+      >
+        Sign Up
+      </router-link>
     </div>
   </header>
   <section id="landing-section">
@@ -16,6 +28,23 @@
             Track your spending and expenses across all your bank accounts with
             a single app.
           </p>
+
+          <router-link
+            v-if="isLoggedIn"
+            :to="{ name: 'Dashboard' }"
+            class="land-sign-up"
+            style="
+              padding: 1.2em;
+              height: unset;
+              width: unset;
+              font-size: 1.2em;
+              margin-top: 2em;
+              display: inline-block;
+            "
+          >
+            Go to Dashboard
+          </router-link>
+
           <div id="mobile-illustration">
             <img src="/img/assets/mobile-illustration.png" />
           </div>
@@ -129,6 +158,7 @@
     </div>
     <div class="center-div">
       <router-link
+        v-if="!isLoggedIn"
         :to="{ name: 'Register' }"
         class="land-sign-up"
         style="padding: 1.5em; height: unset; width: unset; font-size: 0.9em"
@@ -213,17 +243,8 @@
         </div>
       </div>
       <div class="center-div" style="margin-bottom: 1em">
-        <!-- <router-link :to="{ name: 'Register' }"
-          ><button
-            class="land-sign-up"
-            style="padding: 1.5em; height: unset; width: unset; font-size: 1em"
-            @click="() => alert('clicked')"
-          >
-            Sign Up, it's free
-          </button>
-        </router-link> -->
-
         <router-link
+          v-if="!isLoggedIn"
           :to="{ name: 'Register' }"
           class="land-sign-up"
           style="padding: 1.5em; height: unset; width: unset; font-size: 1em"
@@ -459,10 +480,10 @@ header {
   width: 75px;
 }
 .feature-content {
-  width: 50%;
+  width: 75%;
   background: #007cff;
   border-radius: 30px;
-  padding: 30px;
+  padding: 3em;
   text-align: center;
   margin-top: 1em;
 }

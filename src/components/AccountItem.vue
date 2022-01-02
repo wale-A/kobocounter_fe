@@ -34,7 +34,7 @@
       <div class="content">
         <span>
           Number: {{ accountNumber }} <br />
-          Balance: {{ balance.toLocaleString() }} <br />
+          Balance: {{ balance?.toLocaleString() || "-" }} <br />
           Currency: {{ currency }} <br />
           Type: {{ type.replace(/_/g, " ") }} <br />
           Status: {{ status }}

@@ -41,6 +41,10 @@ import * as am4charts from "@amcharts/amcharts4/charts";
       chart.legend.valueLabels.template.textAlign = "start";
       chart.legend.scrollable = true;
 
+      /*
+       * uncomment code if you want to add the export menu
+       * to allow users save the chart
+       */
       // chart.exporting.menu = new am4core.ExportMenu();
       // chart.exporting.menu.items = [
       //   {

@@ -32,6 +32,7 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
       chart.innerRadius = am4core.percent(40);
 
       // Add and configure Series
+      // outer pie chart
       let pieSeries = chart.series.push(new am4charts.PieSeries());
       pieSeries.dataFields.value = "value";
       pieSeries.dataFields.category = "category";
@@ -51,11 +52,12 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
       pieSeries.data = this.budgetSummary;
 
       //   Add second series
+      // inner pie chart
       let pieSeries2 = chart.series.push(new am4charts.PieSeries());
       pieSeries2.dataFields.value = "value";
       pieSeries2.dataFields.category = "category";
       pieSeries2.slices.template.propertyFields.fill = "fill";
-      pieSeries2.labels.template.fontSize = "1em";
+      pieSeries2.labels.template.fontSize = "0.8em";
 
       //   Add data
       this.budgetDetails.find(
@@ -64,39 +66,50 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
       ).fill = "#dedede";
       pieSeries2.data = this.budgetDetails;
 
-      pieSeries.adapter.add("innerRadius", function (innerRadius, target) {
+      pieSeries.adapter.add("innerRadius", function () {
         return am4core.percent(40);
       });
-      pieSeries.adapter.add("radius", function (innerRadius, target) {
+      pieSeries.adapter.add("radius", function () {
         return am4core.percent(100);
       });
       pieSeries2.slices.template.tooltipText =
         "{category}: \n[bold]N {amount}[/]";
-      pieSeries2.adapter.add("innerRadius", function (innerRadius, target) {
+      pieSeries2.adapter.add("innerRadius", function () {
         return am4core.percent(60);
       });
-      pieSeries2.adapter.add("radius", function (innerRadius, target) {
+      pieSeries2.adapter.add("radius", function () {
         return am4core.percent(80);
       });
 
       // Disable sliding out of slices
-      pieSeries.slices.template.states.getKey(
+      const activeKeyOuterSeries = pieSeries.slices.template.states.getKey(
         "active"
-      )!.properties.shiftRadius = 0;
-      pieSeries.slices.template.states.getKey("hover")!.properties.scale = 1;
-      pieSeries2.slices.template.states.getKey(
+      );
+      if (activeKeyOuterSeries) activeKeyOuterSeries.properties.shiftRadius = 0;
+
+      const hoverKeyOuterSeries = pieSeries.slices.template.states.getKey(
+        "hover"
+      );
+      if (hoverKeyOuterSeries) hoverKeyOuterSeries.properties.scale = 1;
+
+      const activeKeyInnerSeries = pieSeries2.slices.template.states.getKey(
         "active"
-      )!.properties.shiftRadius = 0;
-      pieSeries2.slices.template.states.getKey("hover")!.properties.scale = 1;
+      );
+      if (activeKeyInnerSeries) activeKeyInnerSeries.properties.shiftRadius = 0;
+
+      const hoverKeyInnerSeries = pieSeries2.slices.template.states.getKey(
+        "hover"
+      );
+      if (hoverKeyInnerSeries) hoverKeyInnerSeries.properties.scale = 1;
     },
   },
   watch: {
     budgetDetails() {
       this.draw();
     },
-    budgetSummary() {
-      this.draw();
-    },
+    // budgetSummary() {
+    //   this.draw();
+    // },
   },
 })
 export default class GuageChart extends Vue {}

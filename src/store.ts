@@ -150,7 +150,6 @@ export const store = createStore({
       }
     ) {
       try {
-        this.commit("setLoginStatus", undefined);
         const res = await axios.post(
           `${process.env.VUE_APP_API_URL}/users/login`,
           { email, password, provider }
@@ -407,14 +406,13 @@ export const store = createStore({
       }
     ) {
       try {
-        // await axios
-        //   .post(
-        //     `${process.env.VUE_APP_API_URL}/banking/account/${accountId}/reauthorize`,
-        //   )
+        const res = await axios.post(
+          `${process.env.VUE_APP_API_URL}/banking/account/${accountId}/reauthorize`
+        );
 
-        //   callback(res.data.token);
+        callback(res.data.token);
 
-        callback("VwxcfeLRZvq1UlD5WiuN");
+        // callback("VwxcfeLRZvq1UlD5WiuN");
       } catch (e) {
         console.error(e);
         // toastr.error("Unable to generate re-authorization token");

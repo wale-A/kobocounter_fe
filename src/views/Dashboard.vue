@@ -129,32 +129,51 @@
           </section>
         </div>
         <div class="top-expenses bordered-container">
-          <p class="bold-text">Top 3 Expenses</p>
+          <p class="bold-text">Top 3 Expense categories</p>
           <hr />
-          <div class="top-expenses-detail">
-            <table>
-              <tr>
-                <th></th>
-                <th>Category</th>
-                <th>% of Expenses</th>
-              </tr>
-              <tr>
-                <td><span class="bold-text"> Groceries </span></td>
-                <td>N18,000</td>
-                <td>30%</td>
-              </tr>
-              <tr>
-                <td><span class="bold-text"> Shopping </span></td>
-                <td>N12,000</td>
-                <td>25%</td>
-              </tr>
-              <tr>
-                <td><span class="bold-text"> Transport </span></td>
-                <td>N8,000</td>
-                <td>10%</td>
-              </tr>
-            </table>
-          </div>
+          <section class="transaction-expense-categories">
+            <div
+              v-for="category in [
+                'Food & Drinks',
+                'Transportation',
+                'Airtime & Data',
+              ]"
+              :key="category"
+              class="transaction-expense-categories-item"
+            >
+              <div class="transaction-expense-categories-item-info">
+                <p class="category bold-text">{{ category }}</p>
+                <p class="amount">
+                  N{{
+                    parseFloat(
+                      (Math.random() * 100 * 1000).toFixed(2)
+                    ).toLocaleString()
+                  }}
+                </p>
+              </div>
+
+              <div class="percentage-change">
+                <span class="percentage-change-amount">{{
+                  (Math.random() * 100).toFixed(2)
+                }}</span>
+                <span style="font-size: 0.8em">%</span>
+                <span
+                  v-if="Math.random() < 0.5"
+                  style="color: #ff3333"
+                  class="percentage-change-direction material-icons bold-text"
+                >
+                  trending_down</span
+                >
+                <span
+                  v-else
+                  style="color: #33cd33"
+                  class="percentage-change-direction material-icons bold-text"
+                >
+                  trending_up
+                </span>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
     </section>
@@ -168,8 +187,6 @@
     alt="loading image"
   />
 </template>
-
-<style scoped></style>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -295,7 +312,9 @@ import SideBar from "@/components/SideBar.vue";
       });
     },
     recurrentExpenseClickHandler(e: Event) {
-      const index = (e.currentTarget as any).dataset.index;
+      const index = (e.currentTarget as any)?.dataset?.index;
+      if (!index) return;
+
       this.multipleTransactionModalTitle = `Recurrent Expenses`;
       this.modalTransactions.transactions = this.recurrentExpenses[
         index
@@ -600,3 +619,40 @@ import SideBar from "@/components/SideBar.vue";
 })
 export default class Dashboard extends Vue {}
 </script>
+
+<style scoped>
+.transaction-expense-categories-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1em 0.5em;
+  flex-flow: row;
+  margin: 0.8em auto;
+  border-bottom: 1px solid #ddd;
+}
+.transaction-expense-categories-item:last-child {
+  border: none;
+}
+.percentage-change {
+  font-size: 1.5em;
+}
+.transaction-expense-categories-item-info .category {
+  color: #007cff;
+  font-size: 1.2em;
+}
+
+/*responsive*/
+@media (max-width: 991px) {
+  .transaction-expense-categories {
+    margin-bottom: 5em;
+    margin-top: 0.5em;
+  }
+  .transaction-expense-categories-item {
+    padding: 0.5em;
+    margin: 0.5em auto;
+  }
+  .transaction-expense-categories-item-info .category {
+    font-size: 1.1em;
+  }
+}
+</style>
