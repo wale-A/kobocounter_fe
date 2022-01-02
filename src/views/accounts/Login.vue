@@ -1,8 +1,7 @@
 <template>
   <header id="lg">
-    <div class="logo">
-      <img src="/img/assets/logo.png" />
-      <span class="title">kobocounter</span>
+    <div class="logo" style="padding: 1em 0; margin-left: -0.5em">
+      <img src="/img/assets/logo-blue.svg" style="width: 90%" />
     </div>
   </header>
   <section class="flex">

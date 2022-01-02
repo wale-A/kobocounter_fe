@@ -1037,7 +1037,7 @@ hr {
   }
   form p {
     color: #2a2a2a;
-    padding-top: 2em;
+    /* padding-top: 2em; */
     font-size: 1em;
     font-weight: 400;
   }
