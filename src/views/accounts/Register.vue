@@ -2,10 +2,9 @@
   <section class="flex">
     <div class="bw">
       <div class="name">
-        <div class="logo">
-          <img src="/img/assets/logo.png" />
+        <div class="logo" style="padding: 1em 0; margin-left: -0.5em">
+          <img src="/img/assets/logo-white.svg" style="width: 90%" />
         </div>
-        <div class="title">kobocounter</div>
       </div>
       <div class="ilus"><img src="/img/assets/coin.png" /></div>
       <div class="text">
