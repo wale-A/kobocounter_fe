@@ -157,6 +157,10 @@ td:first-child {
   padding: 0.1em 1em;
   text-align: start;
 }
+td:last-child {
+  text-align: end;
+  padding-right: 1em;
+}
 
 /*responsive*/
 @media (max-width: 991px) {
@@ -165,11 +169,14 @@ td:first-child {
     height: 80vh;
   }
   table {
-    border-spacing: 0 0.7em;
+    border-spacing: 0;
   }
   td:first-child {
     width: 70%;
-    padding: 0.5em 0;
+    padding: 0.4em;
+  }
+  td:last-child {
+    padding-right: 0em;
   }
 }
 </style>
