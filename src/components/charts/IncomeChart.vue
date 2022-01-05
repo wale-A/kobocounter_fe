@@ -119,13 +119,15 @@ import * as am4charts from "@amcharts/amcharts4/charts";
       }
 
       if (this.revenue) {
-        const revenueSeries = createSeries("revenue", "Income", "#33ff33");
+        // const revenueSeries = createSeries("revenue", "Income", "#33ff33");
+        const revenueSeries = createSeries("revenue", "Income", "#26a023");
         // revenueSeries.columns.template.tooltipX = am4core.percent(100);
         // revenueSeries.columns.template.tooltipY = am4core.percent(0);
         revenueSeries.tooltip!.pointerOrientation = "down";
       }
       if (this.expense) {
-        const expenseSeries = createSeries("expense", "Expense", "#ff3333");
+        // const expenseSeries = createSeries("expense", "Expense", "#ff3333");
+        const expenseSeries = createSeries("expense", "Expense", "#fa1d1d");
         // expenseSeries.columns.template.tooltipX = am4core.percent(0);
         // expenseSeries.columns.template.tooltipY = am4core.percent(100);
         expenseSeries.tooltip!.pointerOrientation = "up";

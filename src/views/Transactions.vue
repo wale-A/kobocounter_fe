@@ -22,7 +22,16 @@
                     @click.prevent="transactionClickHandler"
                   >
                     <td>
-                      {{ txn.narration.replace(/\s{4,}/g, "").trim() }}
+                      <!-- txn.narration.replace(/\s{4,}/g, "").trim() -->
+                      <div>
+                        <img
+                          :alt="`${txn.expenseCategory || txn.displayCategory}`"
+                          :src="`/img/categories/${
+                            txn.expenseCategory || txn.displayCategory || 'null'
+                          }.svg`"
+                        />
+                        {{ txn.expenseCategory || txn.displayCategory }}
+                      </div>
                     </td>
                     <!-- <td class="date">
                       {{ new Date(txn.date).toDateString() }}
@@ -86,15 +95,11 @@ import SingleTransaction from "@/components/SingleTransaction.vue";
       const sortedTransactions = this.transactions?.sort(
         (x: Transaction, y: Transaction) => x.date - y.date
       );
-      const group: Record<string, any[]> = {};
+      const group: Record<string, Transaction[]> = {};
       for (let i = 0; i < sortedTransactions?.length || 0; i++) {
         const date = new Date(sortedTransactions[i].date).toDateString();
         const txn = sortedTransactions[i] as Transaction;
-        group[date] = (group[date] || []).concat({
-          amount: txn.amount,
-          narration: txn.narration,
-          id: txn.id,
-        });
+        group[date] = (group[date] || []).concat(txn);
       }
       return group;
     },
@@ -162,12 +167,12 @@ table {
   border-spacing: 0;
 }
 td {
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #d9dbdb;
   padding: 0.5em;
 }
 tr p {
   padding: 0.5em;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #727376;
   text-align: start;
   font-size: 0.9em;
   font-weight: 800;
@@ -193,10 +198,17 @@ td:last-child {
   background-color: #f0f0f0;
 }
 .transactions-table tr:hover td:first-child {
-  border-left: 1px solid black;
+  border-left: 1px solid #d9dbdb;
 }
 .transactions-table tr:hover td:last-child {
-  border-right: 1px solid black;
+  border-right: 1px solid #d9dbdb;
+}
+td img {
+  margin-right: 1em;
+}
+td div {
+  display: flex;
+  align-items: center;
 }
 
 /*responsive*/

@@ -99,8 +99,7 @@ footer a:hover,
 .d.active {
   background: rgba(0, 0, 0, 0.35);
 }
-.side-nav footer a:hover,
-.d.active p {
+.side-nav footer a:hover {
   font-weight: 800;
 }
 .nbs .d,
@@ -655,10 +654,10 @@ hr {
 }
 .modal-content {
   background-color: #fefefe;
-  margin: 10% auto;
+  margin: 10% 20%;
   padding: 1em;
   border: 1px solid #888;
-  width: 80%;
+  width: 60%;
 }
 .close {
   color: #aaa;
@@ -674,6 +673,10 @@ hr {
 }
 /*responsive*/
 @media (max-width: 991px) {
+  .modal-content {
+    margin: 10% auto;
+    width: 80%;
+  }
   .dashboard .dashboard-content-container {
     margin-left: 0;
   }
