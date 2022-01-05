@@ -73,6 +73,9 @@ import { Options, Vue } from "vue-class-component";
   methods: {
     updateAccount() {
       if (this.status === "FAILED") {
+        const updateAccountFn = (code: string) =>
+          this.$store.dispatch("addAccount", { code });
+
         this.$store.dispatch("generateAccountReAuthCode", {
           accountId: this.id,
           callback: (token?: string) => {
@@ -82,6 +85,7 @@ import { Options, Vue } from "vue-class-component";
                 {
                   onSuccess: function (response: { code: string }) {
                     console.log({ response });
+                    updateAccountFn(response.code);
                   },
                 },
                 token

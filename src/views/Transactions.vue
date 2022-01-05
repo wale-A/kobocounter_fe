@@ -5,24 +5,32 @@
       <Header />
       <div class="dashboard-content">
         <div class="all-transactions bordered-container">
-          <p class="bold-text">Transactions</p>
+          <p class="bold-text">All Transactions</p>
           <hr />
           <section id="all-transactions-container">
             <table>
-              <tr v-for="i in 30" :key="i" class="bordered-container">
-                <td>
-                  <span> {{ getRandomCategory() }} </span>
-                </td>
-                <td class="date">
-                  {{ getRandomDate().toDateString() }}
-                </td>
-                <td>
-                  N{{
-                    parseFloat(
-                      (Math.random() * 100 * 1000).toFixed(2)
-                    ).toLocaleString()
-                  }}
-                </td>
+              <tr v-for="date in Object.keys(groupedTransactions)" :key="date">
+                <!-- <td colspan="2" style="width: 100%">
+                  {{ date }}
+                </td> -->
+                <p>{{ date }}</p>
+                <table>
+                  <tr v-for="txn in groupedTransactions[date]" :key="txn.id">
+                    <td>
+                      {{ txn.narration.replace(/\s{4,}/g, "").trim() }}
+                    </td>
+                    <!-- <td class="date">
+                      {{ new Date(txn.date).toDateString() }}
+                    </td> -->
+                    <td>
+                      <span
+                        :style="{ color: txn.amount > 0 ? 'green' : 'red' }"
+                      >
+                        {{ parseFloat(txn.amount.toFixed(2)).toLocaleString() }}
+                      </span>
+                    </td>
+                  </tr>
+                </table>
               </tr>
             </table>
           </section>
@@ -40,15 +48,36 @@ import Header from "@/components/Header.vue";
 import SideBar from "@/components/SideBar.vue";
 import AddNewAccount from "@/components/AddNewAccount.vue";
 import { sub } from "date-fns";
+import { Transaction } from "@/types";
 
 @Options({
+  created() {
+    this.$store.dispatch("getTransactions", {
+      accountId: undefined,
+      start: undefined,
+      end: undefined,
+    });
+  },
   components: {
     SideBar,
     Header,
     AddNewAccount,
   },
   computed: {
-    ...mapGetters(["accounts"]),
+    ...mapGetters(["accounts", "transactions"]),
+    groupedTransactions: function () {
+      const group: Record<string, any[]> = {};
+      for (let i = 0; i < this.transactions?.length || 0; i++) {
+        const date = new Date(this.transactions[i].date).toDateString();
+        const txn = this.transactions[i] as Transaction;
+        group[date] = (group[date] || []).concat({
+          amount: txn.amount,
+          narration: txn.narration,
+        });
+      }
+      console.log({ group });
+      return group;
+    },
   },
   methods: {
     getRandomDate() {
@@ -92,8 +121,7 @@ td {
   padding: 1em;
 }
 #all-transactions-container {
-  height: 85vh;
-  margin-bottom: 3vh;
+  height: 90vh;
   overflow: scroll;
 }
 .all-transactions-transaction-info {
@@ -102,24 +130,46 @@ td {
   padding: 0.5em 1em;
 }
 table {
-  font-size: 1.3em;
-  line-height: 2em;
+  font-size: 1em;
+  table-layout: fixed;
+  width: 100%;
+  border-spacing: 0;
+}
+td {
+  border-bottom: 1px solid black;
+  padding: 0.5em;
+}
+tr p {
+  padding: 0.5em;
+  border-bottom: 1px solid black;
+  text-align: start;
+  font-size: 0.9em;
+  font-weight: 800;
+  margin-top: 1em;
+}
+tr p:first-child {
+  margin-top: 0.5em;
+}
+td:first-child {
+  width: 80%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0.1em 1em;
+  text-align: start;
 }
 
 /*responsive*/
 @media (max-width: 991px) {
   #all-transactions-container {
     margin-bottom: 7vh;
-    height: 76vh;
-  }
-  tr {
-    height: 3em;
+    height: 80vh;
   }
   table {
     border-spacing: 0 0.7em;
   }
-  td.date {
-    font-size: 0.8em;
+  td:first-child {
+    width: 70%;
+    padding: 0.5em 0;
   }
 }
 </style>
