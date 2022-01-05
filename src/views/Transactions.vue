@@ -14,8 +14,13 @@
                   {{ date }}
                 </td> -->
                 <p>{{ date }}</p>
-                <table>
-                  <tr v-for="txn in groupedTransactions[date]" :key="txn.id">
+                <table class="transactions-table">
+                  <tr
+                    v-for="txn in groupedTransactions[date]"
+                    :key="txn.id"
+                    :data-transactionId="txn.id"
+                    @click.prevent="transactionClickHandler"
+                  >
                     <td>
                       {{ txn.narration.replace(/\s{4,}/g, "").trim() }}
                     </td>
@@ -39,6 +44,11 @@
     </section>
     <AddNewAccount :hasAccounts="!(accounts && accounts?.length == 0)" />
   </main>
+
+  <SingleTransaction
+    :singleTransaction="singleTransaction"
+    :closeFunction="() => (singleTransaction = undefined)"
+  />
 </template>
 
 <script lang="ts">
@@ -49,6 +59,7 @@ import SideBar from "@/components/SideBar.vue";
 import AddNewAccount from "@/components/AddNewAccount.vue";
 import { sub } from "date-fns";
 import { Transaction } from "@/types";
+import SingleTransaction from "@/components/SingleTransaction.vue";
 
 @Options({
   created() {
@@ -58,10 +69,16 @@ import { Transaction } from "@/types";
       end: undefined,
     });
   },
+  data() {
+    return {
+      singleTransaction: null,
+    };
+  },
   components: {
     SideBar,
     Header,
     AddNewAccount,
+    SingleTransaction,
   },
   computed: {
     ...mapGetters(["accounts", "transactions"]),
@@ -76,6 +93,7 @@ import { Transaction } from "@/types";
         group[date] = (group[date] || []).concat({
           amount: txn.amount,
           narration: txn.narration,
+          id: txn.id,
         });
       }
       return group;
@@ -106,6 +124,12 @@ import { Transaction } from "@/types";
         "Bank Charges",
       ];
       return categories[Math.floor(Math.random() * (categories.length - 1))];
+    },
+    transactionClickHandler(e: Event) {
+      const transactionId = (e.currentTarget as any).dataset.transactionid;
+      this.singleTransaction = this.transactions.find(
+        (x: Transaction) => x.id === transactionId
+      );
     },
   },
 })
@@ -162,6 +186,17 @@ td:first-child {
 td:last-child {
   text-align: end;
   padding-right: 1em;
+}
+.transactions-table tr:hover {
+  cursor: pointer;
+  font-weight: 800;
+  background-color: #f0f0f0;
+}
+.transactions-table tr:hover td:first-child {
+  border-left: 1px solid black;
+}
+.transactions-table tr:hover td:last-child {
+  border-right: 1px solid black;
 }
 
 /*responsive*/

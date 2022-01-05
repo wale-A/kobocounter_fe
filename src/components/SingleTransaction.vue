@@ -5,14 +5,17 @@
     v-show="singleTransaction && singleTransaction.id"
   >
     <div class="modal-content">
-      <div class="modal-header" style="align-items: flex-end">
+      <div
+        class="modal-header"
+        style="display: flex; justify-content: space-between"
+      >
         <span
           id="single-transaction-close-modal"
           class="close-modal material-icons"
         >
           arrow_back
         </span>
-        <span
+        <!-- <span
           id="single-transaction-edit"
           v-show="
             singleTransaction?.displayCategory !== 'INFLOW' && !editTransaction
@@ -22,15 +25,14 @@
           @click="enableEditTransaction"
         >
           create
-        </span>
+        </span> -->
       </div>
-      <div style="padding: 15px" v-if="singleTransaction">
+      <div style="padding: 1em" v-if="singleTransaction">
         <div
           style="
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
           "
         >
           <img
@@ -169,6 +171,12 @@
                 noResultsText="No result found"
                 style="margin-top: 35px"
               />
+
+              <p class="mid-text" v-show="!editTransaction">
+                <span class="small-text accent-color">expense category: </span>
+                <br />
+                {{ singleTransaction?.expenseCategory || "-" }}
+              </p>
 
               <div v-if="editTransaction" id="edit-form-buttons">
                 <button

@@ -36,6 +36,7 @@ export type Transaction = {
   narration: string;
   displayCategory: string;
   bank?: string;
+  expenseCategory?: string;
 };
 
 export type TransactionInfo = Transaction & {
