@@ -66,16 +66,18 @@ import { Transaction } from "@/types";
   computed: {
     ...mapGetters(["accounts", "transactions"]),
     groupedTransactions: function () {
+      const sortedTransactions = this.transactions?.sort(
+        (x: Transaction, y: Transaction) => x.date - y.date
+      );
       const group: Record<string, any[]> = {};
-      for (let i = 0; i < this.transactions?.length || 0; i++) {
-        const date = new Date(this.transactions[i].date).toDateString();
-        const txn = this.transactions[i] as Transaction;
+      for (let i = 0; i < sortedTransactions?.length || 0; i++) {
+        const date = new Date(sortedTransactions[i].date).toDateString();
+        const txn = sortedTransactions[i] as Transaction;
         group[date] = (group[date] || []).concat({
           amount: txn.amount,
           narration: txn.narration,
         });
       }
-      console.log({ group });
       return group;
     },
   },
