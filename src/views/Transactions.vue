@@ -26,9 +26,11 @@
                       <div>
                         <img
                           :alt="`${txn.expenseCategory || txn.displayCategory}`"
-                          :src="`/img/categories/${
-                            txn.expenseCategory || txn.displayCategory || 'null'
-                          }.svg`"
+                          :src="`/img/categories/${(
+                            txn.expenseCategory ||
+                            txn.displayCategory ||
+                            'null'
+                          ).toLowerCase()}.svg`"
                         />
                         {{ txn.expenseCategory || txn.displayCategory }}
                       </div>
