@@ -293,7 +293,7 @@ a {
   margin-left: 0.3em;
 }
 .logo {
-  padding: 0.5em 0;
+  padding: 1em 1em 0.5em;
 }
 .logo img {
   width: 30px;
@@ -794,7 +794,8 @@ hr {
     font-size: 1em;
     font-weight: 400;
   }
-  input[type="submit"] {
+  input[type="submit"],
+  button {
     resize: none;
     font-size: 1em;
   }
@@ -1043,7 +1044,8 @@ hr {
     font-size: 1em;
     font-weight: 400;
   }
-  input[type="submit"] {
+  input[type="submit"],
+  button {
     border-radius: 0.5em;
     margin-top: 1em;
     margin-bottom: 1em;

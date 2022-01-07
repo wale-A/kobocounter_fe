@@ -1,9 +1,13 @@
 <template>
-  <main class="dashboard">
+  <main class="dashboard" @click="outsideClickHandler">
     <SideBar :section="'transactions'" />
     <section class="dashboard-content-container">
       <Header />
       <div class="dashboard-content">
+        <SingleTransaction
+          :singleTransaction="singleTransaction"
+          :closeFunction="outsideClickHandler"
+        />
         <div class="all-transactions bordered-container">
           <p class="bold-text">All Transactions</p>
           <hr />
@@ -19,7 +23,8 @@
                     v-for="txn in groupedTransactions[date]"
                     :key="txn.id"
                     :data-transactionId="txn.id"
-                    @click.prevent="transactionClickHandler"
+                    @click.stop="transactionClickHandler"
+                    class="txn"
                   >
                     <td>
                       <!-- txn.narration.replace(/\s{4,}/g, "").trim() -->
@@ -27,8 +32,8 @@
                         <img
                           :alt="`${txn.expenseCategory || txn.displayCategory}`"
                           :src="`/img/categories/${(
-                            txn.expenseCategory ||
-                            txn.displayCategory ||
+                            txn.expenseCategory?.trim() ||
+                            txn.displayCategory?.trim() ||
                             'null'
                           ).toLowerCase()}.svg`"
                         />
@@ -55,11 +60,6 @@
     </section>
     <AddNewAccount :hasAccounts="!(accounts && accounts?.length == 0)" />
   </main>
-
-  <SingleTransaction
-    :singleTransaction="singleTransaction"
-    :closeFunction="() => (singleTransaction = undefined)"
-  />
 </template>
 
 <script lang="ts">
@@ -107,36 +107,32 @@ import SingleTransaction from "@/components/SingleTransaction.vue";
     },
   },
   methods: {
-    getRandomDate() {
-      const today = new Date().getTime();
-      const thirtyDaysBefore = sub(today, { months: 1 }).getTime();
-      return new Date(
-        thirtyDaysBefore + Math.random() * (today - thirtyDaysBefore)
-      );
-    },
-    getRandomCategory() {
-      const categories = [
-        "Food & Drinks",
-        "Transportation",
-        "Airtime & Data",
-        "Groceries",
-        "Entertainment",
-        "Shopping",
-        "Health",
-        "Bills",
-        "Other",
-        "Transfer",
-        "ATM Withdrawal",
-        "POS Transaction",
-        "Bank Charges",
-      ];
-      return categories[Math.floor(Math.random() * (categories.length - 1))];
-    },
     transactionClickHandler(e: Event) {
+      this.removeClassSelector("selected-transaction");
       const transactionId = (e.currentTarget as any).dataset.transactionid;
       this.singleTransaction = this.transactions.find(
         (x: Transaction) => x.id === transactionId
       );
+      (e.currentTarget as any).className += " selected-transaction";
+
+      const div = document.getElementById("single-transaction");
+      if (div) {
+        div.style.zIndex = "1000";
+      }
+    },
+    outsideClickHandler(e: Event) {
+      this.singleTransaction = null;
+      this.removeClassSelector("selected-transaction");
+    },
+    removeClassSelector(className: string) {
+      Array.from(document.querySelectorAll("." + className)).forEach((el) =>
+        el.classList.remove(className)
+      );
+
+      const div = document.getElementById("single-transaction");
+      if (div) {
+        div.style.zIndex = "-1000";
+      }
     },
   },
 })
@@ -148,14 +144,20 @@ td {
   padding: 0;
   margin: 0;
 }
+.dashboard-content {
+  height: 95%;
+}
 .all-transactions {
-  width: 96%;
-  margin: 1% 2% 0 2%;
+  width: 64%;
+  margin: 1%;
+  margin-right: 0;
+  margin-bottom: 0;
   padding: 1em;
+  height: 98%;
 }
 #all-transactions-container {
-  height: 90vh;
   overflow: scroll;
+  height: 98%;
 }
 .all-transactions-transaction-info {
   justify-content: space-between;
@@ -205,6 +207,9 @@ td:last-child {
 .transactions-table tr:hover td:last-child {
   border-right: 1px solid #d9dbdb;
 }
+.selected-transaction {
+  background-color: #dcdcdc;
+}
 td img {
   margin-right: 1em;
 }
@@ -228,6 +233,13 @@ td div {
   }
   td:last-child {
     padding-right: 0em;
+  }
+
+  .all-transactions {
+    width: 100%;
+  }
+  .dashboard {
+    flex-flow: unset;
   }
 }
 </style>

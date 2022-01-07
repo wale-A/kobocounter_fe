@@ -344,7 +344,7 @@ import Multiselect from "@vueform/multiselect";
 import { add, sub, subMonths } from "date-fns";
 // import WordCloud from "wordcloud";
 import AddNewAccount from "@/components/AddNewAccount.vue";
-import SingleTransaction from "@/components/SingleTransaction.vue";
+import SingleTransaction from "@/components/SingleTransaction_old.vue";
 import DonutChart from "@/components/charts/DonutChart.vue";
 import IncomeChart from "@/components/charts/IncomeChart.vue";
 import WordCloudChart from "@/components/charts/WordCloudChart.vue";
