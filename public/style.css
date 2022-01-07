@@ -383,6 +383,9 @@ input[type="submit"][disabled] {
   background-color: grey;
   cursor: not-allowed;
 }
+.multiselect-search input {
+  background: transparent !important;
+}
 .check {
   align-items: center;
 }

@@ -322,17 +322,15 @@ import { notify } from "@kyvg/vue3-notification";
       this.editedTransaction.isEstablishment = activities.length > 0;
     },
     saveEditedTransaction() {
-      const txn = this.transactions.find(
-        (x: TransactionInfo) => x.id === this.editedTransaction.id
-      );
-      if (txn) {
+      if (this.singleTransaction) {
         this.editFormSubmitted = true;
 
-        const updatedTransaction = { ...txn };
+        const updatedTransaction = { ...this.singleTransaction };
         updatedTransaction.displayCategory = this.editedTransaction.displayCategory;
         updatedTransaction.recipient = this.editedTransaction.recipientName[0];
         if (this.editedTransaction.isEstablishment) {
-          updatedTransaction.establishment = txn.establishment || {};
+          updatedTransaction.establishment =
+            this.singleTransaction.establishment || {};
           updatedTransaction.establishment.activities = this.editedTransaction.establishmentActivities;
           updatedTransaction.establishment.name = this.editedTransaction.recipientName[0];
         } else {
@@ -348,19 +346,12 @@ import { notify } from "@kyvg/vue3-notification";
           updatedTransaction,
           callback: (success: boolean) => {
             if (success) {
-              this.singleTransaction = updatedTransaction;
-              this.modalTransactions.transactions.splice(
-                this.modalTransactions.transactions.findIndex(
-                  (x: TransactionInfo) => x.id == updatedTransaction.id
-                ),
-                1,
-                updatedTransaction
-              );
               this.disableEditTransaction();
               notify({
                 text: "Transaction update was successful",
                 type: "success",
               });
+              this.closeFunction();
             } else {
               this.editFormSubmitted = false;
               notify({
@@ -405,8 +396,8 @@ export default class SingleTransaction extends Vue {}
   justify-content: space-around;
 }
 input[type="submit"] {
-  border-radius: 1em;
   font-weight: 800;
+  border: 1px solid #007cff;
 }
 p span:first-child {
   font-weight: 700;
@@ -414,13 +405,9 @@ p span:first-child {
 form input {
   height: 1.5em;
 }
-.multiselect-search input {
-  background: transparent;
-}
 .cancel-button {
   color: #007cff;
   background-color: white;
-  border: 1px solid #007cff;
 }
 #close {
   display: none;
@@ -435,7 +422,7 @@ form input {
     width: 90%;
     position: absolute;
     z-index: -1000;
-    top: 10%;
+    top: 8%;
     background: white;
     margin: 0 5%;
   }
