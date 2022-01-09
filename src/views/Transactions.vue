@@ -7,6 +7,8 @@
         <SingleTransaction
           :singleTransaction="singleTransaction"
           :closeFunction="outsideClickHandler"
+          :childTransactions="childTransactions"
+          :parentTransaction="parentTransaction"
         />
         <div class="all-transactions bordered-container">
           <p class="bold-text">All Transactions</p>
@@ -105,6 +107,16 @@ import SingleTransaction from "@/components/SingleTransaction.vue";
       }
       return group;
     },
+    childTransactions() {
+      return this.transactions?.find(
+        (x: Transaction) => x.parentId === this.singleTransaction?.id
+      );
+    },
+    parentTransaction() {
+      return this.transactions?.find(
+        (x: Transaction) => x.id === this.singleTransaction?.parentId
+      );
+    },
   },
   methods: {
     transactionClickHandler(e: Event) {
@@ -117,7 +129,7 @@ import SingleTransaction from "@/components/SingleTransaction.vue";
 
       const div = document.getElementById("single-transaction");
       if (div) {
-        div.style.zIndex = "1000";
+        div.style.zIndex = "10000";
       }
     },
     outsideClickHandler(e: Event) {
@@ -131,7 +143,7 @@ import SingleTransaction from "@/components/SingleTransaction.vue";
 
       const div = document.getElementById("single-transaction");
       if (div) {
-        div.style.zIndex = "-1000";
+        div.style.zIndex = "-10000";
       }
     },
   },
@@ -144,16 +156,13 @@ td {
   padding: 0;
   margin: 0;
 }
-.dashboard-content {
-  height: 95%;
-}
 .all-transactions {
   width: 64%;
   margin: 1%;
   margin-right: 0;
   margin-bottom: 0;
   padding: 1em;
-  height: 98%;
+  height: 94vh;
 }
 #all-transactions-container {
   overflow: scroll;

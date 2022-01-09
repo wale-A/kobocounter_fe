@@ -37,6 +37,7 @@ export type Transaction = {
   displayCategory: string;
   bank?: string;
   expenseCategory?: string;
+  parentId?: string;
 };
 
 export type TransactionInfo = Transaction & {
