@@ -47,9 +47,18 @@
                     </td> -->
                     <td>
                       <span
-                        :style="{ color: txn.amount > 0 ? 'green' : 'red' }"
+                        :style="{
+                          color:
+                            (txn.amount || txn.displayAmount) > 0
+                              ? 'green'
+                              : 'red',
+                        }"
                       >
-                        {{ parseFloat(txn.amount.toFixed(2)).toLocaleString() }}
+                        {{
+                          parseFloat(
+                            (txn.amount || txn.displayAmount).toFixed(2)
+                          ).toLocaleString()
+                        }}
                       </span>
                     </td>
                   </tr>
@@ -60,7 +69,7 @@
         </div>
       </div>
     </section>
-    <AddNewAccount :hasAccounts="!(accounts && accounts?.length == 0)" />
+    <!-- <AddNewAccount :hasAccounts="!(accounts && accounts?.length == 0)" /> -->
   </main>
 </template>
 
@@ -85,6 +94,8 @@ import SingleTransaction from "@/components/SingleTransaction.vue";
   data() {
     return {
       singleTransaction: null,
+      parentTransaction: null,
+      childTransactions: null,
     };
   },
   components: {
@@ -107,16 +118,6 @@ import SingleTransaction from "@/components/SingleTransaction.vue";
       }
       return group;
     },
-    childTransactions() {
-      return this.transactions?.find(
-        (x: Transaction) => x.parentId === this.singleTransaction?.id
-      );
-    },
-    parentTransaction() {
-      return this.transactions?.find(
-        (x: Transaction) => x.id === this.singleTransaction?.parentId
-      );
-    },
   },
   methods: {
     transactionClickHandler(e: Event) {
@@ -125,15 +126,26 @@ import SingleTransaction from "@/components/SingleTransaction.vue";
       this.singleTransaction = this.transactions.find(
         (x: Transaction) => x.id === transactionId
       );
+      this.childTransactions = this.transactions?.filter(
+        (x: Transaction) => x.parentId === transactionId
+      );
+      this.parentTransaction = this.transactions?.find(
+        (x: Transaction) => x.id === this.singleTransaction?.parentId
+      );
+
       (e.currentTarget as any).className += " selected-transaction";
 
       const div = document.getElementById("single-transaction");
       if (div) {
-        div.style.zIndex = "10000";
+        div.style.zIndex = "5";
       }
+      const container = document.getElementsByClassName("all-transactions")[0];
+      (container as any).style.zIndex = "1";
     },
     outsideClickHandler(e: Event) {
       this.singleTransaction = null;
+      this.childTransactions = null;
+      this.parentTransaction = null;
       this.removeClassSelector("selected-transaction");
     },
     removeClassSelector(className: string) {
@@ -143,8 +155,12 @@ import SingleTransaction from "@/components/SingleTransaction.vue";
 
       const div = document.getElementById("single-transaction");
       if (div) {
-        div.style.zIndex = "-10000";
+        div.style.zIndex = "1";
+        div.style.display = "unset";
       }
+
+      const container = document.getElementsByClassName("all-transactions")[0];
+      (container as any).style.zIndex = "5";
     },
   },
 })
@@ -163,6 +179,7 @@ td {
   margin-bottom: 0;
   padding: 1em;
   height: 94vh;
+  background: white;
 }
 #all-transactions-container {
   overflow: scroll;
@@ -246,6 +263,7 @@ td div {
 
   .all-transactions {
     width: 100%;
+    height: 88vh;
   }
   .dashboard {
     flex-flow: unset;

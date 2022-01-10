@@ -78,12 +78,18 @@
                 :style="{
                   'font-weight': 500,
                   color:
-                    singleTransaction?.amount < 0
+                    (singleTransaction?.amount ||
+                      singleTransaction?.displayAmount) < 0
                       ? 'rgba(255, 10, 10, 0.7)'
                       : 'rgb(20, 180, 20)',
                 }"
               >
-                {{ Math.abs(singleTransaction?.amount).toLocaleString() }}
+                {{
+                  Math.abs(
+                    singleTransaction?.amount ||
+                      singleTransaction?.displayAmount
+                  ).toLocaleString()
+                }}
               </span>
             </p>
 
@@ -176,9 +182,21 @@
               <span class="small-text accent-color">narration: </span> <br />
               {{ singleTransaction?.narration }}
             </p>
-            <!-- 
-            <p><span class="small-text accent-color">note: </span> <br /></p>
-            <textarea name="" id="" cols="30" rows="10"></textarea> -->
+
+            <div v-if="childTransactions?.length">
+              <p class="mid-text">
+                <span class="small-text accent-color">sub transactions: </span>
+              </p>
+              <ul v-for="txn in childTransactions" :key="txn.id">
+                <li>
+                  <a href="" class="sub-transaction">
+                    {{ txn.expenseCategory }} -
+                    {{ Math.abs(txn.displayAmount) }}
+                  </a>
+                  <br />
+                </li>
+              </ul>
+            </div>
 
             <div v-if="editTransaction" class="form-buttons">
               <input
@@ -212,9 +230,10 @@
           <h3>Split transaction</h3>
           <p>
             Total Amount:
-            <span style="font-size: 1.1em; font-weight: 300">
-              N{{ Math.abs(singleTransaction.amount) }}</span
-            >
+            <span style="">&#8358;</span>
+            <span>
+              {{ Math.abs(singleTransaction?.amount).toLocaleString() }}
+            </span>
           </p>
         </div>
         <p class="small-text">
@@ -222,7 +241,11 @@
           initial transaction. Adjust the amount already entered or use the
           button below to add a new split.
         </p>
-        <form action="#" id="transaction-split-form">
+        <form
+          action="#"
+          id="transaction-split-form"
+          @submit.prevent="saveSplitTransactions"
+        >
           <div
             class="split-item-container"
             v-for="(item, index) in splitTransactionData"
@@ -286,6 +309,12 @@
                 min="0"
                 v-model="item.amount"
               />
+              <!-- :style="{
+                  borderColor:
+                    (item?.amount || 0) > Math.abs(simgleTransaction.amount)
+                      ? 'red'
+                      : 'black', -->
+              <!-- }" -->
             </div>
             <span
               class="material-icons delete-split-item"
@@ -306,26 +335,43 @@
               width: 100%;
               cursor: pointer;
               margin-top: 1em;
-              margin-bottom: 2em;
               color: #007cff;
             "
             @click="incrementSplitCount"
           >
             <span>+ Add New Split</span>
           </button>
-
+          <br />
+          <span
+            v-if="splitTransactionTotal > Math.abs(singleTransaction.amount)"
+            style="
+              color: red;
+              display: block;
+              text-align: center;
+              margin-bottom: 1em;
+            "
+          >
+            the total amount cannot be greater than the transaction amount</span
+          >
+          <!-- <div id="split-transaction-summary">
+            <p>Split total: {{ splitTransactionTotal }}</p>
+            <p>
+              Amount left:
+              {{ Math.abs(singleTransaction.amount) - splitTransactionTotal }}
+            </p>
+          </div> -->
           <div class="form-buttons">
             <input
               type="submit"
               style="width: unset !important; height: unset !important"
-              :disabled="enableSplitSubmit"
+              :disabled="!(enableSplitSubmit && allowSplitSubmitCancel)"
               value="SUBMIT"
             />
             <input
               type="submit"
               class="cancel-button"
               style="width: unset !important; height: unset !important"
-              :disabled="editFormSubmitted"
+              :disabled="!allowSplitSubmitCancel"
               @click.stop="disableEditTransaction"
               value="CANCEL"
             />
@@ -350,7 +396,7 @@
           v-if="
             !['Bank Charge', 'Inflow'].includes(
               singleTransaction?.displayCategory
-            )
+            ) && !singleTransaction?.parentId
           "
           class="cancel-button"
           value="Split Transaction"
@@ -365,30 +411,12 @@ import { Options, Vue } from "vue-class-component";
 import Multiselect from "@vueform/multiselect";
 import { mapGetters } from "vuex";
 import { notify } from "@kyvg/vue3-notification";
-import { Transaction } from "@/types";
+import { SplitTransaction, Transaction } from "@/types";
 
 @Options({
   created() {
     this.$store.dispatch("getEstablishments");
   },
-  // mounted() {
-  //   console.log("mounted is being called");
-  //   this.splitTransactionData = this.childTransactions?.length
-  //     ? this.childTransactions.map((x: Transaction) => {
-  //         return {
-  //           expenseCategory: x.expenseCategory,
-  //           amount: Math.abs(x.amount),
-  //           id: x.id,
-  //         };
-  //       })
-  //     : [{ expenseCategory: "", amount: 0, id: "" }];
-  // },
-  // beforeUpdate() {
-  //   // disable the edit form if the user clicks on another transaction
-  //   if (this.transactionId && this.transactionId != this.singleTransaction.id) {
-  //     this.disableEditTransaction();
-  //   }
-  // },
   props: {
     singleTransaction: Object,
     closeFunction: Function,
@@ -405,6 +433,7 @@ import { Transaction } from "@/types";
       expenseCategory: null,
       splitTransactionData: null,
       splitTransaction: false,
+      allowSplitSubmitCancel: true,
     };
   },
   components: {
@@ -425,10 +454,20 @@ import { Transaction } from "@/types";
         ),
       ];
     },
+    splitTransactionTotal() {
+      return this.splitTransactionData?.reduce(
+        (acc: number, curr: { amount: string }) => {
+          return acc + parseFloat(curr?.amount || "0");
+        },
+        0
+      );
+    },
     enableSplitSubmit() {
-      return this.splitTransactionData.some(
-        (x: { expenseCategory: string; amount: number }) =>
-          x.expenseCategory && x.amount
+      return (
+        this.splitTransactionData.every(
+          (x: SplitTransaction) => x.expenseCategory && x.amount
+        ) &&
+        this.splitTransactionTotal <= Math.abs(this.singleTransaction.amount)
       );
     },
   },
@@ -444,10 +483,9 @@ import { Transaction } from "@/types";
       }
     },
     incrementSplitCount(e: Event) {
-      console.log("increment split", { e });
       this.splitTransactionData.push({
         expenseCategory: "",
-        amount: 0,
+        amount: null,
         id: "",
       });
 
@@ -550,23 +588,69 @@ import { Transaction } from "@/types";
         });
       }
     },
+    saveSplitTransactions() {
+      if (
+        this.splitTransactionTotal > Math.abs(this.singleTransaction.amount)
+      ) {
+        notify({
+          text:
+            "Split transaction total cannot be greater than the original transaction amount",
+          type: "error",
+        });
+      } else if (
+        this.splitTransactionData.some(
+          (x: SplitTransaction) => !x.expenseCategory
+        )
+      ) {
+        notify({
+          text: "Split transaction cannot have empty expense category",
+          type: "error",
+        });
+      } else {
+        this.allowSplitSubmitCancel = false;
+        this.$store.dispatch("saveSplitTransactions", {
+          transactionId: this.singleTransaction.id,
+          params: this.splitTransactionData,
+          callback: (success: boolean) => {
+            if (success) {
+              this.disableEditTransaction();
+              notify({
+                text: "Transaction split was successful",
+                type: "success",
+              });
+              this.closeFunction();
+            } else {
+              this.allowSplitSubmitCancel = true;
+              notify({
+                text: "Transaction split failed, please retry",
+                type: "error",
+              });
+            }
+          },
+        });
+      }
+    },
   },
   watch: {
     singleTransaction(newVal: Transaction, oldVal: Transaction) {
-      if (newVal.id !== oldVal?.id) {
+      console.log(newVal);
+      if (newVal && newVal?.id !== oldVal?.id) {
         this.disableEditTransaction();
-
-        this.splitTransactionData = this.childTransactions?.length
-          ? this.childTransactions.map((x: Transaction) => {
-              return {
-                expenseCategory: x.expenseCategory,
-                amount: Math.abs(x.amount),
-                id: x.id,
-              };
-            })
-          : [{ expenseCategory: "", amount: 0, id: "" }];
       }
     },
+    childTransactions(newVal: Transaction[]) {
+      this.splitTransactionData = newVal?.length
+        ? this.childTransactions.map((x: Transaction) => {
+            return {
+              expenseCategory: x.expenseCategory,
+              amount: Math.abs(x.displayAmount || 0),
+              id: x.id,
+            };
+          })
+        : [{ expenseCategory: "", amount: null, id: "" }];
+    },
+    // parentTransaction(newVal: Transaction[]) {
+    // },
   },
 })
 export default class SingleTransaction extends Vue {}
@@ -574,6 +658,9 @@ export default class SingleTransaction extends Vue {}
 
 <style src="@vueform/multiselect/themes/default.css"></style>
 <style scoped>
+#split-transaction-summary {
+  text-align: center;
+}
 #single-transaction {
   width: 33%;
   margin: 1% 1% 0px;
@@ -602,7 +689,7 @@ export default class SingleTransaction extends Vue {}
   margin-top: 2em;
 }
 .form-buttons {
-  margin-top: 3em;
+  margin-top: 2em;
   display: flex;
   justify-content: space-around;
 }
