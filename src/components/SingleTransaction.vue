@@ -187,8 +187,8 @@
               <p class="mid-text">
                 <span class="small-text accent-color">sub transactions: </span>
               </p>
-              <ul v-for="txn in childTransactions" :key="txn.id">
-                <li>
+              <ul style="margin-bottom: 0.5em">
+                <li v-for="txn in childTransactions" :key="txn.id">
                   <a href="" class="sub-transaction">
                     {{ txn.expenseCategory }} -
                     {{ Math.abs(txn.displayAmount) }}
@@ -221,7 +221,7 @@
         <div
           id="split-header"
           style="
-            padding: 1em 1em 0.5em;
+            padding: 0 1em 0.5em;
             margin-bottom: 1.5em;
             border-bottom: 1px solid #ddd;
             text-align: center;
@@ -336,6 +336,7 @@
               cursor: pointer;
               margin-top: 1em;
               color: #007cff;
+              padding-bottom: 0;
             "
             @click="incrementSplitCount"
           >
@@ -348,7 +349,7 @@
               color: red;
               display: block;
               text-align: center;
-              margin-bottom: 1em;
+              margin-bottom: 0.5em;
             "
           >
             the total amount cannot be greater than the transaction amount</span
@@ -673,7 +674,7 @@ export default class SingleTransaction extends Vue {}
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100%;
+  height: 94%;
 }
 #no-transaction p {
   margin: 1em 0 0;
@@ -682,7 +683,7 @@ export default class SingleTransaction extends Vue {}
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 100%;
+  height: 94%;
   padding: 1em 1em 3em;
 }
 #transaction-detail form {
@@ -748,13 +749,13 @@ form input {
     top: 7%;
     background: white;
     margin: 0 5%;
-    height: 85vh;
+    height: 84vh;
     padding: 0 1em;
   }
   #close {
     display: block;
     text-align: end;
-    padding: 0.5em 1em;
+    padding: 0.5em 1em 0em;
   }
   #transaction-detail {
     padding: 0.5em;
