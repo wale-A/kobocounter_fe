@@ -168,6 +168,10 @@ export default class Transactions extends Vue {}
 </script>
 
 <style scoped>
+main {
+  height: 100vh;
+  overflow: hidden;
+}
 td {
   padding: 0;
   margin: 0;
