@@ -382,12 +382,16 @@ export const store = createStore({
       }
     ) {
       try {
-        await axios.put(
+        const res = await axios.put(
           `${process.env.VUE_APP_API_URL}/banking/transactions/${transactionId}`,
           params
         );
-        this.commit("updateTransaction", updatedTransaction);
-        callback(true);
+        if (res.status === 201) {
+          this.commit("updateTransaction", updatedTransaction);
+          callback(true);
+        } else {
+          callback(false);
+        }
       } catch (e) {
         callback(false);
       }
