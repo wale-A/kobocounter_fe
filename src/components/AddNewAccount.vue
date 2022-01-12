@@ -21,10 +21,11 @@ import { Options, Vue } from "vue-class-component";
   },
   methods: {
     addAccount() {
-      const fn = (code: string) => this.$store.dispatch("addAccount", { code });
+      const addAccountFn = (code: string) =>
+        this.$store.dispatch("addAccount", { code });
       const options = {
         onSuccess: function (response: { code: string }) {
-          fn(response.code);
+          addAccountFn(response.code);
         },
       };
       this.$launchMono(options);

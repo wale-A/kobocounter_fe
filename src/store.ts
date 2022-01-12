@@ -211,7 +211,7 @@ export const store = createStore({
           }
         );
 
-        this.commit("setTransactions", res.data as Account[]);
+        this.commit("setTransactions", res.data as TransactionInfo[]);
       } catch (e) {
         this.commit("setTransactions", []);
       }
@@ -362,7 +362,6 @@ export const store = createStore({
         const res = await axios.get(
           `${process.env.VUE_APP_API_URL}/banking/establishments`
         );
-
         this.commit("setEstablishments", res.data as string[]);
       } catch (e) {
         this.commit("setEstablishments", []);
@@ -383,13 +382,44 @@ export const store = createStore({
       }
     ) {
       try {
-        await axios.put(
+        const res = await axios.put(
           `${process.env.VUE_APP_API_URL}/banking/transactions/${transactionId}`,
           params
         );
+        if (res.status === 201) {
+          this.commit("updateTransaction", updatedTransaction);
+          callback(true);
+        } else {
+          callback(false);
+        }
+      } catch (e) {
+        callback(false);
+      }
+    },
+    async saveSplitTransactions(
+      _,
+      {
+        transactionId,
+        params,
+        callback,
+      }: {
+        transactionId: string;
+        params: string;
+        callback: (success: boolean) => void;
+      }
+    ) {
+      try {
+        const res = await axios.post(
+          `${process.env.VUE_APP_API_URL}/banking/transactions/${transactionId}/split`,
+          params
+        );
 
-        this.commit("updateTransaction", updatedTransaction);
-        callback(true);
+        if (res.status === 201) {
+          this.dispatch("getTransactions", {});
+          callback(true);
+        } else {
+          callback(false);
+        }
       } catch (e) {
         callback(false);
       }

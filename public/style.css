@@ -99,8 +99,7 @@ footer a:hover,
 .d.active {
   background: rgba(0, 0, 0, 0.35);
 }
-.side-nav footer a:hover,
-.d.active p {
+.side-nav footer a:hover {
   font-weight: 800;
 }
 .nbs .d,
@@ -294,7 +293,7 @@ a {
   margin-left: 0.3em;
 }
 .logo {
-  padding: 0.5em 0;
+  padding: 1em 1em 0.5em;
 }
 .logo img {
   width: 30px;
@@ -350,7 +349,7 @@ form input {
   font-size: 1em;
   border: none;
   outline: none;
-  background: #f4f7f9;
+  border: 1px solid #ddd;
   color: #007cff;
   border-radius: 5px;
   width: 444px;
@@ -367,7 +366,7 @@ form input[type="email"] {
 }
 form p {
   color: #2a2a2a;
-  margin-top: 1.5em;
+  margin-top: 0.9em;
   font-size: 1em;
 }
 input[type="submit"] {
@@ -663,10 +662,10 @@ hr {
 }
 .modal-content {
   background-color: #fefefe;
-  margin: 15% auto;
-  padding: 20px;
+  margin: 10% 20%;
+  padding: 1em;
   border: 1px solid #888;
-  width: 80%;
+  width: 60%;
 }
 .close {
   color: #aaa;
@@ -682,6 +681,10 @@ hr {
 }
 /*responsive*/
 @media (max-width: 991px) {
+  .modal-content {
+    margin: 10% auto;
+    width: 80%;
+  }
   .dashboard .dashboard-content-container {
     margin-left: 0;
   }
@@ -799,7 +802,8 @@ hr {
     font-size: 1em;
     font-weight: 400;
   }
-  input[type="submit"] {
+  input[type="submit"],
+  button {
     resize: none;
     font-size: 1em;
   }
@@ -1048,7 +1052,8 @@ hr {
     font-size: 1em;
     font-weight: 400;
   }
-  input[type="submit"] {
+  input[type="submit"],
+  button {
     border-radius: 0.5em;
     margin-top: 1em;
     margin-bottom: 1em;

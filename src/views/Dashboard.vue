@@ -202,7 +202,7 @@ import {
 import Multiselect from "@vueform/multiselect";
 import { add, sub, subMonths } from "date-fns";
 import AddNewAccount from "@/components/AddNewAccount.vue";
-import SingleTransaction from "@/components/SingleTransaction.vue";
+import SingleTransaction from "@/components/SingleTransaction_old.vue";
 import DonutChart from "@/components/charts/DonutChart.vue";
 import GuageChart from "@/components/charts/GuageChart.vue";
 import IncomeChart from "@/components/charts/IncomeChart.vue";

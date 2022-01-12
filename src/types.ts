@@ -36,6 +36,9 @@ export type Transaction = {
   narration: string;
   displayCategory: string;
   bank?: string;
+  expenseCategory?: string;
+  parentId?: string;
+  displayAmount?: number;
 };
 
 export type TransactionInfo = Transaction & {
@@ -78,4 +81,10 @@ export type FacebookLoginResponse = {
     userId: string;
   };
   status: string;
+};
+
+export type SplitTransaction = {
+  expenseCategory: string;
+  amount: number;
+  id: string;
 };

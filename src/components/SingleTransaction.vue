@@ -1,42 +1,29 @@
 <template>
-  <div
-    id="single-transaction-modal"
-    class="modal"
-    v-show="singleTransaction && singleTransaction.id"
-  >
-    <div class="modal-content">
-      <div class="modal-header" style="align-items: flex-end">
-        <span
-          id="single-transaction-close-modal"
-          class="close-modal material-icons"
-        >
-          arrow_back
-        </span>
-        <span
-          id="single-transaction-edit"
-          v-show="
-            singleTransaction?.displayCategory !== 'INFLOW' && !editTransaction
-          "
-          class="material-icons"
-          style="margin-right: 20px; cursor: pointer"
-          @click="enableEditTransaction"
-        >
-          create
-        </span>
-      </div>
-      <div style="padding: 15px" v-if="singleTransaction">
+  <div id="single-transaction" class="bordered-container" @click.stop="">
+    <div id="no-transaction" v-if="!singleTransaction">
+      <img src="/img/assets/no-transaction.svg" alt="no-transactions" />
+      <p>You have not selected a transaction</p>
+      <p>Select a transaction on the left to see it's details</p>
+    </div>
+
+    <div id="close" @click.stop="closeFunction()">
+      <span class="material-icons"> close </span>
+      <br />
+    </div>
+    <div id="transaction-detail" v-if="singleTransaction">
+      <div v-if="!splitTransaction">
         <div
           style="
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
           "
         >
           <img
             :alt="`${singleTransaction?.bank} logo`"
             :src="`/img/banks/${singleTransaction?.bank}.svg`"
             id="bank-logo"
+            style="height: 5em"
           />
           <!-- onerror="https://ui-avatars.com/api/?size=50&format=svg" -->
           <span class="mid-text darker-color">
@@ -50,55 +37,92 @@
             }}
           </span>
         </div>
-        <div>
-          <div style="text-align: start">
-            <form action="#" @submit.prevent="saveEditedTransaction">
-              <p class="mid-text" style="overflow-wrap: break-word">
-                <span class="small-text accent-color">narration: </span> <br />
-                {{ singleTransaction?.narration }}
-              </p>
-              <p class="mid-text">
-                <span class="small-text accent-color">amount: </span> <br />
-                <span style="font-weight: 800; font-size: large">&#8358; </span>
-                <span
-                  :style="{
-                    'font-weight': 500,
-                    color:
-                      singleTransaction?.amount < 0
-                        ? 'rgba(255, 10, 10, 0.7)'
-                        : 'rgb(20, 180, 20)',
-                  }"
-                >
-                  {{ Math.abs(singleTransaction?.amount).toLocaleString() }}
-                </span>
-              </p>
-              <p
-                v-show="
-                  (singleTransaction?.establishment?.name ||
-                    singleTransaction?.recipient) &&
-                  !editTransaction
-                "
-                class="mid-text"
+        <div style="text-align: start">
+          <form action="#" @submit.prevent="saveEditedTransaction">
+            <p class="mid-text">
+              <span class="small-text accent-color"
+                >transaction category:
+              </span>
+              <br />
+              <span v-show="!editTransaction">
+                {{
+                  singleTransaction?.expenseCategory?.trim() ||
+                  singleTransaction?.displayCategory?.trim() ||
+                  "-"
+                }}
+              </span>
+            </p>
+            <Multiselect
+              :disabled="editFormSubmitted"
+              :searchable="true"
+              v-if="editTransaction"
+              placeholder="Transaction category"
+              v-model="editedTransaction.displayCategory"
+              :options="[
+                'Misc',
+                'ATM Withdrawal',
+                'Bank Charge',
+                'POS Purchase',
+                'WEB Purchase',
+                'Airtime',
+                'Mobile Data',
+                'Transfer',
+              ]"
+              noResultsText="No result found"
+            />
+
+            <p class="mid-text">
+              <span class="small-text accent-color">amount: </span> <br />
+              <span style="font-weight: 800; font-size: large">&#8358; </span>
+              <span
+                :style="{
+                  'font-weight': 500,
+                  color:
+                    (singleTransaction?.amount ||
+                      singleTransaction?.displayAmount) < 0
+                      ? 'rgba(255, 10, 10, 0.7)'
+                      : 'rgb(20, 180, 20)',
+                }"
               >
-                <span class="small-text accent-color">recipient: </span> <br />
+                {{
+                  Math.abs(
+                    singleTransaction?.amount ||
+                      singleTransaction?.displayAmount
+                  ).toLocaleString()
+                }}
+              </span>
+            </p>
+
+            <p class="mid-text">
+              <!-- v-show="
+                (singleTransaction?.establishment?.name ||
+                  singleTransaction?.recipient) &&
+                !editTransaction
+              " -->
+              <span class="small-text accent-color">recipient: </span> <br />
+              <span v-show="!editTransaction">
                 {{
                   singleTransaction?.establishment?.name ||
-                  singleTransaction?.recipient
+                  singleTransaction?.recipient ||
+                  "-"
                 }}
-              </p>
-              <Multiselect
-                :disabled="editFormSubmitted"
-                v-if="editTransaction"
-                :searchable="true"
-                placeholder="Recipient"
-                v-model="editedTransaction.recipientName"
-                :options="allEstablishments"
-                :createTag="true"
-                mode="tags"
-                :max="Number('1')"
-                @tag="addEstablishment"
-                @change="changedEstablishment"
-              />
+              </span>
+            </p>
+            <Multiselect
+              :disabled="editFormSubmitted"
+              v-if="editTransaction"
+              :searchable="true"
+              placeholder="Recipient"
+              v-model="editedTransaction.recipientName"
+              :options="allEstablishments"
+              :createTag="true"
+              mode="tags"
+              :max="Number('1')"
+              @tag="addEstablishment"
+              @change="changedEstablishment"
+            />
+
+            <div style="margin-top: 1em">
               <label for="business-establishment" v-if="editTransaction">
                 <input
                   v-if="editTransaction"
@@ -110,86 +134,274 @@
                   :disabled="
                     !editFormSubmitted && !editedTransaction?.recipientName[0]
                   "
+                  style="width: unset !important; vertical-align: bottom"
                 />
-                Is a business establishment ?
+                Recipient is a business establishment
               </label>
+            </div>
 
-              <p
-                v-if="
-                  singleTransaction?.establishment?.activities &&
-                  singleTransaction?.establishment?.activities.length > 0 &&
-                  !editTransaction
-                "
-                class="mid-text"
-              >
-                <span class="small-text accent-color">business activity: </span>
-                <br />
-                {{ singleTransaction?.establishment?.activities?.join(", ") }}
+            <p class="mid-text">
+              <!-- v-if="
+                singleTransaction?.establishment?.activities &&
+                singleTransaction?.establishment?.activities.length > 0 &&
+                !editTransaction
+              " -->
+              <span class="small-text accent-color">business activity: </span>
+              <br />
+              <span v-if="!editTransaction">
+                {{
+                  singleTransaction?.establishment?.activities
+                    ?.join(", ")
+                    ?.trim() || "-"
+                }}
+              </span>
+            </p>
+            <Multiselect
+              :disabled="editFormSubmitted"
+              :searchable="true"
+              v-if="
+                editTransaction &&
+                editedTransaction.recipientName.length === 1 &&
+                editedTransaction.isEstablishment
+              "
+              placeholder="Establishment's activites"
+              v-model="editedTransaction.establishmentActivities"
+              :options="allActivities"
+              mode="tags"
+              :createTag="true"
+              @tag="addActivity"
+            />
+
+            <p class="mid-text">
+              <span class="small-text accent-color">expense category: </span>
+              <br />
+              {{ singleTransaction?.expenseCategory || "-" }}
+            </p>
+
+            <p class="mid-text" style="overflow-wrap: break-word">
+              <span class="small-text accent-color">narration: </span> <br />
+              {{ singleTransaction?.narration }}
+            </p>
+
+            <div v-if="childTransactions?.length">
+              <p class="mid-text">
+                <span class="small-text accent-color">sub transactions: </span>
               </p>
-              <Multiselect
+              <ul style="margin-bottom: 0.5em">
+                <li v-for="txn in childTransactions" :key="txn.id">
+                  <a href="" class="sub-transaction">
+                    {{ txn.expenseCategory }} -
+                    {{ Math.abs(txn.displayAmount) }}
+                  </a>
+                  <br />
+                </li>
+              </ul>
+            </div>
+
+            <div v-if="editTransaction" class="form-buttons">
+              <input
+                type="submit"
+                style="width: unset !important; height: unset !important"
                 :disabled="editFormSubmitted"
-                :searchable="true"
-                v-if="
-                  editTransaction &&
-                  editedTransaction.recipientName.length === 1 &&
-                  editedTransaction.isEstablishment
-                "
-                placeholder="Establishment's activites"
-                v-model="editedTransaction.establishmentActivities"
-                :options="allActivities"
-                mode="tags"
-                :createTag="true"
-                style="margin-top: 25px"
-                @tag="addActivity"
+                value="SUBMIT"
               />
-
-              <p class="mid-text" v-show="!editTransaction">
-                <span class="small-text accent-color"
-                  >transaction category:
-                </span>
-                <br />
-                {{ singleTransaction?.displayCategory }}
-              </p>
-              <Multiselect
+              <input
+                type="submit"
+                class="cancel-button"
+                style="width: unset !important; height: unset !important"
                 :disabled="editFormSubmitted"
+                @click.stop="disableEditTransaction"
+                value="CANCEL"
+              />
+            </div>
+          </form>
+        </div>
+      </div>
+      <div id="split-transaction" v-else>
+        <div
+          id="split-header"
+          style="
+            padding: 0 1em 0.5em;
+            margin-bottom: 1.5em;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+          "
+        >
+          <h3>Split transaction</h3>
+          <p>
+            Total Amount:
+            <span style="">&#8358;</span>
+            <span>
+              {{ Math.abs(singleTransaction?.amount).toLocaleString() }}
+            </span>
+          </p>
+        </div>
+        <p class="small-text">
+          The total of each split amount should be equal to the total of the
+          initial transaction. Adjust the amount already entered or use the
+          button below to add a new split.
+        </p>
+        <form
+          action="#"
+          id="transaction-split-form"
+          @submit.prevent="saveSplitTransactions"
+        >
+          <div
+            class="split-item-container"
+            v-for="(item, index) in splitTransactionData"
+            :key="item.id"
+            @click.stop="tryDeleteSplit"
+            :id="index"
+            :style="{
+              borderBottom:
+                index === splitTransactionData.length - 1
+                  ? 'none'
+                  : '1px solid #ddd',
+            }"
+          >
+            <div class="split-item">
+              <p class="mid-text" style="margin-top: 0.5em">category</p>
+              <Multiselect
+                placeholder="Select an expense category"
+                v-model="item.expenseCategory"
                 :searchable="true"
-                v-if="editTransaction"
-                placeholder="Transaction category"
-                v-model="editedTransaction.displayCategory"
                 :options="[
-                  'MISC',
-                  'ATM WITHDRAWAL',
-                  'BANK CHARGES',
-                  'POS PURCHASE',
-                  'WEB PURCHASE',
-                  'AIRTIME',
-                  'MOBILE DATA',
-                  'TRANSFER',
+                  { id: 1, label: 'Rent', value: 'Rent' },
+                  { id: 2, label: 'Transport', value: 'Transport' },
+                  { id: 3, label: 'Groceries', value: 'Groceries' },
+                  { id: 4, label: 'Eating Out', value: 'EatingOut' },
+                  { id: 5, label: 'Airtime', value: 'Airtime' },
+                  { id: 6, label: 'Utility', value: 'Utility' },
+                  { id: 7, label: 'Health', value: 'Health' },
+                  { id: 8, label: 'Personal Care', value: 'PersonalCare' },
+                  { id: 9, label: 'Fashion', value: 'Fashion' },
+                  { id: 10, label: 'Leisure', value: 'Leisure' },
+                  { id: 11, label: 'Debt Repayment', value: 'DebtRepayment' },
+                  { id: 12, label: 'Loans', value: 'Loans' },
+                  {
+                    id: 13,
+                    label: 'Personal Development',
+                    value: 'PersonalDevelopment',
+                  },
+                  {
+                    id: 14,
+                    label: 'Savings & Investments',
+                    value: 'SavingsAndInvestments',
+                  },
+                  {
+                    id: 15,
+                    label: 'Charity & Gifts',
+                    value: 'CharityAndGifts',
+                  },
+                  { id: 16, label: 'Vacation', value: 'Vacation' },
+                  { id: 17, label: 'Vehicle Expense', value: 'VehicleExpense' },
+                  { id: 18, label: 'House Expense', value: 'HouseExpense' },
+                  { id: 19, label: 'Child Care', value: 'ChildCare' },
+                  { id: 20, label: 'Others', value: 'Others' },
                 ]"
                 noResultsText="No result found"
-                style="margin-top: 35px"
               />
 
-              <div v-if="editTransaction" id="edit-form-buttons">
-                <button
-                  type="submit"
-                  style="background-color: #55bb55"
-                  :disabled="editFormSubmitted"
-                >
-                  SUBMIT
-                </button>
-                <button
-                  type="reset"
-                  style="background-color: red"
-                  :disabled="editFormSubmitted"
-                  @click="disableEditTransaction"
-                >
-                  CANCEL
-                </button>
-              </div>
-            </form>
+              <p>amount</p>
+              <input
+                type="number"
+                style="height: 2.5em; padding: 0.5em 1em; color: black"
+                min="0"
+                v-model="item.amount"
+              />
+              <!-- :style="{
+                  borderColor:
+                    (item?.amount || 0) > Math.abs(simgleTransaction.amount)
+                      ? 'red'
+                      : 'black', -->
+              <!-- }" -->
+            </div>
+            <span
+              class="material-icons delete-split-item"
+              style="margin-top: 2em; color: red"
+            >
+              delete
+            </span>
           </div>
-        </div>
+
+          <button
+            style="
+              font-size: 0.9em;
+              background-color: transparent;
+              border: none;
+              display: block;
+              text-align: center;
+              padding: 1em;
+              width: 100%;
+              cursor: pointer;
+              margin-top: 1em;
+              color: #007cff;
+              padding-bottom: 0;
+            "
+            @click="incrementSplitCount"
+          >
+            <span>+ Add New Split</span>
+          </button>
+          <br />
+          <span
+            v-if="splitTransactionTotal > Math.abs(singleTransaction.amount)"
+            style="
+              color: red;
+              display: block;
+              text-align: center;
+              margin-bottom: 0.5em;
+            "
+          >
+            the total amount cannot be greater than the transaction amount</span
+          >
+          <!-- <div id="split-transaction-summary">
+            <p>Split total: {{ splitTransactionTotal }}</p>
+            <p>
+              Amount left:
+              {{ Math.abs(singleTransaction.amount) - splitTransactionTotal }}
+            </p>
+          </div> -->
+          <div class="form-buttons">
+            <input
+              type="submit"
+              style="width: unset !important; height: unset !important"
+              :disabled="!(enableSplitSubmit && allowSplitSubmitCancel)"
+              value="SUBMIT"
+            />
+            <input
+              type="submit"
+              class="cancel-button"
+              style="width: unset !important; height: unset !important"
+              :disabled="!allowSplitSubmitCancel"
+              @click.stop="disableEditTransaction"
+              value="CANCEL"
+            />
+          </div>
+        </form>
+      </div>
+
+      <div class="form-buttons" v-if="!editTransaction && !splitTransaction">
+        <input
+          type="submit"
+          @click.stop="enableEditTransaction"
+          v-if="
+            !['Bank Charge', 'Inflow'].includes(
+              singleTransaction?.displayCategory
+            )
+          "
+          value="Edit Transaction"
+        />
+        <input
+          type="submit"
+          @click.stop="enableSplitTransaction"
+          v-if="
+            !['Bank Charge', 'Inflow'].includes(
+              singleTransaction?.displayCategory
+            ) && !singleTransaction?.parentId
+          "
+          class="cancel-button"
+          value="Split Transaction"
+        />
       </div>
     </div>
   </div>
@@ -198,27 +410,31 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import Multiselect from "@vueform/multiselect";
-import { TransactionInfo } from "@/types";
 import { mapGetters } from "vuex";
 import { notify } from "@kyvg/vue3-notification";
+import { SplitTransaction, Transaction } from "@/types";
 
 @Options({
   created() {
     this.$store.dispatch("getEstablishments");
   },
-  mounted() {
-    this.modalMethods();
-  },
   props: {
     singleTransaction: Object,
     closeFunction: Function,
+    parentTransaction: Object,
+    childTransactions: Object,
   },
   data() {
     return {
       editTransaction: false,
-      isBusinessEstablishment: undefined,
-      editFormSubmitted: undefined,
-      editedTransaction: undefined,
+      isBusinessEstablishment: null,
+      editFormSubmitted: null,
+      editedTransaction: null,
+      transactionId: null,
+      expenseCategory: null,
+      splitTransactionData: null,
+      splitTransaction: false,
+      allowSplitSubmitCancel: true,
     };
   },
   components: {
@@ -239,8 +455,44 @@ import { notify } from "@kyvg/vue3-notification";
         ),
       ];
     },
+    splitTransactionTotal() {
+      return this.splitTransactionData?.reduce(
+        (acc: number, curr: { amount: string }) => {
+          return acc + parseFloat(curr?.amount || "0");
+        },
+        0
+      );
+    },
+    enableSplitSubmit() {
+      return (
+        this.splitTransactionData.every(
+          (x: SplitTransaction) => x.expenseCategory && x.amount
+        ) &&
+        this.splitTransactionTotal <= Math.abs(this.singleTransaction.amount)
+      );
+    },
   },
   methods: {
+    enableSplitTransaction() {
+      this.splitTransaction = true;
+    },
+    tryDeleteSplit(e: Event) {
+      if (
+        ((e.target as any).className as string).includes("delete-split-item")
+      ) {
+        this.splitTransactionData.splice((e.currentTarget as any).id, 1);
+      }
+    },
+    incrementSplitCount(e: Event) {
+      this.splitTransactionData.push({
+        expenseCategory: "",
+        amount: null,
+        id: "",
+      });
+
+      e.stopPropagation();
+      e.preventDefault();
+    },
     enableEditTransaction() {
       if (!this.singleTransaction) return;
 
@@ -260,8 +512,9 @@ import { notify } from "@kyvg/vue3-notification";
           this.singleTransaction?.establishment?.activities || [],
       };
       this.editFormSubmitted = false;
+      this.transactionId = this.singleTransaction.id;
     },
-    disableEditTransaction() {
+    disableEditTransaction(e: Event) {
       this.editTransaction = false;
       this.isBusinessEstablishment = false;
       this.editedTransaction = {
@@ -272,41 +525,19 @@ import { notify } from "@kyvg/vue3-notification";
         isEstablishment: false,
       };
       this.editFormSubmitted = false;
+      this.transactionId = null;
+      this.splitTransaction = false;
+
+      if (e) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
     },
     addActivity(activity: string) {
       this.$store.commit("insertActivity", activity);
     },
     addEstablishment(establishment: string) {
       this.$store.commit("insertEstablishment", establishment);
-    },
-    modalMethods() {
-      const closeModal = this.close;
-      const singleTransactionCloseModal = document.getElementById(
-        "single-transaction-close-modal"
-      );
-      const singleTransactionModal = document.getElementById(
-        "single-transaction-modal"
-      );
-      if (!(singleTransactionCloseModal && singleTransactionModal)) {
-        return;
-      }
-
-      singleTransactionCloseModal.onclick = function () {
-        closeModal();
-      };
-
-      window.onclick = function (event: MouseEvent) {
-        if (event.target == singleTransactionModal) {
-          closeModal();
-        }
-      };
-    },
-    close() {
-      const modal = document.getElementById("single-transaction-close-modal");
-      if (modal) {
-        this.closeFunction();
-        this.disableEditTransaction();
-      }
     },
     changedEstablishment(val: string[]) {
       let activities = [];
@@ -317,17 +548,15 @@ import { notify } from "@kyvg/vue3-notification";
       this.editedTransaction.isEstablishment = activities.length > 0;
     },
     saveEditedTransaction() {
-      const txn = this.transactions.find(
-        (x: TransactionInfo) => x.id === this.editedTransaction.id
-      );
-      if (txn) {
+      if (this.singleTransaction) {
         this.editFormSubmitted = true;
 
-        const updatedTransaction = { ...txn };
+        const updatedTransaction = { ...this.singleTransaction };
         updatedTransaction.displayCategory = this.editedTransaction.displayCategory;
         updatedTransaction.recipient = this.editedTransaction.recipientName[0];
         if (this.editedTransaction.isEstablishment) {
-          updatedTransaction.establishment = txn.establishment || {};
+          updatedTransaction.establishment =
+            this.singleTransaction.establishment || {};
           updatedTransaction.establishment.activities = this.editedTransaction.establishmentActivities;
           updatedTransaction.establishment.name = this.editedTransaction.recipientName[0];
         } else {
@@ -343,19 +572,12 @@ import { notify } from "@kyvg/vue3-notification";
           updatedTransaction,
           callback: (success: boolean) => {
             if (success) {
-              this.singleTransaction = updatedTransaction;
-              this.modalTransactions.transactions.splice(
-                this.modalTransactions.transactions.findIndex(
-                  (x: TransactionInfo) => x.id == updatedTransaction.id
-                ),
-                1,
-                updatedTransaction
-              );
               this.disableEditTransaction();
               notify({
                 text: "Transaction update was successful",
                 type: "success",
               });
+              this.closeFunction();
             } else {
               this.editFormSubmitted = false;
               notify({
@@ -367,31 +589,186 @@ import { notify } from "@kyvg/vue3-notification";
         });
       }
     },
+    saveSplitTransactions() {
+      if (
+        this.splitTransactionTotal > Math.abs(this.singleTransaction.amount)
+      ) {
+        notify({
+          text:
+            "Split transaction total cannot be greater than the original transaction amount",
+          type: "error",
+        });
+      } else if (
+        this.splitTransactionData.some(
+          (x: SplitTransaction) => !x.expenseCategory
+        )
+      ) {
+        notify({
+          text: "Split transaction cannot have empty expense category",
+          type: "error",
+        });
+      } else {
+        this.allowSplitSubmitCancel = false;
+        this.$store.dispatch("saveSplitTransactions", {
+          transactionId: this.singleTransaction.id,
+          params: this.splitTransactionData,
+          callback: (success: boolean) => {
+            if (success) {
+              this.disableEditTransaction();
+              notify({
+                text: "Transaction split was successful",
+                type: "success",
+              });
+              this.closeFunction();
+            } else {
+              this.allowSplitSubmitCancel = true;
+              notify({
+                text: "Transaction split failed, please retry",
+                type: "error",
+              });
+            }
+          },
+        });
+      }
+    },
+  },
+  watch: {
+    singleTransaction(newVal: Transaction, oldVal: Transaction) {
+      console.log(newVal);
+      if (newVal && newVal?.id !== oldVal?.id) {
+        this.disableEditTransaction();
+      }
+    },
+    childTransactions(newVal: Transaction[]) {
+      this.splitTransactionData = newVal?.length
+        ? this.childTransactions.map((x: Transaction) => {
+            return {
+              expenseCategory: x.expenseCategory,
+              amount: Math.abs(x.displayAmount || 0),
+              id: x.id,
+            };
+          })
+        : [{ expenseCategory: "", amount: null, id: "" }];
+    },
+    // parentTransaction(newVal: Transaction[]) {
+    // },
   },
 })
 export default class SingleTransaction extends Vue {}
 </script>
 
+<style src="@vueform/multiselect/themes/default.css"></style>
 <style scoped>
-#bank-logo {
-  width: 70px;
+#split-transaction-summary {
+  text-align: center;
 }
-#edit-form-buttons {
-  margin-top: 40px;
+#single-transaction {
+  width: 33%;
+  margin: 1% 1% 0px;
+  height: 94vh;
+  padding: 1em;
+  overflow: scroll;
+}
+#single-transaction #no-transaction {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 94%;
+}
+#no-transaction p {
+  margin: 1em 0 0;
+}
+#transaction-detail {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 94%;
+  padding: 1em 1em 3em;
+}
+#transaction-detail form {
+  margin-top: 2em;
+}
+.form-buttons {
+  margin-top: 2em;
+  display: flex;
+  justify-content: space-around;
+}
+input[type="submit"] {
+  font-weight: 800;
+  border: 1px solid #007cff;
+}
+p span:first-child {
+  font-weight: 700;
+}
+form input {
+  height: 1.5em;
+}
+.cancel-button {
+  color: #007cff;
+  background-color: white;
+}
+#close {
+  display: none;
+  cursor: pointer;
+}
+.split-item-container {
   display: flex;
   justify-content: space-between;
+  margin-bottom: 1em;
+  padding-bottom: 1em;
 }
-.modal {
-  display: unset;
+#transaction-split-form .split-item-container:last-of-type {
+  border-bottom: none;
 }
-button {
-  margin-top: 40px;
+.split-item {
+  width: 85%;
 }
-
-@media screen and (max-width: 700px) {
-  #edit-form-buttons {
-    display: unset;
+.split-item input {
+  width: 100%;
+}
+.split-item p {
+  margin-top: 0.5em;
+}
+#transaction-split-form .split-item-container:first-of-type .delete-split-item {
+  display: none;
+}
+.delete-split-item {
+  cursor: pointer;
+}
+@media screen and (max-width: 991px) {
+  .form-buttons {
+    display: flex;
     margin-top: unset;
+  }
+
+  #single-transaction {
+    width: 90%;
+    position: absolute;
+    z-index: -1000;
+    top: 7%;
+    background: white;
+    margin: 0 5%;
+    height: 84vh;
+    padding: 0 1em;
+  }
+  #close {
+    display: block;
+    text-align: end;
+    padding: 0.5em 1em 0em;
+  }
+  #transaction-detail {
+    padding: 0.5em;
+  }
+  #transaction-detail form {
+    margin-top: 1em;
+  }
+  form p {
+    margin-top: 1em;
+    padding-top: 0;
+  }
+  label input {
+    display: inline;
   }
 }
 </style>
