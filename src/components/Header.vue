@@ -1,6 +1,12 @@
 <template>
   <header id="menu" class="">
-    <h1>Hi {{ username }} !</h1>
+    <div>
+      <h1>Hi {{ username }} !</h1>
+      <p>Welcome Back!</p>
+    </div>
+    <div class="date-range bordered-container">
+      <p>Select Date Range</p>
+    </div>
     <div class="dropdown">
       <img :src="avatarUrl" alt="avatar" class="pointer header-avatar" />
       <div class="dropdown-content">

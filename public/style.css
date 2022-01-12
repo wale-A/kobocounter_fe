@@ -10,7 +10,7 @@
 }
 header {
   padding-top: 5px;
-  height: 4vh;
+  height: 6vh;
 }
 nav {
   z-index: 1000;
@@ -434,6 +434,14 @@ form p input[type="checkbox"] {
   width: 60%;
   color: #727376;
   flex-direction: column;
+}
+
+.date-range {
+  padding-top: 10px;
+  margin-right: 10px;
+  width: 220px;
+  height: 41px;
+  text-align: right;
 }
 hr {
   border-top: 0;
