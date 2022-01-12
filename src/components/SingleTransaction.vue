@@ -180,7 +180,7 @@
 
             <p class="mid-text" style="overflow-wrap: break-word">
               <span class="small-text accent-color">narration: </span> <br />
-              {{ singleTransaction?.narration }}
+              {{ singleTransaction?.narration || "-" }}
             </p>
 
             <div v-if="childTransactions?.length">
@@ -189,9 +189,36 @@
               </p>
               <ul style="margin-bottom: 0.5em">
                 <li v-for="txn in childTransactions" :key="txn.id">
-                  <a href="" class="sub-transaction">
-                    {{ txn.expenseCategory }} -
-                    {{ Math.abs(txn.displayAmount) }}
+                  <a
+                    href="#"
+                    class="sub-transaction"
+                    @click.stop="() => selectTransaction(txn.id)"
+                  >
+                    {{ txn.expenseCategory }} - &#8358;{{
+                      Math.abs(txn.displayAmount)
+                    }}
+                  </a>
+                  <br />
+                </li>
+              </ul>
+            </div>
+
+            <div v-if="parentTransaction">
+              <p class="mid-text">
+                <span class="small-text accent-color"
+                  >parent transaction:
+                </span>
+              </p>
+              <ul style="margin-bottom: 0.5em">
+                <li>
+                  <a
+                    href="#"
+                    class="sub-transaction"
+                    @click.stop="() => selectTransaction(parentTransaction.id)"
+                  >
+                    {{ parentTransaction.displayCategory }} - &#8358;{{
+                      Math.abs(parentTransaction.amount)
+                    }}
                   </a>
                   <br />
                 </li>
@@ -423,6 +450,7 @@ import { SplitTransaction, Transaction } from "@/types";
     closeFunction: Function,
     parentTransaction: Object,
     childTransactions: Object,
+    selectTransaction: Function,
   },
   data() {
     return {
@@ -634,7 +662,6 @@ import { SplitTransaction, Transaction } from "@/types";
   },
   watch: {
     singleTransaction(newVal: Transaction, oldVal: Transaction) {
-      console.log(newVal);
       if (newVal && newVal?.id !== oldVal?.id) {
         this.disableEditTransaction();
       }
@@ -651,6 +678,7 @@ import { SplitTransaction, Transaction } from "@/types";
         : [{ expenseCategory: "", amount: null, id: "" }];
     },
     // parentTransaction(newVal: Transaction[]) {
+    //   console.log("parent transaction....", newVal);
     // },
   },
 })
@@ -735,6 +763,9 @@ form input {
 }
 .delete-split-item {
   cursor: pointer;
+}
+ul {
+  list-style-type: disclosure-closed;
 }
 @media screen and (max-width: 991px) {
   .form-buttons {

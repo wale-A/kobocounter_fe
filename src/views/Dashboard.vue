@@ -144,7 +144,7 @@
               <div class="transaction-expense-categories-item-info">
                 <p class="category bold-text">{{ category }}</p>
                 <p class="amount">
-                  N{{
+                  {{
                     parseFloat(
                       (Math.random() * 100 * 1000).toFixed(2)
                     ).toLocaleString()

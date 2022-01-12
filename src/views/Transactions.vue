@@ -9,6 +9,7 @@
           :closeFunction="outsideClickHandler"
           :childTransactions="childTransactions"
           :parentTransaction="parentTransaction"
+          :selectTransaction="selectTransaction"
         />
         <div class="all-transactions bordered-container">
           <p class="bold-text">All Transactions</p>
@@ -25,6 +26,7 @@
                     v-for="txn in groupedTransactions[date]"
                     :key="txn.id"
                     :data-transactionId="txn.id"
+                    :id="txn.id"
                     @click.stop="transactionClickHandler"
                     class="txn"
                   >
@@ -123,6 +125,11 @@ import SingleTransaction from "@/components/SingleTransaction.vue";
     transactionClickHandler(e: Event) {
       this.removeClassSelector("selected-transaction");
       const transactionId = (e.currentTarget as any).dataset.transactionid;
+      this.selectTransaction(transactionId);
+    },
+    selectTransaction(transactionId: string) {
+      this.removeClassSelector("selected-transaction");
+
       this.singleTransaction = this.transactions.find(
         (x: Transaction) => x.id === transactionId
       );
@@ -133,14 +140,18 @@ import SingleTransaction from "@/components/SingleTransaction.vue";
         (x: Transaction) => x.id === this.singleTransaction?.parentId
       );
 
-      (e.currentTarget as any).className += " selected-transaction";
-
+      const transactionRowElement = document.getElementById(transactionId);
+      if (transactionRowElement) {
+        transactionRowElement.className += " selected-transaction";
+      }
       const div = document.getElementById("single-transaction");
       if (div) {
         div.style.zIndex = "5";
       }
       const container = document.getElementsByClassName("all-transactions")[0];
-      (container as any).style.zIndex = "1";
+      if (container) {
+        (container as any).style.zIndex = "1";
+      }
     },
     outsideClickHandler(e: Event) {
       this.singleTransaction = null;
