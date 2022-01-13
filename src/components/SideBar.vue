@@ -105,9 +105,16 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { deleteSubscription } from "@/_helpers/pushNotification";
 @Options({
   props: {
     section: String,
+  },
+  methods: {
+    logoutUser() {
+      deleteSubscription();
+      this.$store.commit("logoutUser");
+    },
   },
 })
 export default class SideBar extends Vue {}

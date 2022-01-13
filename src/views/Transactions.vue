@@ -110,7 +110,7 @@ import SingleTransaction from "@/components/SingleTransaction.vue";
     ...mapGetters(["accounts", "transactions"]),
     groupedTransactions: function () {
       const sortedTransactions = this.transactions?.sort(
-        (x: Transaction, y: Transaction) => x.date - y.date
+        (x: Transaction, y: Transaction) => y.date - x.date
       );
       const group: Record<string, Transaction[]> = {};
       for (let i = 0; i < sortedTransactions?.length || 0; i++) {
