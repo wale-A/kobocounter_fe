@@ -10,6 +10,11 @@ import Notifications from "@kyvg/vue3-notification";
 import * as am4core from "@amcharts/amcharts4/core";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import am4themes_kelly from "@amcharts/amcharts4/themes/kelly";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+
+library.add(faCaretDown);
 
 createApp(App)
   .use(router)
@@ -19,6 +24,7 @@ createApp(App)
   })
   .use(VueChartkick as any)
   .use(Notifications)
+  .component("font-awesome-icon", FontAwesomeIcon)
   .mount("#app");
 
 am4core.options.autoDispose = true;

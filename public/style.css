@@ -434,13 +434,18 @@ form p input[type="checkbox"] {
   color: #727376;
   flex-direction: column;
 }
-
+.overflow-hidden {
+  overflow: hidden;
+}
 .date-range {
-  padding-top: 10px;
+  padding: 10px 10px;
   margin-right: 10px;
   width: 220px;
   height: 41px;
+  font-size: 15px;
   text-align: right;
+  background-color: #fff;
+  border: 1px solid #fff;
 }
 hr {
   border-top: 0;

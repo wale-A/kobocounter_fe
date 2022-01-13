@@ -4,10 +4,13 @@
       <h1>Hi {{ username }} !</h1>
       <p>Welcome Back!</p>
     </div>
-    <div class="date-range bordered-container">
-      <p>Select Date Range</p>
+    <div class="" @click="handleClick">
+      <datepicker class="date-range bordered-container" v-model="picked" />
     </div>
     <div class="dropdown">
+      <!-- <div class="date-range bordered-container">
+        <select name="" id=""></select>
+      </div> -->
       <img :src="avatarUrl" alt="avatar" class="pointer header-avatar" />
       <div class="dropdown-content">
         <span style="height: 5px; display: block">&nbsp;</span>
@@ -79,6 +82,9 @@
 <script lang="ts">
 import { mapGetters } from "vuex";
 import { Options, Vue } from "vue-class-component";
+import Datepicker from "vue3-datepicker";
+import Multiselect from "@vueform/multiselect";
+import { ref } from "vue";
 import { deleteSubscription } from "@/_helpers/pushNotification";
 
 @Options({
@@ -88,7 +94,12 @@ import { deleteSubscription } from "@/_helpers/pushNotification";
   data() {
     return {
       showMenu: this.displayMenu || false,
+      picked: ref(new Date()),
     };
+  },
+  components: {
+    Datepicker,
+    Multiselect,
   },
   methods: {
     logoutUser() {
