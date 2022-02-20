@@ -404,7 +404,11 @@ export const store = createStore({
         callback,
       }: {
         transactionId: string;
-        params: string;
+        params: {
+          expenseCategory: string;
+          amount: number;
+          id: string;
+        };
         callback: (success: boolean) => void;
       }
     ) {
