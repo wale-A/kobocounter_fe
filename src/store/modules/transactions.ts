@@ -13,10 +13,10 @@ const transactions: Module<State, any> = {
     transactionCategories: undefined,
   }),
   mutations: {
-    setTransactions(state, transactions?: TransactionInfo[]) {
+    setTransactions(state, transactions: TransactionInfo[]) {
       state.transactions = transactions;
     },
-    setTransactionCategories(state, categories?: TransactionCategories[]) {
+    setTransactionCategories(state, categories: TransactionCategories[]) {
       state.transactionCategories = categories;
     },
     updateTransaction(state, updatedTransaction: TransactionInfo) {
@@ -30,13 +30,10 @@ const transactions: Module<State, any> = {
     },
   },
   actions: {
-    async getTransactions(
-      { commit, rootState },
-      { accountId, start, end }: FilterParams
-    ) {
+    async getTransactions({ commit }, { accountId, start, end }: FilterParams) {
       try {
         // TODO move auth check to router
-        if (!rootState.user) throw "";
+        // if (!rootState?.auth?.user) throw "";
         const res = await api.getTransactions({ accountId, start, end });
         commit("setTransactions", res.data as TransactionInfo[]);
       } catch (e) {

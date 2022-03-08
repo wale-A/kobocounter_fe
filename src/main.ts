@@ -3,7 +3,7 @@ import App from "./App.vue";
 import "./registerServiceWorker";
 import router from "./router";
 import MonoJS from "vue-mono";
-import { store } from "./store";
+import store from "./store/index";
 import VueChartkick from "vue-chartkick";
 import "chartkick/chart.js";
 import Notifications from "@kyvg/vue3-notification";

@@ -77,7 +77,7 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import Header from "@/components/Header.vue";
 import SideBar from "@/components/SideBar.vue";
 import AddNewAccount from "@/components/AddNewAccount.vue";
@@ -87,7 +87,7 @@ import SingleTransaction from "@/components/SingleTransaction.vue";
 
 @Options({
   created() {
-    this.$store.dispatch("getTransactions", {
+    this.getTransactions({
       accountId: undefined,
       start: undefined,
       end: undefined,
@@ -109,7 +109,7 @@ import SingleTransaction from "@/components/SingleTransaction.vue";
   computed: {
     ...mapGetters(["accounts", "transactions"]),
     groupedTransactions: function () {
-      const sortedTransactions = this.transactions?.sort(
+      const sortedTransactions = [...(this.transactions ?? [])].sort(
         (x: Transaction, y: Transaction) => y.date - x.date
       );
       const group: Record<string, Transaction[]> = {};
@@ -122,6 +122,7 @@ import SingleTransaction from "@/components/SingleTransaction.vue";
     },
   },
   methods: {
+    ...mapActions(["getTransactions"]),
     transactionClickHandler(e: Event) {
       this.removeClassSelector("selected-transaction");
       const transactionId = (e.currentTarget as any).dataset.transactionid;

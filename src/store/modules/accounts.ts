@@ -21,10 +21,10 @@ const accounts: Module<State, any> = {
     },
   },
   actions: {
-    async addAccount({ rootState, commit }, { code }: { code: string }) {
+    async addAccount({ commit }, { code }: { code: string }) {
       try {
         // TODO move auth check to router
-        if (!rootState.user) throw "";
+        // if (!rootState?.auth?.user) throw "";
 
         // TODO check response code
         await api.addAccount(code);
@@ -34,10 +34,10 @@ const accounts: Module<State, any> = {
         commit("setAccountCreateStatus", false);
       }
     },
-    async getAccounts({ commit, rootState }) {
+    async getAccounts({ commit }) {
       try {
         // TODO move auth check to router
-        if (!rootState.user) throw "";
+        // if (!rootState?.auth?.user) throw "";
 
         const res = await api.getAccounts();
         commit("setAccounts", res.data as Account[]);

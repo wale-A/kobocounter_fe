@@ -1,7 +1,15 @@
 import axios from "axios";
 import { store } from "@/store";
 
-axios.interceptors.response.use(undefined, (error) => {
+export const instance = axios.create({
+  baseURL: process.env.VUE_APP_API_URL,
+  timeout: 30000,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+instance.interceptors.response.use(undefined, (error) => {
   const { response } = error;
 
   if (response) {
@@ -15,7 +23,7 @@ axios.interceptors.response.use(undefined, (error) => {
   }
 });
 
-axios.interceptors.request.use((request) => {
+instance.interceptors.request.use((request) => {
   if (store.state.user?.token?.token) {
     request.headers.common.Authorization = `Bearer ${store.state.user?.token?.token}`;
   }
@@ -23,4 +31,4 @@ axios.interceptors.request.use((request) => {
   return request;
 });
 
-export default axios;
+export default instance;

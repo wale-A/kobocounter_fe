@@ -1,59 +1,68 @@
 import axios from "@/util/axios";
 import { LoginPayload, RegisterPayload, FilterParams } from "@/types";
+import { AxiosResponse } from "axios";
 
-const API_URL = process.env.VUE_APP_API_URL;
+const login = (payload: LoginPayload): Promise<AxiosResponse> =>
+  axios.post(`/users/login`, payload);
 
-const login = (payload: LoginPayload) =>
-  axios.post(`${API_URL}/users/login`, payload);
+const register = (payload: RegisterPayload): Promise<AxiosResponse> =>
+  axios.post(`/users`, payload);
 
-const register = (payload: RegisterPayload) =>
-  axios.post(`${API_URL}/users`, payload);
+const getAccounts = (): Promise<AxiosResponse> =>
+  axios.get(`/banking/accounts`);
 
-const getAccounts = () => axios.get(`${API_URL}/banking/accounts`);
+const addAccount = (code: string): Promise<AxiosResponse> =>
+  axios.post(`/banking/accounts`, { code });
 
-const addAccount = (code: string) =>
-  axios.post(`${API_URL}/banking/accounts`, { code });
+const reAuthAccount = (id: string): Promise<AxiosResponse> =>
+  axios.post(`/banking/account/${id}/reauthorize`);
 
-const reAuthAccount = (id: string) =>
-  axios.post(`${API_URL}/banking/account/${id}/reauthorize`);
+const deleteAccount = (id: string): Promise<AxiosResponse> =>
+  axios.delete(`/banking/account/${id}`);
 
-const deleteAccount = (id: string) =>
-  axios.delete(`${API_URL}/banking/account/${id}`);
+const getTransactions = (params: FilterParams): Promise<AxiosResponse> =>
+  axios.get(`/banking/accounts/transactions`, { params });
 
-const getTransactions = (params: FilterParams) =>
-  axios.get(`${API_URL}/banking/accounts/transactions`, { params });
+const updateTransaction = (
+  id: string,
+  params: string
+): Promise<AxiosResponse> => axios.put(`/banking/transactions/${id}`, params);
 
-const updateTransaction = (id: string, params: string) =>
-  axios.put(`${API_URL}/banking/transactions/${id}`, params);
+const splitTransctions = (id: string, params: string): Promise<AxiosResponse> =>
+  axios.post(`/banking/transactions/${id}/split`, params);
 
-const splitTransctions = (id: string, params: string) =>
-  axios.post(`${API_URL}/banking/transactions/${id}/split`, params);
+const getTransactionCategories = (
+  params: FilterParams
+): Promise<AxiosResponse> =>
+  axios.get(`/banking/accounts/transactions/categories`, { params });
 
-const getTransactionCategories = (params: FilterParams) =>
-  axios.get(`${API_URL}/banking/accounts/transactions/categories`, { params });
+const getEstablishments = (): Promise<AxiosResponse> =>
+  axios.get(`/banking/establishments`);
 
-const getEstablishments = () => axios.get(`${API_URL}/banking/establishments`);
+const getEstablishmentActivities = (
+  params: FilterParams
+): Promise<AxiosResponse> =>
+  axios.get(`/banking/establishmentActivities`, { params });
 
-const getEstablishmentActivities = (params: FilterParams) =>
-  axios.get(`${API_URL}/banking/establishmentActivities`, { params });
+const getExpenses = (params: FilterParams): Promise<AxiosResponse> =>
+  axios.get(`/banking/expense`, { params });
 
-const getExpenses = (params: FilterParams) =>
-  axios.get(`${API_URL}/banking/expense`, { params });
+const getRecurringExpenses = (
+  params?: Record<string, string | undefined>
+): Promise<AxiosResponse> =>
+  axios.get(`/banking/accounts/recurrentExpenses`, { params });
 
-const getRecurringExpenses = (params?: Record<string, string | undefined>) =>
-  axios.get(`${API_URL}/banking/accounts/recurrentExpenses`, { params });
+const getNetIncome = (params: FilterParams): Promise<AxiosResponse> =>
+  axios.get(`/banking/accounts/netincome`, { params });
 
-const getNetIncome = (params: FilterParams) =>
-  axios.get(`${API_URL}/banking/accounts/netincome`, { params });
+const getRevenue = (params: FilterParams): Promise<AxiosResponse> =>
+  axios.get(`/banking/revenue`, { params });
 
-const getRevenue = (params: FilterParams) =>
-  axios.get(`${API_URL}/banking/revenue`, { params });
+const subscribe = (body: Record<string, string>): Promise<AxiosResponse> =>
+  axios.post(`/users/subscription`, body);
 
-const subscribe = (body: Record<string, string>) =>
-  axios.post(`${API_URL}/users/subscription`, body);
-
-const unsubscribe = (data: Record<string, string>) =>
-  axios.delete(`${API_URL}/users/subscription`, { data });
+const unsubscribe = (data: Record<string, string>): Promise<AxiosResponse> =>
+  axios.delete(`/users/subscription`, { data });
 
 export default {
   login,
