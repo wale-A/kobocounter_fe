@@ -75,6 +75,7 @@ import Header from "@/components/Header.vue";
 import Password from "@/components/Password.vue";
 import { notify } from "@kyvg/vue3-notification";
 import router from "@/router";
+import { mapActions } from "vuex";
 
 @Options({
   components: {
@@ -88,12 +89,13 @@ import router from "@/router";
     };
   },
   methods: {
+    ...mapActions(["loginUser"]),
     async loginUser() {
       const loginButton = document.getElementById("login-button") as any;
       const nextUrl = this.$route.params.nextUrl;
       loginButton.disabled = true;
 
-      this.$store.dispatch("loginUser", {
+      this.loginUser({
         email: this.email,
         password: this.password,
         callback: (e: Error, val: boolean, message?: string) => {

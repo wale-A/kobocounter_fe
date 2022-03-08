@@ -211,6 +211,7 @@ import { subscribeUser } from "@/_helpers/pushNotification";
 import { notify } from "@kyvg/vue3-notification";
 import Header from "@/components/Header.vue";
 import SideBar from "@/components/SideBar.vue";
+import { mapActions } from "vuex";
 
 @Options({
   created() {
@@ -288,6 +289,16 @@ import SideBar from "@/components/SideBar.vue";
     GuageChart,
   },
   methods: {
+    ...mapActions([
+      "getAccounts",
+      "getTransactions",
+      "getNetIncome",
+      "getExpense",
+      "getRevenue",
+      "getTransactionCategories",
+      "getRecurringExpenses",
+      "getEstablishmentActivities",
+    ]),
     scrollPage() {
       window.addEventListener("scroll", function () {
         const header = document.querySelector("header");
@@ -449,36 +460,36 @@ import SideBar from "@/components/SideBar.vue";
       const accountId = this.selectedAccounts.join(", ");
       const start = this.from ? new Date(this.from).getTime() : undefined;
       const end = this.to ? new Date(this.to).getTime() : undefined;
-      this.$store.dispatch("getAccounts");
-      this.$store.dispatch("getTransactions", {
+      this.getAccounts();
+      this.getTransactions({
         accountId,
         start,
         end,
       });
-      this.$store.dispatch("getNetIncome", {
+      this.getNetIncome({
         accountId,
         start,
         end,
       });
-      this.$store.dispatch("getExpense", {
+      this.getExpense({
         accountId,
         start,
         end,
       });
-      this.$store.dispatch("getRevenue", {
+      this.getRevenue({
         accountId,
         start,
         end,
       });
-      this.$store.dispatch("getTransactionCategories", {
+      this.getTransactionCategories({
         accountId,
         start,
         end,
       });
-      this.$store.dispatch("getRecurringExpenses", {
+      this.getRecurringExpenses({
         accountId,
       });
-      this.$store.dispatch("getEstablishmentActivities", {
+      this.getEstablishmentActivities({
         accountId,
         start,
         end,

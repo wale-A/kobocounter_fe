@@ -77,6 +77,7 @@ import Header from "@/components/Header.vue";
 import router from "@/router";
 import { notify } from "@kyvg/vue3-notification";
 import Password from "@/components/Password.vue";
+import { mapActions } from "vuex";
 
 @Options({
   components: {
@@ -92,11 +93,12 @@ import Password from "@/components/Password.vue";
     };
   },
   methods: {
+    ...mapActions(["registerUser"]),
     async registerUser() {
       const registerButton = document.getElementById("register-button") as any;
       registerButton.disabled = true;
 
-      this.$store.dispatch("registerUser", {
+      this.registerUser({
         email: this.email,
         password: this.password,
         name: this.name,

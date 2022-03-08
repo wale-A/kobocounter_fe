@@ -25,6 +25,7 @@ import Header from "@/components/Header.vue";
 import { mapGetters } from "vuex";
 import AccountItem from "@/components/AccountItem.vue";
 import AddNewAccount from "@/components/AddNewAccount.vue";
+import { mapActions } from "vuex";
 
 @Options({
   components: {
@@ -33,10 +34,13 @@ import AddNewAccount from "@/components/AddNewAccount.vue";
     AddNewAccount,
   },
   created() {
-    this.$store.dispatch("getAccounts");
+    this.getAccounts();
   },
   computed: {
     ...mapGetters(["accounts"]),
+  },
+  methods: {
+    ...mapActions(["getAccounts"]),
   },
 })
 export default class Manage extends Vue {}
