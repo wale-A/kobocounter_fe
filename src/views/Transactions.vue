@@ -1,8 +1,6 @@
 <template>
-  <main class="dashboard" @click="outsideClickHandler">
-    <SideBar :section="'transactions'" />
+  <Layout page="transactions" class="dashboard" @click="outsideClickHandler">
     <section class="dashboard-content-container">
-      <Header />
       <div class="dashboard-content">
         <SingleTransaction
           :singleTransaction="singleTransaction"
@@ -11,9 +9,7 @@
           :parentTransaction="parentTransaction"
           :selectTransaction="selectTransaction"
         />
-        <div class="all-transactions bordered-container">
-          <p class="bold-text">All Transactions</p>
-          <hr />
+        <Card title="All Transactions" class="all-transactions">
           <section id="all-transactions-container">
             <table>
               <tr v-for="date in Object.keys(groupedTransactions)" :key="date">
@@ -68,18 +64,18 @@
               </tr>
             </table>
           </section>
-        </div>
+        </Card>
       </div>
     </section>
     <!-- <AddNewAccount :hasAccounts="!(accounts && accounts?.length == 0)" /> -->
-  </main>
+  </Layout>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import { mapGetters, mapActions } from "vuex";
-import Header from "@/components/Header.vue";
-import SideBar from "@/components/SideBar.vue";
+import Layout from "@/components/layout/Layout.vue";
+import Card from "@/components/layout/Card.vue";
 import AddNewAccount from "@/components/AddNewAccount.vue";
 import { sub } from "date-fns";
 import { Transaction } from "@/types";
@@ -101,8 +97,8 @@ import SingleTransaction from "@/components/SingleTransaction.vue";
     };
   },
   components: {
-    SideBar,
-    Header,
+    Layout,
+    Card,
     AddNewAccount,
     SingleTransaction,
   },

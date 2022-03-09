@@ -1,4 +1,4 @@
-import { EstablishmentActivity, FilterParams, NetIncome } from "@/types";
+import { FilterParams, NetIncome } from "@/types";
 import api from "@/api";
 import { Module } from "vuex";
 

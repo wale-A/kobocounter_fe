@@ -5,7 +5,7 @@ import Dashboard from "../views/Dashboard.vue";
 import Insights from "../views/Insights.vue";
 import PageNotFound from "../views/PageNotFound.vue";
 import Transactions from "../views/Transactions.vue";
-import { store } from "@/store";
+import store from "../store/index";
 
 const routes: Array<RouteRecordRaw> = [
   {

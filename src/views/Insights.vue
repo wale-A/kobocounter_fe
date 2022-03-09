@@ -1,13 +1,9 @@
 <template>
-  <main class="dashboard">
-    <SideBar :section="'insights'" />
+  <Layout page="insights" class="dashboard">
     <section class="dashboard-content-container">
-      <Header />
       <div class="dashboard-content">
         <!-- <div id="single-analysis"></div> -->
-        <div class="all-transactions bordered-container">
-          <p class="bold-text">Insights</p>
-          <hr />
+        <Card title="Insights" class="all-transactions">
           <section id="all-transactions-container">
             <table id="analysis-table">
               <tr class="analysis-item" v-for="i in 11" :key="i">
@@ -63,22 +59,21 @@
               </tr>
             </table>
           </section>
-        </div>
+        </Card>
       </div>
     </section>
-  </main>
+  </Layout>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import { mapGetters } from "vuex";
-import Header from "@/components/Header.vue";
-import SideBar from "@/components/SideBar.vue";
+import Layout from "@/components/layout/Layout.vue";
+import Card from "@/components/layout/Card.vue";
 
 @Options({
   components: {
-    SideBar,
-    Header,
+    Layout,
+    Card,
   },
 })
 export default class Insights extends Vue {}

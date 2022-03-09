@@ -53,7 +53,7 @@
               type="submit"
               value="Create Account"
               id="register-button"
-              :disabled="!(name && email && password && acceptPreCondition)"
+              :disabled="diisabled || !valid"
             />
             <div class="question">
               <p>
@@ -73,9 +73,7 @@
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Vue, Options } from "vue-class-component";
-import Header from "@/components/Header.vue";
-import router from "@/router";
-import { notify } from "@kyvg/vue3-notification";
+import Header from "@/components/layout/Header.vue";
 import Password from "@/components/Password.vue";
 import { mapActions } from "vuex";
 
@@ -90,44 +88,42 @@ import { mapActions } from "vuex";
       name: "",
       password: "",
       acceptPreCondition: false,
+      disabled: false,
     };
   },
+  computed: {
+    valid() {
+      return (
+        this.name && this.email && this.password && this.acceptPreCondition
+      );
+    },
+  },
   methods: {
-    ...mapActions(["registerUser"]),
+    ...mapActions(["register"]),
     async registerUser() {
-      const registerButton = document.getElementById("register-button") as any;
-      registerButton.disabled = true;
+      this.disabled = true;
 
-      this.registerUser({
+      this.register({
         email: this.email,
         password: this.password,
         name: this.name,
-        callback: (e: Error, val: boolean, message?: string) => {
-          registerButton.disabled = val;
-          if (e) {
-            return notify({
-              title: "Registration failed",
-              text: "Unable to register user",
-              type: "error",
-            });
-          }
-
-          if (val) {
-            notify({
-              title: "User successfully registered",
-              text: "Please check you mail to verify your account",
-              type: "success",
-            });
-            return router.push({ name: "Home" });
-          } else {
-            return notify({
-              title: "Registration failed",
-              text: message,
-              type: "warning",
-            });
-          }
-        },
-      });
+      })
+        .then(() => {
+          this.$notify({
+            title: "User successfully registered",
+            text: "Please check you mail to verify your account",
+            type: "success",
+          });
+          this.$router.push({ name: "Home" });
+        })
+        .catch(() => {
+          this.disabled = false;
+          this.$notify({
+            title: "Registration failed",
+            text: "Unable to register user",
+            type: "error",
+          });
+        });
     },
   },
 })

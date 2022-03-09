@@ -46,7 +46,7 @@
               type="submit"
               value="Login"
               id="login-button"
-              :disabled="!(email && password)"
+              :disabled="disabled || !valid"
             />
             <div class="question">
               <p>
@@ -71,11 +71,11 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import Header from "@/components/Header.vue";
+import Header from "@/components/layout/Header.vue";
 import Password from "@/components/Password.vue";
-import { notify } from "@kyvg/vue3-notification";
-import router from "@/router";
 import { mapActions } from "vuex";
+import { storeUser } from "@/util";
+import { User } from "@/types";
 
 @Options({
   components: {
@@ -86,42 +86,40 @@ import { mapActions } from "vuex";
     return {
       email: "",
       password: "",
+      disabled: false,
     };
   },
   methods: {
-    ...mapActions(["loginUser"]),
+    ...mapActions(["login"]),
     async loginUser() {
-      const loginButton = document.getElementById("login-button") as any;
-      const nextUrl = this.$route.params.nextUrl;
-      loginButton.disabled = true;
+      this.disabled = true;
 
-      this.loginUser({
+      this.login({
         email: this.email,
         password: this.password,
-        callback: (e: Error, val: boolean, message?: string) => {
-          loginButton.disabled = val;
-          if (e) {
-            return notify({
-              text: "Unable to login user",
-              title: "Login failed",
-              type: "error",
-            });
-          }
+      })
+        .then((user: User) => {
+          storeUser(user);
 
-          if (val) {
-            if (nextUrl) {
-              return router.push(nextUrl);
-            }
-            return router.push({ name: "Dashboard" });
-          } else {
-            return notify({
-              text: message,
-              title: "Login failed",
-              type: "warning",
-            });
+          const redirect = this.$route.params.nextUrl;
+          if (redirect) {
+            this.$router.push(redirect);
           }
-        },
-      });
+          this.$router.push({ name: "Dashboard" });
+        })
+        .catch(() => {
+          this.disabled = false;
+          this.$notify({
+            text: "Unable to login user",
+            title: "Login failed",
+            type: "error",
+          });
+        });
+    },
+  },
+  computed: {
+    valid() {
+      return this.email && this.password;
     },
   },
 })

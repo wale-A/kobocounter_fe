@@ -1,15 +1,11 @@
 <template>
-  <main class="dashboard">
-    <SideBar :section="'dashboard'" />
+  <Layout page="dashboard" class="dashboard">
     <section
       v-show="accounts && accounts?.length"
       class="dashboard-content-container"
     >
-      <Header />
       <div class="dashboard-content">
-        <div class="account-activity bordered-container">
-          <p class="bold-text">Account activity</p>
-          <hr />
+        <Card title="Account activity" class="account-activity">
           <IncomeChart
             :height="'39vh'"
             :width="'98%'"
@@ -18,18 +14,9 @@
             :expense="expense"
           />
           <!-- :netIncome="netIncome" -->
-        </div>
-        <div class="recent-categories bordered-container">
-          <div
-            class="dashboard-section-container"
-            style="
-              display: flex;
-              align-content: space-between;
-              flex-direction: row;
-              justify-content: space-between;
-            "
-          >
-            <p class="bold-text">Recent categories</p>
+        </Card>
+        <Card title="Recent categories" class="recent-categories">
+          <template #action>
             <div>
               <span
                 class="material-icons input-left-icon"
@@ -49,8 +36,7 @@
                 chevron_right
               </span>
             </div>
-          </div>
-          <hr />
+          </template>
           <WordCloudChart
             :height="'46vh'"
             :inputData="establishmentActivities"
@@ -58,7 +44,6 @@
             :fileName="'spending pattern'"
             v-show="displayChart === 'wordcloud'"
           />
-
           <DonutChart
             :height="'46vh'"
             :inputData="transactionCategories"
@@ -66,10 +51,8 @@
             :fileName="'spending_category_summary__' + from + '_to_' + to"
             v-show="displayChart === 'piechart'"
           />
-        </div>
-        <div class="account-summary bordered-container">
-          <p class="bold-text">Account summary</p>
-          <hr />
+        </Card>
+        <Card title="Account summary" class="account-summary">
           <div class="balance">
             <p>Your current balance</p>
             <p class="account-balance bold-text">N{{ accountBalance || 0 }}</p>
@@ -90,10 +73,8 @@
               </div>
             </div>
           </div>
-        </div>
-        <div class="budget-performance bordered-container">
-          <p class="bold-text">Budget Performance</p>
-          <hr />
+        </Card>
+        <Card title="Budget Performance" class="budget-performance">
           <GuageChart
             :height="'30vh'"
             :width="'100%'"
@@ -127,10 +108,8 @@
               <input type="submit" value="Create Your Budget" />
             </form>
           </section>
-        </div>
-        <div class="top-expenses bordered-container">
-          <p class="bold-text">Top 3 Expense categories</p>
-          <hr />
+        </Card>
+        <Card title="Top 3 Expense categories" class="top-expenses">
           <section class="transaction-expense-categories">
             <div
               v-for="category in [
@@ -174,11 +153,11 @@
               </div>
             </div>
           </section>
-        </div>
+        </Card>
       </div>
     </section>
     <AddNewAccount :hasAccounts="!(accounts && accounts?.length == 0)" />
-  </main>
+  </Layout>
 
   <img
     style="width: 30%; position: absolute; top: 15%; left: 40%"
@@ -190,7 +169,7 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import { deleteSubscription } from "@/_helpers/pushNotification";
 import {
   NetIncome,
@@ -209,9 +188,8 @@ import IncomeChart from "@/components/charts/IncomeChart.vue";
 import WordCloudChart from "@/components/charts/WordCloudChart.vue";
 import { subscribeUser } from "@/_helpers/pushNotification";
 import { notify } from "@kyvg/vue3-notification";
-import Header from "@/components/Header.vue";
-import SideBar from "@/components/SideBar.vue";
-import { mapActions } from "vuex";
+import Layout from "@/components/layout/Layout.vue";
+import Card from "@/components/layout/Card.vue";
 
 @Options({
   created() {
@@ -284,8 +262,8 @@ import { mapActions } from "vuex";
     DonutChart,
     IncomeChart,
     WordCloudChart,
-    Header,
-    SideBar,
+    Layout,
+    Card,
     GuageChart,
   },
   methods: {

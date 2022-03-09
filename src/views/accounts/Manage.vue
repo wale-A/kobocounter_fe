@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import Header from "@/components/Header.vue";
+import Header from "@/components/layout/Header.vue";
 import { mapGetters } from "vuex";
 import AccountItem from "@/components/AccountItem.vue";
 import AddNewAccount from "@/components/AddNewAccount.vue";

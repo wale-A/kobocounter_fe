@@ -1,5 +1,5 @@
 <template>
-  <nav id="side-bar">
+  <aside id="side-bar">
     <section class="side-nav">
       <nav class="uppermenu">
         <div class="logo">
@@ -47,7 +47,7 @@
         </div>
       </nav>
       <nav class="lowermenu">
-        <a href="#" @click.prevent="logoutUser"
+        <a href="#" @click.prevent="$emit('logout')"
           ><div class="d">
             <img src="/img/assets/7.png" />
             <p>Logout</p>
@@ -100,21 +100,15 @@
         <p>Accounts</p>
       </div>-->
     </nav>
-  </nav>
+  </aside>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import { deleteSubscription } from "@/_helpers/pushNotification";
+
 @Options({
   props: {
     section: String,
-  },
-  methods: {
-    logoutUser() {
-      deleteSubscription();
-      this.$store.commit("logoutUser");
-    },
   },
 })
 export default class SideBar extends Vue {}
