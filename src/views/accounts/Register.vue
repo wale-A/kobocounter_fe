@@ -53,7 +53,7 @@
               type="submit"
               value="Create Account"
               id="register-button"
-              :disabled="diisabled || !valid"
+              :disabled="disabled || !valid"
             />
             <div class="question">
               <p>

@@ -1,6 +1,6 @@
 import axios from "axios";
 import store from "../store/index";
-import { getUserToken } from "./index";
+import { getUserToken, deleteUser } from "./index";
 
 export const instance = axios.create({
   baseURL: process.env.VUE_APP_API_URL,
@@ -15,7 +15,7 @@ instance.interceptors.response.use(undefined, (error) => {
 
   if (response) {
     if ([401, 403].includes(response.status)) {
-      return store.commit("logoutUser");
+      return store.dispatch("logout").then(() => deleteUser());
     } else {
       return response;
     }
@@ -25,8 +25,7 @@ instance.interceptors.response.use(undefined, (error) => {
 });
 
 instance.interceptors.request.use((request) => {
-  console.log("interceptor", { ...store.state });
-  const token = store.state.user?.token?.token ?? getUserToken();
+  const token = getUserToken();
   if (token) {
     request.headers.common.Authorization = `Bearer ${token}`;
   }

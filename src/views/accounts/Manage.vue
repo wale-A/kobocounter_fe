@@ -3,8 +3,8 @@
   <main class="container" style="padding: 15px">
     <section style="margin-bottom: 30px">
       <AccountItem
-        v-for="(account, index) in accounts"
-        :key="index"
+        v-for="account in accounts"
+        :key="account.id"
         :id="account.id"
         :bank="account.bankName"
         :accountNumber="account.accountNumber"

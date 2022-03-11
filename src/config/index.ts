@@ -1,0 +1,45 @@
+export const EXPENSE_CATEGORIES = [
+  { id: 1, label: "Rent", value: "Rent" },
+  { id: 2, label: "Transport", value: "Transport" },
+  { id: 3, label: "Groceries", value: "Groceries" },
+  { id: 4, label: "Eating Out", value: "EatingOut" },
+  { id: 5, label: "Airtime", value: "Airtime" },
+  { id: 6, label: "Utility", value: "Utility" },
+  { id: 7, label: "Health", value: "Health" },
+  { id: 8, label: "Personal Care", value: "PersonalCare" },
+  { id: 9, label: "Fashion", value: "Fashion" },
+  { id: 10, label: "Leisure", value: "Leisure" },
+  { id: 11, label: "Debt Repayment", value: "DebtRepayment" },
+  { id: 12, label: "Loans", value: "Loans" },
+  {
+    id: 13,
+    label: "Personal Development",
+    value: "PersonalDevelopment",
+  },
+  {
+    id: 14,
+    label: "Savings & Investments",
+    value: "SavingsAndInvestments",
+  },
+  {
+    id: 15,
+    label: "Charity & Gifts",
+    value: "CharityAndGifts",
+  },
+  { id: 16, label: "Vacation", value: "Vacation" },
+  { id: 17, label: "Vehicle Expense", value: "VehicleExpense" },
+  { id: 18, label: "House Expense", value: "HouseExpense" },
+  { id: 19, label: "Child Care", value: "ChildCare" },
+  { id: 20, label: "Others", value: "Others" },
+];
+
+export const TRANSACTION_CATEGORIES = [
+  "Misc",
+  "ATM Withdrawal",
+  "Bank Charge",
+  "POS Purchase",
+  "WEB Purchase",
+  "Airtime",
+  "Mobile Data",
+  "Transfer",
+];

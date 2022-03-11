@@ -4,10 +4,9 @@
       <div class="dashboard-content">
         <SingleTransaction
           :singleTransaction="singleTransaction"
-          :closeFunction="outsideClickHandler"
           :childTransactions="childTransactions"
           :parentTransaction="parentTransaction"
-          :selectTransaction="selectTransaction"
+          :establishments="establishments"
         />
         <Card title="All Transactions" class="all-transactions">
           <section id="all-transactions-container">
@@ -21,10 +20,13 @@
                   <tr
                     v-for="txn in groupedTransactions[date]"
                     :key="txn.id"
-                    :data-transactionId="txn.id"
                     :id="txn.id"
-                    @click.stop="transactionClickHandler"
                     class="txn"
+                    :class="{
+                      'selected-transaction':
+                        singleTransaction && txn.id === singleTransaction.id,
+                    }"
+                    @click.stop="selectTransaction(txn.id)"
                   >
                     <td>
                       <!-- txn.narration.replace(/\s{4,}/g, "").trim() -->
@@ -77,9 +79,8 @@ import { mapGetters, mapActions } from "vuex";
 import Layout from "@/components/layout/Layout.vue";
 import Card from "@/components/layout/Card.vue";
 import AddNewAccount from "@/components/AddNewAccount.vue";
-import { sub } from "date-fns";
-import { Transaction } from "@/types";
-import SingleTransaction from "@/components/SingleTransaction.vue";
+import { SplitTransaction, Transaction } from "@/types";
+import SingleTransaction from "@/components/transaction/SingleTransaction.vue";
 
 @Options({
   created() {
@@ -88,6 +89,7 @@ import SingleTransaction from "@/components/SingleTransaction.vue";
       start: undefined,
       end: undefined,
     });
+    this.getEstablishments();
   },
   data() {
     return {
@@ -103,7 +105,7 @@ import SingleTransaction from "@/components/SingleTransaction.vue";
     SingleTransaction,
   },
   computed: {
-    ...mapGetters(["accounts", "transactions"]),
+    ...mapGetters(["accounts", "transactions", "establishments"]),
     groupedTransactions: function () {
       const sortedTransactions = [...(this.transactions ?? [])].sort(
         (x: Transaction, y: Transaction) => y.date - x.date
@@ -118,15 +120,13 @@ import SingleTransaction from "@/components/SingleTransaction.vue";
     },
   },
   methods: {
-    ...mapActions(["getTransactions"]),
-    transactionClickHandler(e: Event) {
-      this.removeClassSelector("selected-transaction");
-      const transactionId = (e.currentTarget as any).dataset.transactionid;
-      this.selectTransaction(transactionId);
-    },
+    ...mapActions([
+      "getTransactions",
+      "updateTransaction",
+      "saveSplitTransactions",
+      "getEstablishments",
+    ]),
     selectTransaction(transactionId: string) {
-      this.removeClassSelector("selected-transaction");
-
       this.singleTransaction = this.transactions.find(
         (x: Transaction) => x.id === transactionId
       );
@@ -136,39 +136,52 @@ import SingleTransaction from "@/components/SingleTransaction.vue";
       this.parentTransaction = this.transactions?.find(
         (x: Transaction) => x.id === this.singleTransaction?.parentId
       );
-
-      const transactionRowElement = document.getElementById(transactionId);
-      if (transactionRowElement) {
-        transactionRowElement.className += " selected-transaction";
-      }
-      const div = document.getElementById("single-transaction");
-      if (div) {
-        div.style.zIndex = "5";
-      }
-      const container = document.getElementsByClassName("all-transactions")[0];
-      if (container) {
-        (container as any).style.zIndex = "1";
-      }
+      console.log(this.childTransactions, this.parentTransaction);
     },
-    outsideClickHandler(e: Event) {
+    outsideClickHandler() {
       this.singleTransaction = null;
       this.childTransactions = null;
       this.parentTransaction = null;
-      this.removeClassSelector("selected-transaction");
     },
-    removeClassSelector(className: string) {
-      Array.from(document.querySelectorAll("." + className)).forEach((el) =>
-        el.classList.remove(className)
-      );
-
-      const div = document.getElementById("single-transaction");
-      if (div) {
-        div.style.zIndex = "1";
-        div.style.display = "unset";
-      }
-
-      const container = document.getElementsByClassName("all-transactions")[0];
-      (container as any).style.zIndex = "5";
+    editTransaction(model: Transaction) {
+      this.updateTransaction({
+        transactionId: this.editedTransaction.id,
+        params: {
+          ...this.model,
+          recipientName: this.model.recipientName[0],
+        },
+        model,
+      })
+        .then(() => {
+          this.$notify({
+            text: "Transaction update was successful",
+            type: "success",
+          });
+        })
+        .catch(() => {
+          this.$notify({
+            text: "Transaction update failed, please retry",
+            type: "error",
+          });
+        });
+    },
+    splitTransaction(model: SplitTransaction[]) {
+      this.saveSplitTransactions({
+        transactionId: this.singleTransaction.id,
+        params: model,
+      })
+        .then(() => {
+          this.$notify({
+            text: "Transaction split was successful",
+            type: "success",
+          });
+        })
+        .catch(() => {
+          this.$notify({
+            text: "Transaction split failed, please retry",
+            type: "error",
+          });
+        });
     },
   },
 })

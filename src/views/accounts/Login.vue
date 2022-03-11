@@ -76,6 +76,7 @@ import Password from "@/components/Password.vue";
 import { mapActions } from "vuex";
 import { storeUser } from "@/util";
 import { User } from "@/types";
+import { subscribeUser } from "@/_helpers/pushNotification";
 
 @Options({
   components: {
@@ -100,10 +101,12 @@ import { User } from "@/types";
       })
         .then((user: User) => {
           storeUser(user);
+          subscribeUser();
 
           const redirect = this.$route.params.nextUrl;
           if (redirect) {
             this.$router.push(redirect);
+            return;
           }
           this.$router.push({ name: "Dashboard" });
         })
