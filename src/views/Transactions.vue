@@ -1,5 +1,5 @@
 <template>
-  <div page="transactions" class="dashboard" @click="outsideClickHandler">
+  <div class="dashboard" @click="outsideClickHandler">
     <section class="dashboard-content-container">
       <div class="dashboard-content">
         <SingleTransaction

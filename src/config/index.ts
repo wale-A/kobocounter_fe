@@ -1,3 +1,54 @@
+export const SIDEBAR_MENU_ITEMS = [
+  {
+    title: "Dashboard",
+    icon: {
+      mobile: "/img/assets/n1.png",
+      desktop: "/img/assets/1.png",
+    },
+    medium: {
+      mobile: true,
+      desktop: true,
+    },
+    route: { name: "Dashboard" },
+  },
+  {
+    title: "Insights",
+    icon: {
+      mobile: "/img/assets/n2.png",
+      desktop: "/img/assets/2.png",
+    },
+    medium: {
+      mobile: true,
+      desktop: true,
+    },
+    route: { name: "Insights" },
+  },
+  {
+    title: "Transactions",
+    icon: {
+      mobile: "/img/assets/n3.png",
+      desktop: "/img/assets/3.png",
+    },
+    medium: {
+      mobile: true,
+      desktop: true,
+    },
+    route: { name: "Transactions" },
+  },
+  {
+    title: "Settings",
+    icon: {
+      mobile: "/img/assets/n5.png",
+      desktop: "/img/assets/5.png",
+    },
+    medium: {
+      mobile: true,
+      desktop: true,
+    },
+    route: { name: "Settings" },
+  },
+] as const;
+
 export const EXPENSE_CATEGORIES = [
   { id: 1, label: "Rent", value: "Rent" },
   { id: 2, label: "Transport", value: "Transport" },

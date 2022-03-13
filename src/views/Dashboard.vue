@@ -1,5 +1,5 @@
 <template>
-  <div page="dashboard" class="dashboard">
+  <div class="dashboard">
     <section
       v-show="accounts && accounts?.length"
       class="dashboard-content-container"

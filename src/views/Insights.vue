@@ -1,5 +1,5 @@
 <template>
-  <div page="insights" class="dashboard">
+  <div class="dashboard">
     <section class="dashboard-content-container">
       <div class="dashboard-content">
         <!-- <div id="single-analysis"></div> -->

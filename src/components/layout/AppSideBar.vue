@@ -6,44 +6,24 @@
           <img src="/img/assets/logo-white.svg" style="width: 75%" />
         </div>
         <div class="menu">
-          <router-link :to="{ name: 'Dashboard' }" class="accent-color">
-            <div :class="{ d: true, active: section === 'dashboard' }">
-              <img src="/img/assets/1.png" />
-              <p>Dashboard</p>
-            </div>
-          </router-link>
-          <router-link :to="{ name: 'Insights' }" class="accent-color">
-            <div :class="{ d: true, active: section === 'insights' }">
-              <img src="/img/assets/2.png" />
-              <p>Insights</p>
-            </div>
-          </router-link>
-          <router-link :to="{ name: 'Transactions' }" class="accent-color">
-            <div :class="{ d: true, active: section === 'transactions' }">
-              <img src="/img/assets/3.png" />
-              <p>Transactions</p>
-            </div>
-          </router-link>
-          <a href="#"
-            ><div :class="{ d: true, active: section === 'settings' }">
-              <img src="/img/assets/5.png" />
-              <p>Settings</p>
-            </div></a
+          <router-link
+            v-for="menuItem in menuItems"
+            :key="menuItem.route.name"
+            :to="menuItem.route.name"
+            class="accent-color"
           >
-
-          <!-- <a href="#"
-            ><div class="d">
-              <img src="/img/assets/4.png" />
-              <p>Accounts</p>
-            </div></a
-          >
-          <hr />
-          <a href="#"
-            ><div class="d">
-              <img src="/img/assets/6.png" />
-              <p>Invite Friends</p>
-            </div></a
-          > -->
+            <div
+              :class="{
+                d: menuItem.medium.desktop,
+                active: $route.matched
+                  .map((m) => m.name)
+                  .includes(menuItem.route.name),
+              }"
+            >
+              <img :src="menuItem.icon.desktop" />
+              <p>{{ menuItem.title }}</p>
+            </div>
+          </router-link>
         </div>
       </nav>
       <nav class="lowermenu">
@@ -63,42 +43,24 @@
     </section>
 
     <nav class="bottom-nav">
-      <router-link :to="{ name: 'Dashboard' }">
-        <div
-          :class="{ 'bottom-nav-link': true, active: section === 'dashboard' }"
-        >
-          <img src="/img/assets/n1.png" />
-          <p>Dashboard</p>
-        </div>
-      </router-link>
-      <router-link :to="{ name: 'Insights' }">
-        <div
-          :class="{ 'bottom-nav-link': true, active: section === 'insights' }"
-        >
-          <img src="/img/assets/n2.png" />
-          <p>Insights</p>
-        </div>
-      </router-link>
-      <router-link :to="{ name: 'Transactions' }">
+      <router-link
+        v-for="menuItem in menuItems"
+        :key="menuItem.route.name"
+        :to="menuItem.route.name"
+        class="accent-color"
+      >
         <div
           :class="{
-            'bottom-nav-link': true,
-            active: section === 'transactions',
+            'bottom-nav-link': menuItem.medium.mobile,
+            active: $route.matched
+              .map((m) => m.name)
+              .includes(menuItem.route.name),
           }"
         >
-          <img src="/img/assets/n3.png" />
-          <p>Transactions</p>
+          <img :src="menuItem.icon.mobile" />
+          <p>{{ menuItem.title }}</p>
         </div>
       </router-link>
-      <div :class="{ 'bottom-nav-link': true, active: section === 'settings' }">
-        <img src="/img/assets/n5.png" />
-        <p>Settings</p>
-      </div>
-
-      <!-- <div class="bottom-nav-link">
-        <img src="/img/assets/n4.png" />
-        <p>Accounts</p>
-      </div>-->
     </nav>
   </aside>
 </template>
@@ -108,7 +70,10 @@ import { Options, Vue } from "vue-class-component";
 
 @Options({
   props: {
-    section: String,
+    menuItems: {
+      type: Array,
+      required: true,
+    },
   },
 })
 export default class SideBar extends Vue {}

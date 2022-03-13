@@ -1,6 +1,6 @@
 <template>
   <main class="dashboard">
-    <AppSideBar :section="page" @logout="logoutUser" />
+    <AppSideBar :menu-items="menus" :section="page" @logout="logoutUser" />
     <section class="pane" style="flex-grow: 1">
       <Header
         :username="username"
@@ -19,6 +19,8 @@ import AppSideBar from "../components/layout/AppSideBar.vue";
 import { deleteSubscription } from "@/_helpers/pushNotification";
 import { mapActions, mapGetters } from "vuex";
 import { deleteUser } from "@/util";
+import { SIDEBAR_MENU_ITEMS } from "@/config";
+
 @Options({
   components: {
     Header,
@@ -29,6 +31,9 @@ import { deleteUser } from "@/util";
   },
   computed: {
     ...mapGetters(["avatarUrl", "username"]),
+    menus() {
+      return SIDEBAR_MENU_ITEMS;
+    },
   },
   methods: {
     ...mapActions(["logout"]),
