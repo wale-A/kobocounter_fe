@@ -29,6 +29,7 @@ const routes: Array<RouteRecordRaw> = [
     component: Dashboard,
     meta: {
       authorize: true,
+      layout: "App",
     },
   },
   {
@@ -37,6 +38,7 @@ const routes: Array<RouteRecordRaw> = [
     component: Insights,
     meta: {
       authorize: true,
+      layout: "App",
     },
   },
   {
@@ -45,6 +47,7 @@ const routes: Array<RouteRecordRaw> = [
     component: Transactions,
     meta: {
       authorize: true,
+      layout: "App",
     },
   },
   {

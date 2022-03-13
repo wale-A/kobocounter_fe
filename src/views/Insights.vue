@@ -1,5 +1,5 @@
 <template>
-  <Layout page="insights" class="dashboard">
+  <div page="insights" class="dashboard">
     <section class="dashboard-content-container">
       <div class="dashboard-content">
         <!-- <div id="single-analysis"></div> -->
@@ -62,17 +62,15 @@
         </Card>
       </div>
     </section>
-  </Layout>
+  </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import Layout from "@/components/layout/Layout.vue";
 import Card from "@/components/layout/Card.vue";
 
 @Options({
   components: {
-    Layout,
     Card,
   },
 })

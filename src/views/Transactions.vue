@@ -1,5 +1,5 @@
 <template>
-  <Layout page="transactions" class="dashboard" @click="outsideClickHandler">
+  <div page="transactions" class="dashboard" @click="outsideClickHandler">
     <section class="dashboard-content-container">
       <div class="dashboard-content">
         <SingleTransaction
@@ -70,13 +70,12 @@
       </div>
     </section>
     <!-- <AddNewAccount :hasAccounts="!(accounts && accounts?.length == 0)" /> -->
-  </Layout>
+  </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import { mapGetters, mapActions } from "vuex";
-import Layout from "@/components/layout/Layout.vue";
 import Card from "@/components/layout/Card.vue";
 import AddNewAccount from "@/components/AddNewAccount.vue";
 import { SplitTransaction, Transaction } from "@/types";
@@ -99,7 +98,6 @@ import SingleTransaction from "@/components/transaction/SingleTransaction.vue";
     };
   },
   components: {
-    Layout,
     Card,
     AddNewAccount,
     SingleTransaction,

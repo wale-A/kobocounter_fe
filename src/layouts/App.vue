@@ -1,14 +1,12 @@
 <template>
-  <main>
-    <SideBar :section="page" @logout="logoutUser" />
+  <main class="dashboard">
+    <AppSideBar :section="page" @logout="logoutUser" />
     <section class="pane" style="flex-grow: 1">
-      <slot name="header">
-        <Header
-          :username="username"
-          :avatarUrl="avatarUrl"
-          @logout="logoutUser"
-        />
-      </slot>
+      <Header
+        :username="username"
+        :avatarUrl="avatarUrl"
+        @logout="logoutUser"
+      />
       <slot />
     </section>
   </main>
@@ -16,15 +14,15 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import Header from "./Header.vue";
-import SideBar from "./SideBar.vue";
+import Header from "../components/layout/Header.vue";
+import AppSideBar from "../components/layout/AppSideBar.vue";
 import { deleteSubscription } from "@/_helpers/pushNotification";
 import { mapActions, mapGetters } from "vuex";
 import { deleteUser } from "@/util";
 @Options({
   components: {
     Header,
-    SideBar,
+    AppSideBar,
   },
   props: {
     page: String,
@@ -43,5 +41,5 @@ import { deleteUser } from "@/util";
     },
   },
 })
-export default class Layout extends Vue {}
+export default class Default extends Vue {}
 </script>

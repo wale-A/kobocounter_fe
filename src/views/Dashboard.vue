@@ -1,5 +1,5 @@
 <template>
-  <Layout page="dashboard" class="dashboard">
+  <div page="dashboard" class="dashboard">
     <section
       v-show="accounts && accounts?.length"
       class="dashboard-content-container"
@@ -157,7 +157,7 @@
       </div>
     </section>
     <AddNewAccount :hasAccounts="!(accounts && accounts?.length == 0)" />
-  </Layout>
+  </div>
 
   <Loader v-show="!accounts" />
 </template>
@@ -165,14 +165,12 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import { mapGetters, mapActions } from "vuex";
-import { NetIncome, TransactionCategories } from "@/types";
 import { subMonths } from "date-fns";
 import AddNewAccount from "@/components/AddNewAccount.vue";
 import DonutChart from "@/components/charts/DonutChart.vue";
 import GuageChart from "@/components/charts/GuageChart.vue";
 import IncomeChart from "@/components/charts/IncomeChart.vue";
 import WordCloudChart from "@/components/charts/WordCloudChart.vue";
-import Layout from "@/components/layout/Layout.vue";
 import Card from "@/components/layout/Card.vue";
 import Loader from "@/components/layout/Loader.vue";
 
@@ -182,7 +180,6 @@ import Loader from "@/components/layout/Loader.vue";
     DonutChart,
     IncomeChart,
     WordCloudChart,
-    Layout,
     Card,
     GuageChart,
     Loader,
@@ -192,23 +189,13 @@ import Loader from "@/components/layout/Loader.vue";
     const to = new Date();
     return {
       accountBalance: 0,
-      accountBalanceData: {},
-      netIncomeData: [],
-      transactionCategoryData: {},
       selectedAccounts: [],
-      transformedAccountInfo: [],
-      selectedPeriod: 30,
-      accountSelectionUpdated: false,
       from: `${from.getFullYear()}-${(from.getMonth() + 1)
         .toString()
         .padStart(2, "0")}-${from.getDate().toString().padStart(2, "0")}`,
       to: `${to.getFullYear()}-${(to.getMonth() + 1)
         .toString()
         .padStart(2, "0")}-${to.getDate().toString().padStart(2, "0")}`,
-      modalTransactions: { transactions: [], total: 0 },
-      multipleTransactionModalTitle: "",
-      multipleTransactionModalSubtitle: "",
-      singleTransaction: undefined,
       displayChart: "piechart",
     };
   },
