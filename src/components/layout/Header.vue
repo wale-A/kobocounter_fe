@@ -3,6 +3,9 @@
     <h1>Hi {{ username }} !</h1>
     <div class="dropdown">
       <img :src="avatarUrl" alt="avatar" class="pointer header-avatar" />
+      <div class="action-bar">
+        <slot />
+      </div>
       <div class="dropdown-content">
         <span style="height: 5px; display: block">&nbsp;</span>
         <a href="#" @click.prevent="$emit('logout')"> Logout </a>
