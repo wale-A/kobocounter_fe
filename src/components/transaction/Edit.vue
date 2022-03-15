@@ -3,13 +3,8 @@
     <Header
       :alt="`${transaction?.bank} logo`"
       :src="`/img/banks/${transaction?.bank}.svg`"
-      :date="new Date(transaction?.date).toLocaleDateString('en-GB')"
-      :time="
-        new Date(transaction?.date).toLocaleTimeString('en-us', {
-          hour: '2-digit',
-          minute: '2-digit',
-        })
-      "
+      :date="date"
+      :time="time"
     />
     <Field label="transaction category:" orientation="column">
       <template #value>
@@ -136,6 +131,7 @@ import Multiselect from "@vueform/multiselect";
 import Header from "./_internal/Header.vue";
 import Field from "./_internal/Field.vue";
 import { TRANSACTION_CATEGORIES } from "@/config";
+import { formatDate, formatTime } from "@/util";
 @Options({
   components: { Field, Header, Multiselect },
   props: {
@@ -168,6 +164,12 @@ import { TRANSACTION_CATEGORIES } from "@/config";
     },
     categories() {
       return TRANSACTION_CATEGORIES;
+    },
+    date() {
+      return formatDate(this.transaction?.date);
+    },
+    time() {
+      return formatTime(this.transaction?.date);
     },
   },
   methods: {

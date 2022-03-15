@@ -4,13 +4,8 @@
     <Header
       :alt="`${transaction?.bank} logo`"
       :src="`/img/banks/${transaction?.bank}.svg`"
-      :date="new Date(transaction?.date).toLocaleDateString('en-GB')"
-      :time="
-        new Date(transaction?.date).toLocaleTimeString('en-us', {
-          hour: '2-digit',
-          minute: '2-digit',
-        })
-      "
+      :date="date"
+      :time="time"
     />
 
     <Field
@@ -92,6 +87,7 @@
 import { Options, Vue } from "vue-class-component";
 import Header from "./_internal/Header.vue";
 import Field from "./_internal/Field.vue";
+import { formatDate, formatTime } from "@/util";
 
 @Options({
   components: { Field, Header },
@@ -113,6 +109,12 @@ import Field from "./_internal/Field.vue";
           this.transaction?.displayCategory
         ) && !this.transaction?.parentId
       );
+    },
+    date() {
+      return formatDate(this.transaction?.date);
+    },
+    time() {
+      return formatTime(this.transaction?.date);
     },
   },
 })

@@ -31,3 +31,14 @@ export const storeUser = (user: User): void => {
 export const deleteUser = (): void => {
   localStorage.removeItem(storeKey);
 };
+
+export const formatDate = (date: string): string => {
+  return new Date(date).toLocaleDateString("en-GB");
+};
+
+export const formatTime = (date: string): string => {
+  return new Date(date).toLocaleTimeString("en-us", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
