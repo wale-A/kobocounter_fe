@@ -1,45 +1,53 @@
 <template>
-  <aside id="side-bar">
-    <section class="side-nav">
-      <nav class="uppermenu">
-        <div class="logo">
-          <img src="/img/assets/logo-white.svg" style="width: 75%" />
-        </div>
-        <div class="menu">
-          <router-link
-            v-for="menuItem in menuItems"
-            :key="menuItem.route.name"
-            :to="menuItem.route.name"
-            class="accent-color"
-          >
-            <div
+  <aside class="wrapper">
+    <section class="l-container">
+      <div class="l-top">
+        <nav class="app-menu">
+          <div class="brand">
+            <svg-icon
+              :src="require('@/assets/svg/logo-white.svg')"
+              class="brand__icon"
+            />
+          </div>
+          <ul class="app-menu__list">
+            <li
+              v-for="menuItem in menuItems"
+              :key="menuItem.route.name"
+              class="app-menu__item"
               :class="{
-                d: menuItem.medium.desktop,
-                active: $route.matched
+                'app-menu__list--active': $route.matched
                   .map((m) => m.name)
                   .includes(menuItem.route.name),
               }"
             >
-              <img :src="menuItem.icon.desktop" />
-              <p>{{ menuItem.title }}</p>
-            </div>
-          </router-link>
-        </div>
-      </nav>
-      <nav class="lowermenu">
-        <a href="#" @click.prevent="$emit('logout')"
-          ><div class="d">
-            <img src="/img/assets/7.png" />
-            <p>Logout</p>
-          </div></a
-        >
-        <hr />
-        <footer>
-          <a href="#">Terms</a>
-          <a href="#">Privacy</a>
-          <a href="#">Support</a>
+              <router-link :to="menuItem.route.name" class="app-menu__link">
+                <img :src="menuItem.icon.desktop" class="app-menu__link-icon" />
+                <span class="app-menu__link-text">{{ menuItem.title }}</span>
+              </router-link>
+            </li>
+          </ul>
+        </nav>
+        <hr class="app-menu__divider" />
+        <a href="#" @click.prevent="$emit('logout')">
+          <img src="/img/assets/7.png" />
+          <span>Invite Friends</span>
+        </a>
+      </div>
+      <div class="l-bottom">
+        <a href="#" @click.prevent="$emit('logout')">
+          <img src="/img/assets/7.png" />
+          <span>Logout</span>
+        </a>
+        <hr class="app-menu__divider" />
+        <footer class="footer">
+          <p class="copyright">Kobocounter 2021</p>
+          <nav class="footer-menu">
+            <a href="#" class="footer-menu__link">Terms</a>
+            <a href="#" class="footer-menu__link">Privacy</a>
+            <a href="#" class="footer-menu__link">Support</a>
+          </nav>
         </footer>
-      </nav>
+      </div>
     </section>
 
     <nav class="bottom-nav">
@@ -78,3 +86,51 @@ import { Options, Vue } from "vue-class-component";
 })
 export default class SideBar extends Vue {}
 </script>
+
+<style lang="scss" scoped>
+.wrapper {
+  background-color: #007cff;
+}
+.l-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+
+  @at-root #{&}__icon {
+    width: 184px;
+    height: 32px;
+  }
+}
+
+.app-menu {
+  @at-root #{&}__list {
+    list-style: none;
+  }
+
+  @at-root #{&}__item {
+    padding: 13px 30px;
+  }
+
+  @at-root #{&}__item--active {
+    padding: 13px 30px;
+  }
+
+  @at-root #{&}__link-icon {
+    margin-right: 5px;
+  }
+
+  @at-root #{&}__link {
+    font-family: "Nunito Sans";
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 22px;
+    color: #ffffff;
+  }
+}
+</style>

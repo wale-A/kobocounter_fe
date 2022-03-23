@@ -1,9 +1,6 @@
 <template>
   <Page>
-    <template v-slot:actions>
-      <button>Filter</button>
-    </template>
-    <div class="dashboard">
+    <div>
       <section
         v-show="accounts && accounts?.length"
         class="dashboard-content-container"

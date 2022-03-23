@@ -1,8 +1,12 @@
 <template>
-  <main class="dashboard">
-    <AppSideBar :menu-items="menus" @logout="$emit('logout')" />
-    <slot />
-  </main>
+  <div class="l-wrapper">
+    <aside class="l-sidebar">
+      <AppSideBar :menu-items="menus" @logout="$emit('logout')" />
+    </aside>
+    <div class="l-content">
+      <slot />
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -22,3 +26,16 @@ import { SIDEBAR_MENU_ITEMS } from "@/config";
 })
 export default class App extends Vue {}
 </script>
+
+<style lang="scss" scoped>
+.l-wrapper {
+  display: flex;
+  height: 100vh;
+}
+.l-side-bar {
+  width: 248px;
+}
+.l-content {
+  flex-grow: 1;
+}
+</style>

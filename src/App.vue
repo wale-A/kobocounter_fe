@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <main>
     <!--TODO: Add loader here -->
     <Layout @logout="logoutUser">
       <router-view
@@ -10,7 +10,7 @@
     </Layout>
 
     <notifications :ignoreDuplicates="true" :duration="5000" />
-  </div>
+  </main>
 </template>
 
 <script lang="ts">

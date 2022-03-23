@@ -1,5 +1,5 @@
 <template>
-  <section class="pane" style="flex-grow: 1">
+  <section class="page">
     <Header
       :username="username"
       :avatarUrl="avatarUrl"
