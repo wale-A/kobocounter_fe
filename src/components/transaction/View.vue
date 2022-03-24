@@ -6,80 +6,107 @@
       :src="`/img/banks/${transaction?.bank}.svg`"
       :date="date"
       :time="time"
+      class="transaction__header"
     />
-
-    <Field
-      label="transaction category:"
-      :value="transaction?.displayCategory?.trim()"
-    />
-    <!-- TODO: format currency ---->
-    <Field label="amount:" :value="transaction?.displayAmount" />
-
-    <Field label="recipient:" :value="transaction?.recipient" />
-
-    <Field
-      label="business activity:"
-      :value="transaction?.establishment?.activities?.join(', ')?.trim()"
-    />
-
-    <Field label="expense category:" :value="transaction?.expenseCategory" />
-
-    <Field label="narration:" :value="transaction?.narration" />
-
-    <div v-if="sub && sub.length">
-      <Field label="sub transactions:">
+    <div class="transaction__body">
+      <Field
+        label="transaction category:"
+        :value="transaction?.displayCategory?.trim()"
+      />
+      <!-- TODO: format currency ---->
+      <Field label="amount:">
         <template #value>
-          <ul style="margin-bottom: 0.5em">
-            <li v-for="txn in sub" :key="txn.id">
-              <a
-                href="#"
-                class="sub-transaction"
-                @click.stop="$emit('select', txn.id)"
-              >
-                {{ txn.expenseCategory }} - &#8358;{{
-                  Math.abs(txn.displayAmount)
-                }}
-              </a>
-              <br />
-            </li>
-          </ul>
+          <label>
+            <span style="font-weight: 800; font-size: large">&#8358; </span>
+            <span
+              :style="{
+                'font-weight': 500,
+                color:
+                  (transaction?.amount || transaction?.displayAmount) < 0
+                    ? 'rgba(255, 10, 10, 0.7)'
+                    : 'rgb(20, 180, 20)',
+              }"
+            >
+              {{
+                Math.abs(
+                  transaction?.amount || transaction?.displayAmount
+                ).toLocaleString()
+              }}
+            </span>
+          </label>
         </template>
       </Field>
-    </div>
 
-    <div v-if="parent">
-      <Field label="parent transaction:">
-        <template #value>
-          <ul style="margin-bottom: 0.5em">
-            <li>
-              <a
-                href="#"
-                class="sub-transaction"
-                @click.stop="$emit('select', parent.id)"
-              >
-                {{ parent.displayCategory }} - &#8358;{{
-                  Math.abs(parent.amount)
-                }}
-              </a>
-              <br />
-            </li>
-          </ul>
-        </template>
-      </Field>
-    </div>
+      <Field label="recipient:" :value="transaction?.recipient" />
 
-    <div class="form-buttons">
-      <button v-if="canEdit" @click.stop="$emit('edit', expense)">
-        Edit Transaction
-      </button>
-      <button
-        v-if="canSplit"
-        class="cancel-button"
-        @click.stop="$emit('split', expense)"
-      >
-        Split Transaction
-      </button>
+      <Field
+        label="business activity:"
+        :value="transaction?.establishment?.activities?.join(', ')?.trim()"
+      />
+
+      <Field label="expense category:" :value="transaction?.expenseCategory" />
+
+      <Field label="narration:" :value="transaction?.narration" />
+
+      <div v-if="sub && sub.length">
+        <Field label="sub transactions:">
+          <template #value>
+            <ul style="margin-bottom: 0.5em">
+              <li v-for="txn in sub" :key="txn.id">
+                <a
+                  href="#"
+                  class="sub-transaction"
+                  @click.stop="$emit('select', txn.id)"
+                >
+                  {{ txn.expenseCategory }} - &#8358;{{
+                    Math.abs(txn.displayAmount)
+                  }}
+                </a>
+                <br />
+              </li>
+            </ul>
+          </template>
+        </Field>
+      </div>
+
+      <div v-if="parent">
+        <Field label="parent transaction:">
+          <template #value>
+            <ul style="margin-bottom: 0.5em">
+              <li>
+                <a
+                  href="#"
+                  class="sub-transaction"
+                  @click.stop="$emit('select', parent.id)"
+                >
+                  {{ parent.displayCategory }} - &#8358;{{
+                    Math.abs(parent.amount)
+                  }}
+                </a>
+                <br />
+              </li>
+            </ul>
+          </template>
+        </Field>
+      </div>
     </div>
+  </div>
+
+  <div class="form-buttons">
+    <button
+      v-if="canEdit"
+      class="button button--primary"
+      @click.stop="$emit('edit', expense)"
+    >
+      Edit Transaction
+    </button>
+    <button
+      v-if="canSplit"
+      class="button button--secondary"
+      @click.stop="$emit('split', expense)"
+    >
+      Split Transaction
+    </button>
   </div>
 </template>
 
@@ -121,15 +148,28 @@ import { formatDate, formatTime } from "@/util";
 export default class View extends Vue {}
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.transaction__body {
+  margin-top: 2em;
+}
 .form-buttons {
   margin-top: 2em;
   display: flex;
   justify-content: space-around;
 }
-button {
+.button {
   font-weight: 800;
   border: 1px solid #007cff;
+  background: white;
+  color: #007cff;
+  min-width: 150px;
+  padding: 1em;
+
+  &--primary {
+    background: #007cff;
+
+    color: white;
+  }
 }
 
 ul {

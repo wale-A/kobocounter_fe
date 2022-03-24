@@ -105,11 +105,13 @@
           style="width: unset !important; height: unset !important"
           value="SUBMIT"
           :disabled="!canSubmit"
+          class="button button--primary"
+          :class="{ 'button--disabled': !canSubmit }"
           @click.stop="$emit('saveSplit', model)"
         />
         <input
           type="button"
-          class="cancel-button"
+          class="button"
           style="width: unset !important; height: unset !important"
           value="CANCEL"
           @click.stop="$emit('cancel')"
@@ -184,7 +186,10 @@ import { SplitTransaction, Transaction } from "@/types";
 })
 export default class Split extends Vue {}
 </script>
-<style scoped>
+<style lang="scss" scoped>
+form {
+  margin-top: 2em;
+}
 #split-transaction-summary {
   text-align: center;
 }
@@ -192,6 +197,29 @@ export default class Split extends Vue {}
   margin-top: 2em;
   display: flex;
   justify-content: space-around;
+
+  .button {
+    font-weight: 800;
+    border: 1px solid #007cff;
+    background: white;
+    color: #007cff;
+    min-width: 150px;
+    cursor: pointer;
+    margin: 0;
+    font-size: 1em;
+    padding: 1em;
+
+    border-radius: 5px;
+
+    &--primary {
+      background: #007cff;
+      color: white;
+    }
+
+    &--disabled {
+      background: grey;
+    }
+  }
 }
 button {
   font-weight: 800;

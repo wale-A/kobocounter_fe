@@ -6,8 +6,8 @@
       <p>Select a transaction on the left to see it's details</p>
     </div>
 
-    <div v-else>
-      <div v-if="active === 'view'" class="pane">
+    <template v-else>
+      <div v-if="active === 'view'" id="transaction-detail" class="pane">
         <View
           :transaction="singleTransaction"
           :parent="parentTransaction"
@@ -17,7 +17,7 @@
           @select="onAction('select')"
         />
       </div>
-      <div v-else class="pane">
+      <div v-else id="transaction-detail" class="pane">
         <component
           :is="components[active]"
           :transaction="singleTransaction"
@@ -29,7 +29,7 @@
           @cancel="onAction('cancel')"
         />
       </div>
-    </div>
+    </template>
   </div>
 </template>
 

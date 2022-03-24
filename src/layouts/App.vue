@@ -1,8 +1,8 @@
 <template>
-  <main class="dashboard">
+  <div class="dashboard">
     <AppSideBar :menu-items="menus" @logout="$emit('logout')" />
     <slot />
-  </main>
+  </div>
 </template>
 
 <script lang="ts">
