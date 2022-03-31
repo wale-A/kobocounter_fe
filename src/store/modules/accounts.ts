@@ -89,7 +89,7 @@ const accounts: Module<State, any> = {
   },
   getters: {
     accounts(state) {
-      return state.accounts;
+      return state.accounts || [];
     },
   },
 };

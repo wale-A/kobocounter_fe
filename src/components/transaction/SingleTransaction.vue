@@ -24,6 +24,7 @@
           :parent="parentTransaction"
           :sub="childTransactions"
           :establishments="establishments"
+          @addActivity="$emit('addActivity', $event)"
           @saveEdit="$emit('saveEdit', $event)"
           @saveSplit="$emit('saveSplit', $event)"
           @cancel="onAction('cancel')"

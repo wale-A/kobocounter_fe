@@ -1,4 +1,9 @@
-import { TransactionCategories, TransactionInfo, FilterParams } from "@/types";
+import {
+  TransactionCategories,
+  TransactionInfo,
+  FilterParams,
+  TransactionPayload,
+} from "@/types";
 import { Module } from "vuex";
 import api from "@/api";
 
@@ -19,21 +24,36 @@ const transactions: Module<State, any> = {
     setTransactionCategories(state, categories: TransactionCategories[]) {
       state.transactionCategories = categories;
     },
-    updateTransaction(state, updatedTransaction: TransactionInfo) {
+    updateTransaction(state, model: TransactionPayload) {
       if (!(state.transactions && state.transactions.length > 0)) return;
 
-      const index = state.transactions.findIndex(
-        (x: TransactionInfo) => x.id === updatedTransaction.id
+      let transaction = state.transactions.find(
+        (x: TransactionInfo) => x.id === model.id
       );
-      if (index == -1) return;
-      state.transactions.splice(index, 1, updatedTransaction);
+
+      if (transaction) {
+        type Establishment = {
+          name: string;
+          activities: string[];
+        };
+        const establishment = model.isEstablishment
+          ? {
+              activities: model.establishmentActivities,
+              name: model.recipientName,
+            }
+          : ({} as Establishment);
+        transaction = {
+          ...transaction,
+          displayCategory: model.displayCategory,
+          recipient: model.recipientName,
+          establishment,
+        };
+      }
     },
   },
   actions: {
     async getTransactions({ commit }, { accountId, start, end }: FilterParams) {
       try {
-        // TODO move auth check to router
-        // if (!rootState?.auth?.user) throw "";
         const res = await api.getTransactions({ accountId, start, end });
         commit("setTransactions", res.data as TransactionInfo[]);
       } catch (e) {
@@ -59,26 +79,18 @@ const transactions: Module<State, any> = {
       { commit },
       {
         transactionId,
-        params,
-        updatedTransaction,
-        callback,
+        model,
       }: {
         transactionId: string;
-        params: string;
-        updatedTransaction: TransactionInfo;
-        callback: (success: boolean) => void;
+        model: TransactionPayload;
       }
     ) {
-      try {
-        const res = await api.updateTransaction(transactionId, params);
-        if (res.status === 201) {
-          commit("updateTransaction", updatedTransaction);
-          callback(true);
-        } else {
-          callback(false);
-        }
-      } catch (e) {
-        callback(false);
+      const res = await api.updateTransaction(transactionId, model);
+      console.log(res);
+      if (res.data.id) {
+        commit("updateTransaction", model);
+      } else {
+        throw res.data;
       }
     },
     async saveSplitTransactions(
