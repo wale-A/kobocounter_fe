@@ -3,6 +3,7 @@ import {
   TransactionInfo,
   FilterParams,
   TransactionPayload,
+  SplitTransaction,
 } from "@/types";
 import { Module } from "vuex";
 import api from "@/api";
@@ -27,7 +28,7 @@ const transactions: Module<State, any> = {
     updateTransaction(state, model: TransactionPayload) {
       if (!(state.transactions && state.transactions.length > 0)) return;
 
-      let transaction = state.transactions.find(
+      const transaction = state.transactions.find(
         (x: TransactionInfo) => x.id === model.id
       );
 
@@ -42,12 +43,9 @@ const transactions: Module<State, any> = {
               name: model.recipientName,
             }
           : ({} as Establishment);
-        transaction = {
-          ...transaction,
-          displayCategory: model.displayCategory,
-          recipient: model.recipientName,
-          establishment,
-        };
+        transaction.displayCategory = model.displayCategory;
+        transaction.recipient = model.recipientName;
+        transaction.establishment = establishment;
       }
     },
   },
@@ -86,7 +84,6 @@ const transactions: Module<State, any> = {
       }
     ) {
       const res = await api.updateTransaction(transactionId, model);
-      console.log(res);
       if (res.data.id) {
         commit("updateTransaction", model);
       } else {
@@ -97,25 +94,17 @@ const transactions: Module<State, any> = {
       { dispatch },
       {
         transactionId,
-        params,
-        callback,
+        payload,
       }: {
         transactionId: string;
-        params: string;
-        callback: (success: boolean) => void;
+        payload: SplitTransaction[];
       }
     ) {
-      try {
-        const res = await api.splitTransctions(transactionId, params);
-
-        if (res.status === 201) {
-          dispatch("getTransactions", {});
-          callback(true);
-        } else {
-          callback(false);
-        }
-      } catch (e) {
-        callback(false);
+      const res = await api.splitTransctions(transactionId, payload);
+      if (res.status === 201) {
+        dispatch("getTransactions", {});
+      } else {
+        throw res.data;
       }
     },
   },

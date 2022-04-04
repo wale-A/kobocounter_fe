@@ -10,6 +10,7 @@ import Notifications from "@kyvg/vue3-notification";
 import * as am4core from "@amcharts/amcharts4/core";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import am4themes_kelly from "@amcharts/amcharts4/themes/kelly";
+import VueScreen from "vue-screen";
 
 createApp(App)
   .use(router)
@@ -19,6 +20,16 @@ createApp(App)
   })
   .use(VueChartkick as any)
   .use(Notifications)
+  .use(VueScreen, {
+    grid: {
+      // use the responsive breakpoint
+      xs: 0,
+      sm: 576,
+      md: 768,
+      lg: 991,
+      xl: 1200,
+    },
+  })
   .mount("#app");
 
 am4core.options.autoDispose = true;

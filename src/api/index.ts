@@ -4,6 +4,7 @@ import {
   RegisterPayload,
   FilterParams,
   TransactionPayload,
+  SplitTransaction,
 } from "@/types";
 import { AxiosResponse } from "axios";
 
@@ -30,11 +31,14 @@ const getTransactions = (params: FilterParams): Promise<AxiosResponse> =>
 
 const updateTransaction = (
   id: string,
-  params: TransactionPayload
-): Promise<AxiosResponse> => axios.put(`/banking/transactions/${id}`, params);
+  payload: TransactionPayload
+): Promise<AxiosResponse> => axios.put(`/banking/transactions/${id}`, payload);
 
-const splitTransctions = (id: string, params: string): Promise<AxiosResponse> =>
-  axios.post(`/banking/transactions/${id}/split`, params);
+const splitTransctions = (
+  id: string,
+  payload: SplitTransaction[]
+): Promise<AxiosResponse> =>
+  axios.post(`/banking/transactions/${id}/split`, payload);
 
 const getTransactionCategories = (
   params: FilterParams

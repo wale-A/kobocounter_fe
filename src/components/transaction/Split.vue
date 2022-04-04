@@ -27,7 +27,7 @@
       <div
         class="split-item-container"
         v-for="(item, index) in model"
-        :key="item.id"
+        :key="index"
       >
         <div class="split-item">
           <p class="mid-text" style="margin-top: 0.5em">category</p>
@@ -54,6 +54,7 @@
           <!-- }" -->
         </div>
         <span
+          v-if="index > 0"
           class="material-icons delete-split-item"
           style="margin-top: 2em; color: red"
           @click.stop="remove(index)"
@@ -145,9 +146,12 @@ import { SplitTransaction, Transaction } from "@/types";
   },
   computed: {
     splitTransactionTotal() {
-      return this.sub.reduce((acc: number, curr: { amount: string }) => {
-        return acc + parseFloat(curr?.amount || "0");
-      }, 0);
+      return this.model.reduce(
+        (acc: number, item: { amount: number | null }) => {
+          return acc + (item.amount || 0);
+        },
+        0
+      );
     },
     categories() {
       return EXPENSE_CATEGORIES;

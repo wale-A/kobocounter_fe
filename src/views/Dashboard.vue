@@ -1,6 +1,6 @@
 <template>
   <Page>
-    <div class="dashboard">
+    <div>
       <section
         v-show="accounts && accounts?.length"
         class="dashboard-content-container"

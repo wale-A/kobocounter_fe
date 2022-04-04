@@ -1,6 +1,6 @@
 <template>
   <Page>
-    <div class="dashboard" @click="outsideClickHandler">
+    <div @click="outsideClickHandler">
       <section class="dashboard-content-container">
         <div class="dashboard-content">
           <SingleTransaction
@@ -9,6 +9,8 @@
             :childTransactions="childTransactions"
             :parentTransaction="parentTransaction"
             :establishments="establishments"
+            @select="selectTransaction($event)"
+            @addEstablishment="$store.commit('insertEstablishment', $event)"
             @addActivity="$store.commit('insertActivity', $event)"
             @saveEdit="editTransaction($event)"
             @saveSplit="splitTransaction($event)"
@@ -147,7 +149,6 @@ import SingleTransaction from "@/components/transaction/SingleTransaction.vue";
       this.parentTransaction = this.transactions?.find(
         (x: Transaction) => x.id === this.singleTransaction?.parentId
       );
-      console.log(this.childTransactions, this.parentTransaction);
     },
     outsideClickHandler() {
       this.singleTransaction = null;
@@ -155,10 +156,6 @@ import SingleTransaction from "@/components/transaction/SingleTransaction.vue";
       this.parentTransaction = null;
     },
     editTransaction(model: TransactionModel) {
-      console.log("edit", JSON.stringify(model), {
-        ...model,
-        recipientName: model.recipientName[0],
-      });
       this.updateTransaction({
         transactionId: model.id,
         model: {
@@ -171,7 +168,7 @@ import SingleTransaction from "@/components/transaction/SingleTransaction.vue";
             text: "Transaction update was successful",
             type: "success",
           });
-          this.$refs.transactionView.active = "view";
+          this.$refs.transactionView.active = "view"; //TODO: Move state up
         })
         .catch(() => {
           this.$notify({
@@ -181,16 +178,16 @@ import SingleTransaction from "@/components/transaction/SingleTransaction.vue";
         });
     },
     splitTransaction(model: SplitTransaction[]) {
-      console.log("split", model);
       this.saveSplitTransactions({
         transactionId: this.singleTransaction.id,
-        params: model,
+        payload: model,
       })
         .then(() => {
           this.$notify({
             text: "Transaction split was successful",
             type: "success",
           });
+          this.$refs.transactionView.active = "view"; //TODO: Move state up
         })
         .catch(() => {
           this.$notify({
