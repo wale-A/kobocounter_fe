@@ -1,3 +1,5 @@
+import { sub } from "date-fns";
+
 export const SIDEBAR_MENU_ITEMS = [
   {
     title: "Dashboard",
@@ -94,3 +96,27 @@ export const TRANSACTION_CATEGORIES = [
   "Mobile Data",
   "Transfer",
 ];
+
+const now = new Date();
+export const COMMON_DATES = {
+  yesterday: {
+    start: sub(now, { days: 1 }),
+    end: now,
+  },
+  "last-week": {
+    start: sub(now, { weeks: 1 }),
+    end: now,
+  },
+  "last-month": {
+    start: sub(now, { months: 1 }),
+    end: now,
+  },
+  "last-quarter": {
+    start: sub(now, { months: 3 }),
+    end: now,
+  },
+  "last-year": {
+    start: sub(now, { years: 1 }),
+    end: now,
+  },
+};

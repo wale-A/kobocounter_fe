@@ -1,5 +1,8 @@
 <template>
   <Page>
+    <template v-slot:actions>
+      <Filter :fields="facets" :model="params" @filter="params = $event" />
+    </template>
     <div>
       <section
         v-show="accounts && accounts?.length"
@@ -169,7 +172,6 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import { mapGetters, mapActions } from "vuex";
-import { subMonths } from "date-fns";
 import AddNewAccount from "@/components/AddNewAccount.vue";
 import DonutChart from "@/components/charts/DonutChart.vue";
 import GuageChart from "@/components/charts/GuageChart.vue";
@@ -178,7 +180,10 @@ import WordCloudChart from "@/components/charts/WordCloudChart.vue";
 import Card from "@/components/layout/Card.vue";
 import Page from "@/components/layout/Page.vue";
 import Loader from "@/components/layout/Loader.vue";
-import { Account } from "@/types";
+import Filter from "@/components/common/Filter.vue";
+import dateFormat from "dateformat";
+import { Account, FilterParams } from "@/types";
+import { COMMON_DATES } from "@/config";
 
 @Options({
   components: {
@@ -190,18 +195,14 @@ import { Account } from "@/types";
     GuageChart,
     Loader,
     Page,
+    Filter,
   },
   data() {
-    const from = subMonths(Date.now(), 1);
-    const to = new Date();
     return {
-      selectedAccounts: [],
-      from: `${from.getFullYear()}-${(from.getMonth() + 1)
-        .toString()
-        .padStart(2, "0")}-${from.getDate().toString().padStart(2, "0")}`,
-      to: `${to.getFullYear()}-${(to.getMonth() + 1)
-        .toString()
-        .padStart(2, "0")}-${to.getDate().toString().padStart(2, "0")}`,
+      params: {
+        account: "",
+        period: COMMON_DATES["last-month"],
+      },
       displayChart: "piechart",
     };
   },
@@ -243,6 +244,87 @@ import { Account } from "@/types";
         .toFixed(2);
       return parseFloat(balance).toLocaleString();
     },
+    to() {
+      // TODO: use filter
+      return dateFormat(this.params.period.start, "yyyy-mm-dd");
+    },
+    from() {
+      // TODO: use filter
+      return dateFormat(this.params.period.end, "yyyy-mm-dd");
+    },
+    queryParams() {
+      return {
+        accountId: this.params.account,
+        start: this.params.period.start.getTime(),
+        end: this.params.period.end.getTime(),
+      };
+    },
+    facets() {
+      return [
+        {
+          key: "account",
+          type: "select",
+          placeholder: "Select an option",
+          options: [
+            {
+              value: "*",
+              label: "All your bank accounts",
+              nativeValue: this.accounts.reduce(
+                (acc: string, item: Account) => {
+                  return (acc += `,${item.id}`);
+                },
+                ""
+              ),
+            },
+            ...this.accounts.map((item: Account) => ({
+              value: item.id,
+              label: `${item.bankName} - ${item.accountNumber}`,
+            })),
+            { value: "new", label: "+ Add a new account" },
+          ],
+          valueActions: [{ key: "new", type: "emit", props: "" }],
+        },
+        {
+          key: "period",
+          type: "select",
+          placeholder: "Select an option",
+          options: [
+            {
+              value: "yesterday",
+              label: "Yesterday",
+              nativeValue: COMMON_DATES["yesterday"],
+            },
+            {
+              value: "last-week",
+              label: "Past week",
+              nativeValue: COMMON_DATES["last-week"],
+            },
+            {
+              value: "last-month",
+              label: "Last 30 days",
+              nativeValue: COMMON_DATES["last-month"],
+            },
+            {
+              value: "last-quarter",
+              label: "Last 3 months",
+              nativeValue: COMMON_DATES["last-quarter"],
+            },
+            {
+              value: "last-year",
+              label: "Past year",
+              nativeValue: COMMON_DATES["last-year"],
+            },
+            {
+              value: "custom",
+              label: "Custom",
+            },
+          ],
+          valueActions: [
+            { key: "custom", type: "input", component: "calendar", props: "" },
+          ],
+        },
+      ];
+    },
   },
   methods: {
     ...mapActions([
@@ -255,29 +337,28 @@ import { Account } from "@/types";
       "getRecurringExpenses",
       "getEstablishmentActivities",
     ]),
-    fetch() {
-      const accountId = this.selectedAccounts.join(", ");
-      const params = {
-        accountId,
-        start: this.from ? new Date(this.from).getTime() : undefined,
-        end: this.to ? new Date(this.to).getTime() : undefined,
-      };
+    fetch(params: FilterParams, exclude = true) {
       Promise.allSettled([
-        this.getAccounts(),
+        ...(!exclude ? [this.getAccounts()] : []),
         this.getTransactions(params),
         this.getNetIncome(params),
         this.getExpense(params),
         this.getRevenue(params),
         this.getTransactionCategories(params),
         this.getRecurringExpenses({
-          accountId,
+          accountId: params.accountId,
         }),
         this.getEstablishmentActivities(params),
       ]);
     },
   },
   created() {
-    this.fetch();
+    this.fetch(this.transformParams(this.params));
+  },
+  watch: {
+    queryParams(newVal) {
+      this.fetch(newVal, false);
+    },
   },
 })
 export default class Dashboard extends Vue {}

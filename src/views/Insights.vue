@@ -1,5 +1,8 @@
 <template>
   <Page>
+    <template v-slot:actions>
+      <Filter :facets="[]" />
+    </template>
     <div>
       <section class="dashboard-content-container">
         <div class="dashboard-content">
@@ -71,10 +74,12 @@
 import { Options, Vue } from "vue-class-component";
 import Card from "@/components/layout/Card.vue";
 import Page from "@/components/layout/Page.vue";
+import Filter from "@/components/common/Filter.vue";
 
 @Options({
   components: {
     Card,
+    Filter,
     Page,
   },
 })

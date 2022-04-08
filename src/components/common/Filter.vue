@@ -10,12 +10,12 @@
     </button>
     <div v-if="showFilters" class="filter-facets">
       <div class="filter-list">
-        <div v-for="facet in facets" :key="facet.key" class="filter-input">
+        <div v-for="field in fields" :key="field.key" class="filter-input">
           <Multiselect
-            v-if="facet.type == 'select'"
-            v-model="model[facet.key]"
-            :placeholder="facet.placeholder"
-            :options="facet.options"
+            v-if="field.type == 'select'"
+            v-model="model[field.key]"
+            :placeholder="field.placeholder"
+            :options="field.options"
           />
         </div>
       </div>
@@ -32,7 +32,7 @@
       </div>
     </div>
     <div v-if="showFilterOptions" class="filter-field-options">
-      <RangePicker @range="processOption" />
+      <RangePicker field="period" key="custom" @update="processOption" />
     </div>
   </div>
 </template>
@@ -48,41 +48,27 @@ import RangePicker from "./RangePicker.vue";
       type: String,
       default: "No Results",
     },
+    fields: {
+      type: Array,
+      required: true,
+    },
+    model: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
-      facets: [
-        {
-          key: "account",
-          type: "select",
-          placeholder: "Select an option",
-          options: [
-            { value: "all", label: "All your bank accounts" },
-            { value: "207866554", label: "UBA - 207866554" },
-            { value: "6544778899", label: "Zenith - 6544778899" },
-            { value: "3244551177", label: "Kuda - 3244551177" },
-            { value: "new", label: "+ Add a new account" },
-          ],
-          valueOptions: [{ key: "all", type: "emit", props: "" }],
-        },
-        {
-          key: "period",
-          type: "select",
-          placeholder: "Select an option",
-          options: [
-            { value: "yesterday", label: "Yesterday" },
-            { value: "last-week", label: "Past week" },
-            { value: "last-month", label: "Last 30 days" },
-            { value: "last-quarter", label: "Last 3 months" },
-            { value: "last-year", label: "Past year" },
-            { value: "custom", label: "Custom" },
-          ],
-          valueOptions: [
-            { key: "custom", type: "input", component: "calendar", props: "" },
-          ],
-        },
-      ],
-      model: {},
+      modelValue: this.model,
+      additionalValue: this.fields.reduce((acc, { key, valueActions }) => {
+        return {
+          ...acc,
+          ...valueActions.reduce(
+            (_acc, item) => ({ ..._acc, [`${key}.${item.key}`]: null }),
+            {}
+          ),
+        };
+      }, {}),
       showFilters: false,
       showFilterOptions: false,
     };
@@ -91,19 +77,33 @@ import RangePicker from "./RangePicker.vue";
     processOption(input: any) {
       this.showFilters = true;
       this.showFilterOptions = false;
-      console.log(input);
+      this.additionalValue[input.key] = input.value;
     },
     submit() {
-      this.$emit("filter", this.model);
+      const value = Object.entries(this.model).reduce((acc, [key, value]) => {
+        const field = this.fields.find((item) => item.key === key);
+        const valueOption = field.options.find((item) => item.value == value);
+        return {
+          ...acc,
+          [key]:
+            this.additionalValue[`${field.key}.${valueOption.value}`] ||
+            valueOption.nativeValue ||
+            valueOption.value,
+        };
+      }, {});
+      this.$emit("filter", value);
       this.showFilters = false;
     },
   },
   watch: {
-    "model.period"(newVal) {
+    "modelValue.period"(newVal) {
       if (newVal == "custom") {
         this.showFilters = false;
         this.showFilterOptions = true;
       }
+    },
+    model(newVal) {
+      this.modelValue = newVal;
     },
   },
 })

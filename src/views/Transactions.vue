@@ -1,5 +1,8 @@
 <template>
   <Page>
+    <template v-slot:actions>
+      <Filter :facets="[]" />
+    </template>
     <div @click="outsideClickHandler">
       <section class="dashboard-content-container">
         <div class="dashboard-content">
@@ -94,6 +97,7 @@ import Page from "@/components/layout/Page.vue";
 import AddNewAccount from "@/components/AddNewAccount.vue";
 import { SplitTransaction, Transaction, TransactionModel } from "@/types";
 import SingleTransaction from "@/components/transaction/SingleTransaction.vue";
+import Filter from "@/components/common/Filter.vue";
 
 @Options({
   created() {
@@ -116,6 +120,7 @@ import SingleTransaction from "@/components/transaction/SingleTransaction.vue";
     Page,
     AddNewAccount,
     SingleTransaction,
+    Filter,
   },
   computed: {
     ...mapGetters(["accounts", "transactions", "establishments"]),

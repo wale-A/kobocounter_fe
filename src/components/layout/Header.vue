@@ -5,9 +5,7 @@
       <p class="salutation__message">Welcome back!</p>
     </div>
     <div class="actions">
-      <slot>
-        <Filter />
-      </slot>
+      <slot />
       <div class="user-menu">
         <button class="user-menu__trigger" @click="toggleMenu">
           <img :src="avatarUrl" alt="avatar" class="user-menu__icon" />

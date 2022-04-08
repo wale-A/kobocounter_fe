@@ -41,6 +41,20 @@ import "@vuepic/vue-datepicker/dist/main.css";
 
 @Options({
   components: { Datepicker },
+  props: {
+    field: {
+      type: String,
+      required: true,
+    },
+    key: {
+      type: String,
+      required: true,
+    },
+    value: {
+      type: Object,
+      default: null,
+    },
+  },
   data() {
     return {
       start: new Date(),
@@ -65,7 +79,10 @@ import "@vuepic/vue-datepicker/dist/main.css";
       this.$refs.endPicker.openMenu();
     },
     end() {
-      this.$emit("range", { start: this.start, end: this.end });
+      this.$emit("update", {
+        key: `${this.field}.${this.key}`,
+        value: { start: this.start, end: this.end },
+      });
     },
   },
 })
