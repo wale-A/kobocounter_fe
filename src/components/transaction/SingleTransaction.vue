@@ -1,35 +1,46 @@
 <template>
-  <div id="single-transaction" class="bordered-container" @click.stop="">
+  <div
+    id="single-transaction"
+    class="bordered-container"
+    :class="{ float }"
+    @click.stop=""
+  >
+    <div v-if="onMobile" id="close" @click="float = false">
+      <span class="material-icons"> close </span>
+    </div>
     <div id="no-transaction" v-if="!singleTransaction">
       <img src="/img/assets/no-transaction.svg" alt="no-transactions" />
       <p>You have not selected a transaction</p>
       <p>Select a transaction on the left to see it's details</p>
     </div>
 
-    <div v-else>
-      <div v-if="active === 'view'" class="pane">
+    <template v-else>
+      <div v-if="active === 'view'" id="transaction-detail" class="pane">
         <View
           :transaction="singleTransaction"
           :parent="parentTransaction"
           :sub="childTransactions"
           @edit="onAction('edit')"
           @split="onAction('split')"
-          @select="onAction('select')"
+          @select="$emit('select', $event)"
         />
       </div>
-      <div v-else class="pane">
+      <div v-else id="transaction-detail" class="pane">
         <component
           :is="components[active]"
           :transaction="singleTransaction"
           :parent="parentTransaction"
           :sub="childTransactions"
           :establishments="establishments"
+          @select="$emit('select', $event)"
+          @addEstablishment="$emit('addEstablishment', $event)"
+          @addActivity="$emit('addActivity', $event)"
           @saveEdit="$emit('saveEdit', $event)"
           @saveSplit="$emit('saveSplit', $event)"
           @cancel="onAction('cancel')"
         />
       </div>
-    </div>
+    </template>
   </div>
 </template>
 
@@ -49,6 +60,7 @@ import Split from "./Split.vue";
   data() {
     return {
       active: "view",
+      float: false,
     };
   },
   components: {
@@ -63,13 +75,20 @@ import Split from "./Split.vue";
         edit: "Edit",
       };
     },
+    onMobile() {
+      return ["xs", "sm", "md"].includes(this.$grid.breakpoint);
+    },
   },
   watch: {
     singleTransaction() {
       this.active = "view";
+      if (this.onMobile) {
+        this.float = true;
+      }
     },
   },
   methods: {
+    // TODO: Move this logic up
     onAction(key: string, value: any) {
       switch (key) {
         case "edit":
@@ -82,7 +101,7 @@ import Split from "./Split.vue";
           this.active = "view";
           break;
         default:
-          console.log(value);
+          this.active = "view";
       }
     },
   },
@@ -172,6 +191,7 @@ form input {
 ul {
   list-style-type: disclosure-closed;
 }
+
 @media screen and (max-width: 991px) {
   .form-buttons {
     display: flex;
@@ -187,6 +207,10 @@ ul {
     margin: 0 5%;
     height: 84vh;
     padding: 0 1em;
+  }
+
+  #single-transaction.float {
+    z-index: 5 !important;
   }
   #close {
     display: block;

@@ -178,6 +178,7 @@ import WordCloudChart from "@/components/charts/WordCloudChart.vue";
 import Card from "@/components/layout/Card.vue";
 import Page from "@/components/layout/Page.vue";
 import Loader from "@/components/layout/Loader.vue";
+import { Account } from "@/types";
 
 @Options({
   components: {
@@ -194,7 +195,6 @@ import Loader from "@/components/layout/Loader.vue";
     const from = subMonths(Date.now(), 1);
     const to = new Date();
     return {
-      accountBalance: 0,
       selectedAccounts: [],
       from: `${from.getFullYear()}-${(from.getMonth() + 1)
         .toString()
@@ -217,7 +217,7 @@ import Loader from "@/components/layout/Loader.vue";
       "revenue",
       "expense",
     ]),
-    totalRevenue: function () {
+    totalRevenue() {
       const rev =
         this.revenue?.reduce(
           (acc: number, val: { amount: number }) => (acc += val.amount),
@@ -226,7 +226,7 @@ import Loader from "@/components/layout/Loader.vue";
 
       return rev.toLocaleString();
     },
-    totalExpenses: function () {
+    totalExpenses() {
       const exp = Math.abs(
         this.expense?.reduce(
           (acc: number, val: { amount: number }) => (acc += val.amount),
@@ -234,6 +234,14 @@ import Loader from "@/components/layout/Loader.vue";
         ) || 0
       );
       return exp.toLocaleString();
+    },
+    accountBalance() {
+      const balance = (this.accounts as Account[])
+        .reduce((sum, acct) => {
+          return sum + (acct.balance || 0);
+        }, 0)
+        .toFixed(2);
+      return parseFloat(balance).toLocaleString();
     },
   },
   methods: {

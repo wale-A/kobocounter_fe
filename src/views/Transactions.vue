@@ -1,13 +1,19 @@
 <template>
   <Page>
-    <div class="dashboard" @click="outsideClickHandler">
+    <div @click="outsideClickHandler">
       <section class="dashboard-content-container">
         <div class="dashboard-content">
           <SingleTransaction
+            ref="transactionView"
             :singleTransaction="singleTransaction"
             :childTransactions="childTransactions"
             :parentTransaction="parentTransaction"
             :establishments="establishments"
+            @select="selectTransaction($event)"
+            @addEstablishment="$store.commit('insertEstablishment', $event)"
+            @addActivity="$store.commit('insertActivity', $event)"
+            @saveEdit="editTransaction($event)"
+            @saveSplit="splitTransaction($event)"
           />
           <Card title="All Transactions" class="all-transactions">
             <section id="all-transactions-container">
@@ -86,7 +92,7 @@ import { mapGetters, mapActions } from "vuex";
 import Card from "@/components/layout/Card.vue";
 import Page from "@/components/layout/Page.vue";
 import AddNewAccount from "@/components/AddNewAccount.vue";
-import { SplitTransaction, Transaction } from "@/types";
+import { SplitTransaction, Transaction, TransactionModel } from "@/types";
 import SingleTransaction from "@/components/transaction/SingleTransaction.vue";
 
 @Options({
@@ -143,27 +149,26 @@ import SingleTransaction from "@/components/transaction/SingleTransaction.vue";
       this.parentTransaction = this.transactions?.find(
         (x: Transaction) => x.id === this.singleTransaction?.parentId
       );
-      console.log(this.childTransactions, this.parentTransaction);
     },
     outsideClickHandler() {
       this.singleTransaction = null;
       this.childTransactions = null;
       this.parentTransaction = null;
     },
-    editTransaction(model: Transaction) {
+    editTransaction(model: TransactionModel) {
       this.updateTransaction({
-        transactionId: this.editedTransaction.id,
-        params: {
-          ...this.model,
-          recipientName: this.model.recipientName[0],
+        transactionId: model.id,
+        model: {
+          ...model,
+          recipientName: model.recipientName[0],
         },
-        model,
       })
         .then(() => {
           this.$notify({
             text: "Transaction update was successful",
             type: "success",
           });
+          this.$refs.transactionView.active = "view"; //TODO: Move state up
         })
         .catch(() => {
           this.$notify({
@@ -175,13 +180,14 @@ import SingleTransaction from "@/components/transaction/SingleTransaction.vue";
     splitTransaction(model: SplitTransaction[]) {
       this.saveSplitTransactions({
         transactionId: this.singleTransaction.id,
-        params: model,
+        payload: model,
       })
         .then(() => {
           this.$notify({
             text: "Transaction split was successful",
             type: "success",
           });
+          this.$refs.transactionView.active = "view"; //TODO: Move state up
         })
         .catch(() => {
           this.$notify({

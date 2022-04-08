@@ -1,6 +1,6 @@
 <template>
   <Page>
-    <div class="dashboard">
+    <div>
       <section class="dashboard-content-container">
         <div class="dashboard-content">
           <!-- <div id="single-analysis"></div> -->

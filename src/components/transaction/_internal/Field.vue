@@ -1,8 +1,8 @@
 <template>
   <div class="field mid-text" :class="[orientation]">
-    <label class="small-text accent-color">{{ label }}</label>
+    <label class="key small-text accent-color">{{ label }}</label>
     <slot name="value">
-      <label>{{ value || "-" }}</label>
+      <label class="value">{{ value || "-" }}</label>
     </slot>
   </div>
 </template>
@@ -15,7 +15,7 @@ import { Options, Vue } from "vue-class-component";
     value: String,
     orientation: {
       type: String,
-      default: "row",
+      default: "column",
     },
   },
 })
@@ -26,8 +26,15 @@ export default class Field extends Vue {}
 .field {
   display: flex;
   flex-direction: row;
+  color: #2a2a2a;
+  margin-top: 0.9em;
+  font-size: 1em;
+  overflow-wrap: break-word;
 }
 .field.column {
   flex-direction: column;
+}
+.key {
+  font-weight: 700;
 }
 </style>

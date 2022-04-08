@@ -53,6 +53,22 @@ export type Transaction = {
   displayAmount?: number;
 };
 
+export type TransactionModel = {
+  id: string;
+  displayCategory: string;
+  recipientName: string[];
+  isEstablishment: boolean;
+  establishmentActivities: string[];
+};
+
+export type TransactionPayload = {
+  id: string;
+  displayCategory: string;
+  recipientName: string;
+  isEstablishment: boolean;
+  establishmentActivities: string[];
+};
+
 export type TransactionInfo = Transaction & {
   establishment: {
     name: string;
