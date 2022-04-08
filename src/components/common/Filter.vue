@@ -31,14 +31,18 @@
         </button>
       </div>
     </div>
+    <div v-if="showFilterOptions" class="filter-field-options">
+      <RangePicker @range="processOption" />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import Multiselect from "@vueform/multiselect";
+import RangePicker from "./RangePicker.vue";
 @Options({
-  components: { Multiselect },
+  components: { Multiselect, RangePicker },
   props: {
     activeFilters: {
       type: String,
@@ -59,6 +63,7 @@ import Multiselect from "@vueform/multiselect";
             { value: "3244551177", label: "Kuda - 3244551177" },
             { value: "new", label: "+ Add a new account" },
           ],
+          valueOptions: [{ key: "all", type: "emit", props: "" }],
         },
         {
           key: "period",
@@ -72,16 +77,33 @@ import Multiselect from "@vueform/multiselect";
             { value: "last-year", label: "Past year" },
             { value: "custom", label: "Custom" },
           ],
+          valueOptions: [
+            { key: "custom", type: "input", component: "calendar", props: "" },
+          ],
         },
       ],
       model: {},
       showFilters: false,
+      showFilterOptions: false,
     };
   },
   methods: {
+    processOption(input: any) {
+      this.showFilters = true;
+      this.showFilterOptions = false;
+      console.log(input);
+    },
     submit() {
       this.$emit("filter", this.model);
       this.showFilters = false;
+    },
+  },
+  watch: {
+    "model.period"(newVal) {
+      if (newVal == "custom") {
+        this.showFilters = false;
+        this.showFilterOptions = true;
+      }
     },
   },
 })
@@ -161,6 +183,17 @@ export default class Filter extends Vue {}
   &-action--submit {
     background: #007cff;
     color: #ffffff;
+  }
+
+  &-field-options {
+    position: absolute;
+    width: 278px;
+    background: #ffffff;
+    box-shadow: 0px 4px 15px 4px rgba(54, 65, 86, 0.1);
+    border-radius: 10px;
+    padding: 6px 0;
+    top: 65px;
+    right: 20px;
   }
 }
 </style>

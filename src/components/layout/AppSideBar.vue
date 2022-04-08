@@ -90,6 +90,7 @@ export default class SideBar extends Vue {}
 <style lang="scss" scoped>
 .wrapper {
   background-color: #007cff;
+  height: 100%;
 }
 .l-container {
   display: flex;
