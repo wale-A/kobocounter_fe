@@ -98,7 +98,7 @@ export const TRANSACTION_CATEGORIES = [
 ];
 
 const now = new Date();
-export const COMMON_DATES = {
+export const COMMON_DATES: Record<string, { start: Date; end: Date }> = {
   yesterday: {
     start: sub(now, { days: 1 }),
     end: now,

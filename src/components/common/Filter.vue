@@ -13,7 +13,7 @@
         <div v-for="field in fields" :key="field.key" class="filter-input">
           <Multiselect
             v-if="field.type == 'select'"
-            v-model="model[field.key]"
+            v-model="modelValue[field.key]"
             :placeholder="field.placeholder"
             :options="field.options"
           />
@@ -32,7 +32,7 @@
       </div>
     </div>
     <div v-if="showFilterOptions" class="filter-field-options">
-      <RangePicker field="period" key="custom" @update="processOption" />
+      <RangePicker field="period" keyValue="custom" @update="processOption" />
     </div>
   </div>
 </template>
@@ -59,38 +59,72 @@ import RangePicker from "./RangePicker.vue";
   },
   data() {
     return {
-      modelValue: this.model,
-      additionalValue: this.fields.reduce((acc, { key, valueActions }) => {
-        return {
-          ...acc,
-          ...valueActions.reduce(
-            (_acc, item) => ({ ..._acc, [`${key}.${item.key}`]: null }),
-            {}
-          ),
-        };
-      }, {}),
+      modelValue: null,
+      additionalValue: null,
       showFilters: false,
       showFilterOptions: false,
     };
   },
   methods: {
-    processOption(input: any) {
-      this.showFilters = true;
-      this.showFilterOptions = false;
-      this.additionalValue[input.key] = input.value;
-    },
-    submit() {
-      const value = Object.entries(this.model).reduce((acc, [key, value]) => {
-        const field = this.fields.find((item) => item.key === key);
-        const valueOption = field.options.find((item) => item.value == value);
+    getValue(model: Record<string, any>) {
+      return Object.keys(model).reduce((acc, key) => {
+        const field = (this.fields as any[]).find(
+          (item: any) => item.key === key
+        );
         return {
           ...acc,
           [key]:
-            this.additionalValue[`${field.key}.${valueOption.value}`] ||
-            valueOption.nativeValue ||
-            valueOption.value,
+            field.sanitizeValue && typeof field.sanitizeValue === "function"
+              ? field.sanitizeValue(model[key])
+              : model[key],
         };
       }, {});
+    },
+    getAdditionalValue() {
+      return (this.fields as any[]).reduce(
+        (
+          acc: Record<string, any>,
+          { key, valueActions }: { key: string; valueActions: any[] }
+        ) => {
+          return {
+            ...acc,
+            ...valueActions.reduce(
+              (_acc, item) => ({ ..._acc, [`${key}.${item.key}`]: null }),
+              {}
+            ),
+          };
+        },
+        {}
+      );
+    },
+    processOption(input: any) {
+      this.showFilters = true;
+      this.showFilterOptions = false;
+      this.additionalValue[`${input.field}.${input.key}`] = {
+        name: input.key,
+        ...input.value,
+      };
+      console.log("additional", this.additionalValue);
+    },
+    submit() {
+      const value = Object.entries(this.modelValue).reduce(
+        (acc, [key, value]) => {
+          const field = (this.fields as any[]).find(
+            (item: any) => item.key === key
+          );
+          const valueOption = field.options.find(
+            (item: any) => item.value == value
+          );
+          return {
+            ...acc,
+            [key]:
+              this.additionalValue[`${field.key}.${valueOption.value}`] ||
+              valueOption.nativeValue ||
+              valueOption.value,
+          };
+        },
+        {}
+      );
       this.$emit("filter", value);
       this.showFilters = false;
     },
@@ -103,8 +137,12 @@ import RangePicker from "./RangePicker.vue";
       }
     },
     model(newVal) {
-      this.modelValue = newVal;
+      this.modelValue = this.getValue(newVal);
     },
+  },
+  created() {
+    this.modelValue = this.getValue(this.model);
+    this.additionalValue = this.getAdditionalValue();
   },
 })
 export default class Filter extends Vue {}

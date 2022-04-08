@@ -1,7 +1,11 @@
 <template>
   <Page>
     <template v-slot:actions>
-      <Filter :fields="facets" :model="params" @filter="params = $event" />
+      <Filter
+        :fields="facets"
+        :model="{ ...params }"
+        @filter="params = $event"
+      />
     </template>
     <div>
       <section
@@ -201,7 +205,10 @@ import { COMMON_DATES } from "@/config";
     return {
       params: {
         account: "",
-        period: COMMON_DATES["last-month"],
+        period: {
+          name: "last-month",
+          ...COMMON_DATES["last-month"],
+        },
       },
       displayChart: "piechart",
     };
@@ -267,14 +274,8 @@ import { COMMON_DATES } from "@/config";
           placeholder: "Select an option",
           options: [
             {
-              value: "*",
+              value: "",
               label: "All your bank accounts",
-              nativeValue: this.accounts.reduce(
-                (acc: string, item: Account) => {
-                  return (acc += `,${item.id}`);
-                },
-                ""
-              ),
             },
             ...this.accounts.map((item: Account) => ({
               value: item.id,
@@ -288,31 +289,49 @@ import { COMMON_DATES } from "@/config";
           key: "period",
           type: "select",
           placeholder: "Select an option",
+          sanitizeValue(value: { name: string; start: Date; end: Date }) {
+            return value.name;
+          },
           options: [
             {
               value: "yesterday",
               label: "Yesterday",
-              nativeValue: COMMON_DATES["yesterday"],
+              nativeValue: {
+                name: "yesterday",
+                ...COMMON_DATES["yesterday"],
+              },
             },
             {
               value: "last-week",
               label: "Past week",
-              nativeValue: COMMON_DATES["last-week"],
+              nativeValue: {
+                name: "last-week",
+                ...COMMON_DATES["last-week"],
+              },
             },
             {
               value: "last-month",
               label: "Last 30 days",
-              nativeValue: COMMON_DATES["last-month"],
+              nativeValue: {
+                name: "last-month",
+                ...COMMON_DATES["last-month"],
+              },
             },
             {
               value: "last-quarter",
               label: "Last 3 months",
-              nativeValue: COMMON_DATES["last-quarter"],
+              nativeValue: {
+                name: "last-quarter",
+                ...COMMON_DATES["last-quarter"],
+              },
             },
             {
               value: "last-year",
               label: "Past year",
-              nativeValue: COMMON_DATES["last-year"],
+              nativeValue: {
+                name: "last-year",
+                ...COMMON_DATES["last-year"],
+              },
             },
             {
               value: "custom",
@@ -337,9 +356,9 @@ import { COMMON_DATES } from "@/config";
       "getRecurringExpenses",
       "getEstablishmentActivities",
     ]),
-    fetch(params: FilterParams, exclude = true) {
+    fetch(params: FilterParams) {
       Promise.allSettled([
-        ...(!exclude ? [this.getAccounts()] : []),
+        this.getAccounts(),
         this.getTransactions(params),
         this.getNetIncome(params),
         this.getExpense(params),
@@ -353,11 +372,11 @@ import { COMMON_DATES } from "@/config";
     },
   },
   created() {
-    this.fetch(this.transformParams(this.params));
+    this.fetch(this.queryParams);
   },
   watch: {
     queryParams(newVal) {
-      this.fetch(newVal, false);
+      this.fetch(newVal);
     },
   },
 })

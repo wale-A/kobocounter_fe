@@ -46,7 +46,7 @@ import "@vuepic/vue-datepicker/dist/main.css";
       type: String,
       required: true,
     },
-    key: {
+    keyValue: {
       type: String,
       required: true,
     },
@@ -80,7 +80,8 @@ import "@vuepic/vue-datepicker/dist/main.css";
     },
     end() {
       this.$emit("update", {
-        key: `${this.field}.${this.key}`,
+        field: this.field,
+        key: this.keyValue,
         value: { start: this.start, end: this.end },
       });
     },
