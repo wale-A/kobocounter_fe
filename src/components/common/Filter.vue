@@ -1,6 +1,6 @@
 <template>
   <div class="filter">
-    <div class="filter-results">{{ activeFilters }}</div>
+    <div class="filter-results">{{ displayText }}</div>
     <button class="filter-trigger" @click="showFilters = !showFilters">
       <span class="filter-trigger-label">Filters</span>
       <svg-icon
@@ -17,6 +17,11 @@
             :placeholder="field.placeholder"
             :options="field.options"
           />
+          <span
+            v-if="field.key === 'period' && modelValue[field.key] === 'custom'"
+            @click="displayFilterOptions"
+            >edit</span
+          >
         </div>
       </div>
       <div class="filter-actions">
@@ -32,7 +37,13 @@
       </div>
     </div>
     <div v-if="showFilterOptions" class="filter-field-options">
-      <RangePicker field="period" keyValue="custom" @update="processOption" />
+      <RangePicker
+        field="period"
+        keyValue="custom"
+        :value="additionalValue['period.custom']"
+        @cancel="processOption"
+        @update="processOption"
+      />
     </div>
   </div>
 </template>
@@ -44,9 +55,9 @@ import RangePicker from "./RangePicker.vue";
 @Options({
   components: { Multiselect, RangePicker },
   props: {
-    activeFilters: {
+    displayText: {
       type: String,
-      default: "No Results",
+      required: true,
     },
     fields: {
       type: Array,
@@ -65,12 +76,37 @@ import RangePicker from "./RangePicker.vue";
       showFilterOptions: false,
     };
   },
+  computed: {
+    fieldMap() {
+      return (this.fields as any[]).reduce(
+        (acc: Record<string, any>, item: any) => {
+          return {
+            ...acc,
+            [item.key]: {
+              field: item,
+              options: item.options.reduce(
+                (_acc: Record<string, any>, _item: any) => {
+                  return { ..._acc, [_item.value]: _item };
+                },
+                {}
+              ),
+              valueActions: item.valueActions.reduce(
+                (_acc: Record<string, any>, _item: any) => {
+                  return { ..._acc, [_item.value]: _item };
+                },
+                {}
+              ),
+            },
+          };
+        },
+        {}
+      );
+    },
+  },
   methods: {
     getValue(model: Record<string, any>) {
       return Object.keys(model).reduce((acc, key) => {
-        const field = (this.fields as any[]).find(
-          (item: any) => item.key === key
-        );
+        const field = this.fieldMap[key].field;
         return {
           ...acc,
           [key]:
@@ -98,23 +134,28 @@ import RangePicker from "./RangePicker.vue";
       );
     },
     processOption(input: any) {
-      this.showFilters = true;
-      this.showFilterOptions = false;
-      this.additionalValue[`${input.field}.${input.key}`] = {
-        name: input.key,
-        ...input.value,
-      };
-      console.log("additional", this.additionalValue);
+      this.displayFilters();
+      if (input.value) {
+        this.additionalValue[`${input.field}.${input.key}`] = {
+          name: input.key,
+          ...input.value,
+        };
+        console.log("additional", this.additionalValue);
+      } else {
+        if (
+          !this.additionalValue[`${input.field}.${input.key}`] &&
+          this.fieldMap[input.field]?.field?.defaultValue
+        ) {
+          this.modelValue[input.field] =
+            this.fieldMap[input.field]?.field?.defaultValue;
+        }
+      }
     },
     submit() {
       const value = Object.entries(this.modelValue).reduce(
         (acc, [key, value]) => {
-          const field = (this.fields as any[]).find(
-            (item: any) => item.key === key
-          );
-          const valueOption = field.options.find(
-            (item: any) => item.value == value
-          );
+          const field = this.fieldMap[key].field;
+          const valueOption = this.fieldMap[key].options[value as string];
           return {
             ...acc,
             [key]:
@@ -128,12 +169,19 @@ import RangePicker from "./RangePicker.vue";
       this.$emit("filter", value);
       this.showFilters = false;
     },
+    displayFilters() {
+      this.showFilters = true;
+      this.showFilterOptions = false;
+    },
+    displayFilterOptions() {
+      this.showFilters = false;
+      this.showFilterOptions = true;
+    },
   },
   watch: {
     "modelValue.period"(newVal) {
       if (newVal == "custom") {
-        this.showFilters = false;
-        this.showFilterOptions = true;
+        this.displayFilterOptions();
       }
     },
     model(newVal) {

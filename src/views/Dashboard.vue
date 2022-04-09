@@ -2,6 +2,7 @@
   <Page>
     <template v-slot:actions>
       <Filter
+        :displayText="paramSummary"
         :fields="facets"
         :model="{ ...params }"
         @filter="params = $event"
@@ -259,6 +260,24 @@ import { COMMON_DATES } from "@/config";
       // TODO: use filter
       return dateFormat(this.params.period.end, "yyyy-mm-dd");
     },
+    accountMap() {
+      return this.accounts.reduce(
+        (acc: Record<string, any>, item: Account) => ({
+          ...acc,
+          [item.id]: item,
+        }),
+        {}
+      );
+    },
+    paramSummary() {
+      if (this.params) {
+        const bank = this.accountMap[this.params.account]
+          ? `${this.accountMap[this.params.account].bankName} Account`
+          : "All Bank Accounts";
+        return `Showing ${bank} from ${this.from} to ${this.to}`;
+      }
+      return "";
+    },
     queryParams() {
       return {
         accountId: this.params.account,
@@ -283,6 +302,7 @@ import { COMMON_DATES } from "@/config";
             })),
             { value: "new", label: "+ Add a new account" },
           ],
+          defaultValue: "",
           valueActions: [{ key: "new", type: "emit", props: "" }],
         },
         {
@@ -338,6 +358,7 @@ import { COMMON_DATES } from "@/config";
               label: "Custom",
             },
           ],
+          defaultValue: "last-month",
           valueActions: [
             { key: "custom", type: "input", component: "calendar", props: "" },
           ],
