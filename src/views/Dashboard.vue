@@ -2,10 +2,10 @@
   <Page>
     <template v-slot:actions>
       <Filter
-        :displayText="paramSummary"
-        :fields="facets"
-        :model="{ ...params }"
-        @filter="params = $event"
+        :displayText="paramSummary.value"
+        :fields="facets.value"
+        :model="{ ...params.value }"
+        @filter="setParams($event)"
         @update:account="addAccount"
       />
     </template>
@@ -19,7 +19,7 @@
             <IncomeChart
               :height="'39vh'"
               :width="'98%'"
-              :fileName="'income_summary__' + from + '_to_' + to"
+              :fileName="'income_summary__' + from.value + '_to_' + to.value"
               :revenue="revenue"
               :expense="expense"
             />
@@ -58,7 +58,9 @@
               :height="'46vh'"
               :inputData="transactionCategories"
               :width="'98%'"
-              :fileName="'spending_category_summary__' + from + '_to_' + to"
+              :fileName="
+                'spending_category_summary__' + from.value + '_to_' + to.value
+              "
               v-show="displayChart === 'piechart'"
             />
           </Card>
@@ -187,9 +189,7 @@ import Card from "@/components/layout/Card.vue";
 import Page from "@/components/layout/Page.vue";
 import Loader from "@/components/layout/Loader.vue";
 import Filter from "@/components/common/Filter.vue";
-import dateFormat from "dateformat";
 import { Account, FilterParams } from "@/types";
-import { COMMON_DATES } from "@/config";
 
 @Options({
   components: {
@@ -203,15 +203,18 @@ import { COMMON_DATES } from "@/config";
     Page,
     Filter,
   },
+  inject: [
+    "params",
+    "facets",
+    "queryParams",
+    "paramSummary",
+    "to",
+    "from",
+    "setParams",
+    "addAccount",
+  ],
   data() {
     return {
-      params: {
-        account: "",
-        period: {
-          name: "last-month",
-          ...COMMON_DATES["last-month"],
-        },
-      },
       displayChart: "piechart",
     };
   },
@@ -253,124 +256,6 @@ import { COMMON_DATES } from "@/config";
         .toFixed(2);
       return parseFloat(balance).toLocaleString();
     },
-    to() {
-      // TODO: use filter
-      return dateFormat(this.params.period.end, "yyyy-mm-dd");
-    },
-    from() {
-      // TODO: use filter
-      return dateFormat(this.params.period.start, "yyyy-mm-dd");
-    },
-    accountMap() {
-      return this.accounts.reduce(
-        (acc: Record<string, any>, item: Account) => ({
-          ...acc,
-          [item.id]: item,
-        }),
-        {}
-      );
-    },
-    paramSummary() {
-      if (this.params) {
-        const bank = this.accountMap[this.params.account]
-          ? `${this.accountMap[this.params.account].bankName} Account`
-          : "All Bank Accounts";
-        return `Showing ${bank} from ${this.from} to ${this.to}`;
-      }
-      return "";
-    },
-    queryParams() {
-      return {
-        accountId: this.params.account,
-        start: this.params.period.start.getTime(),
-        end: this.params.period.end.getTime(),
-      };
-    },
-    facets() {
-      return [
-        {
-          key: "account",
-          type: "select",
-          placeholder: "Select an option",
-          options: [
-            {
-              value: "",
-              label: "All your bank accounts",
-            },
-            ...this.accounts.map((item: Account) => ({
-              value: item.id,
-              label: `${item.bankName} - ${item.accountNumber}`,
-            })),
-            { value: "new", label: "+ Add a new account" },
-          ],
-          defaultValue: "",
-          valueActions: [{ key: "new", type: "emit", props: "" }],
-        },
-        {
-          key: "period",
-          type: "select",
-          placeholder: "Select an option",
-          sanitizeValue(value: { name: string; start: Date; end: Date }) {
-            return value.name;
-          },
-          options: [
-            {
-              value: "yesterday",
-              label: "Yesterday",
-              nativeValue: {
-                name: "yesterday",
-                ...COMMON_DATES["yesterday"],
-              },
-            },
-            {
-              value: "last-week",
-              label: "Past week",
-              nativeValue: {
-                name: "last-week",
-                ...COMMON_DATES["last-week"],
-              },
-            },
-            {
-              value: "last-month",
-              label: "Last 30 days",
-              nativeValue: {
-                name: "last-month",
-                ...COMMON_DATES["last-month"],
-              },
-            },
-            {
-              value: "last-quarter",
-              label: "Last 3 months",
-              nativeValue: {
-                name: "last-quarter",
-                ...COMMON_DATES["last-quarter"],
-              },
-            },
-            {
-              value: "last-year",
-              label: "Past year",
-              nativeValue: {
-                name: "last-year",
-                ...COMMON_DATES["last-year"],
-              },
-            },
-            {
-              value: "custom",
-              label: "Custom",
-            },
-          ],
-          defaultValue: "last-month",
-          valueActions: [
-            {
-              key: "custom",
-              type: "input",
-              component: "RangePicker",
-              props: "",
-            },
-          ],
-        },
-      ];
-    },
   },
   methods: {
     ...mapActions([
@@ -397,22 +282,12 @@ import { COMMON_DATES } from "@/config";
         this.getEstablishmentActivities(params),
       ]);
     },
-    addAccount() {
-      const addAccountFn = (code: string) =>
-        this.$store.dispatch("addAccount", { code });
-      const options = {
-        onSuccess: function (response: { code: string }) {
-          addAccountFn(response.code);
-        },
-      };
-      this.$launchMono(options);
-    },
   },
   created() {
-    this.fetch(this.queryParams);
+    this.fetch(this.queryParams.value);
   },
   watch: {
-    queryParams(newVal) {
+    "queryParams.value"(newVal) {
       this.fetch(newVal);
     },
   },

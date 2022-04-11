@@ -1,7 +1,13 @@
 <template>
   <Page>
     <template v-slot:actions>
-      <Filter :facets="[]" />
+      <Filter
+        :displayText="paramSummary.value"
+        :fields="facets.value"
+        :model="{ ...params.value }"
+        @filter="setParams($event)"
+        @update:account="addAccount"
+      />
     </template>
     <div>
       <section class="dashboard-content-container">
@@ -81,6 +87,21 @@ import Filter from "@/components/common/Filter.vue";
     Card,
     Filter,
     Page,
+  },
+  inject: [
+    "params",
+    "facets",
+    "queryParams",
+    "paramSummary",
+    "to",
+    "from",
+    "setParams",
+    "addAccount",
+  ],
+  watch: {
+    "queryParams.value"(newVal) {
+      console.log(newVal);
+    },
   },
 })
 export default class Insights extends Vue {}

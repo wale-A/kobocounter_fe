@@ -1,7 +1,7 @@
 <template>
   <Page>
     <template v-slot:actions>
-      <Filter :facets="[]" />
+      <Filter :displayText="''" :fields="[]" :model="{}" />
     </template>
     <div @click="outsideClickHandler">
       <section class="dashboard-content-container">
