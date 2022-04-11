@@ -150,7 +150,10 @@ import RangePicker from "./RangePicker.vue";
           return {
             ...acc,
             ...valueActions.reduce(
-              (_acc, item) => ({ ..._acc, [key]: item }),
+              (_acc, item) => ({
+                ..._acc,
+                [`${key}.${item.key}`]: { field: key, ...item },
+              }),
               {}
             ),
           };
@@ -160,20 +163,20 @@ import RangePicker from "./RangePicker.vue";
     },
     initAdditionalFields(model: Record<string, any>) {
       return Object.keys(model).reduce((_acc, key) => {
-        return { ..._acc, [`${key}.${model[key].key}`]: null };
+        return { ..._acc, [key]: null };
       }, {});
     },
     watchAdditionalValues(model: Record<string, any>) {
       Object.keys(model).forEach((key) => {
+        const field = model[key].field;
         this.$watch(
-          () => this.modelValue[key] === model[key].key,
-          () => {
-            if (model[key].type === "input") {
-              this.activeField = key;
-              console.log(this.activeField, this.modelValue[key]);
+          () => this.modelValue[field] === model[key].key,
+          (newVal: boolean) => {
+            if (newVal && model[key].type === "input") {
+              this.activeField = field;
               this.displayFilterOptions();
-            } else if (model[key].type === "emit") {
-              this.$emit(`update:${key}`, this.modelValue[key]);
+            } else if (newVal && model[key].type === "emit") {
+              this.$emit(`update:${field}`, this.modelValue[field]);
               this.showFilters = false;
             }
           }
@@ -234,7 +237,6 @@ import RangePicker from "./RangePicker.vue";
     const fields = this.getAdditionalFields(this.fields);
     this.additionalValue = this.initAdditionalFields(fields);
     this.watchAdditionalValues(fields);
-    console.log(this.fieldMap, fields, this.fieldValueComponentMap);
   },
 })
 export default class Filter extends Vue {}
