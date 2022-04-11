@@ -18,7 +18,7 @@
             :options="field.options"
           />
           <span
-            v-if="field.key === 'period' && modelValue[field.key] === 'custom'"
+            v-if="additionalValue[`${field.key}.${modelValue[field.key]}`]"
             @click="displayFilterOptions"
             >edit</span
           >
@@ -37,10 +37,14 @@
       </div>
     </div>
     <div v-if="showFilterOptions" class="filter-field-options">
-      <RangePicker
-        field="period"
-        keyValue="custom"
-        :value="additionalValue['period.custom']"
+      <!--filter-field-options is the modal, iterate through valueActions for components or use dynamic component-->
+      <component
+        :is="
+          fieldValueComponentMap[`${activeField}.${modelValue[activeField]}`]
+        "
+        :field="activeField"
+        :keyValue="modelValue[activeField]"
+        :value="additionalValue[`${activeField}.${modelValue[activeField]}`]"
         @cancel="processOption"
         @update="processOption"
       />
@@ -74,6 +78,7 @@ import RangePicker from "./RangePicker.vue";
       additionalValue: null,
       showFilters: false,
       showFilterOptions: false,
+      activeField: null,
     };
   },
   computed: {
@@ -92,11 +97,31 @@ import RangePicker from "./RangePicker.vue";
               ),
               valueActions: item.valueActions.reduce(
                 (_acc: Record<string, any>, _item: any) => {
-                  return { ..._acc, [_item.value]: _item };
+                  return { ..._acc, [_item.key]: _item };
                 },
                 {}
               ),
             },
+          };
+        },
+        {}
+      );
+    },
+    fieldValueComponentMap() {
+      return this.fields.reduce(
+        (
+          acc: Record<string, string>,
+          { key, valueActions }: { key: string; valueActions: any[] }
+        ) => {
+          return {
+            ...acc,
+            ...valueActions.reduce(
+              (_acc, item) => ({
+                ..._acc,
+                [`${key}.${item.key}`]: item.component,
+              }),
+              {}
+            ),
           };
         },
         {}
@@ -116,22 +141,44 @@ import RangePicker from "./RangePicker.vue";
         };
       }, {});
     },
-    getAdditionalValue() {
-      return (this.fields as any[]).reduce(
+    getAdditionalFields(model: Record<string, any>) {
+      return model.reduce(
         (
-          acc: Record<string, any>,
+          acc: Record<string, string>,
           { key, valueActions }: { key: string; valueActions: any[] }
         ) => {
           return {
             ...acc,
             ...valueActions.reduce(
-              (_acc, item) => ({ ..._acc, [`${key}.${item.key}`]: null }),
+              (_acc, item) => ({ ..._acc, [key]: item }),
               {}
             ),
           };
         },
         {}
       );
+    },
+    initAdditionalFields(model: Record<string, any>) {
+      return Object.keys(model).reduce((_acc, key) => {
+        return { ..._acc, [`${key}.${model[key].key}`]: null };
+      }, {});
+    },
+    watchAdditionalValues(model: Record<string, any>) {
+      Object.keys(model).forEach((key) => {
+        this.$watch(
+          () => this.modelValue[key] === model[key].key,
+          () => {
+            if (model[key].type === "input") {
+              this.activeField = key;
+              console.log(this.activeField, this.modelValue[key]);
+              this.displayFilterOptions();
+            } else if (model[key].type === "emit") {
+              this.$emit(`update:${key}`, this.modelValue[key]);
+              this.showFilters = false;
+            }
+          }
+        );
+      });
     },
     processOption(input: any) {
       this.displayFilters();
@@ -140,7 +187,6 @@ import RangePicker from "./RangePicker.vue";
           name: input.key,
           ...input.value,
         };
-        console.log("additional", this.additionalValue);
       } else {
         if (
           !this.additionalValue[`${input.field}.${input.key}`] &&
@@ -179,18 +225,16 @@ import RangePicker from "./RangePicker.vue";
     },
   },
   watch: {
-    "modelValue.period"(newVal) {
-      if (newVal == "custom") {
-        this.displayFilterOptions();
-      }
-    },
     model(newVal) {
       this.modelValue = this.getValue(newVal);
     },
   },
   created() {
     this.modelValue = this.getValue(this.model);
-    this.additionalValue = this.getAdditionalValue();
+    const fields = this.getAdditionalFields(this.fields);
+    this.additionalValue = this.initAdditionalFields(fields);
+    this.watchAdditionalValues(fields);
+    console.log(this.fieldMap, fields, this.fieldValueComponentMap);
   },
 })
 export default class Filter extends Vue {}

@@ -6,6 +6,7 @@
         :fields="facets"
         :model="{ ...params }"
         @filter="params = $event"
+        @update:account="addAccount"
       />
     </template>
     <div>
@@ -254,11 +255,11 @@ import { COMMON_DATES } from "@/config";
     },
     to() {
       // TODO: use filter
-      return dateFormat(this.params.period.start, "yyyy-mm-dd");
+      return dateFormat(this.params.period.end, "yyyy-mm-dd");
     },
     from() {
       // TODO: use filter
-      return dateFormat(this.params.period.end, "yyyy-mm-dd");
+      return dateFormat(this.params.period.start, "yyyy-mm-dd");
     },
     accountMap() {
       return this.accounts.reduce(
@@ -360,7 +361,12 @@ import { COMMON_DATES } from "@/config";
           ],
           defaultValue: "last-month",
           valueActions: [
-            { key: "custom", type: "input", component: "calendar", props: "" },
+            {
+              key: "custom",
+              type: "input",
+              component: "RangePicker",
+              props: "",
+            },
           ],
         },
       ];
@@ -390,6 +396,16 @@ import { COMMON_DATES } from "@/config";
         }),
         this.getEstablishmentActivities(params),
       ]);
+    },
+    addAccount() {
+      const addAccountFn = (code: string) =>
+        this.$store.dispatch("addAccount", { code });
+      const options = {
+        onSuccess: function (response: { code: string }) {
+          addAccountFn(response.code);
+        },
+      };
+      this.$launchMono(options);
     },
   },
   created() {
