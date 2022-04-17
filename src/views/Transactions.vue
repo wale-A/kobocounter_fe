@@ -1,7 +1,13 @@
 <template>
   <Page>
-    <template v-slot:actions>
-      <Filter :displayText="''" :fields="[]" :model="{}" />
+    <template v-if="facets.value.length > 0" v-slot:actions>
+      <Filter
+        :displayText="paramSummary.value"
+        :fields="facets.value"
+        :model="{ ...params.value }"
+        @filter="setParams($event)"
+        @update:account="addAccount"
+      />
     </template>
     <div @click="outsideClickHandler">
       <section class="dashboard-content-container">
@@ -95,26 +101,17 @@ import { mapGetters, mapActions } from "vuex";
 import Card from "@/components/layout/Card.vue";
 import Page from "@/components/layout/Page.vue";
 import AddNewAccount from "@/components/AddNewAccount.vue";
-import { SplitTransaction, Transaction, TransactionModel } from "@/types";
+import {
+  FilterParams,
+  SplitTransaction,
+  Transaction,
+  TransactionModel,
+} from "@/types";
 import SingleTransaction from "@/components/transaction/SingleTransaction.vue";
 import Filter from "@/components/common/Filter.vue";
+import { COMMON_DATES } from "@/config";
 
 @Options({
-  created() {
-    this.getTransactions({
-      accountId: undefined,
-      start: undefined,
-      end: undefined,
-    });
-    this.getEstablishments();
-  },
-  data() {
-    return {
-      singleTransaction: null,
-      parentTransaction: null,
-      childTransactions: null,
-    };
-  },
   components: {
     Card,
     Page,
@@ -122,8 +119,31 @@ import Filter from "@/components/common/Filter.vue";
     SingleTransaction,
     Filter,
   },
+
+  data() {
+    return {
+      singleTransaction: null,
+      parentTransaction: null,
+      childTransactions: null,
+    };
+  },
+  inject: [
+    "params",
+    "facets",
+    "queryParams",
+    "paramSummary",
+    "to",
+    "from",
+    "setParams",
+    "addAccount",
+  ],
   computed: {
-    ...mapGetters(["accounts", "transactions", "establishments"]),
+    ...mapGetters([
+      "accounts",
+      "transactions",
+      "establishments",
+      "transactionCategories",
+    ]),
     groupedTransactions: function () {
       const sortedTransactions = [...(this.transactions ?? [])].sort(
         (x: Transaction, y: Transaction) => y.date - x.date
@@ -143,6 +163,7 @@ import Filter from "@/components/common/Filter.vue";
       "updateTransaction",
       "saveSplitTransactions",
       "getEstablishments",
+      "getTransactionCategories",
     ]),
     selectTransaction(transactionId: string) {
       this.singleTransaction = this.transactions.find(
@@ -200,6 +221,29 @@ import Filter from "@/components/common/Filter.vue";
             type: "error",
           });
         });
+    },
+    fetch(params: FilterParams) {
+      Promise.allSettled([
+        this.getTransactions(params),
+        this.getEstablishments(),
+        this.getTransactionCategories(params),
+      ]);
+    },
+  },
+  created() {
+    const params = {
+      account: "",
+      period: {
+        name: "last-month",
+        ...COMMON_DATES["last-month"],
+      },
+    };
+    this.setParams(params);
+    this.fetch(this.queryParams.value);
+  },
+  watch: {
+    "queryParams.value"(newVal) {
+      this.fetch(newVal);
     },
   },
 })

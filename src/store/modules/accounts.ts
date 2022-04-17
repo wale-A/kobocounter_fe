@@ -91,6 +91,21 @@ const accounts: Module<State, any> = {
     accounts(state) {
       return state.accounts || [];
     },
+    accountMap(_, getters) {
+      return getters.accounts.reduce(
+        (acc: Record<string, any>, item: Account) => ({
+          ...acc,
+          [item.id]: item,
+        }),
+        {}
+      );
+    },
+    accountOptionsMap(_, getters) {
+      return getters.accounts.map((item: Account) => ({
+        value: item.id,
+        label: `${item.bankName} - ${item.accountNumber}`,
+      }));
+    },
   },
 };
 

@@ -41,18 +41,6 @@ export type Account = {
   bankName: string;
 };
 
-export type Transaction = {
-  id: string;
-  amount: number;
-  date: number;
-  narration: string;
-  displayCategory: string;
-  bank?: string;
-  expenseCategory?: string;
-  parentId?: string;
-  displayAmount?: number;
-};
-
 export type TransactionModel = {
   id: string;
   displayCategory: string;
@@ -69,12 +57,34 @@ export type TransactionPayload = {
   establishmentActivities: string[];
 };
 
+export type Transaction = {
+  id: string;
+  amount: number;
+  date: number;
+  narration: string;
+  displayCategory: string;
+  bank?: string;
+  expenseCategory?: string;
+  parentId?: string;
+  displayAmount?: number;
+};
+
 export type TransactionInfo = Transaction & {
   establishment: {
     name: string;
     activities: string[];
   };
   recipient: string;
+};
+
+export type Pagination = {
+  page: number;
+  size: number;
+};
+
+export type TransactionResponse = {
+  meta: Pagination;
+  data: TransactionInfo[];
 };
 
 export type NetIncome = {

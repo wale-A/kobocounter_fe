@@ -1,6 +1,6 @@
 <template>
   <Page>
-    <template v-slot:actions>
+    <template v-if="facets.value.length > 0" v-slot:actions>
       <Filter
         :displayText="paramSummary.value"
         :fields="facets.value"
@@ -270,7 +270,7 @@ import { Account, FilterParams } from "@/types";
     ]),
     fetch(params: FilterParams) {
       Promise.allSettled([
-        this.getAccounts(),
+        this.getAccounts(params),
         this.getTransactions(params),
         this.getNetIncome(params),
         this.getExpense(params),

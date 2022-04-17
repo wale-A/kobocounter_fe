@@ -20,7 +20,6 @@ import { deleteSubscription } from "@/_helpers/pushNotification";
 import { mapActions, mapGetters } from "vuex";
 import { deleteUser, getFacets } from "@/util";
 import { COMMON_DATES } from "@/config";
-import { Account } from "./types";
 import { computed } from "vue";
 import dateFormat from "dateformat";
 
@@ -36,25 +35,17 @@ import dateFormat from "dateformat";
           ...COMMON_DATES["last-month"],
         },
       },
+      filterFields: [],
     };
   },
   computed: {
-    ...mapGetters(["avatarUrl", "username", "accounts"]),
-    accountMap() {
-      return this.accounts.reduce(
-        (acc: Record<string, any>, item: Account) => ({
-          ...acc,
-          [item.id]: item,
-        }),
-        {}
-      );
-    },
-    accountOptionsMap() {
-      return this.accounts.map((item: Account) => ({
-        value: item.id,
-        label: `${item.bankName} - ${item.accountNumber}`,
-      }));
-    },
+    ...mapGetters([
+      "avatarUrl",
+      "username",
+      "accounts",
+      "accountMap",
+      "accountOptionsMap",
+    ]),
     paramSummary() {
       if (this.params) {
         const bank = this.accountMap[this.params.account]
@@ -65,6 +56,7 @@ import dateFormat from "dateformat";
       return "";
     },
     queryParams() {
+      // TODO: Generate from params
       return {
         accountId: this.params.account,
         start: this.params.period.start.getTime(),
@@ -76,11 +68,11 @@ import dateFormat from "dateformat";
     },
     to() {
       // TODO: use filter
-      return dateFormat(this.params.period.end, "yyyy-mm-dd");
+      return this.formatDate(this.params.period.end);
     },
     from() {
       // TODO: use filter
-      return dateFormat(this.params.period.start, "yyyy-mm-dd");
+      return this.formatDate(this.params.period.start);
     },
   },
   provide() {
@@ -93,13 +85,20 @@ import dateFormat from "dateformat";
       to: computed(() => this.to),
       from: computed(() => this.from),
       setParams: this.setParams,
+      setFactes: this.facets,
       addAccount: this.addAccount,
     };
   },
   methods: {
     ...mapActions(["logout"]),
+    formatDate(date: Date) {
+      return dateFormat(date, "yyyy-mm-dd");
+    },
     setParams(params: any) {
       this.params = params;
+    },
+    setFacets(fields: any[]) {
+      this.fieldFields = fields;
     },
     addAccount() {
       const addAccountFn = (code: string) =>
