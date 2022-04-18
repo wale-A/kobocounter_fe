@@ -18,74 +18,22 @@ import { Options, Vue } from "vue-class-component";
 import Layout from "@/layouts/Layout.vue";
 import { deleteSubscription } from "@/_helpers/pushNotification";
 import { mapActions, mapGetters } from "vuex";
-import { deleteUser, getFacets } from "@/util";
-import { COMMON_DATES } from "@/config";
-import { computed } from "vue";
+import { deleteUser } from "@/util";
 import dateFormat from "dateformat";
 
 @Options({
   name: "App",
   components: { Layout },
-  data() {
-    return {
-      params: {
-        account: "",
-        period: {
-          name: "last-month",
-          ...COMMON_DATES["last-month"],
-        },
-      },
-      filterFields: [],
-    };
-  },
   computed: {
-    ...mapGetters([
-      "avatarUrl",
-      "username",
-      "accounts",
-      "accountMap",
-      "accountOptionsMap",
-    ]),
-    paramSummary() {
-      if (this.params) {
-        const bank = this.accountMap[this.params.account]
-          ? `${this.accountMap[this.params.account].bankName} Account`
-          : "All Bank Accounts";
-        return `Showing ${bank} from ${this.from} to ${this.to}`;
-      }
-      return "";
-    },
-    queryParams() {
-      // TODO: Generate from params
-      return {
-        accountId: this.params.account,
-        start: this.params.period.start.getTime(),
-        end: this.params.period.end.getTime(),
-      };
-    },
-    facets() {
-      return getFacets(this.accountOptionsMap);
-    },
-    to() {
-      // TODO: use filter
-      return this.formatDate(this.params.period.end);
-    },
-    from() {
-      // TODO: use filter
-      return this.formatDate(this.params.period.start);
-    },
+    ...mapGetters(["avatarUrl", "username"]),
   },
   provide() {
     // use function syntax so that we can access `this`
     return {
-      params: computed(() => this.params),
-      facets: computed(() => this.facets),
-      queryParams: computed(() => this.queryParams),
-      paramSummary: computed(() => this.paramSummary),
-      to: computed(() => this.to),
-      from: computed(() => this.from),
-      setParams: this.setParams,
-      setFactes: this.facets,
+      formatDate: this.formatDate,
+      getModels: this.getModels,
+      getFacets: this.getFacets,
+      getQuery: this.getQuery,
       addAccount: this.addAccount,
     };
   },
@@ -94,11 +42,38 @@ import dateFormat from "dateformat";
     formatDate(date: Date) {
       return dateFormat(date, "yyyy-mm-dd");
     },
-    setParams(params: any) {
-      this.params = params;
+    getFacets(fields: Record<string, any>, args: Record<string, any>) {
+      return Object.keys(fields).map((key) => {
+        if (typeof fields[key] === "function" && args[key]) {
+          return fields[key](args[key]);
+        }
+        return fields[key];
+      });
     },
-    setFacets(fields: any[]) {
-      this.fieldFields = fields;
+    getModels(facets: Record<string, any>[]) {
+      return facets.reduce((acc, facet) => {
+        let value;
+        if (typeof facet.modelDefault === "function") {
+          value = facet.modelDefault();
+        } else {
+          value = facet.modelDefault;
+        }
+        return {
+          ...acc,
+          [facet.key]: value,
+        };
+      }, {});
+    },
+    getQuery(facets: Record<string, any>[], model: Record<string, any>) {
+      return facets.reduce(
+        (acc: Record<string, string>, item: Record<string, any>) => {
+          return {
+            ...acc,
+            ...item.getParams(model),
+          };
+        },
+        {}
+      );
     },
     addAccount() {
       const addAccountFn = (code: string) =>

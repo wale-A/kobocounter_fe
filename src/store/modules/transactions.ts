@@ -124,7 +124,18 @@ const transactions: Module<State, any> = {
       return state.transactions;
     },
     transactionCategories(state: State) {
+      if (!state.transactionCategories) {
+        return [];
+      }
       return state.transactionCategories;
+    },
+    categoryOptionsMap(_, getters) {
+      return getters.transactionCategories.map(
+        (item: TransactionCategories) => ({
+          value: item.category,
+          label: item.displayCategory,
+        })
+      );
     },
   },
 };

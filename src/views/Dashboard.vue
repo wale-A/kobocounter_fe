@@ -1,10 +1,10 @@
 <template>
   <Page>
-    <template v-if="facets.value.length > 0" v-slot:actions>
+    <template v-if="facets.length > 0" v-slot:actions>
       <Filter
-        :displayText="paramSummary.value"
-        :fields="facets.value"
-        :model="{ ...params.value }"
+        :displayText="paramSummary"
+        :fields="facets"
+        :model="{ ...params }"
         @filter="setParams($event)"
         @update:account="addAccount"
       />
@@ -19,7 +19,7 @@
             <IncomeChart
               :height="'39vh'"
               :width="'98%'"
-              :fileName="'income_summary__' + from.value + '_to_' + to.value"
+              :fileName="'income_summary__' + from + '_to_' + to"
               :revenue="revenue"
               :expense="expense"
             />
@@ -58,9 +58,7 @@
               :height="'46vh'"
               :inputData="transactionCategories"
               :width="'98%'"
-              :fileName="
-                'spending_category_summary__' + from.value + '_to_' + to.value
-              "
+              :fileName="'spending_category_summary__' + from + '_to_' + to"
               v-show="displayChart === 'piechart'"
             />
           </Card>
@@ -190,6 +188,7 @@ import Page from "@/components/layout/Page.vue";
 import Loader from "@/components/layout/Loader.vue";
 import Filter from "@/components/common/Filter.vue";
 import { Account, FilterParams } from "@/types";
+import { baseFilter } from "@/util";
 
 @Options({
   components: {
@@ -203,24 +202,19 @@ import { Account, FilterParams } from "@/types";
     Page,
     Filter,
   },
-  inject: [
-    "params",
-    "facets",
-    "queryParams",
-    "paramSummary",
-    "to",
-    "from",
-    "setParams",
-    "addAccount",
-  ],
+  inject: ["addAccount", "getQuery", "getFacets", "getModels", "formatDate"],
   data() {
     return {
       displayChart: "piechart",
+      params: {},
+      filterFields: baseFilter,
     };
   },
   computed: {
     ...mapGetters([
       "accounts",
+      "accountMap",
+      "accountOptionsMap",
       "transactions",
       "netIncome",
       "transactionCategories",
@@ -230,6 +224,42 @@ import { Account, FilterParams } from "@/types";
       "revenue",
       "expense",
     ]),
+    filterArgs() {
+      return {
+        account: this.accountOptionsMap,
+      };
+    },
+    facets() {
+      if (!this.filterFields) {
+        return [];
+      }
+      return Object.keys(this.filterFields).map((key) => {
+        if (
+          typeof this.filterFields[key] === "function" &&
+          this.filterArgs[key]
+        ) {
+          return this.filterFields[key](this.filterArgs[key]);
+        }
+        return this.filterFields[key];
+      });
+    },
+    paramSummary() {
+      if (this.params) {
+        const bank = this.accountMap[this.params.account]
+          ? `${this.accountMap[this.params.account].bankName} Account`
+          : "All Bank Accounts";
+        return `Showing ${bank} from ${this.from} to ${this.to}`;
+      }
+      return "";
+    },
+    to() {
+      // TODO: use filter
+      return this.formatDate(this.params.period.end);
+    },
+    from() {
+      // TODO: use filter
+      return this.formatDate(this.params.period.start);
+    },
     totalRevenue() {
       const rev =
         this.revenue?.reduce(
@@ -282,13 +312,18 @@ import { Account, FilterParams } from "@/types";
         this.getEstablishmentActivities(params),
       ]);
     },
+    setParams(params: any) {
+      this.params = params;
+    },
   },
   created() {
-    this.fetch(this.queryParams.value);
+    this.params = this.getModels(this.facets);
+    console.log(this.params, this.facets);
+    this.fetch(this.getQuery(this.facets, this.params));
   },
   watch: {
-    "queryParams.value"(newVal) {
-      this.fetch(newVal);
+    params(newVal) {
+      this.fetch(this.getQuery(this.facets, newVal));
     },
   },
 })

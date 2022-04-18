@@ -1,10 +1,10 @@
 <template>
   <Page>
-    <template v-if="facets.value.length > 0" v-slot:actions>
+    <template v-if="facets.length > 0" v-slot:actions>
       <Filter
-        :displayText="paramSummary.value"
-        :fields="facets.value"
-        :model="{ ...params.value }"
+        :displayText="paramSummary"
+        :fields="facets"
+        :model="{ ...params }"
         @filter="setParams($event)"
         @update:account="addAccount"
       />
@@ -109,7 +109,7 @@ import {
 } from "@/types";
 import SingleTransaction from "@/components/transaction/SingleTransaction.vue";
 import Filter from "@/components/common/Filter.vue";
-import { COMMON_DATES } from "@/config";
+import { transactionFilter } from "@/util";
 
 @Options({
   components: {
@@ -125,25 +125,58 @@ import { COMMON_DATES } from "@/config";
       singleTransaction: null,
       parentTransaction: null,
       childTransactions: null,
+      params: {},
+      filterFields: transactionFilter,
     };
   },
-  inject: [
-    "params",
-    "facets",
-    "queryParams",
-    "paramSummary",
-    "to",
-    "from",
-    "setParams",
-    "addAccount",
-  ],
+  inject: ["addAccount", "getQuery", "getFacets", "getModels", "formatDate"],
   computed: {
     ...mapGetters([
       "accounts",
+      "accountMap",
+      "accountOptionsMap",
+      "categoryOptionsMap",
       "transactions",
       "establishments",
       "transactionCategories",
     ]),
+    filterArgs() {
+      return {
+        account: this.accountOptionsMap,
+        category: this.categoryOptionsMap,
+      };
+    },
+    facets() {
+      if (!this.filterFields) {
+        return [];
+      }
+      return Object.keys(this.filterFields).map((key) => {
+        if (
+          typeof this.filterFields[key] === "function" &&
+          this.filterArgs[key]
+        ) {
+          return this.filterFields[key](this.filterArgs[key]);
+        }
+        return this.filterFields[key];
+      });
+    },
+    paramSummary() {
+      if (this.params) {
+        const bank = this.accountMap[this.params.account]
+          ? `${this.accountMap[this.params.account].bankName} Account`
+          : "All Bank Accounts";
+        return `Showing ${bank} from ${this.from} to ${this.to}`;
+      }
+      return "";
+    },
+    to() {
+      // TODO: use filter
+      return this.formatDate(this.params.period.end);
+    },
+    from() {
+      // TODO: use filter
+      return this.formatDate(this.params.period.start);
+    },
     groupedTransactions: function () {
       const sortedTransactions = [...(this.transactions ?? [])].sort(
         (x: Transaction, y: Transaction) => y.date - x.date
@@ -159,6 +192,7 @@ import { COMMON_DATES } from "@/config";
   },
   methods: {
     ...mapActions([
+      "getAccounts",
       "getTransactions",
       "updateTransaction",
       "saveSplitTransactions",
@@ -224,26 +258,24 @@ import { COMMON_DATES } from "@/config";
     },
     fetch(params: FilterParams) {
       Promise.allSettled([
+        this.getAccounts(params),
         this.getTransactions(params),
         this.getEstablishments(),
         this.getTransactionCategories(params),
       ]);
     },
+    setParams(params: any) {
+      this.params = params;
+    },
   },
   created() {
-    const params = {
-      account: "",
-      period: {
-        name: "last-month",
-        ...COMMON_DATES["last-month"],
-      },
-    };
-    this.setParams(params);
-    this.fetch(this.queryParams.value);
+    this.params = this.getModels(this.facets);
+    this.fetch(this.getQuery(this.facets, this.params));
   },
   watch: {
-    "queryParams.value"(newVal) {
-      this.fetch(newVal);
+    params(newVal) {
+      console.log({ newVal, query: this.getQuery(this.facets, newVal) });
+      this.fetch(this.getQuery(this.facets, newVal));
     },
   },
 })
