@@ -7,3 +7,8 @@ declare module "vue-mono" {
 
   export = MonoJS;
 }
+declare module "@vue/runtime-core" {
+  interface ComponentCustomProperties {
+    $launchMono: Record<string, unknown>;
+  }
+}
