@@ -77,92 +77,22 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import { Options, mixins } from "vue-class-component";
 import Card from "@/components/layout/Card.vue";
 import Page from "@/components/layout/Page.vue";
 import Filter from "@/components/common/Filter.vue";
-import { baseFilter } from "@/util";
 import { FilterParams } from "@/types";
-import { mapActions, mapGetters } from "vuex";
+import { mapActions } from "vuex";
+import FilterMixin from "@/mixins/Filter";
 
-@Options({
+@Options<Insights>({
   components: {
     Card,
     Filter,
     Page,
   },
-  inject: ["addAccount", "getQuery", "getFacets", "getModels", "formatDate"],
-  data() {
-    return {
-      displayChart: "piechart",
-      params: {},
-      filterFields: baseFilter,
-    };
-  },
-  computed: {
-    ...mapGetters(["accountMap", "accountOptionsMap"]),
-    filterArgs() {
-      return {
-        account: this.accountOptionsMap,
-        category: this.categoryOptionsMap,
-      };
-    },
-    facets() {
-      if (!this.filterFields) {
-        return [];
-      }
-      return Object.keys(this.filterFields).map((key) => {
-        if (
-          typeof this.filterFields[key] === "function" &&
-          this.filterArgs[key]
-        ) {
-          return this.filterFields[key](this.filterArgs[key]);
-        }
-        return this.filterFields[key];
-      });
-    },
-    paramSummary() {
-      if (this.params) {
-        const bank = this.accountMap[this.params.account]
-          ? `${this.accountMap[this.params.account].bankName} Account`
-          : "All Bank Accounts";
-        return `Showing ${bank} from ${this.from} to ${this.to}`;
-      }
-      return "";
-    },
-    to() {
-      // TODO: use filter
-      return this.formatDate(this.params.period.end);
-    },
-    from() {
-      // TODO: use filter
-      return this.formatDate(this.params.period.start);
-    },
-  },
   methods: {
-    ...mapActions([
-      "getAccounts",
-      "getTransactions",
-      "getNetIncome",
-      "getExpense",
-      "getRevenue",
-      "getTransactionCategories",
-      "getRecurringExpenses",
-      "getEstablishmentActivities",
-    ]),
-    fetch(params: FilterParams) {
-      Promise.allSettled([
-        this.getAccounts(params),
-        this.getTransactions(params),
-      ]);
-    },
-    setParams(params: any) {
-      this.params = params;
-    },
-  },
-  created() {
-    this.params = this.getModels(this.facets);
-    this.fetch(this.getQuery(this.facets, this.params));
+    ...mapActions(["getAccounts", "getTransactions"]),
   },
   watch: {
     params(newVal) {
@@ -170,7 +100,24 @@ import { mapActions, mapGetters } from "vuex";
     },
   },
 })
-export default class Insights extends Vue {}
+export default class Insights extends mixins(FilterMixin) {
+  displayChart = "piechart";
+
+  getAccounts!: (params: FilterParams) => Promise<void>;
+  getTransactions!: (params: FilterParams) => Promise<void>;
+
+  fetch(params: FilterParams): void {
+    Promise.allSettled([
+      this.getAccounts(params),
+      this.getTransactions(params),
+    ]);
+  }
+
+  created(): void {
+    this.params = this.getModels(this.facets);
+    this.fetch(this.getQuery(this.facets, this.params));
+  }
+}
 </script>
 
 <style scoped>

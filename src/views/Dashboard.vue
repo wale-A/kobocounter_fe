@@ -176,7 +176,7 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import { Options, mixins } from "vue-class-component";
 import { mapGetters, mapActions } from "vuex";
 import AddNewAccount from "@/components/AddNewAccount.vue";
 import DonutChart from "@/components/charts/DonutChart.vue";
@@ -188,9 +188,9 @@ import Page from "@/components/layout/Page.vue";
 import Loader from "@/components/layout/Loader.vue";
 import Filter from "@/components/common/Filter.vue";
 import { Account, FilterParams } from "@/types";
-import { baseFilter } from "@/util";
+import FilterMixin from "@/mixins/Filter";
 
-@Options({
+@Options<Dashboard>({
   components: {
     AddNewAccount,
     DonutChart,
@@ -202,19 +202,9 @@ import { baseFilter } from "@/util";
     Page,
     Filter,
   },
-  inject: ["addAccount", "getQuery", "getFacets", "getModels", "formatDate"],
-  data() {
-    return {
-      displayChart: "piechart",
-      params: {},
-      filterFields: baseFilter,
-    };
-  },
   computed: {
     ...mapGetters([
       "accounts",
-      "accountMap",
-      "accountOptionsMap",
       "transactions",
       "netIncome",
       "transactionCategories",
@@ -224,68 +214,6 @@ import { baseFilter } from "@/util";
       "revenue",
       "expense",
     ]),
-    filterArgs() {
-      return {
-        account: this.accountOptionsMap,
-      };
-    },
-    facets() {
-      if (!this.filterFields) {
-        return [];
-      }
-      return Object.keys(this.filterFields).map((key) => {
-        if (
-          typeof this.filterFields[key] === "function" &&
-          this.filterArgs[key]
-        ) {
-          return this.filterFields[key](this.filterArgs[key]);
-        }
-        return this.filterFields[key];
-      });
-    },
-    paramSummary() {
-      if (this.params) {
-        const bank = this.accountMap[this.params.account]
-          ? `${this.accountMap[this.params.account].bankName} Account`
-          : "All Bank Accounts";
-        return `Showing ${bank} from ${this.from} to ${this.to}`;
-      }
-      return "";
-    },
-    to() {
-      // TODO: use filter
-      return this.formatDate(this.params.period.end);
-    },
-    from() {
-      // TODO: use filter
-      return this.formatDate(this.params.period.start);
-    },
-    totalRevenue() {
-      const rev =
-        this.revenue?.reduce(
-          (acc: number, val: { amount: number }) => (acc += val.amount),
-          0
-        ) || 0;
-
-      return rev.toLocaleString();
-    },
-    totalExpenses() {
-      const exp = Math.abs(
-        this.expense?.reduce(
-          (acc: number, val: { amount: number }) => (acc += val.amount),
-          0
-        ) || 0
-      );
-      return exp.toLocaleString();
-    },
-    accountBalance() {
-      const balance = (this.accounts as Account[])
-        .reduce((sum, acct) => {
-          return sum + (acct.balance || 0);
-        }, 0)
-        .toFixed(2);
-      return parseFloat(balance).toLocaleString();
-    },
   },
   methods: {
     ...mapActions([
@@ -298,28 +226,6 @@ import { baseFilter } from "@/util";
       "getRecurringExpenses",
       "getEstablishmentActivities",
     ]),
-    fetch(params: FilterParams) {
-      Promise.allSettled([
-        this.getAccounts(params),
-        this.getTransactions(params),
-        this.getNetIncome(params),
-        this.getExpense(params),
-        this.getRevenue(params),
-        this.getTransactionCategories(params),
-        this.getRecurringExpenses({
-          accountId: params.accountId,
-        }),
-        this.getEstablishmentActivities(params),
-      ]);
-    },
-    setParams(params: any) {
-      this.params = params;
-    },
-  },
-  created() {
-    this.params = this.getModels(this.facets);
-    console.log(this.params, this.facets);
-    this.fetch(this.getQuery(this.facets, this.params));
   },
   watch: {
     params(newVal) {
@@ -327,7 +233,70 @@ import { baseFilter } from "@/util";
     },
   },
 })
-export default class Dashboard extends Vue {}
+export default class Dashboard extends mixins(FilterMixin) {
+  accounts!: Record<string, any>[];
+  revenue!: { amount: number }[];
+  expense!: { amount: number }[];
+  displayChart = "piechart";
+
+  get totalRevenue(): string {
+    const rev =
+      this.revenue?.reduce(
+        (acc: number, val: { amount: number }) => (acc += val.amount),
+        0
+      ) || 0;
+
+    return rev.toLocaleString();
+  }
+
+  get totalExpenses(): string {
+    const exp = Math.abs(
+      this.expense?.reduce(
+        (acc: number, val: { amount: number }) => (acc += val.amount),
+        0
+      ) || 0
+    );
+    return exp.toLocaleString();
+  }
+
+  get accountBalance(): string {
+    const balance = (this.accounts as Account[])
+      .reduce((sum, acct) => {
+        return sum + (acct.balance || 0);
+      }, 0)
+      .toFixed(2);
+    return parseFloat(balance).toLocaleString();
+  }
+
+  getAccounts!: (params: FilterParams) => Promise<void>;
+  getTransactions!: (params: FilterParams) => Promise<void>;
+  getNetIncome!: (params: FilterParams) => Promise<void>;
+  getExpense!: (params: FilterParams) => Promise<void>;
+  getRevenue!: (params: FilterParams) => Promise<void>;
+  getTransactionCategories!: (params: FilterParams) => Promise<void>;
+  getRecurringExpenses!: (params: FilterParams) => Promise<void>;
+  getEstablishmentActivities!: (params: FilterParams) => Promise<void>;
+
+  fetch(params: FilterParams): void {
+    Promise.allSettled([
+      this.getAccounts(params),
+      this.getTransactions(params),
+      this.getNetIncome(params),
+      this.getExpense(params),
+      this.getRevenue(params),
+      this.getTransactionCategories(params),
+      this.getRecurringExpenses({
+        accountId: params.accountId,
+      }),
+      this.getEstablishmentActivities(params),
+    ]);
+  }
+
+  created(): void {
+    this.params = this.getModels(this.facets);
+    this.fetch(this.getQuery(this.facets, this.params));
+  }
+}
 </script>
 
 <style scoped>

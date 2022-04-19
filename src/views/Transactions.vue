@@ -96,7 +96,7 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import { Options, mixins } from "vue-class-component";
 import { mapGetters, mapActions } from "vuex";
 import Card from "@/components/layout/Card.vue";
 import Page from "@/components/layout/Page.vue";
@@ -110,8 +110,9 @@ import {
 import SingleTransaction from "@/components/transaction/SingleTransaction.vue";
 import Filter from "@/components/common/Filter.vue";
 import { transactionFilter } from "@/util";
+import FilterMixin from "@/mixins/Filter";
 
-@Options({
+@Options<Transactions>({
   components: {
     Card,
     Page,
@@ -120,75 +121,14 @@ import { transactionFilter } from "@/util";
     Filter,
   },
 
-  data() {
-    return {
-      singleTransaction: null,
-      parentTransaction: null,
-      childTransactions: null,
-      params: {},
-      filterFields: transactionFilter,
-    };
-  },
-  inject: ["addAccount", "getQuery", "getFacets", "getModels", "formatDate"],
   computed: {
     ...mapGetters([
       "accounts",
-      "accountMap",
-      "accountOptionsMap",
       "categoryOptionsMap",
       "transactions",
       "establishments",
       "transactionCategories",
     ]),
-    filterArgs() {
-      return {
-        account: this.accountOptionsMap,
-        category: this.categoryOptionsMap,
-      };
-    },
-    facets() {
-      if (!this.filterFields) {
-        return [];
-      }
-      return Object.keys(this.filterFields).map((key) => {
-        if (
-          typeof this.filterFields[key] === "function" &&
-          this.filterArgs[key]
-        ) {
-          return this.filterFields[key](this.filterArgs[key]);
-        }
-        return this.filterFields[key];
-      });
-    },
-    paramSummary() {
-      if (this.params) {
-        const bank = this.accountMap[this.params.account]
-          ? `${this.accountMap[this.params.account].bankName} Account`
-          : "All Bank Accounts";
-        return `Showing ${bank} from ${this.from} to ${this.to}`;
-      }
-      return "";
-    },
-    to() {
-      // TODO: use filter
-      return this.formatDate(this.params.period.end);
-    },
-    from() {
-      // TODO: use filter
-      return this.formatDate(this.params.period.start);
-    },
-    groupedTransactions: function () {
-      const sortedTransactions = [...(this.transactions ?? [])].sort(
-        (x: Transaction, y: Transaction) => y.date - x.date
-      );
-      const group: Record<string, Transaction[]> = {};
-      for (let i = 0; i < sortedTransactions?.length || 0; i++) {
-        const date = new Date(sortedTransactions[i].date).toDateString();
-        const txn = sortedTransactions[i] as Transaction;
-        group[date] = (group[date] || []).concat(txn);
-      }
-      return group;
-    },
   },
   methods: {
     ...mapActions([
@@ -199,78 +139,6 @@ import { transactionFilter } from "@/util";
       "getEstablishments",
       "getTransactionCategories",
     ]),
-    selectTransaction(transactionId: string) {
-      this.singleTransaction = this.transactions.find(
-        (x: Transaction) => x.id === transactionId
-      );
-      this.childTransactions = this.transactions?.filter(
-        (x: Transaction) => x.parentId === transactionId
-      );
-      this.parentTransaction = this.transactions?.find(
-        (x: Transaction) => x.id === this.singleTransaction?.parentId
-      );
-    },
-    outsideClickHandler() {
-      this.singleTransaction = null;
-      this.childTransactions = null;
-      this.parentTransaction = null;
-    },
-    editTransaction(model: TransactionModel) {
-      this.updateTransaction({
-        transactionId: model.id,
-        model: {
-          ...model,
-          recipientName: model.recipientName[0],
-        },
-      })
-        .then(() => {
-          this.$notify({
-            text: "Transaction update was successful",
-            type: "success",
-          });
-          this.$refs.transactionView.active = "view"; //TODO: Move state up
-        })
-        .catch(() => {
-          this.$notify({
-            text: "Transaction update failed, please retry",
-            type: "error",
-          });
-        });
-    },
-    splitTransaction(model: SplitTransaction[]) {
-      this.saveSplitTransactions({
-        transactionId: this.singleTransaction.id,
-        payload: model,
-      })
-        .then(() => {
-          this.$notify({
-            text: "Transaction split was successful",
-            type: "success",
-          });
-          this.$refs.transactionView.active = "view"; //TODO: Move state up
-        })
-        .catch(() => {
-          this.$notify({
-            text: "Transaction split failed, please retry",
-            type: "error",
-          });
-        });
-    },
-    fetch(params: FilterParams) {
-      Promise.allSettled([
-        this.getAccounts(params),
-        this.getTransactions(params),
-        this.getEstablishments(),
-        this.getTransactionCategories(params),
-      ]);
-    },
-    setParams(params: any) {
-      this.params = params;
-    },
-  },
-  created() {
-    this.params = this.getModels(this.facets);
-    this.fetch(this.getQuery(this.facets, this.params));
   },
   watch: {
     params(newVal) {
@@ -279,7 +147,133 @@ import { transactionFilter } from "@/util";
     },
   },
 })
-export default class Transactions extends Vue {}
+export default class Transactions extends mixins(FilterMixin) {
+  singleTransaction: Transaction | null | undefined = null;
+  parentTransaction: Transaction | null | undefined = null;
+  childTransactions: Transaction[] | null = null;
+  filterFields = transactionFilter;
+
+  transactions!: Transaction[];
+  categoryOptionsMap!: Record<string, any>;
+
+  get filterArgs(): Record<string, any> {
+    return {
+      account: this.accountOptionsMap,
+      category: this.categoryOptionsMap,
+    };
+  }
+
+  get groupedTransactions(): Record<string, Transaction[]> {
+    const sortedTransactions = [...(this.transactions ?? [])].sort(
+      (x: Transaction, y: Transaction) => y.date - x.date
+    );
+    const group: Record<string, Transaction[]> = {};
+    for (let i = 0; i < sortedTransactions?.length || 0; i++) {
+      const date = new Date(sortedTransactions[i].date).toDateString();
+      const txn = sortedTransactions[i] as Transaction;
+      group[date] = (group[date] || []).concat(txn);
+    }
+    return group;
+  }
+
+  getAccounts!: (params: FilterParams) => Promise<void>;
+  getTransactions!: (params: FilterParams) => Promise<void>;
+  getTransactionCategories!: (params: FilterParams) => Promise<void>;
+  getEstablishments!: () => Promise<void>;
+
+  fetch(params: FilterParams): void {
+    Promise.allSettled([
+      this.getAccounts(params),
+      this.getTransactions(params),
+      this.getEstablishments(),
+      this.getTransactionCategories(params),
+    ]);
+  }
+
+  selectTransaction(transactionId: string): void {
+    this.singleTransaction = this.transactions.find(
+      (x: Transaction) => x.id === transactionId
+    );
+    this.childTransactions = this.transactions?.filter(
+      (x: Transaction) => x.parentId === transactionId
+    );
+    this.parentTransaction = this.transactions?.find(
+      (x: Transaction) => x.id === this.singleTransaction?.parentId
+    );
+  }
+  outsideClickHandler(): void {
+    this.singleTransaction = null;
+    this.childTransactions = null;
+    this.parentTransaction = null;
+  }
+
+  updateTransaction!: (arg: {
+    transactionId: string;
+    model: {
+      id: string;
+      displayCategory: string;
+      recipientName: string;
+      isEstablishment: boolean;
+      establishmentActivities: string[];
+    };
+  }) => Promise<void>;
+
+  editTransaction(model: TransactionModel): void {
+    this.updateTransaction({
+      transactionId: model.id,
+      model: {
+        ...model,
+        recipientName: model.recipientName[0],
+      },
+    })
+      .then(() => {
+        this.$notify({
+          text: "Transaction update was successful",
+          type: "success",
+        });
+        this.$refs.transactionView.active = "view"; //TODO: Move state up
+      })
+      .catch(() => {
+        this.$notify({
+          text: "Transaction update failed, please retry",
+          type: "error",
+        });
+      });
+  }
+
+  saveSplitTransactions!: (arg: {
+    transactionId: string;
+    payload: SplitTransaction[];
+  }) => Promise<void>;
+
+  splitTransaction(model: SplitTransaction[]): void {
+    if (!this.singleTransaction) {
+      return;
+    }
+    this.saveSplitTransactions({
+      transactionId: this.singleTransaction.id,
+      payload: model,
+    })
+      .then(() => {
+        this.$notify({
+          text: "Transaction split was successful",
+          type: "success",
+        });
+        this.$refs.transactionView.active = "view"; //TODO: Move state up
+      })
+      .catch(() => {
+        this.$notify({
+          text: "Transaction split failed, please retry",
+          type: "error",
+        });
+      });
+  }
+
+  created(): void {
+    this.params = this.getModels(this.facets);
+    this.fetch(this.getQuery(this.facets, this.params));
+  }
+}
 </script>
 
 <style scoped>
