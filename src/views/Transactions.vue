@@ -120,7 +120,6 @@ import FilterMixin from "@/mixins/Filter";
     SingleTransaction,
     Filter,
   },
-
   computed: {
     ...mapGetters([
       "accounts",
@@ -231,7 +230,7 @@ export default class Transactions extends mixins(FilterMixin) {
           text: "Transaction update was successful",
           type: "success",
         });
-        this.$refs.transactionView.active = "view"; //TODO: Move state up
+        (this.$refs as any).transactionView.active = "view"; //TODO: Move state up
       })
       .catch(() => {
         this.$notify({
@@ -259,7 +258,7 @@ export default class Transactions extends mixins(FilterMixin) {
           text: "Transaction split was successful",
           type: "success",
         });
-        this.$refs.transactionView.active = "view"; //TODO: Move state up
+        (this.$refs as any).transactionView.active = "view"; //TODO: Move state up
       })
       .catch(() => {
         this.$notify({

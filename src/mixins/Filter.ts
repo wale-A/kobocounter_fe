@@ -5,11 +5,10 @@ import { baseFilter } from "@/util";
 
 @Options({ computed: { ...mapGetters(["accountMap", "accountOptionsMap"]) } })
 export default class Filter extends Vue {
-  public accountMap!: Record<string, any>;
-  public accountOptionsMap!: Record<string, any>;
   params: Record<string, any> = {};
   filterFields: Record<string, any> = baseFilter;
 
+  accountOptionsMap!: Record<string, any>;
   get filterArgs(): Record<string, any> {
     return {
       account: this.accountOptionsMap,
@@ -31,6 +30,7 @@ export default class Filter extends Vue {
     });
   }
 
+  accountMap!: Record<string, any>;
   get getparamSummary(): string {
     if (this.params) {
       const bank = this.accountMap[this.params.account]
