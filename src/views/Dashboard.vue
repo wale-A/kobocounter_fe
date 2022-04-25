@@ -228,8 +228,12 @@ import FilterMixin from "@/mixins/Filter";
     ]),
   },
   watch: {
-    params(newVal) {
-      this.fetch(this.getQuery(this.facets, newVal));
+    params: {
+      handler(newVal) {
+        console.log("watch", newVal);
+        this.fetch(this.getQuery(this.facets, newVal));
+      },
+      immediate: false,
     },
   },
 })
@@ -294,6 +298,7 @@ export default class Dashboard extends mixins(FilterMixin) {
 
   created(): void {
     this.params = this.getModels(this.facets);
+    console.log("created", this.params);
     this.fetch(this.getQuery(this.facets, this.params));
   }
 }

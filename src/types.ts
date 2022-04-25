@@ -22,7 +22,14 @@ export interface RegisterPayload extends LoginPayload {
   name: string;
 }
 
-export type FilterParams = { accountId?: string; start?: number; end?: number };
+export type FilterParams = {
+  accountId?: string;
+  start?: number;
+  end?: number;
+  category?: string;
+  page?: number;
+  size?: number;
+};
 
 export type User = {
   id: string;
@@ -80,6 +87,7 @@ export type TransactionInfo = Transaction & {
 export type Pagination = {
   page: number;
   size: number;
+  total: number;
 };
 
 export type TransactionResponse = {

@@ -5,31 +5,32 @@ import {
   TransactionPayload,
   SplitTransaction,
   Pagination,
+  TransactionResponse,
+  Transaction,
 } from "@/types";
 import { Module } from "vuex";
 import api from "@/api";
 
 type State = {
-  transactions: TransactionInfo[] | undefined;
-  page: number | undefined;
-  size: number | undefined;
-  transactionCategories: TransactionCategories[] | undefined;
+  transactions: TransactionInfo[];
+  pagination: Pagination | undefined;
+  transactionCategories: TransactionCategories[];
 };
 
 const transactions: Module<State, any> = {
   state: () => ({
-    transactions: undefined,
-    transactionCategories: undefined,
-    page: undefined,
-    size: undefined,
+    transactions: [],
+    transactionCategories: [],
+    pagination: undefined,
   }),
   mutations: {
-    setTransactions(state, transactions: TransactionInfo[]) {
-      state.transactions = transactions;
-    },
-    setPagination(state, meta: Pagination) {
-      state.page = meta.page;
-      state.size = meta.size;
+    setTransactions(state, res: TransactionResponse) {
+      if (res.meta.page == 1) {
+        state.transactions = res.data;
+      } else {
+        state.transactions = state.transactions.concat(res.data);
+      }
+      state.pagination = res.meta;
     },
     setTransactionCategories(state, categories: TransactionCategories[]) {
       state.transactionCategories = categories;
@@ -59,14 +60,22 @@ const transactions: Module<State, any> = {
     },
   },
   actions: {
-    async getTransactions({ commit }, { accountId, start, end }: FilterParams) {
+    async getTransactions(
+      { commit },
+      { accountId, start, end, category, page, size }: FilterParams
+    ) {
       try {
-        const res = await api.getTransactions({ accountId, start, end });
-        commit("setTransactions", res.data.data);
-        commit("setPagination", res.data.meta);
+        const res = await api.getTransactions({
+          accountId,
+          start,
+          end,
+          category,
+          page,
+          size,
+        });
+        commit("setTransactions", res.data);
       } catch (e) {
-        commit("setTransactions", []);
-        commit("setPagination", { page: undefined, size: undefined });
+        commit("setTransactions", { data: [], meta: undefined });
       }
     },
     async getTransactionCategories(
@@ -123,6 +132,16 @@ const transactions: Module<State, any> = {
     transactions(state: State) {
       return state.transactions;
     },
+    groupedTransactions(_, getters) {
+      const sortedTransactions = getters.transactions;
+      const group: Record<string, Transaction[]> = {};
+      for (let i = 0; i < sortedTransactions?.length || 0; i++) {
+        const date = new Date(sortedTransactions[i].date).toDateString();
+        const txn = sortedTransactions[i] as Transaction;
+        group[date] = (group[date] || []).concat(txn);
+      }
+      return group;
+    },
     transactionCategories(state: State) {
       if (!state.transactionCategories) {
         return [];
@@ -136,6 +155,28 @@ const transactions: Module<State, any> = {
           label: item.displayCategory,
         })
       );
+    },
+    canLoadMore(state: State) {
+      if (!state.pagination) {
+        return false;
+      }
+
+      return (
+        state.pagination.total / state.pagination.size > state.pagination.page
+      );
+    },
+    nextPageParams(state: State) {
+      if (!state.pagination) {
+        return {
+          page: 1,
+          size: 20,
+        };
+      }
+
+      return {
+        page: state.pagination.page + 1,
+        size: state.pagination.size,
+      };
     },
   },
 };

@@ -86,6 +86,7 @@
                   </table>
                 </tr>
               </table>
+              <button v-if="canLoadMore" @click="loadMore">Load More</button>
             </section>
           </Card>
         </div>
@@ -125,8 +126,11 @@ import FilterMixin from "@/mixins/Filter";
       "accounts",
       "categoryOptionsMap",
       "transactions",
+      "groupedTransactions",
       "establishments",
       "transactionCategories",
+      "canLoadMore",
+      "nextPageParams",
     ]),
   },
   methods: {
@@ -141,7 +145,7 @@ import FilterMixin from "@/mixins/Filter";
   },
   watch: {
     params(newVal) {
-      console.log({ newVal, query: this.getQuery(this.facets, newVal) });
+      console.log("watch", newVal);
       this.fetch(this.getQuery(this.facets, newVal));
     },
   },
@@ -160,19 +164,6 @@ export default class Transactions extends mixins(FilterMixin) {
       account: this.accountOptionsMap,
       category: this.categoryOptionsMap,
     };
-  }
-
-  get groupedTransactions(): Record<string, Transaction[]> {
-    const sortedTransactions = [...(this.transactions ?? [])].sort(
-      (x: Transaction, y: Transaction) => y.date - x.date
-    );
-    const group: Record<string, Transaction[]> = {};
-    for (let i = 0; i < sortedTransactions?.length || 0; i++) {
-      const date = new Date(sortedTransactions[i].date).toDateString();
-      const txn = sortedTransactions[i] as Transaction;
-      group[date] = (group[date] || []).concat(txn);
-    }
-    return group;
   }
 
   getAccounts!: (params: FilterParams) => Promise<void>;
@@ -268,8 +259,21 @@ export default class Transactions extends mixins(FilterMixin) {
       });
   }
 
+  nextPageParams!: {
+    page: number;
+    size: number;
+  };
+
+  loadMore(): void {
+    this.fetch({
+      ...this.getQuery(this.facets, this.params),
+      ...this.nextPageParams,
+    });
+  }
+
   created(): void {
     this.params = this.getModels(this.facets);
+    console.log("created", this.params);
     this.fetch(this.getQuery(this.facets, this.params));
   }
 }

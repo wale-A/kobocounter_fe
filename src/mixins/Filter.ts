@@ -31,7 +31,7 @@ export default class Filter extends Vue {
   }
 
   accountMap!: Record<string, any>;
-  get getparamSummary(): string {
+  get paramSummary(): string {
     if (this.params) {
       const bank = this.accountMap[this.params.account]
         ? `${this.accountMap[this.params.account].bankName} Account`

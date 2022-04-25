@@ -14,14 +14,15 @@ import Default from "./Default.vue";
   }),
   watch: {
     $route: {
-      immediate: true,
-      async handler(route) {
+      immediate: false,
+      async handler(route, former) {
         try {
           const component = await import(`@/layouts/${route.meta.layout}.vue`);
           this.layout = component?.default || Default;
         } catch (e) {
           this.layout = Default;
         }
+        console.log(route, former, this.layout);
       },
     },
   },
