@@ -11,21 +11,36 @@ import Default from "./Default.vue";
   name: "AppLayout",
   data: () => ({
     layout: Default,
+    name: "Default",
   }),
   watch: {
     $route: {
-      immediate: false,
+      immediate: true,
       async handler(route, former) {
         try {
+          if (!route.meta?.layout || route.meta.layout === this.name) {
+            return;
+          }
           const component = await import(`@/layouts/${route.meta.layout}.vue`);
-          this.layout = component?.default || Default;
+          if (component?.default) {
+            console.log("layout changed");
+            this.layout = component.default;
+            this.name = route.meta.layout;
+          }
         } catch (e) {
-          this.layout = Default;
+          if (this.name !== "Default") {
+            this.name = "Default";
+            this.layout = Default;
+          }
         }
-        console.log(route, former, this.layout);
+        console.log("layout watcher called", route, former, this.layout);
       },
     },
   },
 })
-export default class Layout extends Vue {}
+export default class Layout extends Vue {
+  created(): void {
+    console.log("created Layout");
+  }
+}
 </script>

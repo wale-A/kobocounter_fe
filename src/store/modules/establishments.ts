@@ -12,6 +12,14 @@ const establishments: Module<State, any> = {
     establishmentActivities: undefined,
     establishments: undefined,
   }),
+  getters: {
+    establishmentActivities(state) {
+      return state.establishmentActivities || [];
+    },
+    establishments(state) {
+      return state.establishments || {};
+    },
+  },
   mutations: {
     setEstablishmentActivities(state, activities?: []) {
       state.establishmentActivities = activities;
@@ -57,14 +65,6 @@ const establishments: Module<State, any> = {
       } catch (e) {
         commit("setEstablishments", []);
       }
-    },
-  },
-  getters: {
-    establishmentActivities(state) {
-      return state.establishmentActivities || [];
-    },
-    establishments(state) {
-      return state.establishments || {};
     },
   },
 };

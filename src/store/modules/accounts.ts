@@ -12,6 +12,26 @@ const accounts: Module<State, any> = {
     accounts: undefined,
     accountCreateSuccessful: false,
   }),
+  getters: {
+    accounts(state) {
+      return state.accounts || [];
+    },
+    accountMap(_, getters) {
+      return getters.accounts.reduce(
+        (acc: Record<string, any>, item: Account) => ({
+          ...acc,
+          [item.id]: item,
+        }),
+        {}
+      );
+    },
+    accountOptionsMap(_, getters) {
+      return getters.accounts.map((item: Account) => ({
+        value: item.id,
+        label: `${item.bankName} - ${item.accountNumber}`,
+      }));
+    },
+  },
   mutations: {
     setAccountCreateStatus(state, status: boolean) {
       state.accountCreateSuccessful = status;
@@ -85,26 +105,6 @@ const accounts: Module<State, any> = {
         console.error(e);
         callback(e as Error);
       }
-    },
-  },
-  getters: {
-    accounts(state) {
-      return state.accounts || [];
-    },
-    accountMap(_, getters) {
-      return getters.accounts.reduce(
-        (acc: Record<string, any>, item: Account) => ({
-          ...acc,
-          [item.id]: item,
-        }),
-        {}
-      );
-    },
-    accountOptionsMap(_, getters) {
-      return getters.accounts.map((item: Account) => ({
-        value: item.id,
-        label: `${item.bankName} - ${item.accountNumber}`,
-      }));
     },
   },
 };

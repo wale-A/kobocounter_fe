@@ -12,6 +12,20 @@ const auth: Module<State, any> = {
   state: () => ({
     user: getUser(),
   }),
+  getters: {
+    isLoggedIn(state) {
+      return state.user && (state.user?.token?.expires || 0) > Date.now();
+    },
+    avatarUrl(state) {
+      return `https://ui-avatars.com/api/?background=007cff&color=fff&rounded=true&size=32&format=svg&name=${state.user?.name?.slice(
+        0,
+        2
+      )}`;
+    },
+    username(state) {
+      return state.user?.name;
+    },
+  },
   mutations: {
     removeUser(state) {
       state.user = undefined;
@@ -38,20 +52,6 @@ const auth: Module<State, any> = {
     },
     async logout({ commit }) {
       commit("removeUser");
-    },
-  },
-  getters: {
-    isLoggedIn(state) {
-      return state.user && (state.user?.token?.expires || 0) > Date.now();
-    },
-    avatarUrl(state) {
-      return `https://ui-avatars.com/api/?background=007cff&color=fff&rounded=true&size=32&format=svg&name=${state.user?.name?.slice(
-        0,
-        2
-      )}`;
-    },
-    username(state) {
-      return state.user?.name;
     },
   },
 };

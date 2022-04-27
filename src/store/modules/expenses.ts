@@ -11,6 +11,14 @@ const expenses: Module<State, any> = {
   state: () => ({
     recurringExpenditure: undefined,
   }),
+  getters: {
+    expense(state) {
+      return state.expense;
+    },
+    recurrentExpenses(state) {
+      return state.recurringExpenditure || [];
+    },
+  },
   mutations: {
     setExpense(state: State, expense?: { date: string; amount: number }[]) {
       state.expense = expense;
@@ -39,14 +47,6 @@ const expenses: Module<State, any> = {
       } catch (e) {
         commit("setRecurringExpenses", []);
       }
-    },
-  },
-  getters: {
-    expense(state) {
-      return state.expense;
-    },
-    recurrentExpenses(state) {
-      return state.recurringExpenditure || [];
     },
   },
 };

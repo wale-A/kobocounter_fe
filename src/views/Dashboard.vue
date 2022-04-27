@@ -1,6 +1,6 @@
 <template>
   <Page>
-    <template v-if="facets.length > 0" v-slot:actions>
+    <template v-if="!onMobile && facets.length > 0" v-slot:actions>
       <Filter
         :displayText="paramSummary"
         :fields="facets"
@@ -214,6 +214,9 @@ import FilterMixin from "@/mixins/Filter";
       "revenue",
       "expense",
     ]),
+    onMobile() {
+      return ["xs", "sm", "md"].includes(this.$grid.breakpoint);
+    },
   },
   methods: {
     ...mapActions([
@@ -230,7 +233,7 @@ import FilterMixin from "@/mixins/Filter";
   watch: {
     params: {
       handler(newVal) {
-        console.log("watch", newVal);
+        console.log("fetching with", newVal);
         this.fetch(this.getQuery(this.facets, newVal));
       },
       immediate: false,
@@ -297,9 +300,8 @@ export default class Dashboard extends mixins(FilterMixin) {
   }
 
   created(): void {
+    console.log("created Dashboard");
     this.params = this.getModels(this.facets);
-    console.log("created", this.params);
-    this.fetch(this.getQuery(this.facets, this.params));
   }
 }
 </script>

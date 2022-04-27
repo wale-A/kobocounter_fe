@@ -11,6 +11,14 @@ const income: Module<State, any> = {
   state: () => ({
     netIncome: undefined,
   }),
+  getters: {
+    netIncome(state: State) {
+      return state.netIncome;
+    },
+    revenue(state: State) {
+      return state.revenue;
+    },
+  },
   mutations: {
     setRevenue(state: State, revenue?: { date: string; amount: number }[]) {
       state.revenue = revenue;
@@ -35,14 +43,6 @@ const income: Module<State, any> = {
       } catch (e) {
         commit("setRevenue", []);
       }
-    },
-  },
-  getters: {
-    netIncome(state: State) {
-      return state.netIncome;
-    },
-    revenue(state: State) {
-      return state.revenue;
     },
   },
 };

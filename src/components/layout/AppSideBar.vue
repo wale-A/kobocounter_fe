@@ -49,27 +49,6 @@
         </footer>
       </div>
     </section>
-
-    <nav class="bottom-nav">
-      <router-link
-        v-for="menuItem in menuItems"
-        :key="menuItem.route.name"
-        :to="menuItem.route.name"
-        class="accent-color"
-      >
-        <div
-          :class="{
-            'bottom-nav-link': menuItem.medium.mobile,
-            active: $route.matched
-              .map((m) => m.name)
-              .includes(menuItem.route.name),
-          }"
-        >
-          <img :src="menuItem.icon.mobile" />
-          <p>{{ menuItem.title }}</p>
-        </div>
-      </router-link>
-    </nav>
   </aside>
 </template>
 

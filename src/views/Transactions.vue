@@ -145,7 +145,7 @@ import FilterMixin from "@/mixins/Filter";
   },
   watch: {
     params(newVal) {
-      console.log("watch", newVal);
+      console.log("fetching with", newVal);
       this.fetch(this.getQuery(this.facets, newVal));
     },
   },
@@ -265,16 +265,15 @@ export default class Transactions extends mixins(FilterMixin) {
   };
 
   loadMore(): void {
-    this.fetch({
+    this.getTransactions({
       ...this.getQuery(this.facets, this.params),
       ...this.nextPageParams,
     });
   }
 
   created(): void {
+    console.log("created Transaction");
     this.params = this.getModels(this.facets);
-    console.log("created", this.params);
-    this.fetch(this.getQuery(this.facets, this.params));
   }
 }
 </script>

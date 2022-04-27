@@ -37,7 +37,6 @@
       </div>
     </div>
     <div v-if="showFilterOptions" class="filter-field-options">
-      <!--filter-field-options is the modal, iterate through valueActions for components or use dynamic component-->
       <component
         :is="
           fieldValueComponentMap[`${activeField}.${modelValue[activeField]}`]

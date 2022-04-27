@@ -23,6 +23,57 @@ const transactions: Module<State, any> = {
     transactionCategories: [],
     pagination: undefined,
   }),
+  getters: {
+    transactions(state: State) {
+      return state.transactions;
+    },
+    groupedTransactions(_, getters) {
+      const sortedTransactions = getters.transactions;
+      const group: Record<string, Transaction[]> = {};
+      for (let i = 0; i < sortedTransactions?.length || 0; i++) {
+        const date = new Date(sortedTransactions[i].date).toDateString();
+        const txn = sortedTransactions[i] as Transaction;
+        group[date] = (group[date] || []).concat(txn);
+      }
+      return group;
+    },
+    transactionCategories(state: State) {
+      if (!state.transactionCategories) {
+        return [];
+      }
+      return state.transactionCategories;
+    },
+    categoryOptionsMap(_, getters) {
+      return getters.transactionCategories.map(
+        (item: TransactionCategories) => ({
+          value: item.category,
+          label: item.displayCategory,
+        })
+      );
+    },
+    canLoadMore(state: State) {
+      if (!state.pagination) {
+        return false;
+      }
+
+      return (
+        state.pagination.total / state.pagination.size > state.pagination.page
+      );
+    },
+    nextPageParams(state: State) {
+      if (!state.pagination) {
+        return {
+          page: 1,
+          size: 20,
+        };
+      }
+
+      return {
+        page: state.pagination.page + 1,
+        size: state.pagination.size,
+      };
+    },
+  },
   mutations: {
     setTransactions(state, res: TransactionResponse) {
       if (res.meta.page == 1) {
@@ -126,57 +177,6 @@ const transactions: Module<State, any> = {
       } else {
         throw res.data;
       }
-    },
-  },
-  getters: {
-    transactions(state: State) {
-      return state.transactions;
-    },
-    groupedTransactions(_, getters) {
-      const sortedTransactions = getters.transactions;
-      const group: Record<string, Transaction[]> = {};
-      for (let i = 0; i < sortedTransactions?.length || 0; i++) {
-        const date = new Date(sortedTransactions[i].date).toDateString();
-        const txn = sortedTransactions[i] as Transaction;
-        group[date] = (group[date] || []).concat(txn);
-      }
-      return group;
-    },
-    transactionCategories(state: State) {
-      if (!state.transactionCategories) {
-        return [];
-      }
-      return state.transactionCategories;
-    },
-    categoryOptionsMap(_, getters) {
-      return getters.transactionCategories.map(
-        (item: TransactionCategories) => ({
-          value: item.category,
-          label: item.displayCategory,
-        })
-      );
-    },
-    canLoadMore(state: State) {
-      if (!state.pagination) {
-        return false;
-      }
-
-      return (
-        state.pagination.total / state.pagination.size > state.pagination.page
-      );
-    },
-    nextPageParams(state: State) {
-      if (!state.pagination) {
-        return {
-          page: 1,
-          size: 20,
-        };
-      }
-
-      return {
-        page: state.pagination.page + 1,
-        size: state.pagination.size,
-      };
     },
   },
 };
