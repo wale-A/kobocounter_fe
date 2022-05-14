@@ -3,13 +3,29 @@
     <h1>Hi {{ username }} !</h1>
     <div class="dropdown">
       <img :src="avatarUrl" alt="avatar" class="pointer header-avatar" />
+      <div class="action-bar">
+        <slot />
+      </div>
       <div class="dropdown-content">
         <span style="height: 5px; display: block">&nbsp;</span>
-        <a href="#" @click.prevent="logoutUser"> Logout </a>
+        <a href="#" @click.prevent="$emit('logout')"> Logout </a>
       </div>
     </div>
   </header>
 </template>
+
+<script lang="ts">
+import { Options, Vue } from "vue-class-component";
+
+@Options({
+  props: {
+    displayMenu: Boolean,
+    avatarUrl: String,
+    username: String,
+  },
+})
+export default class Header extends Vue {}
+</script>
 
 <style scoped>
 #menu {
@@ -69,30 +85,3 @@
   }
 }
 </style>
-
-<script lang="ts">
-import { mapGetters } from "vuex";
-import { Options, Vue } from "vue-class-component";
-import { deleteSubscription } from "@/_helpers/pushNotification";
-
-@Options({
-  props: {
-    displayMenu: Boolean,
-  },
-  data() {
-    return {
-      showMenu: this.displayMenu || false,
-    };
-  },
-  methods: {
-    logoutUser() {
-      deleteSubscription();
-      this.$store.commit("logoutUser");
-    },
-  },
-  computed: {
-    ...mapGetters(["avatarUrl", "isLoggedIn", "username"]),
-  },
-})
-export default class Header extends Vue {}
-</script>

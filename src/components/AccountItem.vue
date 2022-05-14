@@ -132,7 +132,7 @@ img {
   border: 1px solid;
   border-radius: 10px;
   margin-bottom: 15px;
-  align-items: start;
+  align-items: flex-start;
 }
 .account-item:hover {
   border-width: 2px;

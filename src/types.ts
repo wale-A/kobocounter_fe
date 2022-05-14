@@ -12,6 +12,18 @@ export type State = {
   revenue?: Array<{ date: string; amount: number }>;
 };
 
+export interface LoginPayload {
+  email: string;
+  password: string;
+  provider?: "google" | "facebook" | undefined;
+}
+
+export interface RegisterPayload extends LoginPayload {
+  name: string;
+}
+
+export type FilterParams = { accountId?: string; start?: number; end?: number };
+
 export type User = {
   id: string;
   email: string;
@@ -39,6 +51,22 @@ export type Transaction = {
   expenseCategory?: string;
   parentId?: string;
   displayAmount?: number;
+};
+
+export type TransactionModel = {
+  id: string;
+  displayCategory: string;
+  recipientName: string[];
+  isEstablishment: boolean;
+  establishmentActivities: string[];
+};
+
+export type TransactionPayload = {
+  id: string;
+  displayCategory: string;
+  recipientName: string;
+  isEstablishment: boolean;
+  establishmentActivities: string[];
 };
 
 export type TransactionInfo = Transaction & {

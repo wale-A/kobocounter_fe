@@ -5,7 +5,7 @@ import Dashboard from "../views/Dashboard.vue";
 import Insights from "../views/Insights.vue";
 import PageNotFound from "../views/PageNotFound.vue";
 import Transactions from "../views/Transactions.vue";
-import { store } from "@/store";
+import store from "../store/index";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -29,6 +29,7 @@ const routes: Array<RouteRecordRaw> = [
     component: Dashboard,
     meta: {
       authorize: true,
+      layout: "App",
     },
   },
   {
@@ -37,6 +38,7 @@ const routes: Array<RouteRecordRaw> = [
     component: Insights,
     meta: {
       authorize: true,
+      layout: "App",
     },
   },
   {
@@ -45,6 +47,7 @@ const routes: Array<RouteRecordRaw> = [
     component: Transactions,
     meta: {
       authorize: true,
+      layout: "App",
     },
   },
   {
