@@ -49,6 +49,7 @@ export const ACCOUNT_FIELD = (
 ): Record<string, any> => {
   return {
     key: "account",
+    label: "Account",
     type: "select",
     placeholder: "Select an option",
     options: [
@@ -72,6 +73,7 @@ export const ACCOUNT_FIELD = (
 
 export const PERIOD_FIELD: Record<string, any> = {
   key: "period",
+  label: "Period",
   type: "select",
   placeholder: "Select an option",
   sanitizeValue(value: { name: string; start: Date; end: Date }): string {
@@ -151,6 +153,7 @@ export const CATEGORIES_FIELD = (
 ): Record<string, any> => {
   return {
     key: "category",
+    label: "Category",
     type: "select",
     placeholder: "Select an option",
     options: [

@@ -4,6 +4,7 @@
       :username="username"
       :avatarUrl="avatarUrl"
       @logout="$emit('logout')"
+      class="sticky"
     >
       <slot name="actions" />
     </Header>
@@ -26,3 +27,17 @@ import Header from "./Header.vue";
 })
 export default class Page extends Vue {}
 </script>
+
+<style lang="scss" scoped>
+.page {
+  height: 100%;
+  overflow: scroll;
+
+  .sticky {
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+}
+</style>

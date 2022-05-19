@@ -11,17 +11,22 @@
     <div v-if="showFilters" class="filter-facets">
       <div class="filter-list">
         <div v-for="field in fields" :key="field.key" class="filter-input">
-          <Multiselect
-            v-if="field.type == 'select'"
-            v-model="modelValue[field.key]"
-            :placeholder="field.placeholder"
-            :options="field.options"
-          />
-          <span
-            v-if="additionalValue[`${field.key}.${modelValue[field.key]}`]"
-            @click="displayFilterOptions"
-            >edit</span
-          >
+          <label class="filter-label">{{ field.label }}</label>
+          <div class="filter-control">
+            <Multiselect
+              v-if="field.type == 'select'"
+              v-model="modelValue[field.key]"
+              :placeholder="field.placeholder"
+              :options="field.options"
+              class="filter-select"
+            />
+            <span
+              v-if="additionalValue[`${field.key}.${modelValue[field.key]}`]"
+              class="filter-edit"
+              @click="displayFilterOptions"
+              >edit</span
+            >
+          </div>
         </div>
       </div>
       <div class="filter-actions">
@@ -292,6 +297,20 @@ export default class Filter extends Vue {}
     margin-bottom: 13px;
   }
 
+  &-control {
+    display: flex;
+    align-items: center;
+  }
+
+  &-select {
+    flex: 1;
+  }
+
+  &-edit {
+    width: 20px;
+    margin-left: 5px;
+  }
+
   &-actions {
     display: flex;
     justify-content: space-between;
@@ -319,9 +338,7 @@ export default class Filter extends Vue {}
   &-field-options {
     position: absolute;
     width: 278px;
-    background: #ffffff;
-    box-shadow: 0px 4px 15px 4px rgba(54, 65, 86, 0.1);
-    border-radius: 10px;
+    background: transparent;
     padding: 6px 0;
     top: 65px;
     right: 20px;

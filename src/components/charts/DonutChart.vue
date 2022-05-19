@@ -7,7 +7,7 @@ they will be brought in here on merge.
 -->
 
 <template>
-  <div class="donutChartDiv" :style="{ height: height, width: width }"></div>
+  <div class="donutChartDiv" :style="{ height: '100%', width: '100%' }"></div>
 </template>
 
 <script lang="ts">
@@ -92,18 +92,16 @@ import * as am4charts from "@amcharts/amcharts4/charts";
         state: (target, stateId) => {
           if (target instanceof am4charts.PieSeries3D) {
             const state = target.states.create(stateId);
-            target.labels.template.states.create(
-              stateId
-            ).properties.disabled = true;
-            target.ticks.template.states.create(
-              stateId
-            ).properties.disabled = true;
+            target.labels.template.states.create(stateId).properties.disabled =
+              true;
+            target.ticks.template.states.create(stateId).properties.disabled =
+              true;
             return state;
           }
           if (target instanceof am4charts.PieChart3D) {
             const state = target.states.create(stateId);
-            const legendProperties = target.legend.states.create(stateId)
-              .properties;
+            const legendProperties =
+              target.legend.states.create(stateId).properties;
             legendProperties.position = "top";
             legendProperties.fontSize = 13;
             legendProperties.paddingBottom = legendProperties.paddingTop = 0;
@@ -118,21 +116,24 @@ import * as am4charts from "@amcharts/amcharts4/charts";
         state: (target, stateId) => {
           if (target instanceof am4charts.PieChart3D) {
             const state = target.states.create(stateId);
-            const legendProperties = target.legend.states.create(stateId)
-              .properties;
+            const legendProperties =
+              target.legend.states.create(stateId).properties;
             legendProperties.position = "bottom";
             return state;
           }
           if (target instanceof am4charts.PieSeries3D) {
             const state = target.states.create(stateId);
-            const labelProperties = target.labels.template.states.create(
-              stateId
-            ).properties;
-            labelProperties.marginLeft = labelProperties.marginRight = labelProperties.paddingLeft = labelProperties.paddingRight = 0;
+            const labelProperties =
+              target.labels.template.states.create(stateId).properties;
+            labelProperties.marginLeft =
+              labelProperties.marginRight =
+              labelProperties.paddingLeft =
+              labelProperties.paddingRight =
+                0;
             labelProperties.fontSize = 13;
             labelProperties.maxWidth = 150;
-            const tickProperties = target.ticks.template.states.create(stateId)
-              .properties;
+            const tickProperties =
+              target.ticks.template.states.create(stateId).properties;
             tickProperties.maxWidth = 5;
             return state;
           }

@@ -1,5 +1,5 @@
 <template>
-  <div class="incomeChartDiv" :style="{ height: height, width: width }"></div>
+  <div class="incomeChartDiv" :style="{ height: '100%', width: '100%' }"></div>
 </template>
 
 <script lang="ts">
@@ -23,19 +23,21 @@ import * as am4charts from "@amcharts/amcharts4/charts";
       chart.responsive.enabled = true;
       chart.cursor = new am4charts.XYCursor();
       chart.hiddenState.properties.opacity = 0;
-      const dates = ([
-        ...new Set([
-          ...(this.revenue || []).map((x: { date: string }) =>
-            x.date.replace(/-/g, "/")
-          ),
-          ...(this.expense || []).map((x: { date: string }) =>
-            x.date.replace(/-/g, "/")
-          ),
-          ...(this.netIncome || []).map((x: { date: string }) =>
-            x.date.replace(/-/g, "/")
-          ),
-        ]),
-      ] as string[])
+      const dates = (
+        [
+          ...new Set([
+            ...(this.revenue || []).map((x: { date: string }) =>
+              x.date.replace(/-/g, "/")
+            ),
+            ...(this.expense || []).map((x: { date: string }) =>
+              x.date.replace(/-/g, "/")
+            ),
+            ...(this.netIncome || []).map((x: { date: string }) =>
+              x.date.replace(/-/g, "/")
+            ),
+          ]),
+        ] as string[]
+      )
         .map((x) => new Date(x).getTime())
         .sort();
       // const months =

@@ -50,4 +50,7 @@ export default class App extends Vue {
 .l-content {
   flex-grow: 1;
 }
+.l-tabbar {
+  position: fixed;
+}
 </style>

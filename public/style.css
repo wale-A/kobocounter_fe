@@ -1,3 +1,7 @@
+:root {
+  --ms-max-height: 15rem;
+  --ms-caret-color: #007CFF;
+}
 * {
   margin: 0;
   padding: 0;

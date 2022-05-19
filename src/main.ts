@@ -33,7 +33,7 @@ createApp(App)
   })
   .component("svg-icon", InlineSvgPlugin)
   .mount("#app");
-
+process.env.AM4_LICENSE && am4core.addLicense(process.env.AM4_LICENSE);
 am4core.options.autoDispose = true;
 am4core.useTheme(am4themes_kelly);
 am4core.useTheme(am4themes_animated);
