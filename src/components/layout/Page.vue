@@ -6,7 +6,7 @@
       @logout="$emit('logout')"
       class="sticky"
     >
-      <slot name="actions" />
+      <slot v-if="!onMobile" name="actions" />
     </Header>
     <slot />
   </section>
@@ -24,6 +24,11 @@ import Header from "./Header.vue";
     username: String,
     avatarUrl: String,
   },
+  computed: {
+    onMobile() {
+      return ["xs", "sm", "md"].includes(this.$grid.breakpoint);
+    },
+  },
 })
 export default class Page extends Vue {}
 </script>
@@ -37,7 +42,7 @@ export default class Page extends Vue {}
     position: -webkit-sticky; /* Safari */
     position: sticky;
     top: 0;
-    z-index: 1000;
+    z-index: 2000;
   }
 }
 </style>

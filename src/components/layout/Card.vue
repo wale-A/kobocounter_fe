@@ -21,12 +21,17 @@ export default class Card extends Vue {}
 </script>
 
 <style lang="scss" scoped>
+@import "@/styles/mixins.scss";
 .card {
-  box-shadow: 0px 0px 15px 5px rgb(54 65 86 / 10%);
+  box-shadow: 0px 2px 5px rgba(54, 65, 86, 0.05);
   border-radius: 5px;
   display: flex;
   flex-direction: column;
   padding: 13px 17px;
+
+  @include for-size(tablet-landscape-up) {
+    box-shadow: 0px 0px 15px 5px rgb(54 65 86 / 10%);
+  }
 
   @at-root #{&}__header {
     display: flex;

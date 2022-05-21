@@ -1,6 +1,6 @@
 <template>
   <Page>
-    <template v-if="!onMobile && facets.length > 0" v-slot:actions>
+    <template v-if="facets.length > 0" v-slot:actions>
       <Filter
         :displayText="paramSummary"
         :fields="facets"
@@ -10,8 +10,23 @@
       />
     </template>
     <div>
-      <section v-show="accounts && accounts?.length" class="dashboard">
-        <div v-if="!onMobile" class="dashboard__widgets">
+      <section
+        v-show="accounts && accounts?.length"
+        class="dashboard"
+        :class="{ 'dashboard--padding': !onMobile }"
+      >
+        <template v-if="onMobile && facets.length > 0">
+          <Filter
+            :fields="facets"
+            :model="{ ...params }"
+            @filter="setParams($event)"
+            @update:account="addAccount"
+          />
+        </template>
+        <div
+          v-if="!onMobile"
+          class="dashboard__widgets dashboard__widgets--desktop"
+        >
           <div class="dashboard__widget-set dashboard__widget-set--first">
             <AccountActivity
               :fileName="'income_summary__' + from + '_to_' + to"
@@ -35,7 +50,7 @@
               class="dashboard__widget dashboard__widget--acount-summary"
             />
             <BudgetPerformance
-              :height="'120px'"
+              :height="'200px'"
               class="dashboard__widget dashboard__widget--budget-performance"
             />
 
@@ -44,7 +59,7 @@
             />
           </div>
         </div>
-        <div v-else>
+        <div v-else class="dashboard__widgets dashboard__widgets--mobile">
           <AccountSummary
             :accountBalance="accountBalance || 0"
             :totalRevenue="totalRevenue"
@@ -214,14 +229,25 @@ export default class Dashboard extends mixins(FilterMixin) {
 
 <style lang="scss" scoped>
 .dashboard {
-  padding: 30px;
   display: block;
   height: auto;
 
+  @at-root #{&}--padding {
+    padding: 30px;
+  }
+
   @at-root #{&}__widgets {
     display: flex;
-    height: 80vh;
+  }
+
+  @at-root #{&}__widgets--desktop {
     justify-content: space-between;
+    height: 80vh;
+  }
+
+  @at-root #{&}__widgets--mobile {
+    flex-direction: column;
+    margin-bottom: 60px;
   }
 
   @at-root #{&}__widget-set {

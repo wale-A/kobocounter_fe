@@ -1,21 +1,21 @@
 <template>
-  <nav class="bottom-nav">
+  <nav class="nav-bar">
     <router-link
       v-for="menuItem in menuItems"
       :key="menuItem.route.name"
       :to="menuItem.route.name"
-      class="accent-color"
+      class="nav-bar__link"
     >
       <div
         :class="{
-          'bottom-nav-link': menuItem.medium.mobile,
-          active: $route.matched
+          'nav-bar__item': menuItem.medium.mobile,
+          'nav-bar__item--active': $route.matched
             .map((m) => m.name)
             .includes(menuItem.route.name),
         }"
       >
-        <img :src="menuItem.icon.mobile" />
-        <p>{{ menuItem.title }}</p>
+        <img :src="menuItem.icon.mobile" class="nav-bar__icon" />
+        <p class="nav-bar__text">{{ menuItem.title }}</p>
       </div>
     </router-link>
   </nav>
@@ -36,50 +36,33 @@ export default class NavBar extends Vue {}
 </script>
 
 <style lang="scss" scoped>
-.wrapper {
-  background-color: #007cff;
-  height: 100%;
-}
-.l-container {
+.nav-bar {
   display: flex;
-  flex-direction: column;
   justify-content: space-between;
-}
-.brand {
-  display: flex;
+  background: #ffffff;
+  box-shadow: 0px -2px 4px rgb(54 65 86 / 10%);
+  border-radius: 10px 10px 0px 0px;
   align-items: center;
-  justify-content: center;
-  padding: 30px;
+  width: 100%;
+  padding: 14px 25px;
+  height: 72px;
 
-  @at-root #{&}__icon {
-    width: 184px;
-    height: 32px;
-  }
-}
-
-.app-menu {
-  @at-root #{&}__list {
-    list-style: none;
+  @at-root #{&}__link {
+    text-decoration: none;
   }
 
   @at-root #{&}__item {
-    padding: 13px 30px;
+    font-size: 0.8em;
+    font-weight: 400;
+    text-align: center;
+    cursor: pointer;
+    color: black;
   }
 
   @at-root #{&}__item--active {
-    padding: 13px 30px;
-  }
-
-  @at-root #{&}__link-icon {
-    margin-right: 5px;
-  }
-
-  @at-root #{&}__link {
-    font-family: "Nunito Sans";
-    font-weight: 600;
-    font-size: 16px;
-    line-height: 22px;
-    color: #ffffff;
+    color: #007cff;
+    font-weight: 800;
+    font-size: 0.9em;
   }
 }
 </style>

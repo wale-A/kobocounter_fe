@@ -1,14 +1,18 @@
 <template>
-  <div class="filter">
-    <div class="filter-results">{{ displayText }}</div>
-    <button class="filter-trigger" @click="showFilters = !showFilters">
-      <span class="filter-trigger-label">Filters</span>
+  <div class="filter" :class="{ 'filter--no-display': !displayText }">
+    <div v-if="displayText" class="filter__results">{{ displayText }}</div>
+    <button
+      class="filter__trigger"
+      :class="{ 'filter__trigger--no-shadow': !displayText }"
+      @click="showFilters = !showFilters"
+    >
+      <span class="filter__trigger-label">Filters</span>
       <svg-icon
         :src="require('@/assets/svg/filter-icon.svg')"
-        class="filter-trigger-icon"
+        class="filter__trigger-icon"
       />
     </button>
-    <div v-if="showFilters" class="filter-facets">
+    <div v-if="showFilters" class="filter__facets">
       <div class="filter-list">
         <div v-for="field in fields" :key="field.key" class="filter-input">
           <label class="filter-label">{{ field.label }}</label>
@@ -18,6 +22,7 @@
               v-model="modelValue[field.key]"
               :placeholder="field.placeholder"
               :options="field.options"
+              :classes="{ options: 'filter-dropdown' }"
               class="filter-select"
             />
             <span
@@ -251,8 +256,13 @@ export default class Filter extends Vue {}
   align-items: center;
   display: flex;
   position: relative;
+  z-index: 1000;
 
-  &-results {
+  @at-root #{&}--no-display {
+    justify-content: flex-end;
+  }
+
+  @at-root #{&}__results {
     color: #727376;
     font-family: "Nunito Sans";
     font-size: 13px;
@@ -260,7 +270,7 @@ export default class Filter extends Vue {}
     margin-right: 12px;
   }
 
-  &-trigger {
+  @at-root #{&}__trigger {
     align-items: center;
     background: #ffffff;
     box-shadow: 0px 4px 15px 4px rgba(54, 65, 86, 0.1);
@@ -272,7 +282,13 @@ export default class Filter extends Vue {}
     padding: 8px 29px 8px 21px;
   }
 
-  &-trigger-label {
+  @at-root #{&}__trigger--no-shadow {
+    border: 1px solid #364156;
+    border-radius: 5px;
+    box-shadow: unset;
+  }
+
+  @at-root #{&}__trigger-label {
     color: #727376;
     font-family: "Nunito Sans";
     font-size: 18px;
@@ -280,7 +296,7 @@ export default class Filter extends Vue {}
     margin-right: 24px;
   }
 
-  &-facets {
+  @at-root #{&}__facets {
     position: absolute;
     display: flex;
     flex-direction: column;
@@ -304,6 +320,10 @@ export default class Filter extends Vue {}
 
   &-select {
     flex: 1;
+  }
+
+  &-dropdown {
+    max-height: 270px;
   }
 
   &-edit {

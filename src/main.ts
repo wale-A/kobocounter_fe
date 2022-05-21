@@ -12,7 +12,7 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import am4themes_kelly from "@amcharts/amcharts4/themes/kelly";
 import InlineSvgPlugin from "vue-inline-svg";
 import VueScreen from "vue-screen";
-
+const AM4_LICENSE = process.env.VUE_APP_AM4_LICENSE;
 createApp(App)
   .use(router)
   .use(store)
@@ -33,7 +33,9 @@ createApp(App)
   })
   .component("svg-icon", InlineSvgPlugin)
   .mount("#app");
-process.env.AM4_LICENSE && am4core.addLicense(process.env.AM4_LICENSE);
+if (AM4_LICENSE) {
+  am4core.addLicense(AM4_LICENSE);
+}
 am4core.options.autoDispose = true;
 am4core.useTheme(am4themes_kelly);
 am4core.useTheme(am4themes_animated);

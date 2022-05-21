@@ -48,16 +48,21 @@ export default class Header extends Vue {}
 </script>
 
 <style lang="scss" scoped>
+@import "@/styles/mixins.scss";
 .header {
   background: #ffffff;
-  border-radius: 5px;
-  box-shadow: 0px 4px 15px 4px rgba(54, 65, 86, 0.1);
+  box-shadow: 0px 2px 4px rgba(28, 82, 152, 0.15);
+  border-radius: 0px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   min-height: 87px;
   margin-bottom: 13px;
   padding: 0 23px;
+  @include for-size(tablet-landscape-up) {
+    border-radius: 5px;
+    box-shadow: 0px 4px 15px 4px rgba(54, 65, 86, 0.1);
+  }
 }
 
 .salutation {
