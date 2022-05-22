@@ -64,6 +64,9 @@ const getRecurringExpenses = (
 ): Promise<AxiosResponse> =>
   axios.get(`/banking/accounts/recurrentExpenses`, { params });
 
+const getExpenseCategories = (params: FilterParams): Promise<AxiosResponse> =>
+  axios.get(`/banking/accounts/transactions/expenses`, { params });
+
 const getNetIncome = (params: FilterParams): Promise<AxiosResponse> =>
   axios.get(`/banking/accounts/netincome`, { params });
 
@@ -91,6 +94,7 @@ export default {
   getEstablishmentActivities,
   getExpenses,
   getRecurringExpenses,
+  getExpenseCategories,
   getNetIncome,
   getRevenue,
   subscribe,

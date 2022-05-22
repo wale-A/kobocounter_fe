@@ -1,5 +1,5 @@
 <template>
-  <div class="guageChartDiv" :style="{ height: height, width: width }"></div>
+  <div class="guageChartDiv" :style="{ height: '100%', width: '100%' }"></div>
 </template>
 
 <script lang="ts">
@@ -13,8 +13,6 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
     this.draw();
   },
   props: {
-    height: String,
-    width: String,
     fileName: String,
     budgetSummary: Array,
     budgetDetails: Array,
@@ -82,24 +80,20 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
       });
 
       // Disable sliding out of slices
-      const activeKeyOuterSeries = pieSeries.slices.template.states.getKey(
-        "active"
-      );
+      const activeKeyOuterSeries =
+        pieSeries.slices.template.states.getKey("active");
       if (activeKeyOuterSeries) activeKeyOuterSeries.properties.shiftRadius = 0;
 
-      const hoverKeyOuterSeries = pieSeries.slices.template.states.getKey(
-        "hover"
-      );
+      const hoverKeyOuterSeries =
+        pieSeries.slices.template.states.getKey("hover");
       if (hoverKeyOuterSeries) hoverKeyOuterSeries.properties.scale = 1;
 
-      const activeKeyInnerSeries = pieSeries2.slices.template.states.getKey(
-        "active"
-      );
+      const activeKeyInnerSeries =
+        pieSeries2.slices.template.states.getKey("active");
       if (activeKeyInnerSeries) activeKeyInnerSeries.properties.shiftRadius = 0;
 
-      const hoverKeyInnerSeries = pieSeries2.slices.template.states.getKey(
-        "hover"
-      );
+      const hoverKeyInnerSeries =
+        pieSeries2.slices.template.states.getKey("hover");
       if (hoverKeyInnerSeries) hoverKeyInnerSeries.properties.scale = 1;
     },
   },

@@ -4,7 +4,7 @@
       :username="username"
       :avatarUrl="avatarUrl"
       @logout="$emit('logout')"
-      class="sticky"
+      class="page__header"
     >
       <slot v-if="!onMobile" name="actions" />
     </Header>
@@ -38,7 +38,7 @@ export default class Page extends Vue {}
   height: 100%;
   overflow: scroll;
 
-  .sticky {
+  @at-root #{&}__header {
     position: -webkit-sticky; /* Safari */
     position: sticky;
     top: 0;

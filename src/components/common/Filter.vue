@@ -252,6 +252,7 @@ export default class Filter extends Vue {}
 </script>
 
 <style lang="scss" scoped>
+@import "@/styles/mixins.scss";
 .filter {
   align-items: center;
   display: flex;
@@ -286,14 +287,22 @@ export default class Filter extends Vue {}
     border: 1px solid #364156;
     border-radius: 5px;
     box-shadow: unset;
+    margin-top: 19px;
+    margin-bottom: 5px;
   }
 
   @at-root #{&}__trigger-label {
     color: #727376;
     font-family: "Nunito Sans";
-    font-size: 18px;
-    line-height: 25px;
-    margin-right: 24px;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 19px;
+    margin-right: 9px;
+    @include for-size(tablet-landscape-up) {
+      font-size: 18px;
+      line-height: 25px;
+      margin-right: 24px;
+    }
   }
 
   @at-root #{&}__facets {

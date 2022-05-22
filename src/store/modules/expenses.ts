@@ -1,10 +1,16 @@
-import { FilterParams, NetIncome, RecurrentExpense } from "@/types";
+import {
+  FilterParams,
+  NetIncome,
+  RecurrentExpense,
+  ExpenseCategories,
+} from "@/types";
 import api from "@/api";
 import { Module } from "vuex";
 
 type State = {
   recurringExpenditure: RecurrentExpense[] | undefined;
   expense?: Array<{ date: string; amount: number }>;
+  expenseCategories?: Array<ExpenseCategories>;
 };
 
 const expenses: Module<State, any> = {
@@ -18,6 +24,9 @@ const expenses: Module<State, any> = {
     recurrentExpenses(state) {
       return state.recurringExpenditure || [];
     },
+    topExpenses(state) {
+      return state.expenseCategories?.slice(0, 3) || [];
+    },
   },
   mutations: {
     setExpense(state: State, expense?: { date: string; amount: number }[]) {
@@ -25,6 +34,9 @@ const expenses: Module<State, any> = {
     },
     setRecurringExpenses(state: State, subscription?: RecurrentExpense[]) {
       state.recurringExpenditure = subscription;
+    },
+    setExpenseCategories(state, categories: ExpenseCategories[]) {
+      state.expenseCategories = categories;
     },
   },
   actions: {
@@ -46,6 +58,21 @@ const expenses: Module<State, any> = {
         commit("setRecurringExpenses", res.data as RecurrentExpense[]);
       } catch (e) {
         commit("setRecurringExpenses", []);
+      }
+    },
+    async getExpenseCategories(
+      { commit },
+      { accountId, start, end }: FilterParams
+    ) {
+      try {
+        const res = await api.getExpenseCategories({
+          accountId,
+          start,
+          end,
+        });
+        commit("setExpenseCategories", res.data as ExpenseCategories[]);
+      } catch (e) {
+        commit("setExpenseCategories", []);
       }
     },
   },

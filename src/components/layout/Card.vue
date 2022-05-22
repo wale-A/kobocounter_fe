@@ -27,7 +27,11 @@ export default class Card extends Vue {}
   border-radius: 5px;
   display: flex;
   flex-direction: column;
-  padding: 13px 17px;
+  padding: 15px 20px;
+
+  @include for-size(tablet-landscape-up) {
+    padding: 13px 17px;
+  }
 
   @include for-size(tablet-landscape-up) {
     box-shadow: 0px 0px 15px 5px rgb(54 65 86 / 10%);
@@ -43,9 +47,13 @@ export default class Card extends Vue {}
 
   @at-root #{&}__title {
     font-weight: 700;
-    font-size: 16px;
-    line-height: 22px;
+    font-size: 14px;
+    line-height: 19px;
     color: #2a2a2a;
+    @include for-size(tablet-landscape-up) {
+      font-size: 16px;
+      line-height: 22px;
+    }
   }
 
   @at-root #{&}__body {

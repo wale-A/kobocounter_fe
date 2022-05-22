@@ -15,8 +15,6 @@ import * as am4plugins_wordCloud from "@amcharts/amcharts4/plugins/wordCloud";
     this.draw();
   },
   props: {
-    height: String,
-    width: String,
     fileName: String,
     inputData: Array,
   },

@@ -115,6 +115,14 @@ export type RecurrentExpense = {
   transactions?: Transaction[];
 };
 
+// type Subset<T extends U, U> = U;
+
+export type ExpenseCategories = {
+  category: number;
+  amount: number;
+  percentage: number;
+};
+
 export type EstablishmentActivity = {
   activity: string;
   transactionIds: string[];

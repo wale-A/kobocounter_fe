@@ -50,11 +50,11 @@
               class="dashboard__widget dashboard__widget--acount-summary"
             />
             <BudgetPerformance
-              :height="'200px'"
               class="dashboard__widget dashboard__widget--budget-performance"
             />
 
             <ExpenseCategory
+              :data="topExpenses"
               class="dashboard__widget dashboard__widget--acount-top-expenses"
             />
           </div>
@@ -64,30 +64,28 @@
             :accountBalance="accountBalance || 0"
             :totalRevenue="totalRevenue"
             :totalExpenses="totalExpenses"
-            class="dashboard__widget dashboard__widget--acount-summary"
+            class="dashboard__widget dashboard__widget--acount-summary dashboard__widget--acount-summary--mobile"
           />
           <AccountActivity
             :fileName="'income_summary__' + from + '_to_' + to"
             :revenue="revenue"
             :expense="expense"
-            :height="'200px'"
-            class="dashboard__widget dashboard__widget--acount-activity"
+            class="dashboard__widget dashboard__widget--acount-activity dashboard__widget--acount-activity--mobile"
           />
           <BudgetPerformance
-            :height="'140px'"
-            class="dashboard__widget dashboard__widget--budget-performance"
+            class="dashboard__widget dashboard__widget--budget-performance dashboard__widget--budget-performance--mobile"
           />
 
           <ExpenseCategory
-            class="dashboard__widget dashboard__widget--acount-top-expenses"
+            :data="topExpenses"
+            class="dashboard__widget dashboard__widget--acount-top-expenses dashboard__widget--acount-top-expenses--mobile"
           />
           <RecentCategories
             :transactionCategories="transactionCategories"
             :establishmentActivities="establishmentActivities"
             :to="to"
             :from="from"
-            :height="'300px'"
-            class="dashboard__widget dashboard__widget--recent-category"
+            class="dashboard__widget dashboard__widget--recent-category dashboard__widget--recent-category--mobile"
           />
         </div>
       </section>
@@ -133,6 +131,7 @@ import FilterMixin from "@/mixins/Filter";
       "transactionCategories",
       "accountCreateStatus",
       "recurrentExpenses",
+      "topExpenses",
       "establishmentActivities",
       "revenue",
       "expense",
@@ -149,6 +148,7 @@ import FilterMixin from "@/mixins/Filter";
       "getExpense",
       "getRevenue",
       "getTransactionCategories",
+      "getExpenseCategories",
       "getRecurringExpenses",
       "getEstablishmentActivities",
     ]),
@@ -203,6 +203,7 @@ export default class Dashboard extends mixins(FilterMixin) {
   getExpense!: (params: FilterParams) => Promise<void>;
   getRevenue!: (params: FilterParams) => Promise<void>;
   getTransactionCategories!: (params: FilterParams) => Promise<void>;
+  getExpenseCategories!: (params: FilterParams) => Promise<void>;
   getRecurringExpenses!: (params: FilterParams) => Promise<void>;
   getEstablishmentActivities!: (params: FilterParams) => Promise<void>;
 
@@ -217,6 +218,7 @@ export default class Dashboard extends mixins(FilterMixin) {
       this.getRecurringExpenses({
         accountId: params.accountId,
       }),
+      this.getExpenseCategories(params),
       this.getEstablishmentActivities(params),
     ]);
   }
@@ -269,8 +271,40 @@ export default class Dashboard extends mixins(FilterMixin) {
     height: 42%;
   }
 
+  @at-root #{&}__widget--acount-activity--mobile {
+    height: 300px;
+  }
+
   @at-root #{&}__widget--recent-category {
     height: 55%;
   }
+
+  @at-root #{&}__widget--recent-category--mobile {
+    height: 400px;
+  }
+
+  @at-root #{&}__widget--acount-summary {
+    max-height: 38%;
+  }
+
+  /*@at-root #{&}__widget--acount-summary--mobile {
+    min-height: 295px;
+  }*/
+
+  @at-root #{&}__widget--budget-performance {
+    height: 30.5%;
+  }
+
+  @at-root #{&}__widget--budget-performance--mobile {
+    min-height: 127px;
+  }
+
+  @at-root #{&}__widget--acount-top-expenses {
+    max-height: 42.5%;
+  }
+
+  /*@at-root #{&}__widget--acount-top-expenses--mobile {
+    height: 206px;
+  } */
 }
 </style>

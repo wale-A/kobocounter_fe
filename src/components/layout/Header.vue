@@ -11,7 +11,17 @@
           <img :src="avatarUrl" alt="avatar" class="user-menu__icon" />
         </button>
         <div v-show="openMenu" class="user-menu__dropdown">
-          <a href="#" class="user-menu__link" @click.prevent="$emit('logout')">
+          <a href="#" class="user-menu__link"> Edit Profile </a>
+          <a href="#" class="user-menu__link"> Manage Account </a>
+          <a href="#" class="user-menu__link"> Notifications </a>
+          <a href="#" class="user-menu__link"> Change Password </a>
+          <a href="#" class="user-menu__link"> Upgrade your Account </a>
+          <a href="#" class="user-menu__link"> Invite Friends </a>
+          <a
+            href="#"
+            class="user-menu__link user-menu__link--red"
+            @click.prevent="$emit('logout')"
+          >
             Logout
           </a>
         </div>
@@ -22,12 +32,8 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import Filter from "@/components/common/Filter.vue";
 
 @Options({
-  components: {
-    Filter,
-  },
   props: {
     displayMenu: Boolean,
     avatarUrl: String,
@@ -58,6 +64,7 @@ export default class Header extends Vue {}
   align-items: center;
   min-height: 87px;
   margin-bottom: 13px;
+
   padding: 0 23px;
   @include for-size(tablet-landscape-up) {
     border-radius: 5px;
@@ -99,10 +106,16 @@ export default class Header extends Vue {}
   }
 
   @at-root #{&}__dropdown {
-    background-color: green;
-    margin-left: -25px;
+    background-color: #ffffff;
+    //margin-left: -25px;
     position: absolute;
     z-index: 1;
+    width: 178px;
+    box-shadow: 0px 0px 10px rgba(54, 65, 86, 0.15);
+    border-radius: 5px;
+    right: 5px;
+    top: 65px;
+    padding: 10px 0;
   }
 
   @at-root #{&}__link {
@@ -111,13 +124,21 @@ export default class Header extends Vue {}
     padding: 10px 20px;
     text-decoration: none;
     display: block;
-    font-family: Poppins;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 18px;
+
+    color: #364156;
     cursor: pointer;
 
     :hover {
       background-color: #f1f1f1;
       color: #007cff;
     }
+  }
+
+  @at-root #{&}__link--red {
+    color: #fa0266;
   }
 }
 

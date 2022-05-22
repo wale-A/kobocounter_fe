@@ -1,8 +1,6 @@
 <template>
   <Card title="Budget Performance">
     <GuageChart
-      :height="height"
-      :width="'100%'"
       :budgetSummary="[
         {
           category: 'Budget Spent',
