@@ -1,5 +1,5 @@
 <template>
-  <Card title="Top 3 Expense Categories">
+  <Card title="Top 3 Expense categories">
     <div class="expense">
       <table class="expense__table">
         <tr class="expense__header">
@@ -20,9 +20,7 @@
           <td class="expense__record-item expense__record-item--left">
             {{ item.category }}
           </td>
-          <td class="expense__record-item">
-            N {{ Math.abs(item.amount).toLocaleString() }}
-          </td>
+          <td class="expense__record-item">N{{ Math.abs(item.amount) }}</td>
           <td class="expense__record-item">{{ item.percentage }}%</td>
         </tr>
       </table>
@@ -50,7 +48,7 @@ export default class ExpenseCategory extends Vue {}
 
 <style lang="scss" scoped>
 .expense {
-  font-size: 13px;
+  font-size: 12px;
   line-height: 16px;
   color: #364156;
 
