@@ -44,6 +44,9 @@ import * as am4plugins_wordCloud from "@amcharts/amcharts4/plugins/wordCloud";
         new am4plugins_wordCloud.WordCloudSeries()
       );
       // series.randomness = 0.1;
+      series.accuracy = 5;
+      series.minFontSize = am4core.percent(5);
+      series.maxFontSize = am4core.percent(25);
       series.rotationThreshold = 15;
       series.data = (this.inputData || []).map(
         (x: { activity: string; transactionIds: [] }) => {

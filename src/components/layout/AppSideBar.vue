@@ -111,7 +111,7 @@ export default class SideBar extends Vue {}
 
   @at-root #{&}__link {
     font-family: "Nunito Sans";
-    font-weight: 600;
+    font-weight: 400;
     font-size: 16px;
     line-height: 22px;
     color: #ffffff;
