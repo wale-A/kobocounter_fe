@@ -104,7 +104,9 @@ export default class List extends Vue {
       transaction.expenseCategory ||
       transaction.displayCategory ||
       "null"
-    ).trim();
+    )
+      .replace("/", " - ")
+      .trim();
   }
 
   getIcon(transaction: Transaction): string {
