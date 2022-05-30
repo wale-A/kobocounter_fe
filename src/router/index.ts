@@ -49,6 +49,20 @@ const routes: Array<RouteRecordRaw> = [
       authorize: true,
       layout: "App",
     },
+    children: [
+      {
+        path: "",
+        name: "TransactionList",
+        component: Transactions,
+        props: true,
+      },
+      {
+        path: "/transactions/:id/:action",
+        name: "TransactionDetail",
+        component: Transactions,
+        props: true,
+      },
+    ],
   },
   {
     path: "/:pathMach(.*)*",
