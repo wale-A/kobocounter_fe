@@ -21,9 +21,9 @@
             {{ item.category }}
           </td>
           <td class="expense__record-item">
-            N {{ Math.abs(item.amount).toLocaleString() }}
+            {{ Math.abs(item.amount).toLocaleString() }}
           </td>
-          <td class="expense__record-item">{{ item.percentage }}%</td>
+          <td class="expense__record-item">{{ item.percentage }}</td>
         </tr>
       </table>
     </div>

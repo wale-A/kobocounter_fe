@@ -9,14 +9,14 @@
         { category: 'Budget Left', value: 30 },
       ]"
       :budgetDetails="[
-        { category: 'Food', value: 30, amount: 30000 },
-        { category: 'Transport', value: 20, amount: 20000 },
-        { category: 'Airtime & Data', value: 15, amount: 15000 },
-        { category: 'Fuel', value: 5, amount: 5000 },
+        { category: 'Food', value: 30, percentage: 30000 },
+        { category: 'Transport', value: 20, percentage: 20000 },
+        { category: 'Airtime & Data', value: 15, percentage: 15000 },
+        { category: 'Fuel', value: 5, percentage: 5000 },
         {
           category: 'Budget Left',
           value: 30,
-          amount: 30000,
+          percentage: 30000,
         },
       ]"
       v-show="true"

@@ -9,7 +9,7 @@ import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 
 @Options({
-  created() {
+  mounted() {
     this.draw();
   },
   props: {
@@ -44,7 +44,7 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
       pieSeries.labels.template.disabled = true;
       // Add data
       this.budgetSummary.find(
-        (x: { category: string; value: number; amount: number }) =>
+        (x: { category: string; value: number; percentage: number }) =>
           x.category === "Budget Left"
       ).labelDisabled = true;
       pieSeries.data = this.budgetSummary;
@@ -59,7 +59,7 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 
       //   Add data
       this.budgetDetails.find(
-        (x: { category: string; value: number; amount: number }) =>
+        (x: { category: string; value: number; percentage: number }) =>
           x.category === "Budget Left"
       ).fill = "#dedede";
       pieSeries2.data = this.budgetDetails;
@@ -71,7 +71,7 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
         return am4core.percent(100);
       });
       pieSeries2.slices.template.tooltipText =
-        "{category}: \n[bold]N {amount}[/]";
+        "{category}: \n[bold]N {percentage}[/]";
       pieSeries2.adapter.add("innerRadius", function () {
         return am4core.percent(60);
       });
