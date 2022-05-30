@@ -1,54 +1,47 @@
 <template>
-  <div>
+  <div class="transaction">
     <!-- TODO: format date/time ---->
-    <Header
-      :alt="`${transaction?.bank} logo`"
-      :src="`/img/banks/${transaction?.bank}.svg`"
-      :date="date"
-      :time="time"
-      class="transaction__header"
-    />
+    <div class="transaction__header">
+      <button
+        class="transaction__nav"
+        @click="$router.push({ name: 'Transactions' })"
+      >
+        <svg-icon
+          :src="require('@/assets/svg/back.svg')"
+          class="filter__trigger-icon"
+        />
+      </button>
+      <div class="transaction__bank">{{ transaction?.bank }}</div>
+      <div class="transaction__amount">
+        N{{
+          Math.abs(
+            transaction?.amount || transaction?.displayAmount
+          ).toLocaleString()
+        }}
+      </div>
+      <div class="transaction__date">{{ `${date} ${time}` }}</div>
+    </div>
     <div class="transaction__body">
+      <Field label="Expense Category:" :value="transaction?.expenseCategory" />
       <Field
-        label="transaction category:"
+        label="Transaction Category:"
         :value="transaction?.displayCategory?.trim()"
       />
-      <!-- TODO: format currency ---->
-      <Field label="amount:">
+      <Field label="Recipient:" :value="transaction?.recipient" />
+      <Field label="Narration:">
         <template #value>
-          <label>
-            <span style="font-weight: 800; font-size: large">&#8358; </span>
-            <span
-              :style="{
-                'font-weight': 500,
-                color:
-                  (transaction?.amount || transaction?.displayAmount) < 0
-                    ? 'rgba(255, 10, 10, 0.7)'
-                    : 'rgb(20, 180, 20)',
-              }"
-            >
-              {{
-                Math.abs(
-                  transaction?.amount || transaction?.displayAmount
-                ).toLocaleString()
-              }}
-            </span>
-          </label>
+          <div class="transaction--small-text">
+            {{ transaction?.narration }}
+          </div>
         </template>
       </Field>
 
-      <Field label="recipient:" :value="transaction?.recipient" />
-
-      <Field
+      <!--Field
         label="business activity:"
         :value="transaction?.establishment?.activities?.join(', ')?.trim()"
-      />
+      /-->
 
-      <Field label="expense category:" :value="transaction?.expenseCategory" />
-
-      <Field label="narration:" :value="transaction?.narration" />
-
-      <div v-if="sub && sub.length">
+      <!--div v-if="sub && sub.length">
         <Field label="sub transactions:">
           <template #value>
             <ul style="margin-bottom: 0.5em">
@@ -67,9 +60,9 @@
             </ul>
           </template>
         </Field>
-      </div>
+      </div-->
 
-      <div v-if="parent">
+      <!--div v-if="parent">
         <Field label="parent transaction:">
           <template #value>
             <ul style="margin-bottom: 0.5em">
@@ -88,11 +81,11 @@
             </ul>
           </template>
         </Field>
-      </div>
+      </div-->
     </div>
   </div>
 
-  <div class="form-buttons">
+  <div class="transaction__actions">
     <button
       v-if="canEdit"
       class="button button--primary"
@@ -115,6 +108,7 @@ import { Options, Vue } from "vue-class-component";
 import Header from "./_internal/Header.vue";
 import Field from "./_internal/Field.vue";
 import { formatDate, formatTime } from "@/util";
+import { Transaction } from "@/types";
 
 @Options({
   components: { Field, Header },
@@ -145,40 +139,79 @@ import { formatDate, formatTime } from "@/util";
     },
   },
 })
-export default class View extends Vue {}
+export default class View extends Vue {
+  isPositive(transaction: Transaction): boolean {
+    const amount = transaction.amount || transaction.displayAmount || 0;
+    return amount > 0;
+  }
+}
 </script>
 
 <style lang="scss" scoped>
-.transaction__body {
-  margin-top: 2em;
+@import "@/styles/mixins.scss";
+.transaction {
+  @at-root #{&}--small-text {
+    font-size: 12px;
+    line-height: 20px;
+  }
+  @at-root #{&}__header {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 30px;
+  }
+  @at-root #{&}__nav {
+    background: transparent;
+    border: none;
+    text-align: left;
+    @include for-size(tablet-landscape-up) {
+      display: none;
+    }
+  }
+  @at-root #{&}__bank {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 19px;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  @at-root #{&}__amount {
+    font-weight: 700;
+    font-size: 32px;
+  }
+  @at-root #{&}__date {
+    font-size: 12px;
+    line-height: 16px;
+  }
+  @at-root #{&}__body {
+    margin-top: 2em;
+  }
+
+  @at-root #{&}__actions {
+    margin-top: 2em;
+    display: flex;
+    flex-direction: column;
+  }
 }
-.form-buttons {
-  margin-top: 2em;
-  display: flex;
-  justify-content: space-around;
-}
+
 .button {
-  font-weight: 800;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 19px;
   border: 1px solid #007cff;
   background: white;
+  border-radius: 5px;
   color: #007cff;
-  min-width: 150px;
+  width: 100%;
   padding: 1em;
 
-  &--primary {
+  @at-root #{&}--primary {
     background: #007cff;
-
     color: white;
+    margin-bottom: 14px;
   }
 }
 
 ul {
   list-style-type: disclosure-closed;
-}
-@media screen and (max-width: 991px) {
-  .form-buttons {
-    display: flex;
-    margin-top: unset;
-  }
 }
 </style>

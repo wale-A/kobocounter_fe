@@ -31,6 +31,9 @@ export default class Card extends Vue {}
 
   @include for-size(tablet-landscape-up) {
     padding: 13px 17px;
+  }
+
+  @include for-size(tablet-landscape-up) {
     box-shadow: 0px 0px 15px 5px rgb(54 65 86 / 10%);
   }
 

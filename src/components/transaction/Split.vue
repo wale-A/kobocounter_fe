@@ -1,85 +1,71 @@
 <template>
-  <div id="split-transaction">
-    <div
-      id="split-header"
-      style="
-        padding: 0 1em 0.5em;
-        margin-bottom: 1.5em;
-        border-bottom: 1px solid #ddd;
-        text-align: center;
-      "
-    >
-      <h3>Split transaction</h3>
-      <p>
-        Total Amount:
-        <span style="">&#8358;</span>
+  <div class="transaction">
+    <div class="transaction__header">
+      <button class="transaction__nav" @click="$router.go(-1)">
+        <svg-icon
+          :src="require('@/assets/svg/back.svg')"
+          class="transaction__nav-icon"
+        />
+      </button>
+      <div class="transaction__title">Split Transaction</div>
+    </div>
+    <div class="transaction__sub-header">
+      <div class="transaction__sub-title">Total Amount:</div>
+      <div class="transaction__amount">
+        N
         <span>
           {{ Math.abs(transaction?.amount).toLocaleString() }}
         </span>
-      </p>
+      </div>
     </div>
-    <p class="small-text">
-      The total of each split amount should be equal to the total of the initial
-      transaction. Adjust the amount already entered or use the button below to
-      add a new split.
-    </p>
-    <form id="transaction-split-form">
+    <div class="transaction__info">
+      <svg-icon
+        :src="require('@/assets/svg/info.svg')"
+        class="transaction__info-icon"
+      /><span class="transaction__info-text"
+        >The total of each split amount should be equal to the total of the
+        initial transaction.</span
+      >
+    </div>
+    <form class="transaction__form">
       <div
-        class="split-item-container"
+        class="transaction__field-group"
         v-for="(item, index) in model"
         :key="index"
       >
-        <div class="split-item">
-          <p class="mid-text" style="margin-top: 0.5em">category</p>
+        <div class="transaction__field-group-item">
+          <label class="transaction__field-label">Expense Category</label>
           <Multiselect
-            placeholder="Select an expense category"
             v-model="item.expenseCategory"
             :searchable="true"
             :options="categories"
             noResultsText="No result found"
+            class="transaction__field-input"
           />
-
-          <p>amount</p>
-          <input
-            type="number"
-            style="height: 2.5em; padding: 0.5em 1em; color: black"
-            min="0"
-            v-model="item.amount"
-          />
-          <!-- :style="{
-                  borderColor:
-                    (item?.amount || 0) > Math.abs(simgleTransaction.amount)
-                      ? 'red'
-                      : 'black', -->
-          <!-- }" -->
         </div>
-        <span
-          v-if="index > 0"
-          class="material-icons delete-split-item"
-          style="margin-top: 2em; color: red"
-          @click.stop="remove(index)"
-        >
-          delete
-        </span>
+        <div class="transaction__field-group-item">
+          <label class="transaction__field-label">Enter Amount</label>
+          <input
+            v-model="item.amount"
+            type="number"
+            class="transaction__field-input"
+            min="0"
+          />
+          <button
+            v-if="index > 0"
+            class="transaction__field-action"
+            @click.stop="remove(index)"
+          >
+            <svg-icon
+              :src="require('@/assets/svg/del.svg')"
+              class="transaction__input-icon"
+            />
+          </button>
+        </div>
       </div>
 
-      <button
-        style="
-          font-size: 0.9em;
-          background-color: transparent;
-          border: none;
-          display: block;
-          text-align: center;
-          padding: 1em;
-          width: 100%;
-          cursor: pointer;
-          margin-top: 1em;
-          color: #007cff;
-          padding-bottom: 0;
-        "
-        @click.prevent="add"
-      >
-        <span>+ Add New Split</span>
+      <button class="transaction__append" @click.prevent="add">
+        + Add New Split
       </button>
       <br />
       <span
@@ -100,10 +86,9 @@
               {{ Math.abs(transaction.amount) - splitTransactionTotal }}
             </p>
           </div> -->
-      <div class="form-buttons">
+      <div class="transaction__actions">
         <input
           type="button"
-          style="width: unset !important; height: unset !important"
           value="SUBMIT"
           :disabled="!canSubmit"
           class="button button--primary"
@@ -112,8 +97,7 @@
         />
         <input
           type="button"
-          class="button"
-          style="width: unset !important; height: unset !important"
+          class="button button--secondary"
           value="CANCEL"
           @click.stop="$emit('cancel')"
         />
@@ -190,86 +174,113 @@ import { SplitTransaction, Transaction } from "@/types";
 })
 export default class Split extends Vue {}
 </script>
+
 <style lang="scss" scoped>
-form {
-  margin-top: 2em;
-}
-#split-transaction-summary {
-  text-align: center;
-}
-.form-buttons {
-  margin-top: 2em;
-  display: flex;
-  justify-content: space-around;
-
-  .button {
-    font-weight: 800;
-    border: 1px solid #007cff;
-    background: white;
-    color: #007cff;
-    min-width: 150px;
-    cursor: pointer;
-    margin: 0;
-    font-size: 1em;
-    padding: 1em;
-
-    border-radius: 5px;
-
-    &--primary {
-      background: #007cff;
-      color: white;
-    }
-
-    &--disabled {
-      background: grey;
-    }
-  }
-}
-button {
-  font-weight: 800;
-  border: 1px solid #007cff;
-}
-p span:first-child {
-  font-weight: 700;
-}
-form input {
-  height: 1.5em;
-}
-
-.split-item-container {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 1em;
-  padding-bottom: 1em;
-}
-
-.split-item {
-  width: 85%;
-}
-.split-item input {
-  width: 100%;
-}
-.split-item p {
-  margin-top: 0.5em;
-}
-
-.delete-split-item {
-  cursor: pointer;
-}
-ul {
-  list-style-type: disclosure-closed;
-}
-@media screen and (max-width: 991px) {
-  .form-buttons {
+.transaction {
+  @at-root #{&}__header {
     display: flex;
-    margin-top: unset;
+    align-items: center;
+    margin-bottom: 30px;
   }
-  form p {
-    margin-top: 1em;
-    padding-top: 0;
+  @at-root #{&}__nav {
+    background: transparent;
+    border: none;
+    text-align: left;
+    margin: 0 12px 0 0;
   }
-  label input {
-    display: inline;
+  @at-root #{&}__title {
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 25px;
+  }
+  @at-root #{&}__sub-header {
+    margin-bottom: 10px;
+  }
+  @at-root #{&}__sub-title {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 19px;
+  }
+  @at-root #{&}__amount {
+    font-weight: 700;
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  @at-root #{&}__info {
+    display: flex;
+    background: #f1f4f7;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 24px;
+  }
+  @at-root #{&}__info-icon {
+    margin-right: 10px;
+  }
+  @at-root #{&}__info-text {
+    font-size: 12px;
+    line-height: 18px;
+  }
+  @at-root #{&}__field-group {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  @at-root #{&}__field-group-item {
+    width: 45%;
+    position: relative;
+  }
+  @at-root #{&}__field-label {
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+    margin-bottom: 4px;
+  }
+  @at-root #{&}__field-input {
+    max-width: 100%;
+  }
+  @at-root #{&}__field-action {
+    background: transparent;
+    border: none;
+    text-align: left;
+    position: absolute;
+    top: 58%;
+    left: 75%;
+  }
+
+  @at-root #{&}__append {
+    background: transparent;
+    border: none;
+    text-align: center;
+    font-size: 12px;
+    line-height: 16px;
+    color: #007cff;
+    width: 100%;
+  }
+
+  @at-root #{&}__actions {
+    margin-top: 2em;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.button {
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 19px;
+  border: 1px solid #007cff;
+  background: white;
+  border-radius: 5px;
+  color: #007cff;
+  width: 100%;
+  padding: 1em;
+  width: unset;
+  height: unset;
+
+  @at-root #{&}--primary {
+    background: #007cff;
+    color: white;
+    margin-bottom: 14px;
   }
 }
 </style>
