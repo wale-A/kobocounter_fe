@@ -74,6 +74,7 @@
             class="dashboard__widget dashboard__widget--acount-activity dashboard__widget--acount-activity--mobile"
           />
           <BudgetPerformance
+            :data="budgets"
             class="dashboard__widget dashboard__widget--budget-performance dashboard__widget--budget-performance--mobile"
           />
 

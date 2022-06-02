@@ -6,7 +6,6 @@
 import { Options, Vue } from "vue-class-component";
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import { BudgetListItem } from "@/types";
 
 @Options({
@@ -15,9 +14,10 @@ import { BudgetListItem } from "@/types";
   },
   props: {
     fileName: String,
-    budgetSummary: Array,
-    budgetDetails: Array,
-    budget: Array,
+    budget: {
+      type: Array,
+      required: true,
+    },
   },
   methods: {
     draw() {
@@ -26,36 +26,45 @@ import { BudgetListItem } from "@/types";
         Expenses = "Expenses",
         AmountLeft = "Amount Left",
       }
-      const budgetData = [
-        {
-          category: BudgetCategory.Budget,
-          value: this.budget.reduce(
-            (a: number, b: BudgetListItem) => a + b.value,
-            0
-          ),
+      const budgetData = this.budget?.length
+        ? [
+            {
+              category: BudgetCategory.Budget,
+              value: this.budget.reduce(
+                (a: number, b: BudgetListItem) => a + b.value,
+                0
+              ),
+              fill: "#007CFF",
+            },
+            {
+              category: BudgetCategory.Expenses,
+              value: this.budget.reduce(
+                (a: number, b: BudgetListItem) => a + (b.amountSpent || 0),
+                0
+              ),
+              fill: "#00ff00",
+              fillOpacity: 1,
+            },
+          ]
+        : [];
+
+      if (budgetData.length) {
+        budgetData.push({
+          category: BudgetCategory.AmountLeft,
+          value: Math.max(budgetData[0].value - budgetData[1].value, 0),
           fill: "#007CFF",
-        },
-        {
-          category: BudgetCategory.Expenses,
-          value: this.budget.reduce(
-            (a: number, b: BudgetListItem) => a + (b.amountSpent || 0),
-            0
-          ),
-          fill: "#00ff00",
-          fillOpacity: 1,
-        },
-      ];
-      budgetData.push({
-        category: BudgetCategory.AmountLeft,
-        value: Math.max(budgetData[0].value - budgetData[1].value, 0),
-        fill: "#007CFF",
-        fillOpacity: 0.01,
-      });
-      const spendRate = budgetData[1].value / budgetData[0].value;
-      (
-        budgetData.find((x) => x.category === BudgetCategory.Expenses) as any
-      ).fill =
-        spendRate > 0.74 ? "#FF0000" : spendRate > 0.4 ? "#ff8000" : "#00ff00";
+          fillOpacity: 0.01,
+        });
+        const spendRate = budgetData[1].value / budgetData[0].value;
+        (
+          budgetData.find((x) => x.category === BudgetCategory.Expenses) as any
+        ).fill =
+          spendRate > 0.74
+            ? "#FF0000"
+            : spendRate > 0.4
+            ? "#ff8000"
+            : "#00ff00";
+      }
 
       // Create chart instance
       let chart = am4core.create("guageChartDiv", am4charts.PieChart);
