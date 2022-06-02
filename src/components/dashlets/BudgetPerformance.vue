@@ -1,35 +1,16 @@
 <template>
   <Card title="Budget Performance">
-    <GuageChart
-      :budgetSummary="[
-        {
-          category: 'Budget Spent',
-          value: 70,
-        },
-        { category: 'Budget Left', value: 30 },
-      ]"
-      :budgetDetails="[
-        { category: 'Food', value: 30, percentage: 30000 },
-        { category: 'Transport', value: 20, percentage: 20000 },
-        { category: 'Airtime & Data', value: 15, percentage: 15000 },
-        { category: 'Fuel', value: 5, percentage: 5000 },
-        {
-          category: 'Budget Left',
-          value: 30,
-          percentage: 30000,
-        },
-      ]"
-      v-show="true"
-    />
-
-    <section v-show="false">
+    <GuageChart v-show="data?.length" :budget="data" />
+    <section v-show="!data?.length" style="padding: 3%">
       <p>
-        You haven't created a budget for this month. Create one now to see your
-        budget performance.
+        You haven't created a budget for this month.
+        <br />
+        Create one now to see your budget performance.
       </p>
-      <form @submit.prevent="$emit('addAccount')">
-        <input type="submit" value="Create Your Budget" />
-      </form>
+      <br />
+      <router-link to="Budget" class="button">
+        <span class="">Create Your Budget</span>
+      </router-link>
     </section>
   </Card>
 </template>
@@ -47,6 +28,10 @@ import GuageChart from "@/components/charts/GuageChart.vue";
   },
   props: {
     height: String,
+    data: {
+      type: Array,
+      required: true,
+    },
   },
 })
 export default class BudgetPerformance extends Vue {}
