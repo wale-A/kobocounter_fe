@@ -1,7 +1,7 @@
 <template>
   <Card title="Budget Performance">
     <GuageChart v-show="data?.length" :budget="data" />
-    <section v-show="!data?.length" style="padding: 3%">
+    <section v-show="!data?.length" style="padding: 10% 5%">
       <p>
         You haven't created a budget for this month.
         <br />
