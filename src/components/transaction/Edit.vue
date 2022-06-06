@@ -11,18 +11,7 @@
     </div>
     <div class="transaction__body">
       <form>
-        <Field label="Expense Category:"
-          ><template #value>
-            <Multiselect
-              :searchable="true"
-              placeholder="Transaction category"
-              v-model="model.expenseCategory"
-              :options="expenseCategories"
-              noResultsText="No result found"
-            />
-          </template>
-        </Field>
-        <Field label="Transaction Category:">
+        <Field label="Transaction Type:">
           <template #value>
             <Multiselect
               :searchable="true"
@@ -33,18 +22,14 @@
             />
           </template>
         </Field>
-        <Field label="Recipient:">
-          <template #value>
+        <Field label="Expense Category:"
+          ><template #value>
             <Multiselect
               :searchable="true"
-              placeholder="Recipient"
-              v-model="model.recipientName"
-              :options="allEstablishments"
-              :createTag="true"
-              mode="tags"
-              :max="Number('1')"
-              @tag="$emit('addEstablishment', $event)"
-              @change="changedEstablishment"
+              placeholder="Transaction category"
+              v-model="model.expenseCategory"
+              :options="expenseCategories"
+              noResultsText="No result found"
             />
           </template>
         </Field>
@@ -60,9 +45,25 @@
               :disabled="!model?.recipientName[0]"
               class="transaction__field-checkbox"
             />
-            <span>Recipient is a business</span>
+            <span>Was this money paid to a busineess ?</span>
           </label>
         </div>
+
+        <Field label="Recipient:">
+          <template #value>
+            <Multiselect
+              :searchable="true"
+              placeholder="Recipient"
+              v-model="model.recipientName"
+              :options="allEstablishments"
+              :createTag="true"
+              mode="tags"
+              :max="Number('1')"
+              @tag="$emit('addEstablishment', $event)"
+              @change="changedEstablishment"
+            />
+          </template>
+        </Field>
 
         <div class="transaction__actions">
           <input
