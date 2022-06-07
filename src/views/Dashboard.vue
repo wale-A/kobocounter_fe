@@ -50,6 +50,7 @@
               class="dashboard__widget dashboard__widget--acount-summary"
             />
             <BudgetPerformance
+              :data="budgets"
               class="dashboard__widget dashboard__widget--budget-performance"
             />
 
@@ -73,6 +74,7 @@
             class="dashboard__widget dashboard__widget--acount-activity dashboard__widget--acount-activity--mobile"
           />
           <BudgetPerformance
+            :data="budgets"
             class="dashboard__widget dashboard__widget--budget-performance dashboard__widget--budget-performance--mobile"
           />
 
@@ -135,6 +137,7 @@ import FilterMixin from "@/mixins/Filter";
       "establishmentActivities",
       "revenue",
       "expense",
+      "budgets",
     ]),
     onMobile() {
       return ["xs", "sm", "md"].includes(this.$grid.breakpoint);
@@ -151,6 +154,7 @@ import FilterMixin from "@/mixins/Filter";
       "getExpenseCategories",
       "getRecurringExpenses",
       "getEstablishmentActivities",
+      "getBudgets",
     ]),
   },
   watch: {
@@ -206,6 +210,7 @@ export default class Dashboard extends mixins(FilterMixin) {
   getExpenseCategories!: (params: FilterParams) => Promise<void>;
   getRecurringExpenses!: (params: FilterParams) => Promise<void>;
   getEstablishmentActivities!: (params: FilterParams) => Promise<void>;
+  getBudgets!: (params: FilterParams) => Promise<void>;
 
   fetch(params: FilterParams): void {
     Promise.allSettled([
@@ -220,6 +225,7 @@ export default class Dashboard extends mixins(FilterMixin) {
       }),
       this.getExpenseCategories(params),
       this.getEstablishmentActivities(params),
+      this.getBudgets(params),
     ]);
   }
 
@@ -292,7 +298,7 @@ export default class Dashboard extends mixins(FilterMixin) {
   }*/
 
   @at-root #{&}__widget--budget-performance {
-    height: 30.5%;
+    height: 44%;
   }
 
   @at-root #{&}__widget--budget-performance--mobile {

@@ -45,7 +45,7 @@ export default class App extends Vue {
   height: 100vh;
 }
 .l-sidebar {
-  width: 248px;
+  width: 18%;
 }
 .l-content {
   flex-grow: 1;
