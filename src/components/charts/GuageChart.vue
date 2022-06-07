@@ -34,11 +34,6 @@ import { BudgetItem, BudgetListItem } from "@/types";
         0
       );
 
-      console.log({
-        totalBudget,
-        totalSpent,
-      });
-
       const chart = am4core.create("guageChartDiv", am4charts.GaugeChart);
       const axis = chart.xAxes.push(
         new am4charts.ValueAxis<am4charts.AxisRendererCircular>()
