@@ -95,6 +95,30 @@ export type TransactionResponse = {
   data: TransactionInfo[];
 };
 
+export type BudgetListItem = {
+  id: string;
+  startDate: string;
+  endDate: string;
+  value: number;
+  amountSpent: number | null;
+};
+
+export type BudgetListResponse = Array<BudgetListItem>;
+
+export type BudgetItem = {
+  category: string;
+  value: number;
+  percentage: number;
+  amountSpent: number | null;
+};
+
+export type Budget = {
+  id: string;
+  startDate: string;
+  endDate: string;
+  items: BudgetItem[];
+};
+
 export type NetIncome = {
   date: string;
   amount: number;

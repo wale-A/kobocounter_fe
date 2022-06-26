@@ -6,6 +6,8 @@ import {
   TransactionPayload,
   SplitTransaction,
   TransactionResponse,
+  Budget,
+  BudgetListResponse,
 } from "@/types";
 import { AxiosResponse } from "axios";
 
@@ -79,6 +81,11 @@ const subscribe = (body: Record<string, string>): Promise<AxiosResponse> =>
 const unsubscribe = (data: Record<string, string>): Promise<AxiosResponse> =>
   axios.delete(`/users/subscription`, { data });
 
+const getBudgets = (
+  params: FilterParams
+): Promise<AxiosResponse<Array<BudgetListResponse>>> =>
+  axios.get(`/budgets`, { params });
+
 export default {
   login,
   register,
@@ -99,4 +106,5 @@ export default {
   getRevenue,
   subscribe,
   unsubscribe,
+  getBudgets,
 };
