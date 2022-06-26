@@ -4,23 +4,84 @@ import {
   FilterParams,
   TransactionPayload,
   SplitTransaction,
+  Pagination,
+  TransactionResponse,
+  Transaction,
 } from "@/types";
 import { Module } from "vuex";
 import api from "@/api";
 
 type State = {
-  transactions: TransactionInfo[] | undefined;
-  transactionCategories: TransactionCategories[] | undefined;
+  transactions: TransactionInfo[];
+  pagination: Pagination | undefined;
+  transactionCategories: TransactionCategories[];
 };
 
 const transactions: Module<State, any> = {
   state: () => ({
-    transactions: undefined,
-    transactionCategories: undefined,
+    transactions: [],
+    transactionCategories: [],
+    pagination: undefined,
   }),
+  getters: {
+    transactions(state: State) {
+      return state.transactions;
+    },
+    groupedTransactions(_, getters) {
+      const sortedTransactions = getters.transactions;
+      const group: Record<string, Transaction[]> = {};
+      for (let i = 0; i < sortedTransactions?.length || 0; i++) {
+        const date = new Date(sortedTransactions[i].date).toDateString();
+        const txn = sortedTransactions[i] as Transaction;
+        group[date] = (group[date] || []).concat(txn);
+      }
+      return group;
+    },
+    transactionCategories(state: State) {
+      if (!state.transactionCategories) {
+        return [];
+      }
+      return state.transactionCategories;
+    },
+    categoryOptionsMap(_, getters) {
+      return getters.transactionCategories.map(
+        (item: TransactionCategories) => ({
+          value: item.category,
+          label: item.displayCategory,
+        })
+      );
+    },
+    canLoadMore(state: State) {
+      if (!state.pagination) {
+        return false;
+      }
+
+      return (
+        state.pagination.total / state.pagination.size > state.pagination.page
+      );
+    },
+    nextPageParams(state: State) {
+      if (!state.pagination) {
+        return {
+          page: 1,
+          size: 20,
+        };
+      }
+
+      return {
+        page: state.pagination.page + 1,
+        size: state.pagination.size,
+      };
+    },
+  },
   mutations: {
-    setTransactions(state, transactions: TransactionInfo[]) {
-      state.transactions = transactions;
+    setTransactions(state, res: TransactionResponse) {
+      if (res.meta.page == 1) {
+        state.transactions = res.data;
+      } else {
+        state.transactions = state.transactions.concat(res.data);
+      }
+      state.pagination = res.meta;
     },
     setTransactionCategories(state, categories: TransactionCategories[]) {
       state.transactionCategories = categories;
@@ -50,12 +111,22 @@ const transactions: Module<State, any> = {
     },
   },
   actions: {
-    async getTransactions({ commit }, { accountId, start, end }: FilterParams) {
+    async getTransactions(
+      { commit },
+      { accountId, start, end, category, page, size }: FilterParams
+    ) {
       try {
-        const res = await api.getTransactions({ accountId, start, end });
-        commit("setTransactions", res.data as TransactionInfo[]);
+        const res = await api.getTransactions({
+          accountId,
+          start,
+          end,
+          category,
+          page,
+          size,
+        });
+        commit("setTransactions", res.data);
       } catch (e) {
-        commit("setTransactions", []);
+        commit("setTransactions", { data: [], meta: undefined });
       }
     },
     async getTransactionCategories(
@@ -106,14 +177,6 @@ const transactions: Module<State, any> = {
       } else {
         throw res.data;
       }
-    },
-  },
-  getters: {
-    transactions(state: State) {
-      return state.transactions;
-    },
-    transactionCategories(state: State) {
-      return state.transactionCategories;
     },
   },
 };

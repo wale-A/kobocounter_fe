@@ -5,6 +5,7 @@ import {
   FilterParams,
   TransactionPayload,
   SplitTransaction,
+  TransactionResponse,
 } from "@/types";
 import { AxiosResponse } from "axios";
 
@@ -26,7 +27,9 @@ const reAuthAccount = (id: string): Promise<AxiosResponse> =>
 const deleteAccount = (id: string): Promise<AxiosResponse> =>
   axios.delete(`/banking/account/${id}`);
 
-const getTransactions = (params: FilterParams): Promise<AxiosResponse> =>
+const getTransactions = (
+  params: FilterParams
+): Promise<AxiosResponse<TransactionResponse>> =>
   axios.get(`/banking/accounts/transactions`, { params });
 
 const updateTransaction = (
@@ -61,6 +64,9 @@ const getRecurringExpenses = (
 ): Promise<AxiosResponse> =>
   axios.get(`/banking/accounts/recurrentExpenses`, { params });
 
+const getExpenseCategories = (params: FilterParams): Promise<AxiosResponse> =>
+  axios.get(`/banking/accounts/transactions/expenses`, { params });
+
 const getNetIncome = (params: FilterParams): Promise<AxiosResponse> =>
   axios.get(`/banking/accounts/netincome`, { params });
 
@@ -88,6 +94,7 @@ export default {
   getEstablishmentActivities,
   getExpenses,
   getRecurringExpenses,
+  getExpenseCategories,
   getNetIncome,
   getRevenue,
   subscribe,

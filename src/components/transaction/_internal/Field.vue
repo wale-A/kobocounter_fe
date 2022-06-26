@@ -1,8 +1,8 @@
 <template>
-  <div class="field mid-text" :class="[orientation]">
-    <label class="key small-text accent-color">{{ label }}</label>
+  <div class="field" :class="{ 'field--column': orientation === 'column' }">
+    <label class="field__label">{{ label }}</label>
     <slot name="value">
-      <label class="value">{{ value || "-" }}</label>
+      <label class="field__value">{{ value || "-" }}</label>
     </slot>
   </div>
 </template>
@@ -22,19 +22,28 @@ import { Options, Vue } from "vue-class-component";
 export default class Field extends Vue {}
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .field {
   display: flex;
   flex-direction: row;
   color: #2a2a2a;
-  margin-top: 0.9em;
-  font-size: 1em;
+  margin-bottom: 20px;
   overflow-wrap: break-word;
-}
-.field.column {
-  flex-direction: column;
-}
-.key {
-  font-weight: 700;
+
+  @at-root #{&}--column {
+    flex-direction: column;
+  }
+
+  @at-root #{&}__label {
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 12px;
+    margin-bottom: 5px;
+  }
+
+  @at-root #{&}__value {
+    font-size: 14px;
+    line-height: 19px;
+  }
 }
 </style>

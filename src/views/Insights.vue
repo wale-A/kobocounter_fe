@@ -1,5 +1,14 @@
 <template>
   <Page>
+    <template v-if="facets.length > 0" v-slot:actions>
+      <Filter
+        :displayText="paramSummary"
+        :fields="facets"
+        :model="{ ...params }"
+        @filter="setParams($event)"
+        @update:account="addAccount"
+      />
+    </template>
     <div>
       <section class="dashboard-content-container">
         <div class="dashboard-content">
@@ -68,17 +77,47 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import { Options, mixins } from "vue-class-component";
 import Card from "@/components/layout/Card.vue";
 import Page from "@/components/layout/Page.vue";
+import Filter from "@/components/common/Filter.vue";
+import { FilterParams } from "@/types";
+import { mapActions } from "vuex";
+import FilterMixin from "@/mixins/Filter";
 
-@Options({
+@Options<Insights>({
   components: {
     Card,
+    Filter,
     Page,
   },
+  methods: {
+    ...mapActions(["getAccounts", "getTransactions"]),
+  },
+  watch: {
+    params(newVal) {
+      this.fetch(this.getQuery(this.facets, newVal));
+    },
+  },
 })
-export default class Insights extends Vue {}
+export default class Insights extends mixins(FilterMixin) {
+  displayChart = "piechart";
+
+  getAccounts!: (params: FilterParams) => Promise<void>;
+  getTransactions!: (params: FilterParams) => Promise<void>;
+
+  fetch(params: FilterParams): void {
+    Promise.allSettled([
+      this.getAccounts(params),
+      this.getTransactions(params),
+    ]);
+  }
+
+  created(): void {
+    this.params = this.getModels(this.facets);
+    this.fetch(this.getQuery(this.facets, this.params));
+  }
+}
 </script>
 
 <style scoped>

@@ -22,7 +22,14 @@ export interface RegisterPayload extends LoginPayload {
   name: string;
 }
 
-export type FilterParams = { accountId?: string; start?: number; end?: number };
+export type FilterParams = {
+  accountId?: string;
+  start?: number;
+  end?: number;
+  category?: string;
+  page?: number;
+  size?: number;
+};
 
 export type User = {
   id: string;
@@ -41,18 +48,6 @@ export type Account = {
   bankName: string;
 };
 
-export type Transaction = {
-  id: string;
-  amount: number;
-  date: number;
-  narration: string;
-  displayCategory: string;
-  bank?: string;
-  expenseCategory?: string;
-  parentId?: string;
-  displayAmount?: number;
-};
-
 export type TransactionModel = {
   id: string;
   displayCategory: string;
@@ -69,12 +64,35 @@ export type TransactionPayload = {
   establishmentActivities: string[];
 };
 
+export type Transaction = {
+  id: string;
+  amount: number;
+  date: number;
+  narration: string;
+  displayCategory: string;
+  bank?: string;
+  expenseCategory?: string;
+  parentId?: string;
+  displayAmount?: number;
+};
+
 export type TransactionInfo = Transaction & {
   establishment: {
     name: string;
     activities: string[];
   };
   recipient: string;
+};
+
+export type Pagination = {
+  page: number;
+  size: number;
+  total: number;
+};
+
+export type TransactionResponse = {
+  meta: Pagination;
+  data: TransactionInfo[];
 };
 
 export type NetIncome = {
@@ -95,6 +113,14 @@ export type RecurrentExpense = {
   frequency: number;
   transactionCategory?: string;
   transactions?: Transaction[];
+};
+
+// type Subset<T extends U, U> = U;
+
+export type ExpenseCategories = {
+  category: number;
+  amount: number;
+  percentage: number;
 };
 
 export type EstablishmentActivity = {

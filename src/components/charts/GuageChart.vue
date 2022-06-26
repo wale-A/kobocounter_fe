@@ -1,5 +1,5 @@
 <template>
-  <div class="guageChartDiv" :style="{ height: height, width: width }"></div>
+  <div class="guageChartDiv" :style="{ height: '100%', width: '100%' }"></div>
 </template>
 
 <script lang="ts">
@@ -9,12 +9,10 @@ import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 
 @Options({
-  created() {
+  mounted() {
     this.draw();
   },
   props: {
-    height: String,
-    width: String,
     fileName: String,
     budgetSummary: Array,
     budgetDetails: Array,
@@ -46,7 +44,7 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
       pieSeries.labels.template.disabled = true;
       // Add data
       this.budgetSummary.find(
-        (x: { category: string; value: number; amount: number }) =>
+        (x: { category: string; value: number; percentage: number }) =>
           x.category === "Budget Left"
       ).labelDisabled = true;
       pieSeries.data = this.budgetSummary;
@@ -61,7 +59,7 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 
       //   Add data
       this.budgetDetails.find(
-        (x: { category: string; value: number; amount: number }) =>
+        (x: { category: string; value: number; percentage: number }) =>
           x.category === "Budget Left"
       ).fill = "#dedede";
       pieSeries2.data = this.budgetDetails;
@@ -73,7 +71,7 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
         return am4core.percent(100);
       });
       pieSeries2.slices.template.tooltipText =
-        "{category}: \n[bold]N {amount}[/]";
+        "{category}: \n[bold]N {percentage}[/]";
       pieSeries2.adapter.add("innerRadius", function () {
         return am4core.percent(60);
       });
@@ -82,24 +80,20 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
       });
 
       // Disable sliding out of slices
-      const activeKeyOuterSeries = pieSeries.slices.template.states.getKey(
-        "active"
-      );
+      const activeKeyOuterSeries =
+        pieSeries.slices.template.states.getKey("active");
       if (activeKeyOuterSeries) activeKeyOuterSeries.properties.shiftRadius = 0;
 
-      const hoverKeyOuterSeries = pieSeries.slices.template.states.getKey(
-        "hover"
-      );
+      const hoverKeyOuterSeries =
+        pieSeries.slices.template.states.getKey("hover");
       if (hoverKeyOuterSeries) hoverKeyOuterSeries.properties.scale = 1;
 
-      const activeKeyInnerSeries = pieSeries2.slices.template.states.getKey(
-        "active"
-      );
+      const activeKeyInnerSeries =
+        pieSeries2.slices.template.states.getKey("active");
       if (activeKeyInnerSeries) activeKeyInnerSeries.properties.shiftRadius = 0;
 
-      const hoverKeyInnerSeries = pieSeries2.slices.template.states.getKey(
-        "hover"
-      );
+      const hoverKeyInnerSeries =
+        pieSeries2.slices.template.states.getKey("hover");
       if (hoverKeyInnerSeries) hoverKeyInnerSeries.properties.scale = 1;
     },
   },

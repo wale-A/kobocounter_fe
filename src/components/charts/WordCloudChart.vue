@@ -1,7 +1,7 @@
 <template>
   <div
     class="wordCloudChartDiv"
-    :style="{ height: height, width: width }"
+    :style="{ height: '100%', width: '100%' }"
   ></div>
 </template>
 
@@ -15,8 +15,6 @@ import * as am4plugins_wordCloud from "@amcharts/amcharts4/plugins/wordCloud";
     this.draw();
   },
   props: {
-    height: String,
-    width: String,
     fileName: String,
     inputData: Array,
   },
@@ -46,6 +44,9 @@ import * as am4plugins_wordCloud from "@amcharts/amcharts4/plugins/wordCloud";
         new am4plugins_wordCloud.WordCloudSeries()
       );
       // series.randomness = 0.1;
+      series.accuracy = 5;
+      series.minFontSize = am4core.percent(4);
+      series.maxFontSize = am4core.percent(20);
       series.rotationThreshold = 15;
       series.data = (this.inputData || []).map(
         (x: { activity: string; transactionIds: [] }) => {

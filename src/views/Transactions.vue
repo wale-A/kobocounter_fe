@@ -1,84 +1,79 @@
 <template>
   <Page>
-    <div @click="outsideClickHandler">
-      <section class="dashboard-content-container">
-        <div class="dashboard-content">
+    <template v-if="facets.length > 0" v-slot:actions>
+      <Filter
+        :displayText="paramSummary"
+        :fields="facets"
+        :model="{ ...params }"
+        @filter="setParams($event)"
+        @update:account="addAccount"
+      />
+    </template>
+    <div class="transactions-page">
+      <template v-if="onMobile && !isSingle && facets.length > 0">
+        <Filter
+          :fields="facets"
+          :model="{ ...params }"
+          @filter="setParams($event)"
+          @update:account="addAccount"
+        />
+      </template>
+      <section class="transactions-page__wrapper">
+        <div
+          class="transactions"
+          :class="{
+            'transactions--desktop': !onMobile,
+            'transactions--mobile': onMobile,
+          }"
+        >
+          <List
+            v-if="!onMobile || !isSingle"
+            :highlight="$route?.params.id"
+            :transactions="groupedTransactions"
+            :canLoadMore="canLoadMore"
+            class="transactions__list"
+            :class="{ 'transactions__list--desktop': !onMobile }"
+            @select="
+              $router.push({
+                name: 'TransactionDetail',
+                params: { id: $event, action: 'view' },
+              })
+            "
+            @loadMore="loadMore"
+          />
           <SingleTransaction
-            ref="transactionView"
-            :singleTransaction="singleTransaction"
-            :childTransactions="childTransactions"
-            :parentTransaction="parentTransaction"
+            v-if="!onMobile || isSingle"
+            :transaction="transaction"
+            :children="children"
+            :parent="parent"
             :establishments="establishments"
-            @select="selectTransaction($event)"
+            :action="action"
+            class="transactions__detail"
+            :class="{ 'transactions__detail--desktop': !onMobile }"
+            @select="
+              $router.push({
+                name: 'TransactionDetail',
+                params: { id: $event, action: 'view' },
+              })
+            "
+            @edit="
+              $router.push({
+                name: 'TransactionDetail',
+                params: { id: $event, action: 'edit' },
+              })
+            "
+            @split="
+              $router.push({
+                name: 'TransactionDetail',
+                params: { id: $event, action: 'split' },
+              })
+            "
+            @cancel="$router.go(-1)"
             @addEstablishment="$store.commit('insertEstablishment', $event)"
             @addActivity="$store.commit('insertActivity', $event)"
             @saveEdit="editTransaction($event)"
             @saveSplit="splitTransaction($event)"
           />
-          <Card title="All Transactions" class="all-transactions">
-            <section id="all-transactions-container">
-              <table>
-                <tr
-                  v-for="date in Object.keys(groupedTransactions)"
-                  :key="date"
-                >
-                  <!-- <td colspan="2" style="width: 100%">
-                  {{ date }}
-                </td> -->
-                  <p>{{ date }}</p>
-                  <table class="transactions-table">
-                    <tr
-                      v-for="txn in groupedTransactions[date]"
-                      :key="txn.id"
-                      :id="txn.id"
-                      class="txn"
-                      :class="{
-                        'selected-transaction':
-                          singleTransaction && txn.id === singleTransaction.id,
-                      }"
-                      @click.stop="selectTransaction(txn.id)"
-                    >
-                      <td>
-                        <!-- txn.narration.replace(/\s{4,}/g, "").trim() -->
-                        <div>
-                          <img
-                            :alt="`${
-                              txn.expenseCategory || txn.displayCategory
-                            }`"
-                            :src="`/img/categories/${(
-                              txn.expenseCategory?.trim() ||
-                              txn.displayCategory?.trim() ||
-                              'null'
-                            ).toLowerCase()}.svg`"
-                          />
-                          {{ txn.expenseCategory || txn.displayCategory }}
-                        </div>
-                      </td>
-                      <!-- <td class="date">
-                      {{ new Date(txn.date).toDateString() }}
-                    </td> -->
-                      <td>
-                        <span
-                          :style="{
-                            color:
-                              (txn.amount || txn.displayAmount) > 0
-                                ? 'green'
-                                : 'red',
-                          }"
-                        >
-                          {{
-                            parseFloat(
-                              (txn.amount || txn.displayAmount).toFixed(2)
-                            ).toLocaleString()
-                          }}
-                        </span>
-                      </td>
-                    </tr>
-                  </table>
-                </tr>
-              </table>
-            </section>
-          </Card>
         </div>
       </section>
       <!-- <AddNewAccount :hasAccounts="!(accounts && accounts?.length == 0)" /> -->
@@ -87,224 +82,227 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import { Options, mixins } from "vue-class-component";
 import { mapGetters, mapActions } from "vuex";
 import Card from "@/components/layout/Card.vue";
 import Page from "@/components/layout/Page.vue";
 import AddNewAccount from "@/components/AddNewAccount.vue";
-import { SplitTransaction, Transaction, TransactionModel } from "@/types";
+import {
+  FilterParams,
+  SplitTransaction,
+  Transaction,
+  TransactionModel,
+} from "@/types";
 import SingleTransaction from "@/components/transaction/SingleTransaction.vue";
+import List from "@/components/transaction/List.vue";
+import Filter from "@/components/common/Filter.vue";
+import { transactionFilter } from "@/util";
+import FilterMixin from "@/mixins/Filter";
 
-@Options({
-  created() {
-    this.getTransactions({
-      accountId: undefined,
-      start: undefined,
-      end: undefined,
-    });
-    this.getEstablishments();
-  },
-  data() {
-    return {
-      singleTransaction: null,
-      parentTransaction: null,
-      childTransactions: null,
-    };
-  },
+@Options<Transactions>({
   components: {
     Card,
     Page,
     AddNewAccount,
+    List,
     SingleTransaction,
+    Filter,
   },
   computed: {
-    ...mapGetters(["accounts", "transactions", "establishments"]),
-    groupedTransactions: function () {
-      const sortedTransactions = [...(this.transactions ?? [])].sort(
-        (x: Transaction, y: Transaction) => y.date - x.date
-      );
-      const group: Record<string, Transaction[]> = {};
-      for (let i = 0; i < sortedTransactions?.length || 0; i++) {
-        const date = new Date(sortedTransactions[i].date).toDateString();
-        const txn = sortedTransactions[i] as Transaction;
-        group[date] = (group[date] || []).concat(txn);
+    ...mapGetters([
+      "accounts",
+      "categoryOptionsMap",
+      "transactions",
+      "groupedTransactions",
+      "establishments",
+      "transactionCategories",
+      "canLoadMore",
+      "nextPageParams",
+    ]),
+    isSingle() {
+      return this.$route?.params.id;
+    },
+    action() {
+      if (this.$route?.params.id && this.$route?.params.action) {
+        return this.$route.params.action;
       }
-      return group;
+      return "";
+    },
+    transaction() {
+      if (!this.$route?.params.id) {
+        return null;
+      }
+      return this.transactions.find(
+        (x: Transaction) => x.id === this.$route.params.id
+      );
+    },
+    children() {
+      if (!this.transaction) {
+        return null;
+      }
+      return this.transactions?.filter(
+        (x: Transaction) => x.parentId === this.transaction.id
+      );
+    },
+    parent() {
+      if (!this.transaction) {
+        return null;
+      }
+      return this.transactions?.find(
+        (x: Transaction) => x.id === this.transaction.parentId
+      );
+    },
+    onMobile() {
+      return ["xs", "sm", "md"].includes(this.$grid.breakpoint);
     },
   },
   methods: {
     ...mapActions([
+      "getAccounts",
       "getTransactions",
       "updateTransaction",
       "saveSplitTransactions",
       "getEstablishments",
+      "getTransactionCategories",
     ]),
-    selectTransaction(transactionId: string) {
-      this.singleTransaction = this.transactions.find(
-        (x: Transaction) => x.id === transactionId
-      );
-      this.childTransactions = this.transactions?.filter(
-        (x: Transaction) => x.parentId === transactionId
-      );
-      this.parentTransaction = this.transactions?.find(
-        (x: Transaction) => x.id === this.singleTransaction?.parentId
-      );
-    },
-    outsideClickHandler() {
-      this.singleTransaction = null;
-      this.childTransactions = null;
-      this.parentTransaction = null;
-    },
-    editTransaction(model: TransactionModel) {
-      this.updateTransaction({
-        transactionId: model.id,
-        model: {
-          ...model,
-          recipientName: model.recipientName[0],
-        },
-      })
-        .then(() => {
-          this.$notify({
-            text: "Transaction update was successful",
-            type: "success",
-          });
-          this.$refs.transactionView.active = "view"; //TODO: Move state up
-        })
-        .catch(() => {
-          this.$notify({
-            text: "Transaction update failed, please retry",
-            type: "error",
-          });
-        });
-    },
-    splitTransaction(model: SplitTransaction[]) {
-      this.saveSplitTransactions({
-        transactionId: this.singleTransaction.id,
-        payload: model,
-      })
-        .then(() => {
-          this.$notify({
-            text: "Transaction split was successful",
-            type: "success",
-          });
-          this.$refs.transactionView.active = "view"; //TODO: Move state up
-        })
-        .catch(() => {
-          this.$notify({
-            text: "Transaction split failed, please retry",
-            type: "error",
-          });
-        });
+  },
+  watch: {
+    params(newVal) {
+      this.fetch(this.getQuery(this.facets, newVal));
     },
   },
 })
-export default class Transactions extends Vue {}
+export default class Transactions extends mixins(FilterMixin) {
+  singleTransaction: Transaction | null | undefined = null;
+  parentTransaction: Transaction | null | undefined = null;
+  childTransactions: Transaction[] | null = null;
+  filterFields = transactionFilter;
+
+  transactions!: Transaction[];
+  categoryOptionsMap!: Record<string, any>;
+
+  get filterArgs(): Record<string, any> {
+    return {
+      account: this.accountOptionsMap,
+      category: this.categoryOptionsMap,
+    };
+  }
+
+  getAccounts!: (params: FilterParams) => Promise<void>;
+  getTransactions!: (params: FilterParams) => Promise<void>;
+  getTransactionCategories!: (params: FilterParams) => Promise<void>;
+  getEstablishments!: () => Promise<void>;
+
+  fetch(params: FilterParams): void {
+    Promise.allSettled([
+      this.getAccounts(params),
+      this.getTransactions(params),
+      this.getEstablishments(),
+      this.getTransactionCategories(params),
+    ]);
+  }
+
+  updateTransaction!: (arg: {
+    transactionId: string;
+    model: {
+      id: string;
+      displayCategory: string;
+      recipientName: string;
+      isEstablishment: boolean;
+      establishmentActivities: string[];
+    };
+  }) => Promise<void>;
+
+  editTransaction(model: TransactionModel): void {
+    this.updateTransaction({
+      transactionId: model.id,
+      model: {
+        ...model,
+        recipientName: model.recipientName[0],
+      },
+    })
+      .then(() => {
+        this.$notify({
+          text: "Transaction update was successful",
+          type: "success",
+        });
+        this.$router.go(-1);
+      })
+      .catch(() => {
+        this.$notify({
+          text: "Transaction update failed, please retry",
+          type: "error",
+        });
+      });
+  }
+
+  saveSplitTransactions!: (arg: {
+    transactionId: string;
+    payload: SplitTransaction[];
+  }) => Promise<void>;
+
+  splitTransaction(model: SplitTransaction[]): void {
+    if (!this.singleTransaction) {
+      return;
+    }
+    this.saveSplitTransactions({
+      transactionId: this.singleTransaction.id,
+      payload: model,
+    })
+      .then(() => {
+        this.$notify({
+          text: "Transaction split was successful",
+          type: "success",
+        });
+        this.$router.go(-1);
+      })
+      .catch(() => {
+        this.$notify({
+          text: "Transaction split failed, please retry",
+          type: "error",
+        });
+      });
+  }
+
+  nextPageParams!: {
+    page: number;
+    size: number;
+  };
+
+  loadMore(): void {
+    this.getTransactions({
+      ...this.getQuery(this.facets, this.params),
+      ...this.nextPageParams,
+    });
+  }
+
+  created(): void {
+    this.params = this.getModels(this.facets);
+  }
+}
 </script>
 
-<style scoped>
-main {
-  height: 100vh;
-  overflow: hidden;
-}
-td {
-  padding: 0;
-  margin: 0;
-}
-.all-transactions {
-  width: 64%;
-  margin: 1%;
-  margin-right: 0;
-  margin-bottom: 0;
-  padding: 1em;
-  height: 94vh;
-  background: white;
-}
-#all-transactions-container {
-  overflow: scroll;
-  height: 98%;
-}
-.all-transactions-transaction-info {
-  justify-content: space-between;
-  margin: 0.5em 0;
-  padding: 0.5em 1em;
-}
-table {
-  font-size: 1em;
-  table-layout: fixed;
-  width: 100%;
-  border-spacing: 0;
-}
-td {
-  border-bottom: 1px solid #d9dbdb;
-  padding: 0.5em;
-}
-tr p {
-  padding: 0.5em;
-  border-bottom: 1px solid #727376;
-  text-align: start;
-  font-size: 0.9em;
-  font-weight: 800;
-  margin-top: 1em;
-}
-tr p:first-child {
-  margin-top: 0.5em;
-}
-td:first-child {
-  width: 80%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding: 0.1em 1em;
-  text-align: start;
-}
-td:last-child {
-  text-align: end;
-  padding-right: 1em;
-}
-.transactions-table tr:hover {
-  cursor: pointer;
-  font-weight: 800;
-  background-color: #f0f0f0;
-}
-.transactions-table tr:hover td:first-child {
-  border-left: 1px solid #d9dbdb;
-}
-.transactions-table tr:hover td:last-child {
-  border-right: 1px solid #d9dbdb;
-}
-.selected-transaction {
-  background-color: #dcdcdc;
-}
-td img {
-  margin-right: 1em;
-}
-td div {
-  display: flex;
-  align-items: center;
-}
-
-/*responsive*/
-@media (max-width: 991px) {
-  #all-transactions-container {
-    margin-bottom: 7vh;
-    height: 80vh;
-  }
-  table {
-    border-spacing: 0;
-  }
-  td:first-child {
-    width: 70%;
-    padding: 0.4em;
-  }
-  td:last-child {
-    padding-right: 0em;
+<style lang="scss" scoped>
+.transactions {
+  @at-root #{&}--desktop {
+    display: flex;
+    justify-content: space-between;
+    height: 85vh;
+    padding: 30px;
   }
 
-  .all-transactions {
-    width: 100%;
-    height: 88vh;
+  @at-root #{&}--mobile {
+    margin-bottom: 60px;
   }
-  .dashboard {
-    flex-flow: unset;
+
+  @at-root #{&}__list--desktop {
+    width: 65.5%;
+    overflow: auto;
+  }
+
+  @at-root #{&}__detail--desktop {
+    width: 31.5%;
+    overflow: auto;
   }
 }
 </style>
