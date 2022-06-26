@@ -3,8 +3,8 @@
   <main class="container" style="padding: 15px">
     <section style="margin-bottom: 30px">
       <AccountItem
-        v-for="(account, index) in accounts"
-        :key="index"
+        v-for="account in accounts"
+        :key="account.id"
         :id="account.id"
         :bank="account.bankName"
         :accountNumber="account.accountNumber"
@@ -21,10 +21,11 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import Header from "@/components/Header.vue";
+import Header from "@/components/layout/Header.vue";
 import { mapGetters } from "vuex";
 import AccountItem from "@/components/AccountItem.vue";
 import AddNewAccount from "@/components/AddNewAccount.vue";
+import { mapActions } from "vuex";
 
 @Options({
   components: {
@@ -33,10 +34,13 @@ import AddNewAccount from "@/components/AddNewAccount.vue";
     AddNewAccount,
   },
   created() {
-    this.$store.dispatch("getAccounts");
+    this.getAccounts();
   },
   computed: {
     ...mapGetters(["accounts"]),
+  },
+  methods: {
+    ...mapActions(["getAccounts"]),
   },
 })
 export default class Manage extends Vue {}

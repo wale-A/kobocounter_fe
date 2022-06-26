@@ -1,97 +1,108 @@
 <template>
-  <main class="dashboard" @click="outsideClickHandler">
-    <SideBar :section="'transactions'" />
-    <section class="dashboard-content-container">
-      <Header />
-      <div class="dashboard-content">
-        <SingleTransaction
-          :singleTransaction="singleTransaction"
-          :closeFunction="outsideClickHandler"
-          :childTransactions="childTransactions"
-          :parentTransaction="parentTransaction"
-          :selectTransaction="selectTransaction"
-        />
-        <div class="all-transactions bordered-container">
-          <p class="bold-text">All Transactions</p>
-          <hr />
-          <section id="all-transactions-container">
-            <table>
-              <tr v-for="date in Object.keys(groupedTransactions)" :key="date">
-                <!-- <td colspan="2" style="width: 100%">
+  <Page>
+    <div @click="outsideClickHandler">
+      <section class="dashboard-content-container">
+        <div class="dashboard-content">
+          <SingleTransaction
+            ref="transactionView"
+            :singleTransaction="singleTransaction"
+            :childTransactions="childTransactions"
+            :parentTransaction="parentTransaction"
+            :establishments="establishments"
+            @select="selectTransaction($event)"
+            @addEstablishment="$store.commit('insertEstablishment', $event)"
+            @addActivity="$store.commit('insertActivity', $event)"
+            @saveEdit="editTransaction($event)"
+            @saveSplit="splitTransaction($event)"
+          />
+          <Card title="All Transactions" class="all-transactions">
+            <section id="all-transactions-container">
+              <table>
+                <tr
+                  v-for="date in Object.keys(groupedTransactions)"
+                  :key="date"
+                >
+                  <!-- <td colspan="2" style="width: 100%">
                   {{ date }}
                 </td> -->
-                <p>{{ date }}</p>
-                <table class="transactions-table">
-                  <tr
-                    v-for="txn in groupedTransactions[date]"
-                    :key="txn.id"
-                    :data-transactionId="txn.id"
-                    :id="txn.id"
-                    @click.stop="transactionClickHandler"
-                    class="txn"
-                  >
-                    <td>
-                      <!-- txn.narration.replace(/\s{4,}/g, "").trim() -->
-                      <div>
-                        <img
-                          :alt="`${txn.expenseCategory || txn.displayCategory}`"
-                          :src="`/img/categories/${(
-                            txn.expenseCategory?.trim() ||
-                            txn.displayCategory?.trim() ||
-                            'null'
-                          ).toLowerCase()}.svg`"
-                        />
-                        {{ txn.expenseCategory || txn.displayCategory }}
-                      </div>
-                    </td>
-                    <!-- <td class="date">
+                  <p>{{ date }}</p>
+                  <table class="transactions-table">
+                    <tr
+                      v-for="txn in groupedTransactions[date]"
+                      :key="txn.id"
+                      :id="txn.id"
+                      class="txn"
+                      :class="{
+                        'selected-transaction':
+                          singleTransaction && txn.id === singleTransaction.id,
+                      }"
+                      @click.stop="selectTransaction(txn.id)"
+                    >
+                      <td>
+                        <!-- txn.narration.replace(/\s{4,}/g, "").trim() -->
+                        <div>
+                          <img
+                            :alt="`${
+                              txn.expenseCategory || txn.displayCategory
+                            }`"
+                            :src="`/img/categories/${(
+                              txn.expenseCategory?.trim() ||
+                              txn.displayCategory?.trim() ||
+                              'null'
+                            ).toLowerCase()}.svg`"
+                          />
+                          {{ txn.expenseCategory || txn.displayCategory }}
+                        </div>
+                      </td>
+                      <!-- <td class="date">
                       {{ new Date(txn.date).toDateString() }}
                     </td> -->
-                    <td>
-                      <span
-                        :style="{
-                          color:
-                            (txn.amount || txn.displayAmount) > 0
-                              ? 'green'
-                              : 'red',
-                        }"
-                      >
-                        {{
-                          parseFloat(
-                            (txn.amount || txn.displayAmount).toFixed(2)
-                          ).toLocaleString()
-                        }}
-                      </span>
-                    </td>
-                  </tr>
-                </table>
-              </tr>
-            </table>
-          </section>
+                      <td>
+                        <span
+                          :style="{
+                            color:
+                              (txn.amount || txn.displayAmount) > 0
+                                ? 'green'
+                                : 'red',
+                          }"
+                        >
+                          {{
+                            parseFloat(
+                              (txn.amount || txn.displayAmount).toFixed(2)
+                            ).toLocaleString()
+                          }}
+                        </span>
+                      </td>
+                    </tr>
+                  </table>
+                </tr>
+              </table>
+            </section>
+          </Card>
         </div>
-      </div>
-    </section>
-    <!-- <AddNewAccount :hasAccounts="!(accounts && accounts?.length == 0)" /> -->
-  </main>
+      </section>
+      <!-- <AddNewAccount :hasAccounts="!(accounts && accounts?.length == 0)" /> -->
+    </div>
+  </Page>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import { mapGetters } from "vuex";
-import Header from "@/components/Header.vue";
-import SideBar from "@/components/SideBar.vue";
+import { mapGetters, mapActions } from "vuex";
+import Card from "@/components/layout/Card.vue";
+import Page from "@/components/layout/Page.vue";
 import AddNewAccount from "@/components/AddNewAccount.vue";
-import { sub } from "date-fns";
-import { Transaction } from "@/types";
-import SingleTransaction from "@/components/SingleTransaction.vue";
+import { SplitTransaction, Transaction, TransactionModel } from "@/types";
+import SingleTransaction from "@/components/transaction/SingleTransaction.vue";
 
 @Options({
   created() {
-    this.$store.dispatch("getTransactions", {
+    this.getTransactions({
       accountId: undefined,
       start: undefined,
       end: undefined,
     });
+    this.getEstablishments();
   },
   data() {
     return {
@@ -101,15 +112,15 @@ import SingleTransaction from "@/components/SingleTransaction.vue";
     };
   },
   components: {
-    SideBar,
-    Header,
+    Card,
+    Page,
     AddNewAccount,
     SingleTransaction,
   },
   computed: {
-    ...mapGetters(["accounts", "transactions"]),
+    ...mapGetters(["accounts", "transactions", "establishments"]),
     groupedTransactions: function () {
-      const sortedTransactions = this.transactions?.sort(
+      const sortedTransactions = [...(this.transactions ?? [])].sort(
         (x: Transaction, y: Transaction) => y.date - x.date
       );
       const group: Record<string, Transaction[]> = {};
@@ -122,14 +133,13 @@ import SingleTransaction from "@/components/SingleTransaction.vue";
     },
   },
   methods: {
-    transactionClickHandler(e: Event) {
-      this.removeClassSelector("selected-transaction");
-      const transactionId = (e.currentTarget as any).dataset.transactionid;
-      this.selectTransaction(transactionId);
-    },
+    ...mapActions([
+      "getTransactions",
+      "updateTransaction",
+      "saveSplitTransactions",
+      "getEstablishments",
+    ]),
     selectTransaction(transactionId: string) {
-      this.removeClassSelector("selected-transaction");
-
       this.singleTransaction = this.transactions.find(
         (x: Transaction) => x.id === transactionId
       );
@@ -139,39 +149,52 @@ import SingleTransaction from "@/components/SingleTransaction.vue";
       this.parentTransaction = this.transactions?.find(
         (x: Transaction) => x.id === this.singleTransaction?.parentId
       );
-
-      const transactionRowElement = document.getElementById(transactionId);
-      if (transactionRowElement) {
-        transactionRowElement.className += " selected-transaction";
-      }
-      const div = document.getElementById("single-transaction");
-      if (div) {
-        div.style.zIndex = "5";
-      }
-      const container = document.getElementsByClassName("all-transactions")[0];
-      if (container) {
-        (container as any).style.zIndex = "1";
-      }
     },
-    outsideClickHandler(e: Event) {
+    outsideClickHandler() {
       this.singleTransaction = null;
       this.childTransactions = null;
       this.parentTransaction = null;
-      this.removeClassSelector("selected-transaction");
     },
-    removeClassSelector(className: string) {
-      Array.from(document.querySelectorAll("." + className)).forEach((el) =>
-        el.classList.remove(className)
-      );
-
-      const div = document.getElementById("single-transaction");
-      if (div) {
-        div.style.zIndex = "1";
-        div.style.display = "unset";
-      }
-
-      const container = document.getElementsByClassName("all-transactions")[0];
-      (container as any).style.zIndex = "5";
+    editTransaction(model: TransactionModel) {
+      this.updateTransaction({
+        transactionId: model.id,
+        model: {
+          ...model,
+          recipientName: model.recipientName[0],
+        },
+      })
+        .then(() => {
+          this.$notify({
+            text: "Transaction update was successful",
+            type: "success",
+          });
+          this.$refs.transactionView.active = "view"; //TODO: Move state up
+        })
+        .catch(() => {
+          this.$notify({
+            text: "Transaction update failed, please retry",
+            type: "error",
+          });
+        });
+    },
+    splitTransaction(model: SplitTransaction[]) {
+      this.saveSplitTransactions({
+        transactionId: this.singleTransaction.id,
+        payload: model,
+      })
+        .then(() => {
+          this.$notify({
+            text: "Transaction split was successful",
+            type: "success",
+          });
+          this.$refs.transactionView.active = "view"; //TODO: Move state up
+        })
+        .catch(() => {
+          this.$notify({
+            text: "Transaction split failed, please retry",
+            type: "error",
+          });
+        });
     },
   },
 })

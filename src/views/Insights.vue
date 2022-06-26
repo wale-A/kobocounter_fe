@@ -1,84 +1,81 @@
 <template>
-  <main class="dashboard">
-    <SideBar :section="'insights'" />
-    <section class="dashboard-content-container">
-      <Header />
-      <div class="dashboard-content">
-        <!-- <div id="single-analysis"></div> -->
-        <div class="all-transactions bordered-container">
-          <p class="bold-text">Insights</p>
-          <hr />
-          <section id="all-transactions-container">
-            <table id="analysis-table">
-              <tr class="analysis-item" v-for="i in 11" :key="i">
-                <td class="" style="width: 50%">
-                  <div>
-                    <img src="/img/categories/misc.svg" />
-                    <div class="progress-section">
-                      <span>
-                        {{
-                          [
-                            "Groceries",
-                            "Airtime",
-                            "Transfer",
-                            "Rent",
-                            "Eating Out",
-                            "Leisure",
-                            "Personal Development",
-                            "Utility",
-                            "Bank Charge",
-                            "Airtime / Mobile Data",
-                          ][Math.floor(Math.random() * 10)]
-                        }}
-                      </span>
-                      <progress max="100" value="70"></progress>
+  <Page>
+    <div>
+      <section class="dashboard-content-container">
+        <div class="dashboard-content">
+          <!-- <div id="single-analysis"></div> -->
+          <Card title="Insights" class="all-transactions">
+            <section id="all-transactions-container">
+              <table id="analysis-table">
+                <tr class="analysis-item" v-for="i in 11" :key="i">
+                  <td class="" style="width: 50%">
+                    <div>
+                      <img src="/img/categories/misc.svg" />
+                      <div class="progress-section">
+                        <span>
+                          {{
+                            [
+                              "Groceries",
+                              "Airtime",
+                              "Transfer",
+                              "Rent",
+                              "Eating Out",
+                              "Leisure",
+                              "Personal Development",
+                              "Utility",
+                              "Bank Charge",
+                              "Airtime / Mobile Data",
+                            ][Math.floor(Math.random() * 10)]
+                          }}
+                        </span>
+                        <progress max="100" value="70"></progress>
+                      </div>
                     </div>
-                  </div>
-                </td>
-                <td class="amount-change">
-                  <span class="percentage-change-amount">{{
-                    (Math.random() * 100).toFixed(2)
-                  }}</span>
-                  <span style="font-size: 0.8em">%</span>
-                  <span
-                    v-if="Math.random() < 0.5"
-                    style="color: #ff3333"
-                    class="percentage-change-direction material-icons bold-text"
-                  >
-                    trending_down</span
-                  >
-                  <span
-                    v-else
-                    style="color: #33cd33"
-                    class="percentage-change-direction material-icons bold-text"
-                  >
-                    trending_up
-                  </span>
-                </td>
-                <td>
-                  <span style="">
-                    {{ (Math.random() * 100000).toLocaleString() }}
-                  </span>
-                </td>
-              </tr>
-            </table>
-          </section>
+                  </td>
+                  <td class="amount-change">
+                    <span class="percentage-change-amount">{{
+                      (Math.random() * 100).toFixed(2)
+                    }}</span>
+                    <span style="font-size: 0.8em">%</span>
+                    <span
+                      v-if="Math.random() < 0.5"
+                      style="color: #ff3333"
+                      class="percentage-change-direction material-icons bold-text"
+                    >
+                      trending_down</span
+                    >
+                    <span
+                      v-else
+                      style="color: #33cd33"
+                      class="percentage-change-direction material-icons bold-text"
+                    >
+                      trending_up
+                    </span>
+                  </td>
+                  <td>
+                    <span style="">
+                      {{ (Math.random() * 100000).toLocaleString() }}
+                    </span>
+                  </td>
+                </tr>
+              </table>
+            </section>
+          </Card>
         </div>
-      </div>
-    </section>
-  </main>
+      </section>
+    </div>
+  </Page>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import { mapGetters } from "vuex";
-import Header from "@/components/Header.vue";
-import SideBar from "@/components/SideBar.vue";
+import Card from "@/components/layout/Card.vue";
+import Page from "@/components/layout/Page.vue";
 
 @Options({
   components: {
-    SideBar,
-    Header,
+    Card,
+    Page,
   },
 })
 export default class Insights extends Vue {}

@@ -1,6 +1,6 @@
-import { store } from "@/store";
+import store from "../store/index";
 
-export async function subscribeUser() {
+export async function subscribeUser(): Promise<void> {
   navigator.serviceWorker.ready.then(function (sw) {
     sw.pushManager.getSubscription().then(function (subscription) {
       if (subscription) {
