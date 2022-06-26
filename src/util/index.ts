@@ -73,7 +73,7 @@ export const ACCOUNT_FIELD = (
 
 export const PERIOD_FIELD: Record<string, any> = {
   key: "period",
-  label: "Period",
+  label: "Date",
   type: "select",
   placeholder: "Select an option",
   sanitizeValue(value: { name: string; start: Date; end: Date }): string {
