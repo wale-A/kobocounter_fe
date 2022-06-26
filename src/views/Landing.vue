@@ -60,7 +60,7 @@
       </main>
       <aside>
         <img
-          src="/img/landing/transactions-source-dot5x.png"
+          src="/img/landing/transactions-source-1x.png"
           alt="sources of transactions"
           srcset="
             /img/landing/transactions-source-dot5x.png   700w,
@@ -110,7 +110,7 @@
     </main>
     <aside>
       <img
-        src="/img/landing/start-tracking-dot5x.png"
+        src="/img/landing/start-tracking-dot75x.png"
         alt="start tracking transactions"
         srcset="
           /img/landing/start-tracking-dot5x.png   900w,
@@ -162,32 +162,11 @@
         </p>
       </div>
     </div>
-    <div class="buttons">
-      <router-link
-        v-if="!isLoggedIn"
-        :to="{ name: 'Login' }"
-        class="land-login"
-        style="text-align: center; line-height: 40px"
-      >
-        Log in
-      </router-link>
-      <router-link
-        v-if="!isLoggedIn"
-        :to="{ name: 'Register' }"
-        style="text-align: center; line-height: 40px"
-        class="alternate"
-      >
-        Create an account
-      </router-link>
-      <router-link v-if="isLoggedIn" :to="{ name: 'Dashboard' }">
-        Go to Dashboard
-      </router-link>
-    </div>
   </section>
   <section id="section-4">
     <aside>
       <img
-        src="/img/landing/other-features-dot5x.png"
+        src="/img/landing/other-features-dot75x.png"
         alt="other featues"
         srcset="
           /img/landing/other-features-dot5x.png   700w,
@@ -259,6 +238,27 @@
           </p>
         </div>
       </div>
+      <div class="buttons">
+        <router-link
+          v-if="!isLoggedIn"
+          :to="{ name: 'Login' }"
+          class="land-login"
+          style="text-align: center; line-height: 40px"
+        >
+          Log in
+        </router-link>
+        <router-link
+          v-if="!isLoggedIn"
+          :to="{ name: 'Register' }"
+          style="text-align: center; line-height: 40px"
+          class="alternate"
+        >
+          Create an account
+        </router-link>
+        <router-link v-if="isLoggedIn" :to="{ name: 'Dashboard' }">
+          Go to Dashboard
+        </router-link>
+      </div>
     </main>
   </section>
   <footer></footer>
@@ -297,8 +297,8 @@ a {
   border-radius: 10px;
   /* font-weight: 600; */
   margin-top: 1.5em;
-  padding: 1em;
-  font-size: 1.1em;
+  padding: 0.4em 1.5em;
+  font-size: 1em;
 }
 a.alternate {
   background-color: rgb(0, 124, 255);
@@ -320,10 +320,13 @@ header {
   height: 6vh;
   padding: 0 3em 0 1em;
 }
+header .buttons {
+  width: 15%;
+}
 header a {
   font-weight: unset;
   margin-top: 1em;
-  padding: 0.8em 1em;
+  padding: 0.5em 1em;
   font-size: 1em;
   font-weight: 600;
 }
@@ -331,7 +334,8 @@ header a {
 #section-2,
 #section-3,
 #section-4,
-div.list {
+div.list,
+.buttons {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -340,6 +344,9 @@ div.list {
 #section-1 {
   padding-bottom: 0;
   padding-top: 0;
+}
+#section-1 aside {
+  margin-bottom: -4em;
 }
 #section-2 {
   background-color: #f1f4f7;
@@ -367,6 +374,9 @@ div.list {
   flex-direction: column;
   /* align-content: center; */
   align-items: center;
+}
+#section-4 .buttons {
+  width: 50%;
 }
 .break {
   flex-basis: 100%;
@@ -401,9 +411,40 @@ div.list {
   }
   a {
     font-weight: 600;
-    margin-top: 1.5em;
-    padding: 0.8em 1em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    padding: 0.6em 1em;
     font-size: 1em;
+  }
+  #section-1 aside {
+    margin-bottom: unset;
+  }
+  #section-3 {
+    padding: 2em;
+  }
+  .list {
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+  }
+  .buttons {
+    width: 100% !important;
+  }
+  p b {
+    display: block;
+  }
+  br {
+    display: none;
+  }
+  aside {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  aside img {
+    width: 100%;
+  }
+  #section-4 aside img {
+    width: 80%;
   }
 }
 </style>
