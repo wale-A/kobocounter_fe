@@ -9,69 +9,30 @@
         @update:account="addAccount"
       />
     </template>
-    <div>
-      <section class="dashboard-content-container">
-        <div class="dashboard-content">
-          <!-- <div id="single-analysis"></div> -->
-          <Card title="Insights" class="all-transactions">
-            <section id="all-transactions-container">
-              <table id="analysis-table">
-                <tr class="analysis-item" v-for="i in 11" :key="i">
-                  <td class="" style="width: 50%">
-                    <div>
-                      <img src="/img/categories/misc.svg" />
-                      <div class="progress-section">
-                        <span>
-                          {{
-                            [
-                              "Groceries",
-                              "Airtime",
-                              "Transfer",
-                              "Rent",
-                              "Eating Out",
-                              "Leisure",
-                              "Personal Development",
-                              "Utility",
-                              "Bank Charge",
-                              "Airtime / Mobile Data",
-                            ][Math.floor(Math.random() * 10)]
-                          }}
-                        </span>
-                        <progress max="100" value="70"></progress>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="amount-change">
-                    <span class="percentage-change-amount">{{
-                      (Math.random() * 100).toFixed(2)
-                    }}</span>
-                    <span style="font-size: 0.8em">%</span>
-                    <span
-                      v-if="Math.random() < 0.5"
-                      style="color: #ff3333"
-                      class="percentage-change-direction material-icons bold-text"
-                    >
-                      trending_down</span
-                    >
-                    <span
-                      v-else
-                      style="color: #33cd33"
-                      class="percentage-change-direction material-icons bold-text"
-                    >
-                      trending_up
-                    </span>
-                  </td>
-                  <td>
-                    <span style="">
-                      {{ (Math.random() * 100000).toLocaleString() }}
-                    </span>
-                  </td>
-                </tr>
-              </table>
-            </section>
-          </Card>
-        </div>
-      </section>
+    <div class="page-body">
+      <template v-if="onMobile && !isSingle && facets.length > 0">
+        <Filter
+          :fields="facets"
+          :model="{ ...params }"
+          @filter="setParams($event)"
+          @update:account="addAccount"
+        />
+      </template>
+      <Columns>
+        <template v-slot:col-1>
+          <List
+            :highlight="$route?.params.id"
+            @select="
+              $router.push({
+                name: 'InsightDetail',
+                params: { id: $event, action: 'view' },
+              })
+            "
+          />
+        </template>
+        <template v-slot:col-2> <Detail :insight="insight" /></template
+      ></Columns>
+      <!-- <AddNewAccount :hasAccounts="!(accounts && accounts?.length == 0)" /> -->
     </div>
   </Page>
 </template>
@@ -79,20 +40,29 @@
 <script lang="ts">
 import { Options, mixins } from "vue-class-component";
 import Card from "@/components/layout/Card.vue";
+import Columns from "@/components/layout/Columns.vue";
 import Page from "@/components/layout/Page.vue";
 import Filter from "@/components/common/Filter.vue";
-import { FilterParams } from "@/types";
-import { mapActions } from "vuex";
+import { FilterParams, Insights as InsightType } from "@/types";
+import { mapGetters, mapActions } from "vuex";
 import FilterMixin from "@/mixins/Filter";
+import Detail from "@/components/insight/Detail.vue";
+import List from "@/components/insight/List.vue";
 
 @Options<Insights>({
   components: {
+    Columns,
     Card,
     Filter,
     Page,
+    Detail,
+    List,
+  },
+  computed: {
+    ...mapGetters(["insights"]),
   },
   methods: {
-    ...mapActions(["getAccounts", "getTransactions"]),
+    ...mapActions(["getAccounts", "getinsights", "getInsights"]),
   },
   watch: {
     params(newVal) {
@@ -101,16 +71,21 @@ import FilterMixin from "@/mixins/Filter";
   },
 })
 export default class Insights extends mixins(FilterMixin) {
+  insights!: InsightType[] | undefined;
   displayChart = "piechart";
 
   getAccounts!: (params: FilterParams) => Promise<void>;
-  getTransactions!: (params: FilterParams) => Promise<void>;
+  getinsights!: (params: FilterParams) => Promise<void>;
+  getInsights!: (params: FilterParams) => Promise<void>;
 
   fetch(params: FilterParams): void {
     Promise.allSettled([
       this.getAccounts(params),
-      this.getTransactions(params),
-    ]);
+      this.getinsights(params),
+      this.getInsights(params),
+    ]).then(() => {
+      console.log("insights", this.insights);
+    });
   }
 
   created(): void {
@@ -119,80 +94,3 @@ export default class Insights extends mixins(FilterMixin) {
   }
 }
 </script>
-
-<style scoped>
-/* table,
-tr,
-td {
-  border: 1px solid black;
-} */
-td {
-  text-align: center;
-  padding: 0.3em 0 0.8em;
-  border-bottom: 1px solid black;
-}
-main {
-  height: 100vh;
-  overflow: hidden;
-}
-/* td {
-  padding: 0;
-  margin: 0;
-} */
-.all-transactions {
-  width: 98%;
-  margin: 1%;
-  padding: 1em;
-  height: 94vh;
-  background: white;
-}
-#all-transactions-container {
-  overflow: scroll;
-  height: 98%;
-  margin-top: 1em;
-}
-table {
-  font-size: 1em;
-  table-layout: fixed;
-  width: 100%;
-  border-spacing: 0;
-}
-#analysis-table tr:hover {
-  cursor: pointer;
-  font-weight: 800;
-  background-color: #f0f0f0;
-}
-td img {
-  margin-right: 1em;
-}
-td div {
-  display: flex;
-  align-items: center;
-}
-.progress-section {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  padding: 0 0.4em;
-  justify-content: flex-start;
-  align-items: flex-start;
-}
-progress {
-  width: 100%;
-  color: black;
-}
-
-/*responsive*/
-@media (max-width: 991px) {
-  #all-transactions-container {
-    margin-bottom: 7vh;
-    height: 80vh;
-  }
-  table {
-    border-spacing: 0;
-  }
-  .dashboard {
-    flex-flow: unset;
-  }
-}
-</style>

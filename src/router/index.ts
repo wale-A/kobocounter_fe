@@ -44,7 +44,8 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/transactions",
     name: "Transactions",
-    component: Transactions,
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../components/layout/Route.vue"),
     meta: {
       authorize: true,
       layout: "App",
@@ -54,13 +55,19 @@ const routes: Array<RouteRecordRaw> = [
         path: "",
         name: "TransactionList",
         component: Transactions,
-        props: true,
+        meta: {
+          authorize: true,
+          layout: "App",
+        },
       },
       {
         path: "/transactions/:id/:action",
         name: "TransactionDetail",
         component: Transactions,
-        props: true,
+        meta: {
+          authorize: true,
+          layout: "App",
+        },
       },
     ],
   },
@@ -72,7 +79,7 @@ const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(),
   routes,
 });
 

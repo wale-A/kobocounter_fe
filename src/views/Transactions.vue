@@ -9,7 +9,7 @@
         @update:account="addAccount"
       />
     </template>
-    <div class="transactions-page">
+    <div class="page-body">
       <template v-if="onMobile && !isSingle && facets.length > 0">
         <Filter
           :fields="facets"
@@ -18,21 +18,12 @@
           @update:account="addAccount"
         />
       </template>
-      <section class="transactions-page__wrapper">
-        <div
-          class="transactions"
-          :class="{
-            'transactions--desktop': !onMobile,
-            'transactions--mobile': onMobile,
-          }"
-        >
+      <Columns>
+        <template v-slot:col-1>
           <List
-            v-if="!onMobile || !isSingle"
             :highlight="$route?.params.id"
             :transactions="groupedTransactions"
             :canLoadMore="canLoadMore"
-            class="transactions__list"
-            :class="{ 'transactions__list--desktop': !onMobile }"
             @select="
               $router.push({
                 name: 'TransactionDetail',
@@ -41,15 +32,14 @@
             "
             @loadMore="loadMore"
           />
-          <SingleTransaction
-            v-if="!onMobile || isSingle"
+        </template>
+        <template v-slot:col-2>
+          <Detail
             :transaction="transaction"
             :children="children"
             :parent="parent"
             :establishments="establishments"
             :action="action"
-            class="transactions__detail"
-            :class="{ 'transactions__detail--desktop': !onMobile }"
             @select="
               $router.push({
                 name: 'TransactionDetail',
@@ -74,8 +64,8 @@
             @saveEdit="editTransaction($event)"
             @saveSplit="splitTransaction($event)"
           />
-        </div>
-      </section>
+        </template>
+      </Columns>
       <!-- <AddNewAccount :hasAccounts="!(accounts && accounts?.length == 0)" /> -->
     </div>
   </Page>
@@ -84,7 +74,7 @@
 <script lang="ts">
 import { Options, mixins } from "vue-class-component";
 import { mapGetters, mapActions } from "vuex";
-import Card from "@/components/layout/Card.vue";
+import Columns from "@/components/layout/Columns.vue";
 import Page from "@/components/layout/Page.vue";
 import AddNewAccount from "@/components/AddNewAccount.vue";
 import {
@@ -93,7 +83,7 @@ import {
   Transaction,
   TransactionModel,
 } from "@/types";
-import SingleTransaction from "@/components/transaction/SingleTransaction.vue";
+import Detail from "@/components/transaction/Detail.vue";
 import List from "@/components/transaction/List.vue";
 import Filter from "@/components/common/Filter.vue";
 import { transactionFilter } from "@/util";
@@ -101,11 +91,11 @@ import FilterMixin from "@/mixins/Filter";
 
 @Options<Transactions>({
   components: {
-    Card,
+    Columns,
     Page,
     AddNewAccount,
     List,
-    SingleTransaction,
+    Detail,
     Filter,
   },
   computed: {
@@ -281,28 +271,3 @@ export default class Transactions extends mixins(FilterMixin) {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.transactions {
-  @at-root #{&}--desktop {
-    display: flex;
-    justify-content: space-between;
-    height: 85vh;
-    padding: 30px;
-  }
-
-  @at-root #{&}--mobile {
-    margin-bottom: 60px;
-  }
-
-  @at-root #{&}__list--desktop {
-    width: 65.5%;
-    overflow: auto;
-  }
-
-  @at-root #{&}__detail--desktop {
-    width: 31.5%;
-    overflow: auto;
-  }
-}
-</style>

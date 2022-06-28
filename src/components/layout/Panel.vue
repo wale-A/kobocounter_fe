@@ -1,12 +1,13 @@
 <template>
-  <div class="card">
-    <div class="card__header">
-      <div class="card__title">
-        <p class="card__title-text">{{ title }}</p>
-        <slot name="action" />
-      </div>
+  <div class="panel">
+    <div v-if="title" class="panel__header">
+      <slot name="title" :title="title">
+        <div class="panel__title">
+          <p class="panel__title-text">{{ title }}</p>
+        </div>
+      </slot>
     </div>
-    <div class="card__body">
+    <div class="panel__body">
       <slot />
     </div>
   </div>
@@ -17,24 +18,21 @@ import { Options, Vue } from "vue-class-component";
 @Options({
   props: {
     title: String,
-    subtitle: String,
   },
 })
-export default class Card extends Vue {}
+export default class Panel extends Vue {}
 </script>
 
 <style lang="scss" scoped>
 @import "@/styles/mixins.scss";
-.card {
-  box-shadow: 0px 2px 5px rgba(54, 65, 86, 0.05);
-  border-radius: 5px;
+.panel {
   display: flex;
   flex-direction: column;
+  height: 100%;
   padding: 15px 20px;
 
   @include for-size(tablet-landscape-up) {
     padding: 13px 17px;
-    box-shadow: 0px 0px 15px 5px rgb(54 65 86 / 10%);
   }
 
   @at-root #{&}__header {

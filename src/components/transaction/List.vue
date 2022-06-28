@@ -1,5 +1,5 @@
 <template>
-  <Card :title="title" class="transaction--no-shadow">
+  <Panel :title="title">
     <div class="transaction">
       <table class="transaction__list">
         <tr v-for="date in Object.keys(transactions)" :key="date">
@@ -51,17 +51,17 @@
         </button>
       </div>
     </div>
-  </Card>
+  </Panel>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import Card from "@/components/layout/Card.vue";
+import Panel from "@/components/layout/Panel.vue";
 import { Transaction } from "@/types";
 
 @Options({
   components: {
-    Card,
+    Panel,
   },
   props: {
     highlight: {
@@ -131,12 +131,6 @@ export default class List extends Vue {
 .transaction {
   font-size: 12px;
   color: #364156;
-
-  @at-root #{&}--no-shadow {
-    @media (max-width: 991px) {
-      box-shadow: none;
-    }
-  }
 
   @at-root #{&}__date {
     padding: 0.5rem 0;

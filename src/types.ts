@@ -112,6 +112,13 @@ export type BudgetItem = {
   amountSpent: number | null;
 };
 
+export type Insights = {
+  category: string;
+  amount: number;
+  change: number;
+  budgetAmount: number;
+};
+
 export type Budget = {
   id: string;
   startDate: string;

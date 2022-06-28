@@ -75,6 +75,9 @@ const getNetIncome = (params: FilterParams): Promise<AxiosResponse> =>
 const getRevenue = (params: FilterParams): Promise<AxiosResponse> =>
   axios.get(`/banking/revenue`, { params });
 
+const getInsights = (params: FilterParams): Promise<AxiosResponse> =>
+  axios.get(`/insights`, { params });
+
 const subscribe = (body: Record<string, string>): Promise<AxiosResponse> =>
   axios.post(`/users/subscription`, body);
 
@@ -107,4 +110,5 @@ export default {
   subscribe,
   unsubscribe,
   getBudgets,
+  getInsights,
 };
