@@ -52,6 +52,7 @@
           <router-link
             v-if="isLoggedIn"
             :to="{ name: 'Dashboard' }"
+            style="text-align: center; line-height: 40px"
             class="alternate"
           >
             Go to Dashboard
@@ -124,7 +125,7 @@
   </section>
   <section id="section-3">
     <h2>How it works</h2>
-    <div class="list">
+    <div class="list" style="justify-content: space-between">
       <div>
         <h3>01</h3>
         <p>
@@ -178,8 +179,8 @@
       />
     </aside>
     <main>
-      <h2>Other Features</h2>
-      <div class="list">
+      <h2 style="text-align: center">Other Features</h2>
+      <div class="list" style="justify-content: space-between">
         <div>
           <img src="" alt="" />
           <p>
@@ -201,11 +202,11 @@
             <br />
             Got more than one category for a
             <br />
-            single *spend*? Split your transactions
+            single bank transaction? Split your
             <br />
-            into different categories for even more
+            transactions into different categories for
             <br />
-            accurate data.
+            even more accurate data.
           </p>
         </div>
         <div class="break"></div>
@@ -255,7 +256,11 @@
         >
           Create an account
         </router-link>
-        <router-link v-if="isLoggedIn" :to="{ name: 'Dashboard' }">
+        <router-link
+          v-if="isLoggedIn"
+          :to="{ name: 'Dashboard' }"
+          style="text-align: center; line-height: 40px"
+        >
           Go to Dashboard
         </router-link>
       </div>
@@ -347,6 +352,7 @@ div.list,
 }
 #section-1 aside {
   margin-bottom: -4em;
+  margin-right: -3em;
 }
 #section-2 {
   background-color: #f1f4f7;
@@ -373,7 +379,10 @@ div.list {
   display: flex;
   flex-direction: column;
   /* align-content: center; */
-  align-items: center;
+  /* align-items: center; */
+}
+#section-4 main div.list {
+  margin-left: 10%;
 }
 #section-4 .buttons {
   width: 50%;
@@ -383,7 +392,7 @@ div.list {
   height: 0;
 }
 
-@media (max-width: 750px) {
+@media (max-width: 860px) {
   header {
     height: 6vh;
     padding-top: 1em;
@@ -418,6 +427,7 @@ div.list {
   }
   #section-1 aside {
     margin-bottom: unset;
+    margin-right: unset;
   }
   #section-3 {
     padding: 2em;
@@ -441,10 +451,37 @@ div.list {
     justify-content: center;
   }
   aside img {
+    width: 65%;
+  }
+  #section-4 main div.list {
+    margin-left: 0;
+  }
+  #section-4 main h2 {
+    margin-bottom: 1em;
+    margin-top: 2em;
+  }
+  #section-4 aside img {
+    width: 50%;
+  }
+  #section-2 aside img {
+    margin-top: 2em;
+  }
+}
+
+@media (max-width: 750px) {
+  aside {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  aside img {
     width: 100%;
   }
   #section-4 aside img {
     width: 80%;
+  }
+  #section-4 main div.list {
+    margin-left: 0;
   }
 }
 </style>

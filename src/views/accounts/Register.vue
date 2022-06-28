@@ -1,7 +1,7 @@
 <template>
-  <div class="w">
+  <div class="wb">
     <div>
-      <h1>Sign up</h1>
+      <h1 id="wb">Sign up</h1>
     </div>
     <div class="formBx">
       <form @submit.prevent="registerUser">

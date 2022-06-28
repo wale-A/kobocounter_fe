@@ -12,6 +12,9 @@ const routes: Array<RouteRecordRaw> = [
     path: "/",
     name: "Home",
     component: Landing,
+    meta: {
+      layout: "Default",
+    },
   },
   {
     path: "/about",

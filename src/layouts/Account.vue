@@ -1,7 +1,9 @@
 <template>
   <header id="lg">
     <div class="logo" style="padding: 1em 0; margin-left: -0.5em">
-      <img src="/img/assets/logo-blue.svg" style="width: 90%" />
+      <router-link :to="{ name: 'Home' }">
+        <img src="/img/assets/logo-blue.svg" style="width: 90%" />
+      </router-link>
     </div>
   </header>
   <section class="flex">
