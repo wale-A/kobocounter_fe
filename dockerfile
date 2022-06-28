@@ -1,10 +1,9 @@
 # build stage
 FROM node:lts-alpine as build-stage
 WORKDIR /app
-COPY package*.json ./
-RUN npm i
+# COPY package*.json ./
 COPY . .
-
+RUN npm install --force
 
 ARG VUE_APP_API_URL
 ARG VUE_APP_MONO_PUBLIC_KEY
