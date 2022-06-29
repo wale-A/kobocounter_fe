@@ -11,7 +11,7 @@ export const SIDEBAR_MENU_ITEMS = [
       mobile: true,
       desktop: true,
     },
-    route: { name: "Dashboard" },
+    route: { path: "/Dashboard" },
   },
   {
     title: "Insights",
@@ -23,7 +23,7 @@ export const SIDEBAR_MENU_ITEMS = [
       mobile: true,
       desktop: true,
     },
-    route: { name: "Insights" },
+    route: { path: "/Insights" },
   },
   {
     title: "Transactions",
@@ -35,7 +35,7 @@ export const SIDEBAR_MENU_ITEMS = [
       mobile: true,
       desktop: true,
     },
-    route: { name: "Transactions" },
+    route: { path: "/Transactions" },
   },
   {
     title: "Settings",
@@ -47,7 +47,7 @@ export const SIDEBAR_MENU_ITEMS = [
       mobile: true,
       desktop: true,
     },
-    route: { name: "Settings" },
+    route: { path: "/Settings" },
   },
 ] as const;
 
