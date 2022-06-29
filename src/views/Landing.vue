@@ -64,12 +64,9 @@
           src="/img/landing/transactions-source-1x.png"
           alt="sources of transactions"
           srcset="
-            /img/landing/transactions-source-dot5x.png   700w,
-            /img/landing/transactions-source-dot75x.png  900w,
-            /img/landing/transactions-source-1x.png     1200w,
-            /img/landing/transactions-source-1dot5x.png 2000w,
-            /img/landing/transactions-source-2x.png     2500w,
-            /img/landing/transactions-source-3x.png     3000w
+            /img/landing/transactions-source-dot5x.png   900w,
+            /img/landing/transactions-source-dot75x.png 1200w,
+            /img/landing/transactions-source-1x.png     2500w
           "
         />
       </aside>
@@ -116,9 +113,7 @@
         srcset="
           /img/landing/start-tracking-dot5x.png   900w,
           /img/landing/start-tracking-dot75x.png 1200w,
-          /img/landing/start-tracking-1x.png     2000w,
-          /img/landing/start-tracking-1dot5x.png 2500w,
-          /img/landing/start-tracking-2x.png     3000w
+          /img/landing/start-tracking-1x.png     2500w
         "
       />
     </aside>
@@ -170,11 +165,9 @@
         src="/img/landing/other-features-dot75x.png"
         alt="other featues"
         srcset="
-          /img/landing/other-features-dot5x.png   700w,
-          /img/landing/other-features-dot75x.png  900w,
-          /img/landing/other-features-1x.png     1200w,
-          /img/landing/other-features-1dot5x.png 2500w,
-          /img/landing/other-features-2x.png     3000w
+          /img/landing/other-features-dot5x.png   900w,
+          /img/landing/other-features-dot75x.png 1200w,
+          /img/landing/other-features-1x.png     2500w
         "
       />
     </aside>
@@ -182,7 +175,10 @@
       <h2 class="center-text">Other Features</h2>
       <div class="list" style="justify-content: space-between">
         <div>
-          <img src="" alt="" />
+          <img
+            src="/img/landing/customize-categories.png"
+            alt="cutomize categories"
+          />
           <p>
             <b>Customize Categories</b>
             <br />
@@ -196,7 +192,10 @@
           </p>
         </div>
         <div>
-          <img src="" alt="" />
+          <img
+            src="/img/landing/split-transactions.png"
+            alt="split transactions"
+          />
           <p>
             <b>Split transactions</b>
             <br />
@@ -211,7 +210,10 @@
         </div>
         <div class="break"></div>
         <div>
-          <img src="" alt="" />
+          <img
+            src="/img/landing/record-cash-transactions.png"
+            alt="record cash transactions"
+          />
           <p>
             <b>Record Cash Transactions</b>
             <br />
@@ -225,7 +227,7 @@
           </p>
         </div>
         <div>
-          <img src="" alt="" />
+          <img src="/img/landing/account-history.png" alt="account history" />
           <p>
             <b>Account History</b>
             <br />
@@ -285,6 +287,9 @@ export default class NewLanding extends Vue {}
 h2 {
   color: black;
 }
+header {
+  margin-bottom: 1em;
+}
 section,
 footer {
   padding: 1em;
@@ -294,8 +299,10 @@ p {
   margin-bottom: 1.2em;
 }
 h3 {
-  font-size: 1.5em;
+  font-size: 2em;
   margin-bottom: 0.8em;
+  color: #007cff;
+  font-weight: 900;
 }
 a {
   border: 1px solid rgb(0, 124, 255);
@@ -351,10 +358,6 @@ div.list,
   padding-bottom: 0;
   padding-top: 0;
 }
-#section-1 aside {
-  margin-bottom: -4em;
-  margin-right: -3em;
-}
 #section-2 {
   /* background-color: #f1f4f7; */
   padding: 5em 0;
@@ -384,7 +387,7 @@ div.list {
   /* align-content: center; */
   /* align-items: center; */
 }
-#section-4 main div.list {
+#section-4 main {
   margin-left: 10%;
 }
 #section-4 .buttons {
@@ -398,13 +401,13 @@ p b {
   font-size: 1.2em;
 }
 
-@media (min-width: 1300px) {
+@media (min-width: 2000px) {
   aside {
     display: flex;
     justify-content: center;
   }
   aside img {
-    width: 30%;
+    width: 50%;
   }
 }
 
@@ -500,7 +503,7 @@ p b {
   #section-4 aside img {
     width: 80%;
   }
-  #section-4 main div.list {
+  #section-4 main {
     margin-left: 0;
   }
 }
