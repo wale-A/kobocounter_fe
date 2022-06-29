@@ -292,7 +292,7 @@ header {
 }
 section,
 footer {
-  padding: 1em;
+  padding: 2.5em;
 }
 p {
   font-size: 1.1em;
@@ -353,10 +353,6 @@ div.list,
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
-}
-#section-1 {
-  padding-bottom: 0;
-  padding-top: 0;
 }
 #section-2 {
   /* background-color: #f1f4f7; */
