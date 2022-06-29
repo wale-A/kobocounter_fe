@@ -32,7 +32,7 @@ import { deleteUser } from "@/util";
       deleteSubscription();
       this.logout().then(() => {
         deleteUser();
-        this.$router.replace({ name: "Home" });
+        this.$router.push({ name: "Home" });
       });
     },
   },
