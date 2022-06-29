@@ -83,9 +83,9 @@
         <p>
           <b>One app for all your financial accounts</b>
           <br />
-          Stay on top of your financial records whic helps you
+          Stay on top of your financial records and keep
           <br />
-          keep track of all your income and expenses, with just
+          track of all your income and expenses, with just
           <br />
           a single app.
         </p>
@@ -103,9 +103,9 @@
           <br />
           We take care of your financial reports so you can
           <br />
-          focus on optimising your money and create wealth for
+          focus on optimising your money and creating wealth
           <br />
-          yourself.
+          for yourself.
         </p>
       </div>
     </main>
@@ -179,7 +179,7 @@
       />
     </aside>
     <main>
-      <h2 style="text-align: center">Other Features</h2>
+      <h2 class="center-text">Other Features</h2>
       <div class="list" style="justify-content: space-between">
         <div>
           <img src="" alt="" />
@@ -290,7 +290,7 @@ footer {
   padding: 1em;
 }
 p {
-  font-size: 1.2em;
+  font-size: 1.1em;
   margin-bottom: 1.2em;
 }
 h3 {
@@ -310,13 +310,14 @@ a.alternate {
   color: white;
 }
 #header-section {
-  background: rgb(0, 124, 255);
-  background: linear-gradient(
+  /* background: rgb(0, 124, 255); */
+  background-color: #fffdf7;
+  /* background: linear-gradient(
     90deg,
     rgba(0, 124, 255, 0.15) 20%,
     rgba(253, 191, 19, 0.25) 48%,
     rgba(253, 191, 19, 0.1) 76%
-  );
+  ); */
 }
 header {
   display: flex;
@@ -355,7 +356,7 @@ div.list,
   margin-right: -3em;
 }
 #section-2 {
-  background-color: #f1f4f7;
+  /* background-color: #f1f4f7; */
   padding: 5em 0;
 }
 div.list {
@@ -363,17 +364,19 @@ div.list {
   flex-flow: row wrap;
 }
 #section-3 {
-  background: rgb(253, 191, 19);
+  /* background: rgb(253, 191, 19);
   background: linear-gradient(
     90deg,
     rgba(253, 191, 19, 0.5) 35%,
     rgba(0, 124, 255, 0.5) 63%
-  );
+  ); */
+  background-color: #f6f9fb;
   flex-direction: column;
   padding: 5em;
 }
 #section-4 {
   padding: 5em;
+  background-color: #e5e5e5;
 }
 #section-4 main {
   display: flex;
@@ -390,6 +393,19 @@ div.list {
 .break {
   flex-basis: 100%;
   height: 0;
+}
+p b {
+  font-size: 1.2em;
+}
+
+@media (min-width: 1300px) {
+  aside {
+    display: flex;
+    justify-content: center;
+  }
+  aside img {
+    width: 30%;
+  }
 }
 
 @media (max-width: 860px) {
@@ -418,6 +434,9 @@ div.list {
   h2 {
     margin-top: 1.2em;
   }
+  .center-text {
+    text-align: center;
+  }
   a {
     font-weight: 600;
     margin-top: 1em;
@@ -441,6 +460,7 @@ div.list {
   }
   p b {
     display: block;
+    margin-bottom: 0.3em;
   }
   br {
     display: none;
