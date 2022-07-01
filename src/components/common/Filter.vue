@@ -27,7 +27,7 @@
             />
             <span
               v-if="additionalValue[`${field.key}.${modelValue[field.key]}`]"
-              class="filter-edit"
+              class="filter-edit material-icons"
               @click="displayFilterOptions"
               >edit</span
             >

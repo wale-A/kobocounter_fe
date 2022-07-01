@@ -1,7 +1,7 @@
 <template>
-  <div class="w">
+  <div class="wb">
     <div>
-      <h1>Sign up</h1>
+      <h1 id="wb">Sign up</h1>
     </div>
     <div class="formBx">
       <form @submit.prevent="registerUser">
@@ -10,7 +10,7 @@
         <p>Enter your email address</p>
         <input type="email" required name="Email" v-model="email" />
         <p>Choose a Password (min. of 8 characters)</p>
-        <!--Password v-model:password="password" /-->
+        <Password v-model:password="password" />
         <p>
           <input type="checkbox" v-model="acceptPreCondition" required /> I
           accept the
@@ -98,3 +98,9 @@ import { mapActions } from "vuex";
 })
 export default class Register extends Vue {}
 </script>
+
+<style scoped>
+form p {
+  margin-top: 1.5em;
+}
+</style>

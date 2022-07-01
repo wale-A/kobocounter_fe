@@ -3,7 +3,7 @@
     <router-link
       v-for="menuItem in menuItems"
       :key="menuItem.route.name"
-      :to="menuItem.route.name"
+      :to="menuItem.route"
       class="nav-bar__link"
     >
       <div

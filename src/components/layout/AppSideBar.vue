@@ -19,7 +19,7 @@
                 .includes(menuItem.route.name),
             }"
           >
-            <router-link :to="menuItem.route.name" class="app-menu__link">
+            <router-link :to="menuItem.route" class="app-menu__link">
               <img :src="menuItem.icon.desktop" class="app-menu__link-icon" />
               <span class="app-menu__link-text">{{ menuItem.title }}</span>
             </router-link>

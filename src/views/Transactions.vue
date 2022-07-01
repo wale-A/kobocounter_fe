@@ -40,24 +40,11 @@
             :parent="parent"
             :establishments="establishments"
             :action="action"
-            @select="
-              $router.push({
-                name: 'TransactionDetail',
-                params: { id: $event, action: 'view' },
-              })
-            "
-            @edit="
-              $router.push({
-                name: 'TransactionDetail',
-                params: { id: $event, action: 'edit' },
-              })
-            "
-            @split="
-              $router.push({
-                name: 'TransactionDetail',
-                params: { id: $event, action: 'split' },
-              })
-            "
+            class="transactions__detail"
+            :class="{ 'transactions__detail--desktop': !onMobile }"
+            @select="$router.push(`/transactions/${$event}/view`)"
+            @edit="$router.push(`/transactions/${$event}/edit`)"
+            @split="$router.push(`/transactions/${$event}/split`)"
             @cancel="$router.go(-1)"
             @addEstablishment="$store.commit('insertEstablishment', $event)"
             @addActivity="$store.commit('insertActivity', $event)"

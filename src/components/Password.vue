@@ -12,7 +12,7 @@
       class="material-icons input-left-icon"
       @click="type = type === 'password' ? 'text' : 'password'"
     >
-      {{ type === "password" ? visibility : visibility_off }}
+      {{ type === "password" ? "visibility" : "visibility_off" }}
     </span>
   </div>
 </template>

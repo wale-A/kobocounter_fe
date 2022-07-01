@@ -160,7 +160,6 @@ import FilterMixin from "@/mixins/Filter";
   watch: {
     params: {
       handler(newVal) {
-        console.log("fetching with", newVal);
         this.fetch(this.getQuery(this.facets, newVal));
       },
       immediate: false,

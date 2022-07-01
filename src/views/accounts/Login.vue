@@ -28,7 +28,7 @@
         <div class="forgot">
           <p>
             Forgot password?
-            <a href="#"> Please use this link</a>
+            <a href="#"> Click here</a>
           </p>
         </div>
       </form>
@@ -93,3 +93,9 @@ import { subscribeUser } from "@/_helpers/pushNotification";
 })
 export default class Login extends Vue {}
 </script>
+
+<style scoped>
+form p {
+  margin-top: 1.5em;
+}
+</style>

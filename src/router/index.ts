@@ -12,6 +12,9 @@ const routes: Array<RouteRecordRaw> = [
     path: "/",
     name: "Home",
     component: Landing,
+    meta: {
+      layout: "Default",
+    },
   },
   {
     path: "/about",
@@ -21,6 +24,9 @@ const routes: Array<RouteRecordRaw> = [
     // which is lazy-loaded when the route is visited.
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/About.vue"),
+    meta: {
+      layout: "Default",
+    },
   },
   ...AccountRoutes,
   {
