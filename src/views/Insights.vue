@@ -21,6 +21,7 @@
       <Columns>
         <template v-slot:col-1>
           <List
+            :insights="insights"
             :highlight="$route?.params.id"
             @select="
               $router.push({
@@ -60,6 +61,17 @@ import List from "@/components/insight/List.vue";
   },
   computed: {
     ...mapGetters(["insights"]),
+    isSingle() {
+      return this.$route?.params.id;
+    },
+    insight() {
+      if (!this.$route?.params.id) {
+        return null;
+      }
+      return this.insights.find(
+        (x: InsightType) => x.category === this.$route.params.id
+      );
+    },
   },
   methods: {
     ...mapActions(["getAccounts", "getinsights", "getInsights"]),

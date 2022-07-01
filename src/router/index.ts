@@ -41,11 +41,32 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/insights",
     name: "Insights",
-    component: Insights,
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../components/layout/Route.vue"),
     meta: {
       authorize: true,
       layout: "App",
     },
+    children: [
+      {
+        path: "",
+        name: "InsightList",
+        component: Insights,
+        meta: {
+          authorize: true,
+          layout: "App",
+        },
+      },
+      {
+        path: "/insights/:id",
+        name: "InsightDetail",
+        component: Insights,
+        meta: {
+          authorize: true,
+          layout: "App",
+        },
+      },
+    ],
   },
   {
     path: "/transactions",

@@ -13,9 +13,9 @@
           :key="item.category"
           class="insight__item"
           :class="{
-            'insight__item--active': item.id === active,
+            'insight__item--active': item.category === active,
           }"
-          @click.stop="selectInsight(txn.id)"
+          @click.stop="selectInsight(item.category)"
         >
           <td class="insight__progress">
             <div class="insight__progress-group">
