@@ -19,13 +19,18 @@
     <div>
       <span>Spending trend on Groceries in the last 6 months</span>
     </div>
+    <BudgetHistory v-if="data" :data="data" />
   </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import BudgetHistory from "@/components/charts/BudgetHistory.vue";
 
 @Options({
+  components: {
+    BudgetHistory,
+  },
   props: {
     insight: Object,
     data: Object,
