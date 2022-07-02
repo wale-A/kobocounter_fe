@@ -1,9 +1,18 @@
 <template>
-  <Panel :title="title" class="insight">
+  <Panel class="insight">
     <template v-slot:title>
       <div class="insight__header">
-        <p class="insight__title">{{ title }}</p>
-        <div class="insight__subtitle">{{ subtitle }}</div>
+        <p class="insight__title">Expenses by Category</p>
+        <div class="insight__subtitle">
+          <p>
+            The progress bar shows how much you have spent on the category based
+            on your budget.
+          </p>
+          <p>
+            The percentage (%) values shows how much has been spent on that
+            category compared to the previous date period.
+          </p>
+        </div>
       </div>
     </template>
     <div class="insight__body">
@@ -13,9 +22,9 @@
           :key="item.category"
           class="insight__item"
           :class="{
-            'insight__item--active': item.category === active,
+            'insight__item--active': item[keyValue] === active,
           }"
-          @click.stop="selectInsight(item.category)"
+          @click.stop="selectInsight(item[keyValue])"
         >
           <td class="insight__progress">
             <div class="insight__progress-group">
@@ -70,21 +79,13 @@ import Panel from "@/components/layout/Panel.vue";
       type: String,
       default: null,
     },
-    title: {
-      type: String,
-      default: "Expenses by Category",
-    },
-    subtitle: {
-      type: String,
-      default: `
-        The progress bar shows how much you have spent on the category based on your budget.
-        
-        The percentage (%) values shows how much has been spent on that category compared to the previous date period.
-      `,
-    },
     insights: {
       type: Array,
       required: true,
+    },
+    keyValue: {
+      type: String,
+      default: "category",
     },
   },
   watch: {

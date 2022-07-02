@@ -21,6 +21,7 @@
       <Columns>
         <template v-slot:col-1>
           <List
+            :keyValue="'id'"
             :insights="insights"
             :highlight="$route?.params.id"
             @select="
@@ -67,13 +68,15 @@ import List from "@/components/insight/List.vue";
       if (!this.$route?.params.id) {
         return null;
       }
-      return this.insights.find(
-        (x: InsightType) => x.category === this.$route.params.id
+      const val = this.insights.find(
+        (x: InsightType) => x.id == this.$route.params.id
       );
+
+      return val;
     },
   },
   methods: {
-    ...mapActions(["getAccounts", "getinsights", "getInsights", "getBudgets"]),
+    ...mapActions(["getAccounts", "getInsights", "getBudgets"]),
   },
   watch: {
     params(newVal) {
@@ -86,14 +89,12 @@ export default class Insights extends mixins(FilterMixin) {
   displayChart = "piechart";
 
   getAccounts!: (params: FilterParams) => Promise<void>;
-  getinsights!: (params: FilterParams) => Promise<void>;
   getInsights!: (params: FilterParams) => Promise<void>;
   getBudgets!: (params: FilterParams) => Promise<void>;
 
   fetch(params: FilterParams): void {
     Promise.allSettled([
       this.getAccounts(params),
-      this.getinsights(params),
       this.getInsights(params),
       this.getBudgets(params),
     ]).then(() => {

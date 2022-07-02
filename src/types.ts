@@ -113,6 +113,7 @@ export type BudgetItem = {
 };
 
 export type Insights = {
+  id: string;
   category: string;
   amount: number;
   change: number;
