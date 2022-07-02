@@ -1,4 +1,5 @@
 <template>
+  <h1>ICG OWESH DBUIYOIHWERBDOVUWESR VPWHERIU P WUIRHU OIWREP</h1>
   <div class="budgetHistory" :style="{ height: '100%', width: '100%' }"></div>
 </template>
 
@@ -98,7 +99,9 @@ import * as am4charts from "@amcharts/amcharts4/charts";
   },
   watch: {
     data() {
-      this.draw();
+      // this.draw();
+      console.log("data..............");
+      console.log(this.data);
     },
   },
 })

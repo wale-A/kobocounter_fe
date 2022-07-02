@@ -3,23 +3,24 @@
     <h2>{{ insight.category }}</h2>
     <div>
       <h4>Total Amount</h4>
-      <h2>{{ insight.amount }}</h2>
+      <h2>{{ insight.amount.toLocaleString() }}</h2>
       <progress
         max="100"
         :value="div(insight.amount, insight.budgetAmount) * 100"
         class="insight__progress-bar"
       ></progress>
       <span
-        >You have spent N{{ insight.amount }} out of your N{{
-          insight.budgetAmount
-        }}
-        budget on groceries for the month</span
+        >You have spent
+        <strong>N{{ insight.amount.toLocaleString() }}</strong> out of your
+        <strong>N{{ insight.budgetAmount.toLocaleString() }}</strong> budget on
+        groceries for the month</span
       >
     </div>
+
+    <BudgetHistory v-if="data" :data="data" />
     <div>
       <span>Spending trend on Groceries in the last 6 months</span>
     </div>
-    <BudgetHistory v-if="data" :data="data" />
   </div>
 </template>
 
@@ -38,10 +39,27 @@ import BudgetHistory from "@/components/charts/BudgetHistory.vue";
 })
 export default class View extends Vue {
   div(num: number, denum: number): number {
-    if (denum === 0) {
+    if (!denum) {
       return 0;
     }
     return num / denum;
   }
 }
 </script>
+
+<style scoped>
+h2 {
+  color: black;
+  font-size: 25px;
+  margin-bottom: 15px;
+  margin-top: 5px;
+}
+h4 {
+  margin-top: 25px;
+}
+progress {
+  display: block;
+  width: 100%;
+  margin-bottom: 15px;
+}
+</style>

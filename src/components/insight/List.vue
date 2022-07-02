@@ -29,7 +29,7 @@
               ></progress>
             </div>
           </td>
-          <td class="insight__budget">N{{ item.amount }}</td>
+          <td class="insight__budget">N {{ item.amount.toLocaleString() }}</td>
           <td
             class="insight__change"
             :class="{
@@ -38,16 +38,18 @@
             }"
           >
             <svg-icon
-              v-if="item.change < 0"
+              v-if="item.change > 0"
               :src="require('@/assets/svg/down-arrow.svg')"
               class="insight__change-icon"
             />
             <svg-icon
-              v-if="item.change > 0"
+              v-if="item.change < 0"
               :src="require('@/assets/svg/up-arrow.svg')"
               class="insight__change-icon"
             />
-            <span class="insight__change-value">{{ item.change }}%</span>
+            <span class="insight__change-value"
+              >{{ Math.abs(item.change).toLocaleString() }}%</span
+            >
           </td>
         </tr>
       </table>
@@ -75,8 +77,9 @@ import Panel from "@/components/layout/Panel.vue";
     subtitle: {
       type: String,
       default: `
-        The progress bar shows how much you've spend on that category based on your budget.
-        The % values is how you've spent on that category compared to the previous 30 days.
+        The progress bar shows how much you have spent on the category based on your budget.
+        
+        The percentage (%) values shows how much has been spent on that category compared to the previous date period.
       `,
     },
     insights: {
@@ -98,9 +101,11 @@ export default class List extends Vue {
     this.$emit("select", id);
   }
 
+  // if the denum is zero, it means there was no expense for this category in the previous date period
+  // therefor the user has spent 100% more this month
   div(num: number, denum: number): number {
-    if (denum === 0) {
-      return 0;
+    if (!denum) {
+      return -100;
     }
     return num / denum;
   }
@@ -110,23 +115,24 @@ export default class List extends Vue {
 <style lang="scss" scoped>
 @import "@/styles/mixins.scss";
 .insight {
-  font-size: 12px;
+  font-size: 15px;
   color: #364156;
 
   @at-root #{&}__title {
     font-weight: 700;
-    font-size: 14px;
-    line-height: 19px;
+    font-size: 20px;
+    line-height: 22px;
     color: #2a2a2a;
+    margin-bottom: 10px;
     @include for-size(tablet-landscape-up) {
-      font-size: 16px;
+      font-size: 18px;
       line-height: 22px;
     }
   }
 
   @at-root #{&}__subtitle {
-    font-size: 12px;
-    line-height: 20px;
+    font-size: 15px;
+    line-height: 18px;
     color: #2a2a2a;
     max-width: 500px;
     margin-top: 6px;
@@ -151,7 +157,7 @@ export default class List extends Vue {
   }
 
   @at-root #{&}__progress {
-    width: 75%;
+    width: 65%;
   }
 
   @at-root #{&}__progress-group {
@@ -174,22 +180,22 @@ export default class List extends Vue {
 
   @at-root #{&}__budget {
     font-weight: 600;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 16px;
   }
 
   @at-root #{&}__change {
     font-weight: 700;
-    font-size: 10px;
+    font-size: 14px;
     line-height: 14px;
   }
 
   @at-root #{&}__change--red {
-    color: rgba(222, 28, 98, 0.36);
+    color: rgba(222, 28, 98, 0.7);
   }
 
   @at-root #{&}__change--green {
-    color: rgba(111, 205, 199, 0.5);
+    color: rgba(111, 205, 199, 0.8);
   }
 
   @at-root #{&}__change-icon {

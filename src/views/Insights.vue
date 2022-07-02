@@ -33,7 +33,6 @@
         </template>
         <template v-slot:col-2> <Detail :insight="insight" /></template
       ></Columns>
-      <!-- <AddNewAccount :hasAccounts="!(accounts && accounts?.length == 0)" /> -->
     </div>
   </Page>
 </template>
@@ -60,7 +59,7 @@ import List from "@/components/insight/List.vue";
     List,
   },
   computed: {
-    ...mapGetters(["insights"]),
+    ...mapGetters(["insights", "budgets"]),
     isSingle() {
       return this.$route?.params.id;
     },
@@ -74,7 +73,7 @@ import List from "@/components/insight/List.vue";
     },
   },
   methods: {
-    ...mapActions(["getAccounts", "getinsights", "getInsights"]),
+    ...mapActions(["getAccounts", "getinsights", "getInsights", "getBudgets"]),
   },
   watch: {
     params(newVal) {
@@ -89,12 +88,14 @@ export default class Insights extends mixins(FilterMixin) {
   getAccounts!: (params: FilterParams) => Promise<void>;
   getinsights!: (params: FilterParams) => Promise<void>;
   getInsights!: (params: FilterParams) => Promise<void>;
+  getBudgets!: (params: FilterParams) => Promise<void>;
 
   fetch(params: FilterParams): void {
     Promise.allSettled([
       this.getAccounts(params),
       this.getinsights(params),
       this.getInsights(params),
+      this.getBudgets(params),
     ]).then(() => {
       console.log("insights", this.insights);
     });
