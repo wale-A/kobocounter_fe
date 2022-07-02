@@ -120,6 +120,11 @@ export type Insights = {
   budgetAmount: number;
 };
 
+export type DetailedInsights = {
+  transactions: Array<{ date: number; amount: number }>;
+  budget: Array<{ date: number; amount: number }>;
+};
+
 export type Budget = {
   id: string;
   startDate: string;

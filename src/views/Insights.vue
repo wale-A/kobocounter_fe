@@ -32,7 +32,8 @@
             "
           />
         </template>
-        <template v-slot:col-2> <Detail :insight="insight" /></template
+        <template v-slot:col-2>
+          <Detail :insight="insight" :data="detailedInsights" /></template
       ></Columns>
     </div>
   </Page>
@@ -60,7 +61,7 @@ import List from "@/components/insight/List.vue";
     List,
   },
   computed: {
-    ...mapGetters(["insights", "budgets"]),
+    ...mapGetters(["insights", "budgets", "detailedInsights"]),
     isSingle() {
       return this.$route?.params.id;
     },
@@ -76,30 +77,43 @@ import List from "@/components/insight/List.vue";
     },
   },
   methods: {
-    ...mapActions(["getAccounts", "getInsights", "getBudgets"]),
+    ...mapActions([
+      "getAccounts",
+      "getInsights",
+      "getBudgets",
+      "getDetailedInsights",
+    ]),
   },
   watch: {
     params(newVal) {
       this.fetch(this.getQuery(this.facets, newVal));
     },
+    insight(newVal) {
+      this.getDetailedInsights({
+        ...this.getQuery(this.facets, this.params),
+        category: newVal?.category,
+      });
+    },
   },
 })
 export default class Insights extends mixins(FilterMixin) {
   insights!: InsightType[] | undefined;
+  detailedInsights!: InsightType[] | undefined;
   displayChart = "piechart";
 
   getAccounts!: (params: FilterParams) => Promise<void>;
   getInsights!: (params: FilterParams) => Promise<void>;
   getBudgets!: (params: FilterParams) => Promise<void>;
+  getDetailedInsights!: (
+    params: FilterParams & { category?: string | number }
+  ) => Promise<void>;
 
   fetch(params: FilterParams): void {
     Promise.allSettled([
       this.getAccounts(params),
       this.getInsights(params),
       this.getBudgets(params),
-    ]).then(() => {
-      console.log("insights", this.insights);
-    });
+    ]);
   }
 
   created(): void {

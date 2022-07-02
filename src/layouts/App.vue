@@ -32,11 +32,7 @@ import { SIDEBAR_MENU_ITEMS } from "@/config";
     },
   },
 })
-export default class App extends Vue {
-  created(): void {
-    console.log("created App Layout");
-  }
-}
+export default class App extends Vue {}
 </script>
 
 <style lang="scss" scoped>

@@ -12,14 +12,17 @@
       <span
         >You have spent
         <strong>N{{ insight.amount.toLocaleString() }}</strong> out of your
-        <strong>N{{ insight.budgetAmount.toLocaleString() }}</strong> budget on
-        groceries for the month</span
+        <strong>N{{ (insight.budgetAmount || 0).toLocaleString() }}</strong>
+        budget on groceries for the month</span
       >
     </div>
 
-    <BudgetHistory v-if="data" :data="data" />
-    <div>
-      <span>Spending trend on Groceries in the last 6 months</span>
+    <BudgetHistory v-if="insight" :data="data" />
+    <div style="margin-top: 1em">
+      <span
+        >Spending trend on <b>{{ insight.category }}</b> in the last 6
+        months</span
+      >
     </div>
   </div>
 </template>

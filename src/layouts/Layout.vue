@@ -16,14 +16,13 @@ import Default from "./Default.vue";
   watch: {
     $route: {
       immediate: true,
-      async handler(route, former) {
+      async handler(route) {
         try {
           if (!route.meta?.layout || route.meta.layout === this.name) {
             return;
           }
           const component = await import(`@/layouts/${route.meta.layout}.vue`);
           if (component?.default) {
-            console.log("layout changed");
             this.layout = component.default;
             this.name = route.meta.layout;
           }
@@ -33,14 +32,9 @@ import Default from "./Default.vue";
             this.layout = Default;
           }
         }
-        console.log("layout watcher called", route, former, this.layout);
       },
     },
   },
 })
-export default class Layout extends Vue {
-  created(): void {
-    console.log("created Layout");
-  }
-}
+export default class Layout extends Vue {}
 </script>

@@ -78,6 +78,9 @@ const getRevenue = (params: FilterParams): Promise<AxiosResponse> =>
 const getInsights = (params: FilterParams): Promise<AxiosResponse> =>
   axios.get(`/insights`, { params });
 
+const getDetailedInsights = (params: FilterParams): Promise<AxiosResponse> =>
+  axios.get(`/insights/details`, { params });
+
 const subscribe = (body: Record<string, string>): Promise<AxiosResponse> =>
   axios.post(`/users/subscription`, body);
 
@@ -111,4 +114,5 @@ export default {
   unsubscribe,
   getBudgets,
   getInsights,
+  getDetailedInsights,
 };

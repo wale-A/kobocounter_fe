@@ -1,9 +1,10 @@
-import { FilterParams, Insights } from "@/types";
+import { DetailedInsights, FilterParams, Insights } from "@/types";
 import api from "@/api";
 import { Module } from "vuex";
 
 type State = {
   insights: Insights[] | undefined;
+  detailedInsights: DetailedInsights[] | undefined;
 };
 
 function getHash(input: string) {
@@ -19,6 +20,7 @@ function getHash(input: string) {
 const income: Module<State, any> = {
   state: () => ({
     insights: undefined,
+    detailedInsights: undefined,
   }),
   getters: {
     rawInsights(state: State) {
@@ -33,10 +35,16 @@ const income: Module<State, any> = {
         id: getHash(item.category),
       }));
     },
+    detailedInsights(state: State) {
+      return state.detailedInsights;
+    },
   },
   mutations: {
     setInsights(state: State, insights: Insights[]) {
       state.insights = insights;
+    },
+    setDetailedInsights(state: State, data: DetailedInsights[]) {
+      state.detailedInsights = data;
     },
   },
   actions: {
@@ -46,6 +54,27 @@ const income: Module<State, any> = {
         commit("setInsights", res.data as Insights[]);
       } catch (e) {
         commit("setInsights", []);
+      }
+    },
+
+    async getDetailedInsights(
+      { commit },
+      { accountId, start, end, category }: FilterParams
+    ) {
+      try {
+        if (!category) {
+          commit("setDetailedInsights", []);
+        }
+
+        const res = await api.getDetailedInsights({
+          accountId,
+          start,
+          end,
+          category,
+        });
+        commit("setDetailedInsights", res.data as Insights[]);
+      } catch (e) {
+        commit("setDetailedInsights", []);
       }
     },
   },

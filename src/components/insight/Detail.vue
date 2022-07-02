@@ -19,7 +19,7 @@ import View from "./View.vue";
   },
   props: {
     insight: Object,
-    data: Array,
+    data: Object,
   },
 })
 export default class Detail extends Vue {}

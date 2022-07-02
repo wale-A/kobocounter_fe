@@ -1,18 +1,9 @@
 <template>
-  <Panel class="insight">
+  <Panel :title="title" class="insight">
     <template v-slot:title>
       <div class="insight__header">
-        <p class="insight__title">Expenses by Category</p>
-        <div class="insight__subtitle">
-          <p>
-            The progress bar shows how much you have spent on the category based
-            on your budget.
-          </p>
-          <p>
-            The percentage (%) values shows how much has been spent on that
-            category compared to the previous date period.
-          </p>
-        </div>
+        <p class="insight__title">{{ title }}</p>
+        <div class="insight__subtitle">{{ subtitle }}</div>
       </div>
     </template>
     <div class="insight__body">
@@ -79,6 +70,18 @@ import Panel from "@/components/layout/Panel.vue";
       type: String,
       default: null,
     },
+    title: {
+      type: String,
+      default: "Expenses by Category",
+    },
+    subtitle: {
+      type: String,
+      default: `
+        The progress bar shows how much you have spent on the category based on your budget.
+        
+        The percentage (%) values shows how much has been spent on that category compared to the previous date period.
+      `,
+    },
     insights: {
       type: Array,
       required: true,
@@ -135,7 +138,7 @@ export default class List extends Vue {
     font-size: 15px;
     line-height: 18px;
     color: #2a2a2a;
-    max-width: 500px;
+    max-width: 600px;
     margin-top: 6px;
   }
 
@@ -169,7 +172,7 @@ export default class List extends Vue {
 
   @at-root #{&}__category {
     font-weight: 600;
-    font-size: 14px;
+    font-size: 15px;
     line-height: 19px;
     margin-bottom: 3px;
   }
