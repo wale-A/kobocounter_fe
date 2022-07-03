@@ -10,8 +10,8 @@
         :class="{
           'nav-bar__item': menuItem.medium.mobile,
           'nav-bar__item--active': $route.matched
-            .map((m) => m.name)
-            .includes(menuItem.route.name),
+            .map((m) => m.path.toLowerCase())
+            .includes(menuItem.route.path.toLowerCase()),
         }"
       >
         <img :src="menuItem.icon.mobile" class="nav-bar__icon" />

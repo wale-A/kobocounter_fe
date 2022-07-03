@@ -11,7 +11,7 @@
     </template>
     <div>
       <section
-        v-show="accounts && accounts?.length"
+        v-show="accounts?.length"
         class="dashboard"
         :class="{ 'dashboard--padding': !onMobile }"
       >

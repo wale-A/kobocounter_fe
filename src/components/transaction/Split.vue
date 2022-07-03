@@ -111,6 +111,7 @@ import { Options, Vue } from "vue-class-component";
 import Multiselect from "@vueform/multiselect";
 import { EXPENSE_CATEGORIES } from "@/config";
 import { SplitTransaction, Transaction } from "@/types";
+
 @Options({
   components: { Multiselect },
   props: {

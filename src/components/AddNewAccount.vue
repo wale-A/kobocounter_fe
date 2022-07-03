@@ -1,6 +1,6 @@
 <template>
   <section class="no-account" v-show="!hasAccounts">
-    <img src="/img/assets/8.png" />
+    <img src="/img/assets/no-accounts.svg" />
     <h3>You have not added any bank accounts</h3>
     <p>Bank accounts you add will be displayed here</p>
     <form @submit.prevent="addAccount">

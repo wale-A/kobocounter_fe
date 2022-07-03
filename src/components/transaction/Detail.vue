@@ -1,9 +1,7 @@
 <template>
-  <div class="pane">
-    <Empty v-if="!transaction" />
+  <Panel class="spacer">
     <component
-      v-else
-      :is="components[action]"
+      :is="components[key]"
       :transaction="transaction"
       :parent="parent"
       :sub="children"
@@ -17,15 +15,16 @@
       @saveSplit="$emit('saveSplit', $event)"
       @cancel="$emit('cancel')"
     />
-  </div>
+  </Panel>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import Empty from "./Empty.vue";
+import Empty from "@/components/common/Empty.vue";
 import View from "./View.vue";
 import Edit from "./Edit.vue";
 import Split from "./Split.vue";
+import Panel from "@/components/layout/Panel.vue";
 
 @Options({
   props: {
@@ -40,13 +39,18 @@ import Split from "./Split.vue";
     Edit,
     View,
     Split,
+    Panel,
   },
   computed: {
+    key() {
+      return this.transaction ? this.action : "empty";
+    },
     components() {
       return {
         view: "View",
         split: "Split",
         edit: "Edit",
+        empty: "Empty",
       };
     },
   },
@@ -55,14 +59,9 @@ export default class Transaction extends Vue {}
 </script>
 
 <style src="@vueform/multiselect/themes/default.css"></style>
+
 <style lang="scss" scoped>
-@import "@/styles/mixins.scss";
-.pane {
+.spacer {
   padding: 30px;
-  @include for-size(tablet-landscape-up) {
-    background: #ffffff;
-    box-shadow: 0px 0px 15px 5px rgb(54 65 86 / 10%);
-    border-radius: 5px;
-  }
 }
 </style>

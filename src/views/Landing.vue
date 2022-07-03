@@ -317,14 +317,14 @@ a.alternate {
   color: white;
 }
 #header-section {
-  /* background: rgb(0, 124, 255); */
-  background-color: #fffdf7;
-  /* background: linear-gradient(
+  background: rgb(0, 124, 255);
+  /* background-color: #fffdf7; */
+  background: linear-gradient(
     90deg,
     rgba(0, 124, 255, 0.15) 20%,
     rgba(253, 191, 19, 0.25) 48%,
     rgba(253, 191, 19, 0.1) 76%
-  ); */
+  );
 }
 header {
   display: flex;
@@ -363,13 +363,13 @@ div.list {
   flex-flow: row wrap;
 }
 #section-3 {
-  /* background: rgb(253, 191, 19);
+  background: rgb(253, 191, 19);
   background: linear-gradient(
     90deg,
     rgba(253, 191, 19, 0.5) 35%,
     rgba(0, 124, 255, 0.5) 63%
-  ); */
-  background-color: #f6f9fb;
+  );
+  /* background-color: #f6f9fb; */
   flex-direction: column;
   padding: 5em;
 }

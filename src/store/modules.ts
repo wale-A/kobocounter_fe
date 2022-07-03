@@ -5,6 +5,7 @@ import expenses from "./modules/expenses";
 import income from "./modules/income";
 import transactions from "./modules/transactions";
 import budgets from "./modules/budget";
+import insights from "./modules/insights";
 
 export default {
   auth,
@@ -14,4 +15,5 @@ export default {
   income,
   transactions,
   budgets,
+  insights,
 };
