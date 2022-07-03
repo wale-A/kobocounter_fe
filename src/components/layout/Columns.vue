@@ -54,7 +54,7 @@ export default class Columns extends Vue {}
   @at-root #{&}__item-1--desktop {
     background: #ffffff;
     border-radius: 5px;
-    box-shadow: 0px 2px 5px rgba(54, 65, 86, 0.05);
+    box-shadow: 0 0 15px 5px rgb(54 65 86 / 10%);
     width: 65.5%;
     overflow: auto;
   }
@@ -62,7 +62,7 @@ export default class Columns extends Vue {}
   @at-root #{&}_item-2--desktop {
     background: #ffffff;
     border-radius: 5px;
-    box-shadow: 0px 2px 5px rgba(54, 65, 86, 0.05);
+    box-shadow: 0 0 15px 5px rgb(54 65 86 / 10%);
     width: 31.5%;
     overflow: auto;
   }

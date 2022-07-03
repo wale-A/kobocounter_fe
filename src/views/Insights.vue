@@ -75,6 +75,9 @@ import List from "@/components/insight/List.vue";
 
       return val;
     },
+    onMobile() {
+      return ["xs", "sm", "md"].includes(this.$grid.breakpoint);
+    },
   },
   methods: {
     ...mapActions([

@@ -17,7 +17,7 @@
 import { Options, Vue } from "vue-class-component";
 @Options({
   props: {
-    title: String,
+    title: [String, Boolean],
   },
 })
 export default class Panel extends Vue {}

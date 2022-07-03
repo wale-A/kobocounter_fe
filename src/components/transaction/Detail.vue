@@ -1,5 +1,5 @@
 <template>
-  <Panel>
+  <Panel class="spacer">
     <component
       :is="components[key]"
       :transaction="transaction"
@@ -59,3 +59,9 @@ export default class Transaction extends Vue {}
 </script>
 
 <style src="@vueform/multiselect/themes/default.css"></style>
+
+<style lang="scss" scoped>
+.spacer {
+  padding: 30px;
+}
+</style>

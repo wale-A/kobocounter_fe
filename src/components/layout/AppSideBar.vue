@@ -15,8 +15,8 @@
             class="app-menu__item"
             :class="{
               'app-menu__item--active': $route.matched
-                .map((m) => m.name)
-                .includes(menuItem.route.name),
+                .map((m) => m.path.toLowerCase())
+                .includes(menuItem.route.path.toLowerCase()),
             }"
           >
             <router-link :to="menuItem.route" class="app-menu__link">

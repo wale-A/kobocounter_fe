@@ -1,9 +1,15 @@
 <template>
-  <Panel :title="title" class="insight">
+  <Panel :title="true" class="insight">
     <template v-slot:title>
       <div class="insight__header">
-        <p class="insight__title">{{ title }}</p>
-        <div class="insight__subtitle">{{ subtitle }}</div>
+        <p class="insight__title">Expenses by Category</p>
+        <div class="insight__subtitle">
+          The progress bar shows how much you have spent on the category based
+          on your budget.
+          <br />
+          The percentage (%) values shows how much has been spent on that
+          category compared to the previous date period.
+        </div>
       </div>
     </template>
     <div class="insight__body">
@@ -13,7 +19,7 @@
           :key="item.category"
           class="insight__item"
           :class="{
-            'insight__item--active': item[keyValue] === active,
+            'insight__item--active': item[keyValue] == active,
           }"
           @click.stop="selectInsight(item[keyValue])"
         >
@@ -70,18 +76,6 @@ import Panel from "@/components/layout/Panel.vue";
       type: String,
       default: null,
     },
-    title: {
-      type: String,
-      default: "Expenses by Category",
-    },
-    subtitle: {
-      type: String,
-      default: `
-        The progress bar shows how much you have spent on the category based on your budget.
-        
-        The percentage (%) values shows how much has been spent on that category compared to the previous date period.
-      `,
-    },
     insights: {
       type: Array,
       required: true,
@@ -135,11 +129,12 @@ export default class List extends Vue {
   }
 
   @at-root #{&}__subtitle {
-    font-size: 15px;
-    line-height: 18px;
+    font-size: 12px;
+    line-height: 20px;
     color: #2a2a2a;
     max-width: 600px;
     margin-top: 6px;
+    font-family: Nunito Sans;
   }
 
   @at-root #{&}--no-shadow {
@@ -161,6 +156,7 @@ export default class List extends Vue {
   }
 
   @at-root #{&}__progress {
+    padding: 8px 0 13px;
     width: 65%;
   }
 
