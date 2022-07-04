@@ -41,7 +41,7 @@ export default class AddNewAccount extends Vue {}
   flex-direction: column;
   align-items: center;
   flex-grow: 1;
-  padding: 8% 10%;
+  padding: 2% 10%;
 }
 .no-account img {
   width: 60%;

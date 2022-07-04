@@ -127,6 +127,9 @@ import { DetailedInsights } from "@/types";
       this.draw();
     },
   },
+  mounted() {
+    this.draw();
+  },
 })
 export default class Budgethistory extends Vue {}
 </script>
