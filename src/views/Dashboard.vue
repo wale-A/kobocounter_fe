@@ -112,7 +112,6 @@ import Loader from "@/components/layout/Loader.vue";
 import Filter from "@/components/common/Filter.vue";
 import { Account, FilterParams } from "@/types";
 import FilterMixin from "@/mixins/Filter";
-import * as am4core from "@amcharts/amcharts4/core";
 
 @Options<Dashboard>({
   components: {
@@ -230,8 +229,6 @@ export default class Dashboard extends mixins(FilterMixin) {
   }
 
   created(): void {
-    am4core.options.onlyShowOnViewport = true;
-    am4core.options.queue = true;
     this.params = this.getModels(this.facets);
   }
 }
