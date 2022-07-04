@@ -131,13 +131,14 @@ const transactions: Module<State, any> = {
     },
     async getTransactionCategories(
       { commit },
-      { accountId, start, end }: FilterParams
+      { accountId, start, end, expenses }: FilterParams
     ) {
       try {
         const res = await api.getTransactionCategories({
           accountId,
           start,
           end,
+          expenses,
         });
         commit("setTransactionCategories", res.data as TransactionCategories[]);
       } catch (e) {

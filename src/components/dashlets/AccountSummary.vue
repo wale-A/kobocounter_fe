@@ -1,5 +1,5 @@
 <template>
-  <Card title="Account summary">
+  <Card title="Account Summary">
     <div class="summary">
       <div class="summary__balance">
         <span class="summary__key">Your balance</span>

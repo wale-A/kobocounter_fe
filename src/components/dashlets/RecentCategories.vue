@@ -1,10 +1,19 @@
 <template>
-  <Card title="Recent categories">
+  <Card title="Transaction Categories">
     <template #action>
       <div>
         <span
-          class="material-icons input-left-icon"
-          @click="() => (displayChart = 'wordcloud')"
+          :class="{
+            'material-icons': true,
+            'input-left-icon': true,
+            active: donutChartSelected,
+          }"
+          @click="
+            () => {
+              displayChart = 'wordcloud';
+              donutChartSelected = false;
+            }
+          "
           :enabled="displayChart === 'wordcloud'"
           style="font-size: 1.5em"
         >
@@ -12,8 +21,17 @@
         </span>
         <span>&nbsp;</span>
         <span
-          class="material-icons input-left-icon"
-          @click="() => (displayChart = 'piechart')"
+          :class="{
+            'material-icons': true,
+            'input-left-icon': true,
+            active: !donutChartSelected,
+          }"
+          @click="
+            () => {
+              displayChart = 'piechart';
+              donutChartSelected = true;
+            }
+          "
           :enabled="displayChart === 'piechart'"
           style="font-size: 1.5em"
         >
@@ -60,5 +78,17 @@ import WordCloudChart from "@/components/charts/WordCloudChart.vue";
 })
 export default class RecentCategories extends Vue {
   displayChart = "piechart";
+  donutChartSelected = true;
 }
 </script>
+
+<style scoped>
+.input-left-icon.active {
+  color: turquoise;
+  cursor: pointer;
+}
+.input-left-icon {
+  color: gray;
+  cursor: not-allowed;
+}
+</style>

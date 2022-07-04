@@ -17,12 +17,12 @@
             >
               <td class="transaction__category">
                 <span class="transaction__category-item">
-                  <img
+                  <!-- <img
                     :alt="`${getCategory(txn)}`"
                     :src="getIcon(txn)"
                     class="transaction__category-icon"
                     onerror="this.style.display='none';"
-                  />
+                  /> -->
                   <span class="transaction__category-name"
                     >{{ getCategory(txn) }}
                   </span>
@@ -198,7 +198,12 @@ export default class List extends Vue {
     border: 1px solid #007cff;
     background: white;
     color: #007cff;
-    padding: 0.5rem;
+    // display: block;
+    width: fit-content;
+    border-radius: 10px;
+    margin-top: 1em;
+    padding: 0.7em 1.6em;
+    font-size: 14px;
 
     &:hover,
     &:focus {

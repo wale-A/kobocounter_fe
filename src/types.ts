@@ -27,8 +27,10 @@ export type FilterParams = {
   start?: number;
   end?: number;
   category?: string;
+  // set either page or size to -1 to get all the records
   page?: number;
   size?: number;
+  expenses?: boolean;
 };
 
 export type User = {

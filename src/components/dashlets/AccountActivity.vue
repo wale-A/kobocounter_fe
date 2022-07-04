@@ -1,5 +1,5 @@
 <template>
-  <Card title="Account activity">
+  <Card title="Account Activity">
     <IncomeChart
       :width="'98%'"
       :fileName="filename"

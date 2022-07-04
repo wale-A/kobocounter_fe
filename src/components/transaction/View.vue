@@ -207,7 +207,7 @@ export default class View extends Vue {
   @at-root #{&}--primary {
     background: #007cff;
     color: white;
-    margin-bottom: 14px;
+    margin-bottom: 19px;
   }
 }
 

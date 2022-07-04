@@ -3,7 +3,7 @@
     <GuageChart v-show="data?.length" :budget="data" />
     <section v-show="!data?.length" style="padding: 10% 5%">
       <p>
-        You haven't created a budget for this month.
+        You have not created a budget for this month.
         <br />
         Create one now to see your budget performance.
       </p>
@@ -36,3 +36,15 @@ import GuageChart from "@/components/charts/GuageChart.vue";
 })
 export default class BudgetPerformance extends Vue {}
 </script>
+
+<style scoped>
+.button {
+  border: 1px solid #007cff;
+  border-radius: 10px;
+  margin-top: 1.5em;
+  padding: 0.4em 1.5em;
+  font-size: 1em;
+  display: block;
+  width: fit-content;
+}
+</style>

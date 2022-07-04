@@ -112,6 +112,7 @@ import Loader from "@/components/layout/Loader.vue";
 import Filter from "@/components/common/Filter.vue";
 import { Account, FilterParams } from "@/types";
 import FilterMixin from "@/mixins/Filter";
+import * as am4core from "@amcharts/amcharts4/core";
 
 @Options<Dashboard>({
   components: {
@@ -214,11 +215,11 @@ export default class Dashboard extends mixins(FilterMixin) {
   fetch(params: FilterParams): void {
     Promise.allSettled([
       this.getAccounts(params),
-      this.getTransactions(params),
+      this.getTransactions({ ...params, page: -1, size: -1 }),
       this.getNetIncome(params),
       this.getExpense(params),
       this.getRevenue(params),
-      this.getTransactionCategories(params),
+      this.getTransactionCategories({ ...params, expenses: true }),
       this.getRecurringExpenses({
         accountId: params.accountId,
       }),
@@ -229,6 +230,8 @@ export default class Dashboard extends mixins(FilterMixin) {
   }
 
   created(): void {
+    am4core.options.onlyShowOnViewport = true;
+    am4core.options.queue = true;
     this.params = this.getModels(this.facets);
   }
 }

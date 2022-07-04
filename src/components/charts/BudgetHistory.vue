@@ -25,7 +25,7 @@ import { DetailedInsights } from "@/types";
     draw() {
       const chart = am4core.create("insightHistory", am4charts.XYChart);
       const chartData: DetailedInsights = this.data;
-      // chart.responsive.enabled = true;
+      chart.responsive.enabled = true;
       chart.cursor = new am4charts.XYCursor();
       chart.hiddenState.properties.opacity = 0;
 
@@ -89,37 +89,37 @@ import { DetailedInsights } from "@/types";
       chart.fontFamily = "Poppins";
       chart.fontSize = "14";
 
-      // chart.responsive.rules.push({
-      //   relevant: am4core.ResponsiveBreakpoints.widthL,
-      //   state: (target, stateId) => {
-      //     if (target instanceof am4charts.AxisRendererY) {
-      //       const state = target.states.create(stateId);
-      //       state.properties.inside = true;
-      //       state.properties.maxLabelPosition = 0.99;
-      //       return state;
-      //     }
+      chart.responsive.rules.push({
+        relevant: am4core.ResponsiveBreakpoints.widthL,
+        state: (target, stateId) => {
+          if (target instanceof am4charts.AxisRendererY) {
+            const state = target.states.create(stateId);
+            state.properties.inside = true;
+            state.properties.maxLabelPosition = 0.99;
+            return state;
+          }
 
-      //     if (
-      //       target instanceof am4charts.AxisLabel &&
-      //       target.parent instanceof am4charts.AxisRendererY
-      //     ) {
-      //       const state = target.states.create(stateId);
-      //       state.properties.dy = -15;
-      //       state.properties.paddingTop = 3;
-      //       state.properties.paddingRight = 5;
-      //       state.properties.paddingBottom = 3;
-      //       state.properties.paddingLeft = 5;
+          if (
+            target instanceof am4charts.AxisLabel &&
+            target.parent instanceof am4charts.AxisRendererY
+          ) {
+            const state = target.states.create(stateId);
+            state.properties.dy = -15;
+            state.properties.paddingTop = 3;
+            state.properties.paddingRight = 5;
+            state.properties.paddingBottom = 3;
+            state.properties.paddingLeft = 5;
 
-      //       // Create a separate state for background
-      //       target.setStateOnChildren = true;
-      //       var bgstate = target.background.states.create(stateId);
-      //       bgstate.properties.fill = am4core.color("#fff");
-      //       bgstate.properties.fillOpacity = 0.7;
+            // Create a separate state for background
+            target.setStateOnChildren = true;
+            var bgstate = target.background.states.create(stateId);
+            bgstate.properties.fill = am4core.color("#fff");
+            bgstate.properties.fillOpacity = 0.7;
 
-      //       return state;
-      //     }
-      //   },
-      // });
+            return state;
+          }
+        },
+      });
     },
   },
   watch: {
