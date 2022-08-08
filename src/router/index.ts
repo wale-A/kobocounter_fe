@@ -3,6 +3,7 @@ import Landing from "../views/Landing.vue";
 import { AccountRoutes } from "./account";
 import Dashboard from "../views/Dashboard.vue";
 import Insights from "../views/Insights.vue";
+import Budgets from "../views/Budgets.vue";
 import PageNotFound from "../views/PageNotFound.vue";
 import Transactions from "../views/Transactions.vue";
 import store from "../store/index";
@@ -61,6 +62,36 @@ const routes: Array<RouteRecordRaw> = [
         path: "/insights/:id",
         name: "InsightDetail",
         component: Insights,
+        meta: {
+          authorize: true,
+          layout: "App",
+        },
+      },
+    ],
+  },
+  {
+    path: "/budgets",
+    name: "Budgets",
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../components/layout/Route.vue"),
+    meta: {
+      authorize: true,
+      layout: "App",
+    },
+    children: [
+      {
+        path: "",
+        name: "BudgetList",
+        component: Budgets,
+        meta: {
+          authorize: true,
+          layout: "App",
+        },
+      },
+      {
+        path: "/budgets/:id",
+        name: "BudgetDetail",
+        component: Budgets,
         meta: {
           authorize: true,
           layout: "App",
