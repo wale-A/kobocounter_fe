@@ -12,16 +12,15 @@ export const instance = axios.create({
 
 instance.interceptors.response.use(undefined, (error) => {
   const { response } = error;
+
   if (response) {
     if ([401, 403].includes(response.status)) {
       return store.dispatch("logout").then(() => deleteUser());
-    } else if (response.startsWith("4")) {
-      throw new Error(response.data);
     } else {
       return response;
     }
   } else {
-    throw new Error(error);
+    throw new Error();
   }
 });
 

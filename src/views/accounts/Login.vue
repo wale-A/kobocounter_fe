@@ -65,8 +65,6 @@ import { subscribeUser } from "@/_helpers/pushNotification";
         password: this.password,
       })
         .then((user: User) => {
-          console.log("after login......");
-          console.log({ user });
           storeUser(user);
           subscribeUser();
 

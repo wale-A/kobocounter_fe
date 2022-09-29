@@ -5,6 +5,7 @@ const storeKey = "authenticated-user";
 
 export const getUser = (): User | undefined => {
   const user = localStorage.getItem(storeKey);
+
   if (!user) {
     return undefined;
   }
@@ -14,12 +15,14 @@ export const getUser = (): User | undefined => {
 
 export const getUserToken = (): string | undefined => {
   const user = getUser();
+
   if (!user) {
     return undefined;
   }
 
   const { token } = user;
-  return token?.token;
+
+  return token.token;
 };
 
 export const storeUser = (user: User): void => {
