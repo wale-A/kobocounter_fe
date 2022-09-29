@@ -11,8 +11,9 @@ import {
 } from "@/types";
 import { AxiosResponse } from "axios";
 
-const login = (payload: LoginPayload): Promise<AxiosResponse> =>
-  axios.post(`/users/login`, payload);
+const login = (payload: LoginPayload): Promise<AxiosResponse> => {
+  return axios.post(`/users/login`, payload);
+};
 
 const register = (payload: RegisterPayload): Promise<AxiosResponse> =>
   axios.post(`/users`, payload);

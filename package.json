@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "serve": "vue-cli-service serve --mode production",
+    "build": "vue-cli-service build --mode production",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "serve-prod": "serve -s dist"
   },
   "dependencies": {
     "@amcharts/amcharts4": "^4.10.20",
@@ -63,6 +64,7 @@
     "prettier": "^2.2.1",
     "sass": "^1.49.9",
     "sass-loader": "^10.2.1",
+    "serve": "^14.0.1",
     "typescript": "~4.1.5",
     "vue-cli-plugin-tailwind": "~2.0.6",
     "vue-jest": "^5.0.0-0"
