@@ -93,6 +93,9 @@ const getBudgets = (
 ): Promise<AxiosResponse<Array<BudgetListResponse>>> =>
   axios.get(`/budgets`, { params });
 
+const getSingleBudget = (id: string): Promise<AxiosResponse> =>
+  axios.get(`/banking/budgets/${id}`);
+
 export default {
   login,
   register,
@@ -116,4 +119,5 @@ export default {
   getBudgets,
   getInsights,
   getDetailedInsights,
+  getSingleBudget,
 };

@@ -103,9 +103,10 @@ export type BudgetListItem = {
   endDate: string;
   value: number;
   amountSpent: number | null;
+  name: string;
 };
 
-export type BudgetListResponse = Array<BudgetListItem>;
+export type BudgetListResponse = PaginatedResponse<BudgetListItem>;
 
 export type BudgetItem = {
   category: string;
@@ -131,6 +132,7 @@ export type Budget = {
   id: string;
   startDate: string;
   endDate: string;
+  name: string;
   items: BudgetItem[];
 };
 
@@ -180,4 +182,9 @@ export type SplitTransaction = {
   expenseCategory: string;
   amount: number;
   id: string;
+};
+
+export type PaginatedResponse<T> = {
+  meta: Pagination;
+  data: T[];
 };

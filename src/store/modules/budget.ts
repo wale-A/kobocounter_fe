@@ -1,14 +1,24 @@
-import { Budget, FilterParams } from "@/types";
+import {
+  Budget,
+  BudgetListItem,
+  BudgetListResponse,
+  FilterParams,
+  Pagination,
+} from "@/types";
 import api from "@/api";
 import { Module } from "vuex";
 
 type State = {
-  budgets: Budget[] | undefined;
+  budget: Budget | undefined;
+  budgets: BudgetListItem[] | undefined;
+  pagination: Pagination | undefined;
 };
 
 const budgets: Module<State, any> = {
   state: () => ({
+    budget: undefined,
     budgets: undefined,
+    pagination: undefined,
   }),
   getters: {
     budgets(state) {
@@ -16,21 +26,37 @@ const budgets: Module<State, any> = {
     },
   },
   mutations: {
-    setBudgets(state, budgets?: Budget[]) {
-      state.budgets = budgets;
+    setBudgets(state, budgets?: BudgetListResponse) {
+      state.budgets = budgets?.data;
+    },
+    setBudget(state, budget?: Budget) {
+      state.budget = budget;
     },
   },
   actions: {
-    async getBudgets({ commit }, { category, start, end }: FilterParams) {
+    async getBudgets(
+      { commit },
+      { category, start, end, page, size }: FilterParams
+    ) {
       try {
         const res = await api.getBudgets({
           category,
           start,
           end,
+          page,
+          size,
         });
         commit("setBudgets", res.data);
       } catch (e) {
         commit("setBudgets", []);
+      }
+    },
+    async getSingleBudget({ commit }, id: string) {
+      try {
+        const res = await api.getSingleBudget(id);
+        commit("setBudget", res.data);
+      } catch (e) {
+        commit("setBudget", undefined);
       }
     },
   },
