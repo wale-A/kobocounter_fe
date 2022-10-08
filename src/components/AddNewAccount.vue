@@ -21,18 +21,6 @@ import { mapActions } from "vuex";
     hasAccounts: Boolean,
   },
   methods: {
-    // addAccount() {
-    //   const addAccountFn = (code: string) => {
-    //     this.$store.dispatch("addAccount", { code });
-    //     this.$store.dispatch("getAccounts");
-    //   };
-    //   const options = {
-    //     onSuccess: function (response: { code: string }) {
-    //       addAccountFn(response.code);
-    //     },
-    //   };
-    //   this.$launchMono(options);
-    // },
     ...mapActions(["getAccounts", "addAccount"]),
   },
 })

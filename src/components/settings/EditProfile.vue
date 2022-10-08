@@ -62,14 +62,6 @@ import Field from "../transaction/_internal/Field.vue";
       lastName: this.profile.split(" ")[0],
     };
   },
-  // data() {
-  //   return {
-  //     model: {
-  //       firstName: (this.profile as UserProfile)?.firstName,
-  //       lastName: (this.profile as UserProfile)?.lastName,
-  //     },
-  //   };
-  // },
 })
 export default class EditProfile extends Vue {
   profile = "";
@@ -84,7 +76,6 @@ export default class EditProfile extends Vue {
   }
   @at-root #{&}__actions {
     input {
-      // display: block;
       margin: 1.5em;
     }
   }

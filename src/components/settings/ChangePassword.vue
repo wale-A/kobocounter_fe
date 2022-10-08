@@ -54,7 +54,6 @@ export default class ChangePassword extends Vue {
   }
   @at-root #{&}__actions {
     input {
-      // display: block;
       margin: 1.5em;
     }
   }

@@ -78,24 +78,6 @@ import AddNewAccount from "../AddNewAccount.vue";
       menuKey: "",
     };
   },
-  methods: {
-    // getAccountTextColor(status: string) {
-    //   if (status === "AVAILABLE") {
-    //     return "#00FF00";
-    //   } else if (status === "PROCESSING") {
-    //     return "#DADA06";
-    //   } else {
-    //     return "#FF0000";
-    //   }
-    // },
-    // toggleMenu(key: string) {
-    //   if (this.menuKey == key) {
-    //     this.menuKey = "";
-    //   } else {
-    //     this.menuKey = key;
-    //   }
-    // },
-  },
 })
 export default class ManageAccounts extends Vue {
   menuKey?: string;
