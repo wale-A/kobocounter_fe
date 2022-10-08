@@ -47,7 +47,7 @@
       </nav>
       <hr class="app-menu__divider" />
       <footer class="footer">
-        <p class="footer__copy">Kobocounter 2021</p>
+        <p class="footer__copy">Kobocounter {{ new Date().getFullYear() }}</p>
         <nav class="footer-menu">
           <a href="#" class="footer-menu__link">Terms</a>
           <a href="#" class="footer-menu__link">Privacy</a>
@@ -131,21 +131,25 @@ export default class SideBar extends Vue {}
 
   color: rgba(255, 255, 255, 0.75);
 
-  padding: 13px 30px;
+  padding: 15px;
   margin-bottom: 46px;
 
   @at-root #{&}__copy {
     margin-bottom: 2px;
+    text-align: center;
   }
 }
 .footer-menu {
+  margin-top: 15px;
+
   @at-root #{&}__link {
     font-size: 14px;
     line-height: 19px;
     /* identical to box height */
 
     color: rgba(255, 255, 255, 0.75);
-    margin-right: 10px;
+    // margin-right: 5px;
+    padding: 6px;
   }
 }
 </style>

@@ -75,7 +75,7 @@ export default class Header extends Vue {}
 .salutation {
   @at-root #{&}__title {
     font-family: Nunito Sans;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 800;
     line-height: 33px;
   }

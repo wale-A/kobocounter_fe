@@ -200,6 +200,12 @@ export default class Edit extends Vue {}
   }
 }
 
+.multiselect {
+  margin: 0;
+}
+</style>
+
+<style lang="scss">
 .button {
   font-weight: 700;
   font-size: 14px;
@@ -218,8 +224,5 @@ export default class Edit extends Vue {}
     color: white;
     margin-bottom: 14px;
   }
-}
-.multiselect {
-  margin: 0;
 }
 </style>
