@@ -28,8 +28,8 @@ export const SIDEBAR_MENU_ITEMS = [
   {
     title: "Transactions",
     icon: {
-      mobile: "/img/assets/n6.png",
-      desktop: "/img/assets/6.png",
+      mobile: "/img/assets/n4.png",
+      desktop: "/img/assets/4.png",
     },
     medium: {
       mobile: true,
@@ -48,6 +48,18 @@ export const SIDEBAR_MENU_ITEMS = [
       desktop: true,
     },
     route: { path: "/Budget" },
+  },
+  {
+    title: "Settings",
+    icon: {
+      mobile: "/img/assets/n5.png",
+      desktop: "/img/assets/5.png",
+    },
+    medium: {
+      mobile: true,
+      desktop: true,
+    },
+    route: { path: "/Settings" },
   },
 ] as const;
 

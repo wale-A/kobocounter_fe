@@ -44,7 +44,7 @@ export default class NavBar extends Vue {}
   border-radius: 10px 10px 0px 0px;
   align-items: center;
   width: 100%;
-  padding: 14px 25px;
+  padding: 14px 18px;
   height: 72px;
 
   @at-root #{&}__link {

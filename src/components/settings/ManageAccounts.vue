@@ -161,8 +161,9 @@ tr {
 .menu-dropdown {
   position: absolute;
   padding: 5px;
-  margin-top: 10px;
+  margin-top: 5px;
   background: lightgrey;
+  right: 10%;
 
   a {
     padding: 5px;

@@ -89,15 +89,15 @@ export default class Settings extends Vue {
   username?: string;
   section?: string;
   selectedComponent?: string;
-  action = "edit-profile";
+  action = "manage-accounts";
   components: Record<SettingsKeys, string> = {
-    "edit-profile": "Edit Profile",
+    // "edit-profile": "Edit Profile",
     "manage-accounts": "Manage Accounts",
     "change-password": "Change Password",
     "upgrade-plan": "Upgrade Plan",
   };
   routes: Record<SettingsKeys, string> = {
-    "edit-profile": "/settings/edit-profile",
+    // "edit-profile": "/settings/edit-profile",
     "manage-accounts": "/settings/manage-accounts",
     "upgrade-plan": "/settings/upgrade-plan",
     "change-password": "/settings/change-password",
@@ -105,7 +105,7 @@ export default class Settings extends Vue {
 
   handleClick(key: SettingsKeys): void {
     this.action = key;
-    this.$router.push(this.routes[key] || this.routes["edit-profile"]);
+    this.$router.push(this.routes[key] || this.routes["manage-accounts"]);
   }
   deleteExistingAccount(accountId: string): void {
     const account = (this.accounts || []).find((x) => x.id == accountId);
@@ -132,7 +132,6 @@ export default class Settings extends Vue {
           this.$reAuthorise(
             {
               onSuccess: function (response: { code: string }) {
-                console.log({ response });
                 refreshAccounts(response.code);
               },
             },
@@ -155,10 +154,8 @@ export default class Settings extends Vue {
   }
 }
 type SettingsKeys =
-  | "edit-profile"
-  | "manage-accounts"
-  | "upgrade-plan"
-  | "change-password";
+  // | "edit-profile"
+  "manage-accounts" | "upgrade-plan" | "change-password";
 </script>
 
 <style scoped lang="scss">
