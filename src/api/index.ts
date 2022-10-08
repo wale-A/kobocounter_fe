@@ -8,11 +8,17 @@ import {
   TransactionResponse,
   Budget,
   BudgetListResponse,
+  UpdatePasswordPayload,
 } from "@/types";
 import { AxiosResponse } from "axios";
 
 const login = (payload: LoginPayload): Promise<AxiosResponse> => {
   return axios.post(`/users/login`, payload);
+};
+const updatePassword = (
+  payload: UpdatePasswordPayload
+): Promise<AxiosResponse> => {
+  return axios.post(`/users/updatePassword`, payload);
 };
 
 const register = (payload: RegisterPayload): Promise<AxiosResponse> =>
@@ -120,4 +126,5 @@ export default {
   getInsights,
   getDetailedInsights,
   getSingleBudget,
+  updatePassword,
 };

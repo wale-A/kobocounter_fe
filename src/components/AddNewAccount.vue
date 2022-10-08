@@ -3,36 +3,55 @@
     <img src="/img/assets/no-accounts.svg" />
     <h3>You have not added any bank accounts</h3>
     <p>Bank accounts you add will be displayed here</p>
-    <form @submit.prevent="addAccount">
+    <form @submit.prevent="addNewAccount">
       <input type="submit" value="Add Bank Account" />
     </form>
   </section>
-  <button class="floating-button" @click="addAccount" title="Add an account">
+  <button class="floating-button" @click="addNewAccount" title="Add an account">
     +
   </button>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { mapActions } from "vuex";
 
 @Options({
   props: {
     hasAccounts: Boolean,
   },
   methods: {
-    addAccount() {
-      const addAccountFn = (code: string) =>
-        this.$store.dispatch("addAccount", { code });
-      const options = {
-        onSuccess: function (response: { code: string }) {
-          addAccountFn(response.code);
-        },
-      };
-      this.$launchMono(options);
-    },
+    // addAccount() {
+    //   const addAccountFn = (code: string) => {
+    //     this.$store.dispatch("addAccount", { code });
+    //     this.$store.dispatch("getAccounts");
+    //   };
+    //   const options = {
+    //     onSuccess: function (response: { code: string }) {
+    //       addAccountFn(response.code);
+    //     },
+    //   };
+    //   this.$launchMono(options);
+    // },
+    ...mapActions(["getAccounts", "addAccount"]),
   },
 })
-export default class AddNewAccount extends Vue {}
+export default class AddNewAccount extends Vue {
+  getAccounts!: () => Promise<void>;
+  addAccount!: ({ code }: { code: string }) => Promise<void>;
+
+  addNewAccount(): void {
+    const addAccountFn = (code: string) =>
+      this.addAccount({ code }).then(() => this.getAccounts());
+
+    const options = {
+      onSuccess: function (response: { code: string }) {
+        addAccountFn(response.code);
+      },
+    };
+    this.$launchMono(options);
+  }
+}
 </script>
 
 <style scoped>

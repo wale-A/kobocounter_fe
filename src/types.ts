@@ -18,6 +18,11 @@ export interface LoginPayload {
   provider?: "google" | "facebook" | undefined;
 }
 
+export interface UpdatePasswordPayload {
+  oldPassword: string;
+  newPassword: string;
+}
+
 export interface RegisterPayload extends LoginPayload {
   name: string;
 }
@@ -42,7 +47,7 @@ export type User = {
 
 export type Account = {
   id: string;
-  status: string;
+  status: "AVAILABLE" | "PROCESSING" | "FAILED";
   accountNumber: string;
   currency: string;
   type: string;

@@ -5,6 +5,7 @@ import Dashboard from "../views/Dashboard.vue";
 import Insights from "../views/Insights.vue";
 import PageNotFound from "../views/PageNotFound.vue";
 import Transactions from "../views/Transactions.vue";
+import Settings from "../views/Settings.vue";
 import store from "../store/index";
 
 const routes: Array<RouteRecordRaw> = [
@@ -91,6 +92,63 @@ const routes: Array<RouteRecordRaw> = [
         path: "/transactions/:id/:action",
         name: "TransactionDetail",
         component: Transactions,
+        meta: {
+          authorize: true,
+          layout: "App",
+        },
+      },
+    ],
+  },
+  {
+    path: "/settings",
+    name: "Settings",
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../components/layout/Route.vue"),
+    meta: {
+      authorize: true,
+      layout: "App",
+    },
+    children: [
+      {
+        path: "",
+        name: "AllSettings",
+        component: Settings,
+        meta: {
+          authorize: true,
+          layout: "App",
+        },
+      },
+      {
+        path: "/settings/edit-profile",
+        name: "EditProfile",
+        component: Settings,
+        meta: {
+          authorize: true,
+          layout: "App",
+        },
+      },
+      {
+        path: "/settings/manage-accounts",
+        name: "ManageAccounts",
+        component: Settings,
+        meta: {
+          authorize: true,
+          layout: "App",
+        },
+      },
+      {
+        path: "/settings/upgrade-plan",
+        name: "UpgradePlan",
+        component: Settings,
+        meta: {
+          authorize: true,
+          layout: "App",
+        },
+      },
+      {
+        path: "/settings/change-password",
+        name: "UpdatePassword",
+        component: Settings,
         meta: {
           authorize: true,
           layout: "App",
