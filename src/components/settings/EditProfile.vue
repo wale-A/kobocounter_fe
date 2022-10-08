@@ -75,8 +75,19 @@ export default class EditProfile extends Vue {
     margin-top: 2em;
   }
   @at-root #{&}__actions {
+    margin-top: 1em;
     input {
-      margin: 1.5em;
+      margin: 1.5em 0;
+    }
+  }
+}
+
+@media (min-width: 1200px) {
+  .edit-profile {
+    @at-root #{&}__actions {
+      input {
+        margin-right: 3em;
+      }
     }
   }
 }

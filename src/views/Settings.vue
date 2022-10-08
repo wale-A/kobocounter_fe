@@ -1,7 +1,7 @@
 <template>
   <Page>
     <div class="page-body">
-      <aside>
+      <aside v-show="!onMobile">
         <ul v-for="key in Object.keys(components)" :key="key">
           <li
             :class="{ link: true, active: key === section }"
@@ -16,6 +16,7 @@
           :is="selectedComponent"
           :accounts="accounts"
           :profile="username"
+          :onMobile="onMobile"
           @editProfile="console.log('editing profile', $event)"
           @cancel.stop=""
           @deleteAccount="deleteExistingAccount($event)"
@@ -57,6 +58,9 @@ import ChangePassword from "@/components/settings/ChangePassword.vue";
       );
     },
     ...mapGetters(["accounts", "username"]),
+    onMobile() {
+      return ["xs", "sm", "md"].includes(this.$grid.breakpoint);
+    },
   },
   created() {
     this.getAccounts();
@@ -80,6 +84,7 @@ export default class Settings extends Vue {
   $reAuthorise!: any;
   //({onSuccess: (response: {code: string}) => any}, token: string) => void;
 
+  onMobile?: boolean;
   accounts?: Account[];
   username?: string;
   section?: string;
@@ -158,14 +163,13 @@ type SettingsKeys =
 
 <style scoped lang="scss">
 .page-body {
-  height: 90%;
+  height: 86%;
   display: flex;
   padding: 2% 1%;
 }
 aside {
   width: fit-content;
   border-right: 1px solid grey;
-  margin-right: 3em;
 
   ul {
     list-style: none;
@@ -182,6 +186,7 @@ aside {
   }
 }
 main {
-  width: 80%;
+  width: 84%;
+  margin: 2% 8%;
 }
 </style>

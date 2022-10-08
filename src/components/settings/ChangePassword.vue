@@ -46,15 +46,22 @@ export default class ChangePassword extends Vue {
 
 <style scoped lang="scss">
 .edit-profile {
-  @at-root #{&}__body {
-    margin-top: 2em;
-  }
-  @at-root #{&}__text {
-    width: 20vw;
-  }
   @at-root #{&}__actions {
     input {
-      margin: 1.5em;
+      margin: 2em 0 0;
+    }
+  }
+}
+form {
+  margin: 2em 0;
+}
+
+@media (min-width: 1200px) {
+  .edit-profile {
+    @at-root #{&}__actions {
+      input {
+        margin: 1.5em;
+      }
     }
   }
 }

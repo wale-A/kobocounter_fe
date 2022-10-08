@@ -1,12 +1,12 @@
 <template>
-  <div class="title"><h3>Bank Accounts</h3></div>
-  <table>
+  <div class="title"><h3>Manage Accounts</h3></div>
+  <table v-if="!onMobile">
     <thead>
       <tr>
         <th>Bank Name</th>
         <th>Account Number</th>
         <th>Currency</th>
-        <th>Type</th>
+        <!-- <th>Type</th> -->
         <th>Balance</th>
         <th>Status</th>
         <th style="padding-left: 3em"></th>
@@ -16,7 +16,7 @@
       <td>{{ account.bankName }}</td>
       <td>{{ account.accountNumber }}</td>
       <td>{{ account.currency }}</td>
-      <td>{{ account.type.replaceAll("_", " ") }}</td>
+      <!-- <td>{{ account.type.replaceAll("_", " ") }}</td> -->
       <td>{{ parseFloat(account.balance.toFixed(2)).toLocaleString() }}</td>
       <td :style="{ color: getAccountTextColor(account.status) }">
         {{ account.status }}
@@ -34,7 +34,7 @@
           v-show="menuKey == account.id"
           >close</span
         >
-        <div v-show="menuKey == account.id" class="menu-dropdown">
+        <div v-if="menuKey == account.id" class="menu-dropdown">
           <a
             href="#"
             class="material-icons input-left-icon trash"
@@ -45,7 +45,7 @@
           <a
             href="#"
             class="material-icons input-left-icon refresh"
-            v-show="account.status == 'FAILED'"
+            v-if="account.status == 'FAILED'"
             style="color: #007cff"
             @click.prevent="$emit('reAuthAccount', account.id)"
           >
@@ -58,6 +58,51 @@
       Bank accounts
     </caption>
   </table>
+
+  <div
+    v-for="account in accounts"
+    :key="account.id"
+    v-else
+    class="account-item"
+  >
+    <main>
+      <strong>{{ account.bankName }}</strong>
+      <span>{{ account.accountNumber }}</span>
+      <span style="font-weight: bold; color: green">{{
+        parseFloat(account.balance.toFixed(2)).toLocaleString()
+      }}</span>
+      <span :style="{ color: getAccountTextColor(account.status) }">
+        {{ account.status }}
+      </span>
+    </main>
+    <aside class="menu">
+      <span
+        @click="toggleMenu(account.id)"
+        class="material-icons input-left-icon"
+        v-if="menuKey != account.id"
+        >menu</span
+      >
+      <span
+        @click="toggleMenu(account.id)"
+        class="material-icons input-left-icon"
+        v-else
+        >close</span
+      >
+      <div v-if="menuKey == account.id" class="menu-dropdown">
+        <a href="#" @click.prevent="$emit('deleteAccount', account.id)">
+          Remove Account
+        </a>
+        <a
+          href="#"
+          style="color: #007cff"
+          v-if="account.status == 'FAILED'"
+          @click.prevent="$emit('reAuthAccount', account.id)"
+        >
+          Reconnect Account
+        </a>
+      </div>
+    </aside>
+  </div>
 
   <AddNewAccount :hasAccounts="!(accounts && accounts?.length == 0)" />
 </template>
@@ -72,6 +117,7 @@ import AddNewAccount from "../AddNewAccount.vue";
   },
   props: {
     accounts: Array,
+    onMobile: Boolean,
   },
   data() {
     return {
@@ -81,6 +127,7 @@ import AddNewAccount from "../AddNewAccount.vue";
 })
 export default class ManageAccounts extends Vue {
   menuKey?: string;
+  onMobile?: boolean;
   accounts: Account[] = [];
 
   getAccountTextColor(status: string): string {
@@ -122,6 +169,42 @@ tr {
   }
   a.trash {
     color: red;
+  }
+}
+
+.account-item {
+  main {
+    span {
+      display: block;
+      font-size: smaller;
+    }
+  }
+}
+
+.title {
+  margin-bottom: 1.5em;
+}
+
+.account-item {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid lightgray;
+  margin-bottom: 1em;
+  padding-bottom: 0.5em;
+
+  aside {
+    .menu-dropdown {
+      width: max-content;
+      padding: 10px;
+      right: 5%;
+      margin-top: 0;
+
+      a {
+        display: block;
+        padding: 0.7em 10px;
+        border-bottom: 1px solid black;
+      }
+    }
   }
 }
 </style>
