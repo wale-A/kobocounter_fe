@@ -1,3 +1,4 @@
+j
 <template>
   <div class="title"><h3>Manage Accounts</h3></div>
   <table v-if="!onMobile">
@@ -6,7 +7,6 @@
         <th>Bank Name</th>
         <th>Account Number</th>
         <th>Currency</th>
-        <!-- <th>Type</th> -->
         <th>Balance</th>
         <th>Status</th>
         <th style="padding-left: 3em"></th>
@@ -16,7 +16,6 @@
       <td>{{ account.bankName }}</td>
       <td>{{ account.accountNumber }}</td>
       <td>{{ account.currency }}</td>
-      <!-- <td>{{ account.type.replaceAll("_", " ") }}</td> -->
       <td>{{ parseFloat(account.balance.toFixed(2)).toLocaleString() }}</td>
       <td :style="{ color: getAccountTextColor(account.status) }">
         {{ account.status }}
@@ -39,6 +38,7 @@
             href="#"
             class="material-icons input-left-icon trash"
             @click.prevent="$emit('deleteAccount', account.id)"
+            title="Remove Account"
           >
             delete
           </a>
@@ -48,6 +48,7 @@
             v-if="account.status == 'FAILED'"
             style="color: #007cff"
             @click.prevent="$emit('reAuthAccount', account.id)"
+            title="Reconnect Account"
           >
             refresh
           </a>
