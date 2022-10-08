@@ -1,7 +1,7 @@
 j
 <template>
   <div class="title"><h3>Manage Accounts</h3></div>
-  <table v-if="!onMobile">
+  <table v-if="!onMobile && accounts.length">
     <thead>
       <tr>
         <th>Bank Name</th>
@@ -63,7 +63,7 @@ j
   <div
     v-for="account in accounts"
     :key="account.id"
-    v-else
+    v-else-if="onMobile && accounts.length"
     class="account-item"
   >
     <main>
@@ -105,7 +105,7 @@ j
     </aside>
   </div>
 
-  <AddNewAccount :hasAccounts="!(accounts && accounts?.length == 0)" />
+  <AddNewAccount :hasAccounts="accounts.length" />
 </template>
 
 <script lang="ts">
