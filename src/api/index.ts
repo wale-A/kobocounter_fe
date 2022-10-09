@@ -24,6 +24,9 @@ const updatePassword = (
 const register = (payload: RegisterPayload): Promise<AxiosResponse> =>
   axios.post(`/users`, payload);
 
+const verifyAccount = (token: string): Promise<AxiosResponse> =>
+  axios.post(`/users/verify`, { token });
+
 const getAccounts = (): Promise<AxiosResponse> =>
   axios.get(`/banking/accounts`);
 
@@ -127,4 +130,5 @@ export default {
   getDetailedInsights,
   getSingleBudget,
   updatePassword,
+  verifyAccount,
 };

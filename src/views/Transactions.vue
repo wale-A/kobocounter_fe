@@ -207,6 +207,7 @@ export default class Transactions extends mixins(FilterMixin) {
         this.$notify({
           text: "Transaction update failed, please retry",
           type: "error",
+          duration: -1,
         });
       });
   }

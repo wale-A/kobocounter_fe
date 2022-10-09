@@ -6,6 +6,7 @@ import Insights from "../views/Insights.vue";
 import PageNotFound from "../views/PageNotFound.vue";
 import Transactions from "../views/Transactions.vue";
 import Settings from "../views/Settings.vue";
+import VerifyAccount from "../views/VerifyAccount.vue";
 import store from "../store/index";
 
 const routes: Array<RouteRecordRaw> = [
@@ -155,6 +156,12 @@ const routes: Array<RouteRecordRaw> = [
         },
       },
     ],
+  },
+  {
+    // /verify-email?token=YnJvbnNlbi50cmV2b25AaWx5ZGVlbi5vcmc6ODVmMTFhYjk=
+    path: "/verify-email",
+    name: "VerifyAccount",
+    component: VerifyAccount,
   },
   {
     path: "/:pathMach(.*)*",

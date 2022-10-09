@@ -136,6 +136,10 @@ export default class Settings extends Vue {
     const refreshAccounts = (code: string) =>
       this.addAccount({ code }).then(() =>
         this.getAccounts().then(() => {
+          this.$notify({
+            text: "Account re-connection was successful",
+            type: "success",
+          });
           this.loading = false;
         })
       );
@@ -159,8 +163,13 @@ export default class Settings extends Vue {
         }
       })
       .catch((e) => {
-        console.error({ e });
         this.loading = false;
+        this.$notify({
+          text: "Unable to reconnect account. Please retry later",
+          type: "error",
+          duration: -1,
+        });
+        console.error({ e });
       });
   }
   updateUserPassword({
