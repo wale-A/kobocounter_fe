@@ -56,6 +56,9 @@ const auth: Module<State, any> = {
     async updatePassword(_, params: UpdatePasswordPayload) {
       await api.updatePassword(params);
     },
+    async verifyAccount(_, token: string) {
+      await api.verifyAccount(token);
+    },
   },
 };
 
