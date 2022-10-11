@@ -21,7 +21,7 @@
         >You have spent
         <strong>N{{ insight.amount.toLocaleString() }}</strong> out of your
         <strong>N{{ (insight.budgetAmount || 0).toLocaleString() }}</strong>
-        budget on groceries for the month</span
+        budget on {{ insight.category }} for the month</span
       >
     </div>
     <div v-if="data" class="insight__history">
@@ -39,6 +39,7 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import BudgetHistory from "@/components/charts/BudgetHistory.vue";
+import { Insights } from "@/types";
 
 @Options({
   components: {
@@ -50,6 +51,7 @@ import BudgetHistory from "@/components/charts/BudgetHistory.vue";
   },
 })
 export default class View extends Vue {
+  insight!: Insights;
   div(num: number, denum: number): number {
     if (!denum) {
       return 0.4;

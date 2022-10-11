@@ -192,6 +192,9 @@ export default class Edit extends Vue {}
     height: 17px;
     margin-right: 7px;
   }
+  @at-root #{&}__field-group {
+    margin-bottom: 20px;
+  }
 
   @at-root #{&}__actions {
     margin-top: 2em;

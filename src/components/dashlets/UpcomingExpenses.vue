@@ -74,8 +74,8 @@ export default class UpcomingExpenses extends Vue {
   }
 
   getDateRange(): string {
-    const minDate = sub(new Date(), { days: 3 });
-    const maxDate = add(new Date(), { days: 3 });
+    const minDate = sub(new Date(), { days: 2 });
+    const maxDate = add(new Date(), { days: 2 });
 
     return ` between ${minDate.getFullYear()}-${(minDate.getMonth() + 1)
       .toString()

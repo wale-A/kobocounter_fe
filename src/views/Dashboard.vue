@@ -103,7 +103,6 @@ import { mapGetters, mapActions } from "vuex";
 import AddNewAccount from "@/components/AddNewAccount.vue";
 import AccountSummary from "@/components/dashlets/AccountSummary.vue";
 import AccountActivity from "@/components/dashlets/AccountActivity.vue";
-// import ExpenseCategory from "@/components/dashlets/ExpenseCategory.vue";
 import RecentCategories from "@/components/dashlets/RecentCategories.vue";
 import BudgetPerformance from "@/components/dashlets/BudgetPerformance.vue";
 import Page from "@/components/layout/Page.vue";
@@ -121,7 +120,6 @@ import UpcomingExpenses from "@/components/dashlets/UpcomingExpenses.vue";
     Filter,
     AccountSummary,
     AccountActivity,
-    // ExpenseCategory,
     RecentCategories,
     BudgetPerformance,
     UpcomingExpenses,

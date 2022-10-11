@@ -238,6 +238,8 @@ export default class Split extends Vue {}
   }
   @at-root #{&}__field-input {
     max-width: 100%;
+    color: unset;
+    padding-left: 1em;
   }
   @at-root #{&}__field-action {
     background: transparent;
@@ -277,11 +279,17 @@ export default class Split extends Vue {}
   padding: 1em;
   width: unset;
   height: unset;
+  cursor: pointer;
 
   @at-root #{&}--primary {
     background: #007cff;
     color: white;
     margin-bottom: 14px;
+  }
+
+  @at-root #{&}--disabled {
+    background: grey !important;
+    cursor: not-allowed;
   }
 }
 </style>

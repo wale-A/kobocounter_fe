@@ -32,17 +32,17 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import EditProfile from "@/components/settings/EditProfile.vue";
 import ManageAccounts from "@/components/settings/ManageAccounts.vue";
 import { mapActions, mapGetters } from "vuex";
 import Page from "@/components/layout/Page.vue";
 import { Account, UpdatePasswordPayload } from "@/types";
 import ChangePassword from "@/components/settings/ChangePassword.vue";
 import Loader from "@/components/layout/Loader.vue";
+import UpgradePlan from "@/components/settings/UpgradePlan.vue";
 
 @Options({
   components: {
-    EditProfile,
+    UpgradePlan,
     ManageAccounts,
     ChangePassword,
     Page,
@@ -96,13 +96,11 @@ export default class Settings extends Vue {
   action = "manage-accounts";
   loading = false;
   components: Record<SettingsKeys, string> = {
-    // "edit-profile": "Edit Profile",
     "manage-accounts": "Manage Accounts",
     "change-password": "Change Password",
     "upgrade-plan": "Upgrade Plan",
   };
   routes: Record<SettingsKeys, string> = {
-    // "edit-profile": "/settings/edit-profile",
     "manage-accounts": "/settings/manage-accounts",
     "upgrade-plan": "/settings/upgrade-plan",
     "change-password": "/settings/change-password",
