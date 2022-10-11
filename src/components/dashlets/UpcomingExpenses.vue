@@ -27,6 +27,9 @@
             {{ getAmount(item.transactions || []) }}
           </td>
         </tr>
+        <tr v-if="!expenses?.length">
+          <td>We are not aware of any upcoming expense for this period.</td>
+        </tr>
       </table>
     </div>
   </Card>
