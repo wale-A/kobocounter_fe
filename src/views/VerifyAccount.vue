@@ -1,15 +1,9 @@
 <template>
   <header>
     <img src="/img/assets/logo.png" alt="logo" class="logo" />
-    <div class="buttons">
-      <router-link :to="{ name: 'Login' }"> Log in </router-link>
-      <router-link :to="{ name: 'Register' }" class="alternate">
-        Sign Up
-      </router-link>
-    </div>
   </header>
   <main>
-    <h2>Attempting to verify account</h2>
+    <h3>Attempting to verify account</h3>
     <Loader v-show="isLoading" />
   </main>
 </template>
@@ -77,35 +71,13 @@ header {
   padding: 0 3em 0 1em;
 }
 
-a {
-  border: 1px solid rgb(0, 124, 255);
-  border-radius: 10px;
-  margin-top: 1.5em;
-  padding: 0.4em 1.5em;
-  font-size: 1em;
-  margin-right: 1.5em;
-}
-a.alternate {
-  background-color: rgb(0, 124, 255);
-  color: white;
-}
-header .buttons {
-  width: 15%;
-}
-header a {
-  font-weight: unset;
-  margin-top: 1em;
-  padding: 0.5em 1em;
-  font-size: 1em;
-  font-weight: 600;
-}
 main {
-  margin: 8% auto;
+  margin: 5% auto;
   text-align: center;
 
   img {
-    top: 20% !important;
-    left: 36% !important;
+    top: 15% !important;
+    left: 30% !important;
   }
 }
 </style>

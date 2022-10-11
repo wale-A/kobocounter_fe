@@ -53,10 +53,9 @@
               :data="budgets"
               class="dashboard__widget dashboard__widget--budget-performance"
             />
-
-            <ExpenseCategory
-              :data="topExpenses"
-              class="dashboard__widget dashboard__widget--acount-top-expenses"
+            <UpcomingExpenses
+              :expenses="recurrentExpenses"
+              class="dashboard__widget dashboard__widget--acount-top-expenses dashboard__widget--acount-top-expenses--mobile"
             />
           </div>
         </div>
@@ -78,8 +77,8 @@
             class="dashboard__widget dashboard__widget--budget-performance dashboard__widget--budget-performance--mobile"
           />
 
-          <ExpenseCategory
-            :data="topExpenses"
+          <UpcomingExpenses
+            :expenses="recurrentExpenses"
             class="dashboard__widget dashboard__widget--acount-top-expenses dashboard__widget--acount-top-expenses--mobile"
           />
           <RecentCategories
@@ -104,7 +103,7 @@ import { mapGetters, mapActions } from "vuex";
 import AddNewAccount from "@/components/AddNewAccount.vue";
 import AccountSummary from "@/components/dashlets/AccountSummary.vue";
 import AccountActivity from "@/components/dashlets/AccountActivity.vue";
-import ExpenseCategory from "@/components/dashlets/ExpenseCategory.vue";
+// import ExpenseCategory from "@/components/dashlets/ExpenseCategory.vue";
 import RecentCategories from "@/components/dashlets/RecentCategories.vue";
 import BudgetPerformance from "@/components/dashlets/BudgetPerformance.vue";
 import Page from "@/components/layout/Page.vue";
@@ -112,6 +111,7 @@ import Loader from "@/components/layout/Loader.vue";
 import Filter from "@/components/common/Filter.vue";
 import { Account, FilterParams } from "@/types";
 import FilterMixin from "@/mixins/Filter";
+import UpcomingExpenses from "@/components/dashlets/UpcomingExpenses.vue";
 
 @Options<Dashboard>({
   components: {
@@ -121,9 +121,10 @@ import FilterMixin from "@/mixins/Filter";
     Filter,
     AccountSummary,
     AccountActivity,
-    ExpenseCategory,
+    // ExpenseCategory,
     RecentCategories,
     BudgetPerformance,
+    UpcomingExpenses,
   },
   computed: {
     ...mapGetters([
@@ -133,7 +134,6 @@ import FilterMixin from "@/mixins/Filter";
       "transactionCategories",
       "accountCreateStatus",
       "recurrentExpenses",
-      "topExpenses",
       "establishmentActivities",
       "revenue",
       "expense",
@@ -151,7 +151,6 @@ import FilterMixin from "@/mixins/Filter";
       "getExpense",
       "getRevenue",
       "getTransactionCategories",
-      "getExpenseCategories",
       "getRecurringExpenses",
       "getEstablishmentActivities",
       "getBudgets",
@@ -206,7 +205,6 @@ export default class Dashboard extends mixins(FilterMixin) {
   getExpense!: (params: FilterParams) => Promise<void>;
   getRevenue!: (params: FilterParams) => Promise<void>;
   getTransactionCategories!: (params: FilterParams) => Promise<void>;
-  getExpenseCategories!: (params: FilterParams) => Promise<void>;
   getRecurringExpenses!: (params: FilterParams) => Promise<void>;
   getEstablishmentActivities!: (params: FilterParams) => Promise<void>;
   getBudgets!: (params: FilterParams) => Promise<void>;
@@ -222,7 +220,6 @@ export default class Dashboard extends mixins(FilterMixin) {
       this.getRecurringExpenses({
         accountId: params.accountId,
       }),
-      this.getExpenseCategories(params),
       this.getEstablishmentActivities(params),
       this.getBudgets(params),
     ]);

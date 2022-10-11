@@ -2,7 +2,9 @@
   <div class="card">
     <div class="card__header">
       <div class="card__title">
-        <p class="card__title-text">{{ title }}</p>
+        <p class="card__title-text">
+          {{ title }} <small>{{ subtitle }}</small>
+        </p>
         <slot name="action" />
       </div>
     </div>
@@ -56,6 +58,11 @@ export default class Card extends Vue {}
     @include for-size(tablet-landscape-up) {
       font-size: 16px;
       line-height: 22px;
+    }
+
+    small {
+      font-size: 12px;
+      font-weight: 400;
     }
   }
 
