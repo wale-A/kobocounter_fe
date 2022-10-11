@@ -8,10 +8,6 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-@Options({
-  props: {
-    title: String,
-  },
-})
+@Options({})
 export default class Loader extends Vue {}
 </script>

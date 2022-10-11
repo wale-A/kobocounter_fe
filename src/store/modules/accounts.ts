@@ -65,46 +65,13 @@ const accounts: Module<State, any> = {
         commit("setAccounts", []);
       }
     },
-    // TODO: cOMPLETE ACCOUNT REAUTH WITH MONO.....NOT A PRIORITY
-    async generateAccountReAuthCode(
-      _,
-      {
-        accountId,
-        callback,
-      }: {
-        accountId: string;
-        callback: (token?: string) => void;
-      }
-    ) {
-      try {
-        const res = await api.reAuthAccount(accountId);
-
-        callback(res.data.token);
-
-        // callback("VwxcfeLRZvq1UlD5WiuN");
-      } catch (e) {
-        console.error(e);
-        // toastr.error("Unable to generate re-authorization token");
-        callback(undefined);
-      }
+    // TODO: cOMPLETE ACCOUNT REAUTH WITH MONO...
+    async generateAccountReAuthCode(_, accountId: string) {
+      const res = await api.reAuthAccount(accountId);
+      return res.data.token;
     },
-    async deleteAccount(
-      _,
-      {
-        accountId,
-        callback,
-      }: {
-        accountId: string;
-        callback: (e: Error | null) => void;
-      }
-    ) {
-      try {
-        await api.deleteAccount(accountId);
-        callback(null);
-      } catch (e) {
-        console.error(e);
-        callback(e as Error);
-      }
+    async deleteAccount(_, accountId: string) {
+      return api.deleteAccount(accountId);
     },
   },
 };

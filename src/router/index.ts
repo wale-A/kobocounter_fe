@@ -6,6 +6,8 @@ import Insights from "../views/Insights.vue";
 import Budgets from "../views/Budgets.vue";
 import PageNotFound from "../views/PageNotFound.vue";
 import Transactions from "../views/Transactions.vue";
+import Settings from "../views/Settings.vue";
+import VerifyAccount from "../views/VerifyAccount.vue";
 import store from "../store/index";
 
 const routes: Array<RouteRecordRaw> = [
@@ -128,6 +130,69 @@ const routes: Array<RouteRecordRaw> = [
         },
       },
     ],
+  },
+  {
+    path: "/settings",
+    name: "Settings",
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../components/layout/Route.vue"),
+    meta: {
+      authorize: true,
+      layout: "App",
+    },
+    children: [
+      {
+        path: "",
+        name: "AllSettings",
+        component: Settings,
+        meta: {
+          authorize: true,
+          layout: "App",
+        },
+      },
+      {
+        path: "/settings/edit-profile",
+        name: "EditProfile",
+        component: Settings,
+        meta: {
+          authorize: true,
+          layout: "App",
+        },
+      },
+      {
+        path: "/settings/manage-accounts",
+        name: "ManageAccounts",
+        component: Settings,
+        meta: {
+          authorize: true,
+          layout: "App",
+        },
+      },
+      {
+        path: "/settings/upgrade-plan",
+        name: "UpgradePlan",
+        component: Settings,
+        meta: {
+          authorize: true,
+          layout: "App",
+        },
+      },
+      {
+        path: "/settings/change-password",
+        name: "UpdatePassword",
+        component: Settings,
+        meta: {
+          authorize: true,
+          layout: "App",
+        },
+      },
+    ],
+  },
+  {
+    // /verify-email?token=YnJvbnNlbi50cmV2b25AaWx5ZGVlbi5vcmc6ODVmMTFhYjk=
+    path: "/verify-email",
+    name: "VerifyAccount",
+    component: VerifyAccount,
   },
   {
     path: "/:pathMach(.*)*",

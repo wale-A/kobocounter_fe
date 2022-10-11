@@ -11,11 +11,19 @@
           <img :src="avatarUrl" alt="avatar" class="user-menu__icon" />
         </button>
         <div v-show="openMenu" class="user-menu__dropdown">
-          <a href="#" class="user-menu__link"> Edit Profile </a>
-          <a href="#" class="user-menu__link"> Manage Account </a>
+          <a href="/settings/edit-profile" class="user-menu__link">
+            Edit Profile
+          </a>
+          <a href="/settings/manage-accounts" class="user-menu__link">
+            Manage Account
+          </a>
           <a href="#" class="user-menu__link"> Notifications </a>
-          <a href="#" class="user-menu__link"> Change Password </a>
-          <a href="#" class="user-menu__link"> Upgrade your Account </a>
+          <a href="/settings/change-password" class="user-menu__link">
+            Change Password
+          </a>
+          <a href="/settings/upgrade-plan" class="user-menu__link">
+            Upgrade your Account
+          </a>
           <a href="#" class="user-menu__link"> Invite Friends </a>
           <a
             href="#"
@@ -75,7 +83,7 @@ export default class Header extends Vue {}
 .salutation {
   @at-root #{&}__title {
     font-family: Nunito Sans;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 800;
     line-height: 33px;
   }

@@ -53,7 +53,6 @@
           />
         </template>
       </Columns>
-      <!-- <AddNewAccount :hasAccounts="!(accounts && accounts?.length == 0)" /> -->
     </div>
   </Page>
 </template>
@@ -154,7 +153,6 @@ export default class Transactions extends mixins(FilterMixin) {
   parentTransaction: Transaction | null | undefined = null;
   childTransactions: Transaction[] | null = null;
   filterFields = transactionFilter;
-
   transactions!: Transaction[];
   categoryOptionsMap!: Record<string, any>;
 
@@ -209,6 +207,7 @@ export default class Transactions extends mixins(FilterMixin) {
         this.$notify({
           text: "Transaction update failed, please retry",
           type: "error",
+          duration: -1,
         });
       });
   }

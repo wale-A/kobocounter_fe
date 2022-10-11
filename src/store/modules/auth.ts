@@ -1,4 +1,4 @@
-import { User } from "@/types";
+import { UpdatePasswordPayload, User } from "@/types";
 import { LoginPayload, RegisterPayload } from "@/types";
 import api from "@/api";
 import { getUser } from "@/util";
@@ -52,6 +52,12 @@ const auth: Module<State, any> = {
     },
     async logout({ commit }) {
       commit("removeUser");
+    },
+    async updatePassword(_, params: UpdatePasswordPayload) {
+      await api.updatePassword(params);
+    },
+    async verifyAccount(_, token: string) {
+      await api.verifyAccount(token);
     },
   },
 };

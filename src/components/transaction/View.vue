@@ -4,7 +4,7 @@
     <div class="transaction__header">
       <button
         class="transaction__nav"
-        @click="$router.push({ name: 'Transactions' })"
+        @click="$router.push({ name: 'TransactionList' })"
       >
         <svg-icon
           :src="require('@/assets/svg/back.svg')"

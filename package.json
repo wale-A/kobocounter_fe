@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "serve": "vue-cli-service serve --mode production",
+    "build": "vue-cli-service build --mode production",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "serve-prod": "serve -s dist",
+    "postinstall": "cd ./node_modules/vue-mono && npm install && npm run dist"
   },
   "dependencies": {
     "@amcharts/amcharts4": "^4.10.20",
@@ -32,7 +34,7 @@
     "vue-class-component": "^8.0.0-0",
     "vue-facebook-login-component-next": "^1.0.4",
     "vue-inline-svg": "^3.1.0",
-    "vue-mono": "^1.1.0",
+    "vue-mono": "https://github.com/wale-A/vue-mono.git",
     "vue-router": "^4.0.0-0",
     "vue-screen": "^2.1.0-beta.1",
     "vuex": "^4.0.0",
@@ -63,6 +65,7 @@
     "prettier": "^2.2.1",
     "sass": "^1.49.9",
     "sass-loader": "^10.2.1",
+    "serve": "^14.0.1",
     "typescript": "~4.1.5",
     "vue-cli-plugin-tailwind": "~2.0.6",
     "vue-jest": "^5.0.0-0"

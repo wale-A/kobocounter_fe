@@ -9,14 +9,24 @@ import {
   Budget,
   BudgetListResponse,
   BudgetPayload,
+  UpdatePasswordPayload,
 } from "@/types";
 import { AxiosResponse } from "axios";
 
-const login = (payload: LoginPayload): Promise<AxiosResponse> =>
-  axios.post(`/users/login`, payload);
+const login = (payload: LoginPayload): Promise<AxiosResponse> => {
+  return axios.post(`/users/login`, payload);
+};
+const updatePassword = (
+  payload: UpdatePasswordPayload
+): Promise<AxiosResponse> => {
+  return axios.post(`/users/updatePassword`, payload);
+};
 
 const register = (payload: RegisterPayload): Promise<AxiosResponse> =>
   axios.post(`/users`, payload);
+
+const verifyAccount = (token: string): Promise<AxiosResponse> =>
+  axios.post(`/users/verify`, { token });
 
 const getAccounts = (): Promise<AxiosResponse> =>
   axios.get(`/banking/accounts`);
@@ -104,6 +114,9 @@ const postBudget = (
   payload: BudgetPayload
 ): Promise<AxiosResponse> => axios.post(`/budgets/${id}`, payload);
 
+const getSingleBudget = (id: string): Promise<AxiosResponse> =>
+  axios.get(`/banking/budgets/${id}`);
+
 export default {
   login,
   register,
@@ -130,4 +143,7 @@ export default {
   deleteBudget,
   getInsights,
   getDetailedInsights,
+  getSingleBudget,
+  updatePassword,
+  verifyAccount,
 };

@@ -28,6 +28,18 @@ export const SIDEBAR_MENU_ITEMS = [
   {
     title: "Transactions",
     icon: {
+      mobile: "/img/assets/n4.png",
+      desktop: "/img/assets/4.png",
+    },
+    medium: {
+      mobile: true,
+      desktop: true,
+    },
+    route: { path: "/Transactions" },
+  },
+  {
+    title: "Budget",
+    icon: {
       mobile: "/img/assets/n3.png",
       desktop: "/img/assets/3.png",
     },
@@ -35,7 +47,7 @@ export const SIDEBAR_MENU_ITEMS = [
       mobile: true,
       desktop: true,
     },
-    route: { path: "/Transactions" },
+    route: { path: "/Budget" },
   },
   {
     title: "Budgets",
