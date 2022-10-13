@@ -15,6 +15,8 @@ type State = {
   transactions: TransactionInfo[];
   pagination: Pagination | undefined;
   transactionCategories: TransactionCategories[];
+  allExpenseCategories: KeyValue;
+  allTransactionCategories: KeyValue;
 };
 
 const transactions: Module<State, any> = {
@@ -22,6 +24,8 @@ const transactions: Module<State, any> = {
     transactions: [],
     transactionCategories: [],
     pagination: undefined,
+    allExpenseCategories: [],
+    allTransactionCategories: [],
   }),
   getters: {
     transactions(state: State) {
@@ -73,6 +77,12 @@ const transactions: Module<State, any> = {
         size: state.pagination.size,
       };
     },
+    allExpenseCategories(state) {
+      return state.allExpenseCategories;
+    },
+    allTransactionCategories(state) {
+      return state.allTransactionCategories;
+    },
   },
   mutations: {
     setTransactions(state, res: TransactionResponse) {
@@ -101,13 +111,27 @@ const transactions: Module<State, any> = {
         const establishment = model.isEstablishment
           ? {
               activities: model.establishmentActivities,
-              name: model.recipientName,
+              name: model.recipientName as string,
             }
           : ({} as Establishment);
-        transaction.displayCategory = model.displayCategory;
-        transaction.recipient = model.recipientName;
-        transaction.establishment = establishment;
+        const displayCategory = state.allTransactionCategories.find(
+          (x) => x.value == model.transactionCategory
+        )?.label;
+        if (displayCategory) {
+          transaction.displayCategory = displayCategory;
+          transaction.recipient = model.recipientName as string;
+          transaction.establishment = establishment;
+          transaction.expenseCategory = state.allExpenseCategories.find(
+            (x) => x.value == model.expenseCategory
+          )?.label;
+        }
       }
+    },
+    setAllExpenseCategories(state: State, expenseCategories: KeyValue) {
+      state.allExpenseCategories = expenseCategories;
+    },
+    setAllTransactionCategories(state: State, transactionCategories: KeyValue) {
+      state.allTransactionCategories = transactionCategories;
     },
   },
   actions: {
@@ -179,7 +203,25 @@ const transactions: Module<State, any> = {
         throw res.data;
       }
     },
+    async getAllExpenseCategories({ commit }) {
+      try {
+        const res = await api.getAllExpenseCategories();
+        commit("setAllExpenseCategories", res.data as KeyValue);
+      } catch (e) {
+        commit("setAllExpenseCategories", []);
+      }
+    },
+    async getAllTransactionCategories({ commit }) {
+      try {
+        const res = await api.getAllTransactionCategories();
+        commit("setAllTransactionCategories", res.data as KeyValue);
+      } catch (e) {
+        commit("setAllTransactionCategories", []);
+      }
+    },
   },
 };
 
 export default transactions;
+
+type KeyValue = { value: number; label: string }[];

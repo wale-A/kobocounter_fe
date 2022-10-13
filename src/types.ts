@@ -55,18 +55,11 @@ export type Account = {
   bankName: string;
 };
 
-export type TransactionModel = {
-  id: string;
-  displayCategory: string;
-  recipientName: string[];
-  isEstablishment: boolean;
-  establishmentActivities: string[];
-};
-
 export type TransactionPayload = {
   id: string;
-  displayCategory: string;
-  recipientName: string;
+  transactionCategory: number;
+  expenseCategory?: number;
+  recipientName: string | string[];
   isEstablishment: boolean;
   establishmentActivities: string[];
 };

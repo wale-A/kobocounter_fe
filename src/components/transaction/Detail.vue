@@ -6,6 +6,8 @@
       :parent="parent"
       :sub="children"
       :establishments="establishments"
+      :allExpenseCategories="allExpenseCategories"
+      :allTransactionCategories="allTransactionCategories"
       @edit="$emit('edit', transaction.id)"
       @split="$emit('split', transaction.id)"
       @select="$emit('select', $event)"
@@ -33,6 +35,14 @@ import Panel from "@/components/layout/Panel.vue";
     parent: Object,
     children: Array,
     establishments: Object,
+    allExpenseCategories: {
+      type: Array,
+      required: true,
+    },
+    allTransactionCategories: {
+      type: Array,
+      required: true,
+    },
   },
   components: {
     Empty,

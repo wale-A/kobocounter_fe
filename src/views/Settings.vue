@@ -48,7 +48,6 @@ import UpgradePlan from "@/components/settings/UpgradePlan.vue";
     Page,
     Loader,
   },
-  //   data() {},
   computed: {
     selectedComponent() {
       return this.components[this.section]?.replace(" ", "");
@@ -131,6 +130,10 @@ export default class Settings extends Vue {
   }
   reAuthAccount(accountId: string): void {
     this.loading = true;
+    const removeLoader = () => {
+      this.loading = false;
+    };
+
     const refreshAccounts = (code: string) =>
       this.addAccount({ code }).then(() =>
         this.getAccounts().then(() => {
@@ -138,7 +141,7 @@ export default class Settings extends Vue {
             text: "Account re-connection was successful",
             type: "success",
           });
-          this.loading = false;
+          removeLoader();
         })
       );
 
@@ -151,8 +154,11 @@ export default class Settings extends Vue {
                 refreshAccounts(response.code);
               },
               onEvent: function (event: string, data: any) {
+                console.log({ event, data });
                 if (event == "ERROR") {
                   throw new Error(data);
+                } else if (event == "OPENED") {
+                  removeLoader();
                 }
               },
             },
@@ -161,7 +167,7 @@ export default class Settings extends Vue {
         }
       })
       .catch((e) => {
-        this.loading = false;
+        removeLoader();
         this.$notify({
           text: "Unable to reconnect account. Please retry later",
           type: "error",
@@ -170,6 +176,7 @@ export default class Settings extends Vue {
         console.error({ e });
       });
   }
+
   updateUserPassword({
     currentPassword,
     newPassword,
@@ -186,6 +193,7 @@ export default class Settings extends Vue {
     );
   }
 }
+
 type SettingsKeys =
   // | "edit-profile"
   "manage-accounts" | "upgrade-plan" | "change-password";

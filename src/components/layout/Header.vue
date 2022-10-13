@@ -24,7 +24,7 @@
           <a href="/settings/upgrade-plan" class="user-menu__link">
             Upgrade your Account
           </a>
-          <a href="#" class="user-menu__link"> Invite Friends </a>
+          <a href="/invite-friends" class="user-menu__link"> Invite Friends </a>
           <a
             href="#"
             class="user-menu__link user-menu__link--red"

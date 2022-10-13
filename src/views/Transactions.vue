@@ -39,6 +39,8 @@
             :children="children"
             :parent="parent"
             :establishments="establishments"
+            :allExpenseCategories="allExpenseCategories"
+            :allTransactionCategories="allTransactionCategories"
             :action="action"
             class="transactions__detail"
             :class="{ 'transactions__detail--desktop': !onMobile }"
@@ -67,7 +69,7 @@ import {
   FilterParams,
   SplitTransaction,
   Transaction,
-  TransactionModel,
+  TransactionPayload,
 } from "@/types";
 import Detail from "@/components/transaction/Detail.vue";
 import List from "@/components/transaction/List.vue";
@@ -94,6 +96,8 @@ import FilterMixin from "@/mixins/Filter";
       "transactionCategories",
       "canLoadMore",
       "nextPageParams",
+      "allExpenseCategories",
+      "allTransactionCategories",
     ]),
     isSingle() {
       return this.$route?.params.id;
@@ -140,6 +144,8 @@ import FilterMixin from "@/mixins/Filter";
       "saveSplitTransactions",
       "getEstablishments",
       "getTransactionCategories",
+      "getAllExpenseCategories",
+      "getAllTransactionCategories",
     ]),
   },
   watch: {
@@ -155,6 +161,7 @@ export default class Transactions extends mixins(FilterMixin) {
   filterFields = transactionFilter;
   transactions!: Transaction[];
   categoryOptionsMap!: Record<string, any>;
+  allTransactionCategories!: Array<{ value: number; label: string }>;
 
   get filterArgs(): Record<string, any> {
     return {
@@ -167,6 +174,8 @@ export default class Transactions extends mixins(FilterMixin) {
   getTransactions!: (params: FilterParams) => Promise<void>;
   getTransactionCategories!: (params: FilterParams) => Promise<void>;
   getEstablishments!: () => Promise<void>;
+  getAllExpenseCategories!: () => Promise<void>;
+  getAllTransactionCategories!: () => Promise<void>;
 
   fetch(params: FilterParams): void {
     Promise.allSettled([
@@ -177,18 +186,19 @@ export default class Transactions extends mixins(FilterMixin) {
     ]);
   }
 
+  fetchTransactionAndExpensesCategories(): void {
+    Promise.allSettled([
+      this.getAllExpenseCategories(),
+      this.getAllTransactionCategories(),
+    ]);
+  }
+
   updateTransaction!: (arg: {
     transactionId: string;
-    model: {
-      id: string;
-      displayCategory: string;
-      recipientName: string;
-      isEstablishment: boolean;
-      establishmentActivities: string[];
-    };
+    model: TransactionPayload;
   }) => Promise<void>;
 
-  editTransaction(model: TransactionModel): void {
+  editTransaction(model: TransactionPayload): void {
     this.updateTransaction({
       transactionId: model.id,
       model: {
@@ -207,7 +217,7 @@ export default class Transactions extends mixins(FilterMixin) {
         this.$notify({
           text: "Transaction update failed, please retry",
           type: "error",
-          duration: -1,
+          duration: 10000,
         });
       });
   }
@@ -254,6 +264,7 @@ export default class Transactions extends mixins(FilterMixin) {
 
   created(): void {
     this.params = this.getModels(this.facets);
+    this.fetchTransactionAndExpensesCategories();
   }
 }
 </script>

@@ -17,7 +17,7 @@ function getHash(input: string) {
   return Math.abs(hash);
 }
 
-const income: Module<State, any> = {
+const insights: Module<State, any> = {
   state: () => ({
     insights: undefined,
     detailedInsights: undefined,
@@ -80,4 +80,4 @@ const income: Module<State, any> = {
   },
 };
 
-export default income;
+export default insights;
