@@ -155,7 +155,7 @@ import FilterMixin from "@/mixins/Filter";
   },
 })
 export default class Transactions extends mixins(FilterMixin) {
-  singleTransaction: Transaction | null | undefined = null;
+  transaction!: Transaction | null | undefined;
   parentTransaction: Transaction | null | undefined = null;
   childTransactions: Transaction[] | null = null;
   filterFields = transactionFilter;
@@ -228,11 +228,11 @@ export default class Transactions extends mixins(FilterMixin) {
   }) => Promise<void>;
 
   splitTransaction(model: SplitTransaction[]): void {
-    if (!this.singleTransaction) {
+    if (!this.transaction) {
       return;
     }
     this.saveSplitTransactions({
-      transactionId: this.singleTransaction.id,
+      transactionId: this.transaction.id,
       payload: model,
     })
       .then(() => {

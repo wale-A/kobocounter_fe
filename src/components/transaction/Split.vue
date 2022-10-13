@@ -38,7 +38,7 @@
           <Multiselect
             v-model="item.expenseCategory"
             :searchable="true"
-            :options="categories"
+            :options="expenseCategories(item.expenseCategory)"
             noResultsText="No result found"
             class="transaction__field-input"
           />
@@ -109,7 +109,6 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import Multiselect from "@vueform/multiselect";
-import { EXPENSE_CATEGORIES } from "@/config";
 import { SplitTransaction, Transaction } from "@/types";
 
 @Options({
@@ -120,6 +119,10 @@ import { SplitTransaction, Transaction } from "@/types";
       required: true,
     },
     sub: {
+      type: Array,
+      required: true,
+    },
+    allExpenseCategories: {
       type: Array,
       required: true,
     },
@@ -138,9 +141,6 @@ import { SplitTransaction, Transaction } from "@/types";
         0
       );
     },
-    categories() {
-      return EXPENSE_CATEGORIES;
-    },
     canSubmit() {
       return (
         this.model.every(
@@ -149,31 +149,54 @@ import { SplitTransaction, Transaction } from "@/types";
       );
     },
   },
-  methods: {
-    add() {
-      this.model.push({
-        expenseCategory: "",
-        amount: null,
-        id: "",
-      });
-    },
-    remove(index: number) {
-      this.model.splice(index, 1);
-    },
-  },
-  created() {
+})
+export default class Split extends Vue {
+  allExpenseCategories!: { value: number; label: string }[];
+  model!: {
+    expenseCategory?: number | null;
+    amount: null | number;
+    id: string;
+  }[];
+  sub!: Transaction[];
+
+  add(): void {
+    this.model.push({
+      expenseCategory: null,
+      amount: null,
+      id: "",
+    });
+  }
+
+  remove(index: number): void {
+    this.model.splice(index, 1);
+  }
+
+  created(): void {
     if (this.sub.length) {
       this.model = this.sub.map((x: Transaction) => {
         return {
-          expenseCategory: x.expenseCategory,
+          expenseCategory: this.allExpenseCategories.find(
+            (y: { value: number; label: string }) =>
+              y.label == x.expenseCategory
+          )?.value,
           amount: Math.abs(x.displayAmount || 0),
           id: x.id,
         };
       });
     }
-  },
-})
-export default class Split extends Vue {}
+  }
+
+  expenseCategories(
+    category?: number | null
+  ): { value: number; label: string }[] {
+    const _ = this.model
+      .filter((x) => x.expenseCategory && x.expenseCategory != category)
+      .map((x) => x.expenseCategory) as number[];
+    return this.allExpenseCategories.filter(
+      (y: { value: number; label: string }) => !_.includes(y.value)
+    );
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -291,5 +314,9 @@ export default class Split extends Vue {}
     background: grey !important;
     cursor: not-allowed;
   }
+}
+
+button {
+  cursor: pointer;
 }
 </style>

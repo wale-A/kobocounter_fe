@@ -11,6 +11,7 @@
     </div>
     <div class="transaction__body">
       <form>
+        <!-- disable if cash transaction -->
         <Field label="Transaction Type:">
           <template #value>
             <Multiselect
@@ -19,9 +20,11 @@
               v-model="model.transactionCategory"
               :options="allTransactionCategories"
               noResultsText="No result found"
+              :disabled="model.transactionCategory == 8"
             />
           </template>
         </Field>
+        <!-- disable if cash transaction -->
         <Field label="Expense Category:"
           ><template #value>
             <Multiselect
@@ -30,6 +33,7 @@
               v-model="model.expenseCategory"
               :options="allExpenseCategories"
               noResultsText="No result found"
+              :disabled="model.transactionCategory == 8"
             />
           </template>
         </Field>
