@@ -16,8 +16,8 @@
             <Multiselect
               :searchable="true"
               placeholder="Transaction category"
-              v-model="model.displayCategory"
-              :options="transactionCategories"
+              v-model="model.transactionCategory"
+              :options="allTransactionCategories"
               noResultsText="No result found"
             />
           </template>
@@ -26,9 +26,9 @@
           ><template #value>
             <Multiselect
               :searchable="true"
-              placeholder="Transaction category"
+              placeholder="Type of expense"
               v-model="model.expenseCategory"
-              :options="expenseCategories"
+              :options="allExpenseCategories"
               noResultsText="No result found"
             />
           </template>
@@ -42,14 +42,16 @@
               type="checkbox"
               :checked="transaction?.establishment?.name"
               v-model="model.isEstablishment"
-              :disabled="!model?.recipientName[0]"
               class="transaction__field-checkbox"
             />
             <span>Was this money paid to a busineess ?</span>
           </label>
         </div>
 
-        <Field label="Recipient:">
+        <Field
+          label="Recipient:"
+          v-show="model.recipientName.length || model.isEstablishment"
+        >
           <template #value>
             <Multiselect
               :searchable="true"
@@ -59,8 +61,8 @@
               :createTag="true"
               mode="tags"
               :max="Number('1')"
-              @tag="$emit('addEstablishment', $event)"
               @change="changedEstablishment"
+              @tag="$emit('addEstablishment', $event)"
             />
           </template>
         </Field>
@@ -89,8 +91,8 @@ import { Options, Vue } from "vue-class-component";
 import Multiselect from "@vueform/multiselect";
 import Header from "./_internal/Header.vue";
 import Field from "./_internal/Field.vue";
-import { TRANSACTION_CATEGORIES, EXPENSE_CATEGORIES } from "@/config";
 import { formatDate, formatTime } from "@/util";
+import { TransactionInfo, TransactionPayload } from "@/types";
 @Options({
   components: { Field, Header, Multiselect },
   props: {
@@ -101,6 +103,14 @@ import { formatDate, formatTime } from "@/util";
     establishments: Object,
     parent: Object,
     sub: Array,
+    allExpenseCategories: {
+      type: Array,
+      required: true,
+    },
+    allTransactionCategories: {
+      type: Array,
+      required: true,
+    },
   },
   data() {
     return {
@@ -109,7 +119,7 @@ import { formatDate, formatTime } from "@/util";
   },
   computed: {
     allEstablishments() {
-      return Object.keys(this.establishments);
+      return Object.keys(this.establishments) || [];
     },
     allActivities() {
       return [
@@ -120,12 +130,6 @@ import { formatDate, formatTime } from "@/util";
             .flat()
         ),
       ];
-    },
-    transactionCategories() {
-      return TRANSACTION_CATEGORIES;
-    },
-    expenseCategories() {
-      return EXPENSE_CATEGORIES;
     },
     date() {
       return formatDate(this.transaction?.date);
@@ -144,10 +148,21 @@ import { formatDate, formatTime } from "@/util";
       this.model.isEstablishment = activities.length > 0;
     },
   },
+})
+export default class Edit extends Vue {
+  allExpenseCategories!: { value: number; label: string }[];
+  allTransactionCategories!: { value: number; label: string }[];
+  transaction!: TransactionInfo;
+  model!: TransactionPayload;
+
   created() {
     this.model = {
       id: this.transaction.id,
-      displayCategory: this.transaction.displayCategory,
+      transactionCategory:
+        this.allTransactionCategories.find(
+          (x: { value: number; label: string }) =>
+            x.label == this.transaction.displayCategory
+        )?.value || 0,
       recipientName: this.transaction?.establishment?.name
         ? [this.transaction?.establishment?.name]
         : this.transaction?.recipient
@@ -156,10 +171,13 @@ import { formatDate, formatTime } from "@/util";
       isEstablishment: !!this.transaction?.establishment?.name,
       establishmentActivities:
         this.transaction?.establishment?.activities || [],
+      expenseCategory: this.allExpenseCategories.find(
+        (x: { value: number; label: string }) =>
+          x.label == this.transaction.expenseCategory
+      )?.value,
     };
-  },
-})
-export default class Edit extends Vue {}
+  }
+}
 </script>
 
 <style lang="scss" scoped>

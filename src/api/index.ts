@@ -105,6 +105,11 @@ const getBudgets = (
 const getSingleBudget = (id: string): Promise<AxiosResponse> =>
   axios.get(`/banking/budgets/${id}`);
 
+const getAllExpenseCategories = (): Promise<AxiosResponse> =>
+  axios.get(`/banking/expenseCategories`);
+const getAllTransactionCategories = (): Promise<AxiosResponse> =>
+  axios.get(`/banking/transactionCategories`);
+
 export default {
   login,
   register,
@@ -131,4 +136,6 @@ export default {
   getSingleBudget,
   updatePassword,
   verifyAccount,
+  getAllExpenseCategories,
+  getAllTransactionCategories,
 };

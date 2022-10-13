@@ -6,6 +6,7 @@ import Insights from "../views/Insights.vue";
 import PageNotFound from "../views/PageNotFound.vue";
 import Transactions from "../views/Transactions.vue";
 import Settings from "../views/Settings.vue";
+import InviteFriends from "../views/InviteFriends.vue";
 import VerifyAccount from "../views/VerifyAccount.vue";
 import store from "../store/index";
 
@@ -35,6 +36,15 @@ const routes: Array<RouteRecordRaw> = [
     path: "/dashboard",
     name: "Dashboard",
     component: Dashboard,
+    meta: {
+      authorize: true,
+      layout: "App",
+    },
+  },
+  {
+    path: "/invite-friends",
+    name: "InviteFriends",
+    component: InviteFriends,
     meta: {
       authorize: true,
       layout: "App",

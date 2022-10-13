@@ -29,10 +29,10 @@
       <hr class="app-menu__divider" />
       <ul class="app-menu__list">
         <li class="app-menu__item">
-          <a href="#" class="app-menu__link">
+          <router-link :to="{ name: 'InviteFriends' }" class="app-menu__link">
             <img src="/img/assets/7.png" class="app-menu__link-icon" />
             <span class="app-menu__link-text">Invite Friends</span>
-          </a>
+          </router-link>
         </li>
       </ul>
     </div>

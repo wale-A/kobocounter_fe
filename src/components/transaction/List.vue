@@ -17,12 +17,12 @@
             >
               <td class="transaction__category">
                 <span class="transaction__category-item">
-                  <!-- <img
+                  <img
                     :alt="`${getCategory(txn)}`"
                     :src="getIcon(txn)"
                     class="transaction__category-icon"
                     onerror="this.style.display='none';"
-                  /> -->
+                  />
                   <span class="transaction__category-name"
                     >{{ getCategory(txn) }}
                   </span>
@@ -93,6 +93,7 @@ import { Transaction } from "@/types";
 })
 export default class List extends Vue {
   active = "";
+  highlight!: string;
 
   selectTransaction(id: string): void {
     this.active = id;
@@ -122,6 +123,12 @@ export default class List extends Vue {
   isPositive(transaction: Transaction): boolean {
     const amount = transaction.amount || transaction.displayAmount || 0;
     return amount > 0;
+  }
+
+  mounted(): void {
+    if (this.highlight) {
+      this.selectTransaction(this.highlight);
+    }
   }
 }
 </script>
