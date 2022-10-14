@@ -80,7 +80,7 @@ import { mapActions } from "vuex";
         .then(() => {
           this.$notify({
             title: "User successfully registered",
-            text: "Please check you mail to verify your account",
+            text: "Please check your mail to verify your account",
             type: "success",
           });
           this.$router.push({ name: "Home" });

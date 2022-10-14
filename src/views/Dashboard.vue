@@ -94,6 +94,8 @@
     </div>
 
     <Loader v-show="!accounts" />
+    <FailedAccountNotification :accounts="accounts" />
+    <NoTransactionNotification :transactionCount="transactions.length" />
   </Page>
 </template>
 
@@ -108,9 +110,11 @@ import BudgetPerformance from "@/components/dashlets/BudgetPerformance.vue";
 import Page from "@/components/layout/Page.vue";
 import Loader from "@/components/layout/Loader.vue";
 import Filter from "@/components/common/Filter.vue";
-import { Account, FilterParams } from "@/types";
+import { Account, FilterParams, TransactionInfo } from "@/types";
 import FilterMixin from "@/mixins/Filter";
 import UpcomingExpenses from "@/components/dashlets/UpcomingExpenses.vue";
+import FailedAccountNotification from "@/components/common/FailedAccountNotification.vue";
+import NoTransactionNotification from "@/components/common/NoTransactionNotification.vue";
 
 @Options<Dashboard>({
   components: {
@@ -123,6 +127,8 @@ import UpcomingExpenses from "@/components/dashlets/UpcomingExpenses.vue";
     RecentCategories,
     BudgetPerformance,
     UpcomingExpenses,
+    FailedAccountNotification,
+    NoTransactionNotification,
   },
   computed: {
     ...mapGetters([
@@ -165,6 +171,7 @@ import UpcomingExpenses from "@/components/dashlets/UpcomingExpenses.vue";
 })
 export default class Dashboard extends mixins(FilterMixin) {
   accounts!: Record<string, any>[];
+  transactions!: TransactionInfo[];
   revenue!: { amount: number }[];
   expense!: { amount: number }[];
 

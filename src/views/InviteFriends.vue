@@ -1,5 +1,5 @@
 <template>
-  <Page :username="username" :avatarUrl="avatarUrl">
+  <Page>
     <div class="page-body">
       <main>
         <p>
@@ -37,21 +37,17 @@
         </div>
       </main>
     </div>
+    <div id="fb-root"></div>
   </Page>
-  <div id="fb-root"></div>
 </template>
 
 <script lang="ts">
 import Page from "@/components/layout/Page.vue";
 import { Options, Vue } from "vue-class-component";
-import { mapGetters } from "vuex";
 
 @Options({
   components: {
     Page,
-  },
-  computed: {
-    ...mapGetters(["username", "avatarUrl"]),
   },
 })
 export default class InviteFriends extends Vue {

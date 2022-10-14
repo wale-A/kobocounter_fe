@@ -27,6 +27,7 @@
     </div>
 
     <Loader v-show="loading" />
+    <FailedAccountNotification :accounts="accounts" />
   </Page>
 </template>
 
@@ -171,7 +172,7 @@ export default class Settings extends Vue {
         this.$notify({
           text: "Unable to reconnect account. Please retry later",
           type: "error",
-          duration: -1,
+          duration: 10000,
         });
         console.error({ e });
       });
