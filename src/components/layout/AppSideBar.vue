@@ -31,9 +31,7 @@
         <li
           :class="{
             'app-menu__item': true,
-            'app-menu__item--active': $route.matched
-              .map((m) => m.name)
-              .includes('InviteFriends'),
+            'app-menu__item--active': $route.name == 'InviteFriends',
           }"
         >
           <router-link :to="{ name: 'InviteFriends' }" class="app-menu__link">

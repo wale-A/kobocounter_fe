@@ -36,6 +36,7 @@ export type FilterParams = {
   page?: number;
   size?: number;
   expenses?: boolean;
+  search?: string;
 };
 
 export type User = {

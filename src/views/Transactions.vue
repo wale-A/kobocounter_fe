@@ -56,7 +56,6 @@
         </template>
       </Columns>
     </div>
-    <NoTransactionNotification :transactionCount="transactions.length" />
   </Page>
 </template>
 
@@ -77,7 +76,6 @@ import List from "@/components/transaction/List.vue";
 import Filter from "@/components/common/Filter.vue";
 import { transactionFilter } from "@/util";
 import FilterMixin from "@/mixins/Filter";
-import NoTransactionNotification from "@/components/common/NoTransactionNotification.vue";
 
 @Options<Transactions>({
   components: {
@@ -87,7 +85,6 @@ import NoTransactionNotification from "@/components/common/NoTransactionNotifica
     List,
     Detail,
     Filter,
-    NoTransactionNotification,
   },
   computed: {
     ...mapGetters([

@@ -155,7 +155,6 @@ export default class Settings extends Vue {
                 refreshAccounts(response.code);
               },
               onEvent: function (event: string, data: any) {
-                console.log({ event, data });
                 if (event == "ERROR") {
                   throw new Error(data);
                 } else if (event == "OPENED") {

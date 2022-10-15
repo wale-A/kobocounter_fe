@@ -7,8 +7,8 @@ import { baseFilter } from "@/util";
 export default class Filter extends Vue {
   params: Record<string, any> = {};
   filterFields: Record<string, any> = baseFilter;
-
   accountOptionsMap!: Record<string, any>;
+
   get filterArgs(): Record<string, any> {
     return {
       account: this.accountOptionsMap,
@@ -36,7 +36,12 @@ export default class Filter extends Vue {
       const bank = this.accountMap[this.params.account]
         ? `${this.accountMap[this.params.account].bankName} Account`
         : "All Bank Accounts";
-      return `Showing ${bank} from ${this.from} to ${this.to}`;
+      const search = this.params.search
+        ? `
+          with transactions containing '${this.params.search}'
+        `
+        : "";
+      return `Showing ${bank} from ${this.from} to ${this.to} ${search}`;
     }
     return "";
   }

@@ -2,7 +2,7 @@
   <header id="menu" class="header">
     <div class="salutation">
       <h1 class="salutation__title">Hi {{ username }}!</h1>
-      <p class="salutation__message">Welcome back!</p>
+      <p class="salutation__message">Welcome back</p>
     </div>
     <div class="actions">
       <slot />
@@ -11,20 +11,22 @@
           <img :src="avatarUrl" alt="avatar" class="user-menu__icon" />
         </button>
         <div v-show="openMenu" class="user-menu__dropdown">
-          <a href="/settings/edit-profile" class="user-menu__link">
+          <router-link :to="{ name: 'EditProfile' }" class="user-menu__link">
             Edit Profile
-          </a>
-          <a href="/settings/manage-accounts" class="user-menu__link">
-            Manage Account
-          </a>
-          <a href="#" class="user-menu__link"> Notifications </a>
-          <a href="/settings/change-password" class="user-menu__link">
-            Change Password
-          </a>
-          <a href="/settings/upgrade-plan" class="user-menu__link">
-            Upgrade your Account
-          </a>
-          <a href="/invite-friends" class="user-menu__link"> Invite Friends </a>
+          </router-link>
+          <router-link :to="{ name: 'ManageAccounts' }" class="user-menu__link">
+            Manage Accounts
+          </router-link>
+          <router-link :to="{ name: 'UpdatePassword' }" class="user-menu__link">
+            Update Password
+          </router-link>
+          <router-link :to="{ name: 'UpgradePlan' }" class="user-menu__link">
+            Upgrade Account
+          </router-link>
+          <router-link :to="{ name: 'InviteFriends' }" class="user-menu__link">
+            Invite Friends
+          </router-link>
+
           <a
             href="#"
             class="user-menu__link user-menu__link--red"
@@ -98,6 +100,7 @@ export default class Header extends Vue {}
 .actions {
   display: flex;
   justify-content: space-between;
+  max-width: 50%;
 }
 
 .user-menu {

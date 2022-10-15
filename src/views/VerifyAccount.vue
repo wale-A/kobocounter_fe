@@ -17,7 +17,6 @@ import Loader from "@/components/layout/Loader.vue";
     Loader,
   },
   mounted() {
-    console.log({ route: this.$route });
     const verificationToken = this.$route.query.token;
     if (!verificationToken) {
       this.$notify({

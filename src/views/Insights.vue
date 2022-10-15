@@ -36,7 +36,6 @@
           <Detail :insight="insight" :data="detailedInsights" /></template
       ></Columns>
     </div>
-    <NoTransactionNotification :transactionCount="insights.length" />
   </Page>
 </template>
 
@@ -51,7 +50,6 @@ import { mapGetters, mapActions } from "vuex";
 import FilterMixin from "@/mixins/Filter";
 import Detail from "@/components/insight/Detail.vue";
 import List from "@/components/insight/List.vue";
-import NoTransactionNotification from "@/components/common/NoTransactionNotification.vue";
 
 @Options<Insights>({
   components: {
@@ -61,7 +59,6 @@ import NoTransactionNotification from "@/components/common/NoTransactionNotifica
     Page,
     Detail,
     List,
-    NoTransactionNotification,
   },
   computed: {
     ...mapGetters(["insights", "budgets", "detailedInsights"]),

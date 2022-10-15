@@ -86,7 +86,7 @@ const transactions: Module<State, any> = {
   },
   mutations: {
     setTransactions(state, res: TransactionResponse) {
-      if (res.meta.page == 1) {
+      if (res.meta.page <= 1) {
         state.transactions = res.data;
       } else {
         state.transactions = state.transactions.concat(res.data);
@@ -137,7 +137,7 @@ const transactions: Module<State, any> = {
   actions: {
     async getTransactions(
       { commit },
-      { accountId, start, end, category, page, size }: FilterParams
+      { accountId, start, end, category, page, size, search }: FilterParams
     ) {
       try {
         const res = await api.getTransactions({
@@ -147,6 +147,7 @@ const transactions: Module<State, any> = {
           category,
           page,
           size,
+          search,
         });
         commit("setTransactions", res.data);
       } catch (e) {

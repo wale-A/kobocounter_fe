@@ -94,8 +94,6 @@
     </div>
 
     <Loader v-show="!accounts" />
-    <FailedAccountNotification :accounts="accounts" />
-    <NoTransactionNotification :transactionCount="transactions.length" />
   </Page>
 </template>
 
@@ -113,8 +111,6 @@ import Filter from "@/components/common/Filter.vue";
 import { Account, FilterParams, TransactionInfo } from "@/types";
 import FilterMixin from "@/mixins/Filter";
 import UpcomingExpenses from "@/components/dashlets/UpcomingExpenses.vue";
-import FailedAccountNotification from "@/components/common/FailedAccountNotification.vue";
-import NoTransactionNotification from "@/components/common/NoTransactionNotification.vue";
 
 @Options<Dashboard>({
   components: {
@@ -127,8 +123,6 @@ import NoTransactionNotification from "@/components/common/NoTransactionNotifica
     RecentCategories,
     BudgetPerformance,
     UpcomingExpenses,
-    FailedAccountNotification,
-    NoTransactionNotification,
   },
   computed: {
     ...mapGetters([

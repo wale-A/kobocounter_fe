@@ -75,12 +75,13 @@ import { subscribeUser } from "@/_helpers/pushNotification";
           }
           this.$router.push({ name: "Dashboard" });
         })
-        .catch(() => {
+        .catch((e: Error) => {
           this.disabled = false;
           this.$notify({
-            text: "Unable to login user",
+            text: e.message,
             title: "Login failed",
             type: "error",
+            duration: -1,
           });
         });
     },
