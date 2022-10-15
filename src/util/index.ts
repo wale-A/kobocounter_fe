@@ -145,6 +145,21 @@ export const PERIOD_FIELD: Record<string, any> = {
   },
 };
 
+export const TRANSACTION_FIELD: Record<string, any> = {
+  key: "search",
+  label: "Search",
+  type: "textarea",
+  placeholder: "Search with narration",
+  modelDefault: "",
+  getParams(model: Record<string, any>) {
+    return {
+      search: model.search || "",
+    };
+  },
+  valueActions: [],
+  options: [],
+};
+
 export const CATEGORIES_FIELD = (
   categories: { value: string; label: string }[]
 ): Record<string, any> => {
@@ -179,4 +194,5 @@ export const baseFilter = {
 export const transactionFilter = {
   ...baseFilter,
   category: CATEGORIES_FIELD,
+  search: TRANSACTION_FIELD,
 };

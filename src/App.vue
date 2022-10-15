@@ -14,11 +14,13 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import { Options, mixins } from "vue-class-component";
 import Layout from "@/layouts/Layout.vue";
 import { deleteSubscription } from "@/_helpers/pushNotification";
 import { mapActions, mapGetters } from "vuex";
 import { deleteUser } from "@/util";
+import FailedAccountMixin from "@/mixins/FailedAccount";
+import NoTransactionMixin from "@/mixins/NoTransaction";
 
 @Options({
   name: "App",
@@ -37,5 +39,8 @@ import { deleteUser } from "@/util";
     },
   },
 })
-export default class App extends Vue {}
+export default class App extends mixins(
+  FailedAccountMixin,
+  NoTransactionMixin
+) {}
 </script>
