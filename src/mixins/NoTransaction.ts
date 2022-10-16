@@ -9,7 +9,7 @@ import { mapGetters } from "vuex";
     transactions(newVal: TransactionInfo[]) {
       if (!newVal.length) {
         this.$notify({
-          text: "You do not have transactions for the selected date period",
+          text: "You do not have transactions for the selected filter values",
           type: "info",
           duration: -1,
         });
