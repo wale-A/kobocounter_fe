@@ -43,9 +43,9 @@
       </table>
       <div v-if="canLoadMore" class="transaction__pager">
         <button
-          :disabled="loadingMore"
           class="transaction__pager-trigger"
           @click="$emit('loadMore')"
+          :disabled="loadingTransactions"
         >
           Load More
         </button>
@@ -80,10 +80,7 @@ import { Transaction } from "@/types";
       type: Boolean,
       required: true,
     },
-    loadingMore: {
-      type: Boolean,
-      default: false,
-    },
+    loadingTransactions: Boolean,
   },
   watch: {
     highlight(newVal) {
@@ -94,6 +91,7 @@ import { Transaction } from "@/types";
 export default class List extends Vue {
   active = "";
   highlight!: string;
+  loadingTransactions?: boolean;
 
   selectTransaction(id: string): void {
     this.active = id;
@@ -216,6 +214,12 @@ export default class List extends Vue {
     &:focus {
       background: #007cff;
       color: white;
+    }
+
+    &:disabled {
+      background: lightgrey;
+      color: #007cff;
+      cursor: not-allowed;
     }
   }
 }

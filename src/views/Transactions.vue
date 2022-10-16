@@ -24,6 +24,7 @@
             :highlight="$route?.params.id"
             :transactions="groupedTransactions"
             :canLoadMore="canLoadMore"
+            :loadingTransactions="loadingTransactions"
             @select="
               $router.push({
                 name: 'TransactionDetail',
@@ -162,6 +163,7 @@ export default class Transactions extends mixins(FilterMixin) {
   transactions!: Transaction[];
   categoryOptionsMap!: Record<string, any>;
   allTransactionCategories!: Array<{ value: number; label: string }>;
+  loadingTransactions = false;
 
   get filterArgs(): Record<string, any> {
     return {
@@ -256,10 +258,11 @@ export default class Transactions extends mixins(FilterMixin) {
   };
 
   loadMore(): void {
+    this.loadingTransactions = true;
     this.getTransactions({
       ...this.getQuery(this.facets, this.params),
       ...this.nextPageParams,
-    });
+    }).finally(() => (this.loadingTransactions = false));
   }
 
   created(): void {

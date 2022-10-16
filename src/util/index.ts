@@ -168,20 +168,21 @@ export const CATEGORIES_FIELD = (
     label: "Category",
     type: "select",
     placeholder: "Select an option",
-    options: [
-      {
-        value: "",
-        label: "All categories",
-      },
-      ...categories,
-    ],
-    defaultValue: "",
-    modelDefault: "",
+    options: [...categories],
+    defaultValue: [],
+    modelDefault: [],
     valueActions: [],
+    multiSelect: true,
     getParams(model: Record<string, any>) {
       return {
-        category: model.category,
+        category:
+          typeof model.category === "number"
+            ? model.category
+            : model.category.join(","),
       };
+    },
+    sanitizeValue(value: number | number[]): number[] {
+      return typeof value === "number" ? [value] : value;
     },
   };
 };

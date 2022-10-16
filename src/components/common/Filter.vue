@@ -23,6 +23,7 @@
               :placeholder="field.placeholder"
               :options="field.options"
               :classes="{ options: 'filter-dropdown' }"
+              :mode="field.multiSelect ? 'multiple' : 'single'"
               class="filter-select"
             />
             <textarea

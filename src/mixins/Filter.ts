@@ -41,7 +41,7 @@ export default class Filter extends Vue {
           with transactions containing '${this.params.search}'
         `
         : "";
-      return `Showing ${bank} from ${this.from} to ${this.to} ${search}`;
+      return `Showing results for ${bank} from ${this.from} to ${this.to} ${search}`;
     }
     return "";
   }
