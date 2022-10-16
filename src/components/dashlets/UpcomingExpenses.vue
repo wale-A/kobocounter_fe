@@ -71,16 +71,20 @@ export default class UpcomingExpenses extends Vue {
 
   getTooltip(exp: RecurrentExpense): string {
     if (exp.transactions?.length) {
-      return exp.transactions
-        .map((x) => {
-          const date = new Date(x.date);
-          return `${date.getFullYear()}-${(date.getMonth() + 1)
-            .toString()
-            .padStart(2, "0")}-${date.getDate()}  --  ${(
-            x.displayAmount || x.amount
-          ).toLocaleString()}`;
-        })
-        .join("<br/>");
+      return (
+        exp.narration +
+        "<br/>" +
+        exp.transactions
+          .map((x) => {
+            const date = new Date(x.date);
+            return `${date.getFullYear()}-${(date.getMonth() + 1)
+              .toString()
+              .padStart(2, "0")}-${date.getDate()}  --  ${(
+              x.displayAmount || x.amount
+            ).toLocaleString()}`;
+          })
+          .join("<br/>")
+      );
     }
 
     return exp.narration;
