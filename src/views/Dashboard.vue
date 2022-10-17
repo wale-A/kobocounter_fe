@@ -293,7 +293,7 @@ export default class Dashboard extends mixins(FilterMixin) {
   }*/
 
   @at-root #{&}__widget--budget-performance {
-    height: 44%;
+    max-height: 44%;
   }
 
   @at-root #{&}__widget--budget-performance--mobile {
@@ -301,7 +301,8 @@ export default class Dashboard extends mixins(FilterMixin) {
   }
 
   @at-root #{&}__widget--acount-top-expenses {
-    max-height: 42.5%;
+    max-height: 40%;
+    overflow: scroll;
   }
 
   /*@at-root #{&}__widget--acount-top-expenses--mobile {
