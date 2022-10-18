@@ -23,8 +23,15 @@
               :placeholder="field.placeholder"
               :options="field.options"
               :classes="{ options: 'filter-dropdown' }"
+              :mode="field.multiSelect ? 'multiple' : 'single'"
               class="filter-select"
             />
+            <textarea
+              v-if="field.type == 'textarea'"
+              v-model="modelValue[field.key]"
+              :placeholder="field.placeholder"
+              class="filter-textarea"
+            ></textarea>
             <span
               v-if="additionalValue[`${field.key}.${modelValue[field.key]}`]"
               class="filter-edit material-icons"
@@ -214,13 +221,18 @@ import RangePicker from "./RangePicker.vue";
         (acc, [key, value]) => {
           const field = this.fieldMap[key].field;
           const valueOption = this.fieldMap[key].options[value as string];
-          return {
-            ...acc,
-            [key]:
-              this.additionalValue[`${field.key}.${valueOption.value}`] ||
-              valueOption.nativeValue ||
-              valueOption.value,
-          };
+
+          if (valueOption) {
+            return {
+              ...acc,
+              [key]:
+                this.additionalValue[`${field.key}.${valueOption.value}`] ||
+                valueOption.nativeValue ||
+                valueOption.value,
+            };
+          } else {
+            return { ...acc, [key]: value };
+          }
         },
         {}
       );
@@ -325,6 +337,14 @@ export default class Filter extends Vue {}
   &-control {
     display: flex;
     align-items: center;
+
+    textarea {
+      border: 1px solid rgb(231, 231, 231);
+      border-radius: 3px;
+      padding: 0.5em 0.8em;
+      width: 100%;
+      font-size: 1em;
+    }
   }
 
   &-select {

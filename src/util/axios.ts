@@ -15,7 +15,7 @@ instance.interceptors.response.use(undefined, (error) => {
   if (response) {
     if ([401, 403].includes(response.status)) {
       return store.dispatch("logout").then(() => deleteUser());
-    } else if (response.startsWith("4")) {
+    } else if (response.status.toString().startsWith("4")) {
       throw new Error(response.data);
     } else {
       return response;

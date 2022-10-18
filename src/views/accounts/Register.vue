@@ -80,17 +80,20 @@ import { mapActions } from "vuex";
         .then(() => {
           this.$notify({
             title: "User successfully registered",
-            text: "Please check you mail to verify your account",
+            text: "Please check your mail to verify your account",
             type: "success",
+            duration: -1,
           });
           this.$router.push({ name: "Home" });
         })
-        .catch(() => {
+        .catch((e: Error) => {
+          console.log({ e });
           this.disabled = false;
           this.$notify({
             title: "Registration failed",
-            text: "Unable to register user",
+            text: e.message,
             type: "error",
+            duration: -1,
           });
         });
     },

@@ -27,28 +27,28 @@
     </div>
 
     <Loader v-show="loading" />
+    <FailedAccountNotification :accounts="accounts" />
   </Page>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import EditProfile from "@/components/settings/EditProfile.vue";
 import ManageAccounts from "@/components/settings/ManageAccounts.vue";
 import { mapActions, mapGetters } from "vuex";
 import Page from "@/components/layout/Page.vue";
 import { Account, UpdatePasswordPayload } from "@/types";
 import ChangePassword from "@/components/settings/ChangePassword.vue";
 import Loader from "@/components/layout/Loader.vue";
+import UpgradePlan from "@/components/settings/UpgradePlan.vue";
 
 @Options({
   components: {
-    EditProfile,
+    UpgradePlan,
     ManageAccounts,
     ChangePassword,
     Page,
     Loader,
   },
-  //   data() {},
   computed: {
     selectedComponent() {
       return this.components[this.section]?.replace(" ", "");
@@ -96,13 +96,11 @@ export default class Settings extends Vue {
   action = "manage-accounts";
   loading = false;
   components: Record<SettingsKeys, string> = {
-    // "edit-profile": "Edit Profile",
     "manage-accounts": "Manage Accounts",
     "change-password": "Change Password",
     "upgrade-plan": "Upgrade Plan",
   };
   routes: Record<SettingsKeys, string> = {
-    // "edit-profile": "/settings/edit-profile",
     "manage-accounts": "/settings/manage-accounts",
     "upgrade-plan": "/settings/upgrade-plan",
     "change-password": "/settings/change-password",
@@ -133,6 +131,10 @@ export default class Settings extends Vue {
   }
   reAuthAccount(accountId: string): void {
     this.loading = true;
+    const removeLoader = () => {
+      this.loading = false;
+    };
+
     const refreshAccounts = (code: string) =>
       this.addAccount({ code }).then(() =>
         this.getAccounts().then(() => {
@@ -140,7 +142,7 @@ export default class Settings extends Vue {
             text: "Account re-connection was successful",
             type: "success",
           });
-          this.loading = false;
+          removeLoader();
         })
       );
 
@@ -155,6 +157,8 @@ export default class Settings extends Vue {
               onEvent: function (event: string, data: any) {
                 if (event == "ERROR") {
                   throw new Error(data);
+                } else if (event == "OPENED") {
+                  removeLoader();
                 }
               },
             },
@@ -163,15 +167,16 @@ export default class Settings extends Vue {
         }
       })
       .catch((e) => {
-        this.loading = false;
+        removeLoader();
         this.$notify({
           text: "Unable to reconnect account. Please retry later",
           type: "error",
-          duration: -1,
+          duration: 10000,
         });
         console.error({ e });
       });
   }
+
   updateUserPassword({
     currentPassword,
     newPassword,
@@ -188,6 +193,7 @@ export default class Settings extends Vue {
     );
   }
 }
+
 type SettingsKeys =
   // | "edit-profile"
   "manage-accounts" | "upgrade-plan" | "change-password";

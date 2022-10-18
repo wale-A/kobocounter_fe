@@ -145,6 +145,21 @@ export const PERIOD_FIELD: Record<string, any> = {
   },
 };
 
+export const TRANSACTION_FIELD: Record<string, any> = {
+  key: "search",
+  label: "Search",
+  type: "textarea",
+  placeholder: "Search with narration",
+  modelDefault: "",
+  getParams(model: Record<string, any>) {
+    return {
+      search: model.search || "",
+    };
+  },
+  valueActions: [],
+  options: [],
+};
+
 export const CATEGORIES_FIELD = (
   categories: { value: string; label: string }[]
 ): Record<string, any> => {
@@ -153,20 +168,21 @@ export const CATEGORIES_FIELD = (
     label: "Category",
     type: "select",
     placeholder: "Select an option",
-    options: [
-      {
-        value: "",
-        label: "All categories",
-      },
-      ...categories,
-    ],
-    defaultValue: "",
-    modelDefault: "",
+    options: [...categories],
+    defaultValue: [],
+    modelDefault: [],
     valueActions: [],
+    multiSelect: true,
     getParams(model: Record<string, any>) {
       return {
-        category: model.category,
+        category:
+          typeof model.category === "number"
+            ? model.category
+            : model.category.join(","),
       };
+    },
+    sanitizeValue(value: number | number[]): number[] {
+      return typeof value === "number" ? [value] : value;
     },
   };
 };
@@ -179,4 +195,5 @@ export const baseFilter = {
 export const transactionFilter = {
   ...baseFilter,
   category: CATEGORIES_FIELD,
+  search: TRANSACTION_FIELD,
 };

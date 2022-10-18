@@ -1,4 +1,3 @@
-j
 <template>
   <div class="title"><h3>Manage Accounts</h3></div>
   <table v-if="!onMobile && accounts.length">

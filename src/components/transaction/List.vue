@@ -17,12 +17,12 @@
             >
               <td class="transaction__category">
                 <span class="transaction__category-item">
-                  <!-- <img
+                  <img
                     :alt="`${getCategory(txn)}`"
                     :src="getIcon(txn)"
                     class="transaction__category-icon"
                     onerror="this.style.display='none';"
-                  /> -->
+                  />
                   <span class="transaction__category-name"
                     >{{ getCategory(txn) }}
                   </span>
@@ -43,9 +43,9 @@
       </table>
       <div v-if="canLoadMore" class="transaction__pager">
         <button
-          :disabled="loadingMore"
           class="transaction__pager-trigger"
           @click="$emit('loadMore')"
+          :disabled="loadingTransactions"
         >
           Load More
         </button>
@@ -80,10 +80,7 @@ import { Transaction } from "@/types";
       type: Boolean,
       required: true,
     },
-    loadingMore: {
-      type: Boolean,
-      default: false,
-    },
+    loadingTransactions: Boolean,
   },
   watch: {
     highlight(newVal) {
@@ -93,6 +90,8 @@ import { Transaction } from "@/types";
 })
 export default class List extends Vue {
   active = "";
+  highlight!: string;
+  loadingTransactions?: boolean;
 
   selectTransaction(id: string): void {
     this.active = id;
@@ -122,6 +121,12 @@ export default class List extends Vue {
   isPositive(transaction: Transaction): boolean {
     const amount = transaction.amount || transaction.displayAmount || 0;
     return amount > 0;
+  }
+
+  mounted(): void {
+    if (this.highlight) {
+      this.selectTransaction(this.highlight);
+    }
   }
 }
 </script>
@@ -209,6 +214,12 @@ export default class List extends Vue {
     &:focus {
       background: #007cff;
       color: white;
+    }
+
+    &:disabled {
+      background: lightgrey;
+      color: #007cff;
+      cursor: not-allowed;
     }
   }
 }

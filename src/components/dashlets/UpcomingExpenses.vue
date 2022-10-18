@@ -1,5 +1,5 @@
 <template>
-  <Card title="Upcoming Expenses" :subtitle="getDateRange()">
+  <Card title="Upcoming Expenses">
     <div class="expense">
       <table class="expense__table">
         <tr class="expense__header">
@@ -17,16 +17,24 @@
           :key="item.narration"
           class="expense__record"
         >
-          <td
-            class="expense__record-item expense__record-item--left"
-            :title="item.narration"
-          >
-            {{ parseNarration(item.narration) }}
+          <td class="expense__record-item expense__record-item--left">
+            <VDropdown :distance="6">
+              <!-- This will be the popover reference (for the events and position) -->
+              <a @click.prevent="() => clickExpense(item)" href="#">
+                {{ parseNarration(item.narration) }}
+              </a>
+
+              <!-- This will be the content of the popover -->
+              <template #popper>
+                <p class="tool-tip" v-html="tooltipText"></p>
+              </template>
+            </VDropdown>
           </td>
           <td class="expense__record-item">
             {{ getAmount(item.transactions || []) }}
           </td>
         </tr>
+
         <tr v-if="!expenses?.length">
           <td>We are not aware of any upcoming expense for this period.</td>
         </tr>
@@ -40,6 +48,7 @@ import { Options, Vue } from "vue-class-component";
 import Card from "@/components/layout/Card.vue";
 import { RecurrentExpense, Transaction } from "@/types";
 import { sub, add } from "date-fns";
+import "floating-vue/dist/style.css";
 
 @Options({
   components: {
@@ -54,6 +63,32 @@ import { sub, add } from "date-fns";
 })
 export default class UpcomingExpenses extends Vue {
   expenses?: RecurrentExpense[];
+  tooltipText?: string;
+
+  clickExpense(exp: RecurrentExpense): void {
+    this.tooltipText = this.getTooltip(exp);
+  }
+
+  getTooltip(exp: RecurrentExpense): string {
+    if (exp.transactions?.length) {
+      return (
+        exp.narration +
+        "<br/>" +
+        exp.transactions
+          .map((x) => {
+            const date = new Date(x.date);
+            return `${date.getFullYear()}-${(date.getMonth() + 1)
+              .toString()
+              .padStart(2, "0")}-${date.getDate()}  --  ${(
+              x.displayAmount || x.amount
+            ).toLocaleString()}`;
+          })
+          .join("<br/>")
+      );
+    }
+
+    return exp.narration;
+  }
 
   parseNarration(narration: string): string {
     const text = narration
@@ -74,8 +109,8 @@ export default class UpcomingExpenses extends Vue {
   }
 
   getDateRange(): string {
-    const minDate = sub(new Date(), { days: 3 });
-    const maxDate = add(new Date(), { days: 3 });
+    const minDate = sub(new Date(), { days: 2 });
+    const maxDate = add(new Date(), { days: 2 });
 
     return ` between ${minDate.getFullYear()}-${(minDate.getMonth() + 1)
       .toString()
@@ -126,5 +161,9 @@ export default class UpcomingExpenses extends Vue {
   @at-root #{&}__record-item--left {
     text-align: left;
   }
+}
+
+.tool-tip {
+  padding: 0.8em;
 }
 </style>

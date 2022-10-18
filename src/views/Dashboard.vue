@@ -103,13 +103,12 @@ import { mapGetters, mapActions } from "vuex";
 import AddNewAccount from "@/components/AddNewAccount.vue";
 import AccountSummary from "@/components/dashlets/AccountSummary.vue";
 import AccountActivity from "@/components/dashlets/AccountActivity.vue";
-// import ExpenseCategory from "@/components/dashlets/ExpenseCategory.vue";
 import RecentCategories from "@/components/dashlets/RecentCategories.vue";
 import BudgetPerformance from "@/components/dashlets/BudgetPerformance.vue";
 import Page from "@/components/layout/Page.vue";
 import Loader from "@/components/layout/Loader.vue";
 import Filter from "@/components/common/Filter.vue";
-import { Account, FilterParams } from "@/types";
+import { Account, FilterParams, TransactionInfo } from "@/types";
 import FilterMixin from "@/mixins/Filter";
 import UpcomingExpenses from "@/components/dashlets/UpcomingExpenses.vue";
 
@@ -121,7 +120,6 @@ import UpcomingExpenses from "@/components/dashlets/UpcomingExpenses.vue";
     Filter,
     AccountSummary,
     AccountActivity,
-    // ExpenseCategory,
     RecentCategories,
     BudgetPerformance,
     UpcomingExpenses,
@@ -167,6 +165,7 @@ import UpcomingExpenses from "@/components/dashlets/UpcomingExpenses.vue";
 })
 export default class Dashboard extends mixins(FilterMixin) {
   accounts!: Record<string, any>[];
+  transactions!: TransactionInfo[];
   revenue!: { amount: number }[];
   expense!: { amount: number }[];
 
@@ -294,7 +293,7 @@ export default class Dashboard extends mixins(FilterMixin) {
   }*/
 
   @at-root #{&}__widget--budget-performance {
-    height: 44%;
+    max-height: 44%;
   }
 
   @at-root #{&}__widget--budget-performance--mobile {
@@ -302,7 +301,8 @@ export default class Dashboard extends mixins(FilterMixin) {
   }
 
   @at-root #{&}__widget--acount-top-expenses {
-    max-height: 42.5%;
+    max-height: 40%;
+    overflow: scroll;
   }
 
   /*@at-root #{&}__widget--acount-top-expenses--mobile {
