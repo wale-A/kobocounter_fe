@@ -7,10 +7,14 @@
     <div class="actions">
       <slot />
       <div class="user-menu">
-        <button class="user-menu__trigger" @click="toggleMenu">
+        <button class="user-menu__trigger" @click="toggleMenu()">
           <img :src="avatarUrl" alt="avatar" class="user-menu__icon" />
         </button>
-        <div v-show="openMenu" class="user-menu__dropdown">
+        <div
+          v-show="openMenu"
+          class="user-menu__dropdown"
+          @click="toggleMenu()"
+        >
           <router-link :to="{ name: 'EditProfile' }" class="user-menu__link">
             Edit Profile
           </router-link>
@@ -49,18 +53,14 @@ import { Options, Vue } from "vue-class-component";
     avatarUrl: String,
     username: String,
   },
-  data() {
-    return {
-      openMenu: false,
-    };
-  },
-  methods: {
-    toggleMenu() {
-      this.openMenu = !this.openMenu;
-    },
-  },
 })
-export default class Header extends Vue {}
+export default class Header extends Vue {
+  openMenu = false;
+
+  toggleMenu(): void {
+    this.openMenu = !this.openMenu;
+  }
+}
 </script>
 
 <style lang="scss" scoped>

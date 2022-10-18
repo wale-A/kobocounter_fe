@@ -19,38 +19,34 @@
       <td :style="{ color: getAccountTextColor(account.status) }">
         {{ account.status }}
       </td>
-      <td class="menu">
+      <td class="menu" @click="toggleMenu(account.id)">
         <span
-          @click="toggleMenu(account.id)"
           class="material-icons input-left-icon"
           v-show="menuKey != account.id"
           >menu</span
         >
         <span
-          @click="toggleMenu(account.id)"
           class="material-icons input-left-icon"
           v-show="menuKey == account.id"
           >close</span
         >
         <div v-if="menuKey == account.id" class="menu-dropdown">
-          <a
-            href="#"
+          <span
             class="material-icons input-left-icon trash"
-            @click.prevent="$emit('deleteAccount', account.id)"
+            @click="$emit('deleteAccount', account.id)"
             title="Remove Account"
           >
             delete
-          </a>
-          <a
-            href="#"
+          </span>
+          <span
             class="material-icons input-left-icon refresh"
             v-if="account.status == 'FAILED'"
             style="color: #007cff"
-            @click.prevent="$emit('reAuthAccount', account.id)"
+            @click="$emit('reAuthAccount', account.id)"
             title="Reconnect Account"
           >
             refresh
-          </a>
+          </span>
         </div>
       </td>
     </tr>
@@ -75,31 +71,22 @@
         {{ account.status }}
       </span>
     </main>
-    <aside class="menu">
-      <span
-        @click="toggleMenu(account.id)"
-        class="material-icons input-left-icon"
-        v-if="menuKey != account.id"
+    <aside class="menu" @click="toggleMenu(account.id)">
+      <span class="material-icons input-left-icon" v-if="menuKey != account.id"
         >menu</span
       >
-      <span
-        @click="toggleMenu(account.id)"
-        class="material-icons input-left-icon"
-        v-else
-        >close</span
-      >
+      <span class="material-icons input-left-icon" v-else>close</span>
       <div v-if="menuKey == account.id" class="menu-dropdown">
-        <a href="#" @click.prevent="$emit('deleteAccount', account.id)">
+        <span click="$emit('deleteAccount', account.id)" class="trash">
           Remove Account
-        </a>
-        <a
-          href="#"
+        </span>
+        <span
           style="color: #007cff"
           v-if="account.status == 'FAILED'"
-          @click.prevent="$emit('reAuthAccount', account.id)"
+          @click="$emit('reAuthAccount', account.id)"
         >
           Reconnect Account
-        </a>
+        </span>
       </div>
     </aside>
   </div>
@@ -165,10 +152,10 @@ tr {
   background: lightgrey;
   right: 10%;
 
-  a {
+  span {
     padding: 5px;
   }
-  a.trash {
+  span.trash {
     color: red;
   }
 }
@@ -200,7 +187,7 @@ tr {
       right: 5%;
       margin-top: 0;
 
-      a {
+      span {
         display: block;
         padding: 0.7em 10px;
         border-bottom: 1px solid black;

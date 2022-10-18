@@ -48,7 +48,7 @@ export default class ChangePassword extends Vue {
 .edit-profile {
   @at-root #{&}__actions {
     input {
-      margin: 2em 0 0;
+      margin: 2em 1em 0;
     }
   }
 }

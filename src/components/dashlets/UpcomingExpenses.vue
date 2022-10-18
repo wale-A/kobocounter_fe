@@ -4,7 +4,7 @@
       <table class="expense__table">
         <tr class="expense__header">
           <th
-            v-for="(title, index) in ['Narration', 'Amount (N)']"
+            v-for="(title, index) in ['Narration', 'Amount (N)', '']"
             :key="title"
             class="expense__header-item"
             :class="{ 'expense__header-item--right': index > 0 }"
@@ -33,10 +33,21 @@
           <td class="expense__record-item">
             {{ getAmount(item.transactions || []) }}
           </td>
+          <td v-if="item.paid">
+            <span
+              class="material-icons input-left-icon trash"
+              title="Paid"
+              style="font-size: 1em; color: #007cff"
+            >
+              check
+            </span>
+          </td>
         </tr>
 
         <tr v-if="!expenses?.length">
-          <td>We are not aware of any upcoming expense for this period.</td>
+          <td colspan="3">
+            We are not aware of any upcoming expense in the next couple of days.
+          </td>
         </tr>
       </table>
     </div>
@@ -77,13 +88,20 @@ export default class UpcomingExpenses extends Vue {
         exp.transactions
           .map((x) => {
             const date = new Date(x.date);
-            return `${date.getFullYear()}-${(date.getMonth() + 1)
+            return `
+              <div class="tooltip-line" style="display: flex; justify-content: space-around;">
+                <span> 
+                  ${date.getFullYear()}-${(date.getMonth() + 1)
               .toString()
-              .padStart(2, "0")}-${date.getDate()}  --  ${(
-              x.displayAmount || x.amount
-            ).toLocaleString()}`;
+              .padStart(2, "0")}-${date.getDate()} 
+              </span> 
+              <span> 
+                  ${(x.displayAmount || x.amount).toLocaleString()} 
+              </span>
+            </div>
+            `;
           })
-          .join("<br/>")
+          .join("")
       );
     }
 
@@ -161,6 +179,10 @@ export default class UpcomingExpenses extends Vue {
   @at-root #{&}__record-item--left {
     text-align: left;
   }
+}
+
+td {
+  padding: unset;
 }
 
 .tool-tip {
