@@ -48,7 +48,7 @@
               v-model="model.isEstablishment"
               class="transaction__field-checkbox"
             />
-            <span>Was this money paid to a busineess ?</span>
+            <span>Check for payment to a business entity </span>
           </label>
         </div>
 
@@ -77,6 +77,7 @@
             value="SAVE"
             class="button button--primary"
             @click.stop="$emit('saveEdit', model)"
+            :disabled="loadingOperation"
           />
           <input
             type="button"
@@ -115,6 +116,7 @@ import { TransactionInfo, TransactionPayload } from "@/types";
       type: Array,
       required: true,
     },
+    loadingOperation: Boolean,
   },
   data() {
     return {

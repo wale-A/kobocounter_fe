@@ -8,6 +8,7 @@
       :establishments="establishments"
       :allExpenseCategories="allExpenseCategories"
       :allTransactionCategories="allTransactionCategories"
+      :loadingOperation="loadingOperation"
       @edit="$emit('edit', transaction.id)"
       @split="$emit('split', transaction.id)"
       @select="$emit('select', $event)"
@@ -43,6 +44,7 @@ import Panel from "@/components/layout/Panel.vue";
       type: Array,
       required: true,
     },
+    loadingOperation: Boolean,
   },
   components: {
     Empty,

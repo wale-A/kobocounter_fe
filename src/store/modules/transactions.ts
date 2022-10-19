@@ -48,12 +48,10 @@ const transactions: Module<State, any> = {
       return state.transactionCategories;
     },
     categoryOptionsMap(_, getters) {
-      return getters.transactionCategories.map(
-        (item: TransactionCategories) => ({
-          value: item.category,
-          label: item.displayCategory,
-        })
-      );
+      return [
+        ...getters.allTransactionCategories,
+        ...getters.allExpenseCategories,
+      ];
     },
     canLoadMore(state: State) {
       if (!state.pagination) {

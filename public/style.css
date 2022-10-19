@@ -1,6 +1,6 @@
 :root {
   --ms-max-height: 15rem;
-  --ms-caret-color: #007CFF;
+  --ms-caret-color: #007cff;
 }
 * {
   margin: 0;
@@ -8,6 +8,11 @@
   box-sizing: border-box;
   font-family: "Nunito Sans";
   scroll-behavior: smooth;
+}
+.button--primary:disabled {
+  background: grey;
+  border: black;
+  cursor: not-allowed;
 }
 .flex {
   display: flex;
