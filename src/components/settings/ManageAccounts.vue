@@ -32,11 +32,11 @@
         >
         <div v-if="menuKey == account.id" class="menu-dropdown">
           <span
-            class="material-icons input-left-icon trash"
+            class="material-icons material-icons-outlined input-left-icon trash"
             @click="$emit('deleteAccount', account.id)"
             title="Remove Account"
           >
-            delete
+            delete_outline
           </span>
           <span
             class="material-icons input-left-icon refresh"

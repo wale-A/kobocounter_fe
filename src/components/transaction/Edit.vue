@@ -48,7 +48,7 @@
               v-model="model.isEstablishment"
               class="transaction__field-checkbox"
             />
-            <span>Check for payment to a business entity </span>
+            <span>Check if payment was to a business entity </span>
           </label>
         </div>
 
@@ -212,7 +212,7 @@ export default class Edit extends Vue {
     align-items: center;
   }
   @at-root #{&}__field-checkbox {
-    width: 17px;
+    width: 17px !important;
     height: 17px;
     margin-right: 7px;
   }

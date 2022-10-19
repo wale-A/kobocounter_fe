@@ -90,15 +90,16 @@ export default class UpcomingExpenses extends Vue {
             const date = new Date(x.date);
             return `
               <div class="tooltip-line" style="display: flex; justify-content: space-around;">
-                <span> 
-                  ${date.getFullYear()}-${(date.getMonth() + 1)
+                  <span> 
+                    ${date.getFullYear()}-${(date.getMonth() + 1)
               .toString()
               .padStart(2, "0")}-${date.getDate()} 
-              </span> 
-              <span> 
-                  ${(x.displayAmount || x.amount).toLocaleString()} 
-              </span>
-            </div>
+                </span>
+                <span> --- </span>
+                <span> 
+                    ${(x.displayAmount || x.amount).toLocaleString()} 
+                </span>
+              </div>
             `;
           })
           .join("")

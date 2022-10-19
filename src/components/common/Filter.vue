@@ -7,9 +7,10 @@
       @click="showFilters = !showFilters"
     >
       <span class="filter__trigger-label">Filters </span>
-      <span class="material-icons input-left-icon filter__trigger-icon">
-        filter_alt
-      </span>
+      <svg-icon
+        :src="require('@/assets/svg/filter_outline.svg')"
+        class="filter__trigger-icon"
+      />
     </button>
     <div v-if="showFilters" class="filter__facets">
       <div class="filter-list">
@@ -22,7 +23,7 @@
               :placeholder="field.placeholder"
               :options="field.options"
               :classes="{ options: 'filter-dropdown' }"
-              :mode="field.multiSelect ? 'multiple' : 'single'"
+              :mode="field.multiSelect ? 'tags' : 'single'"
               class="filter-select"
             />
             <textarea
@@ -291,7 +292,7 @@ export default class Filter extends Vue {}
     display: flex;
     justify-content: space-between;
     margin-right: 24px;
-    padding: 8px 0px 8px 15px;
+    padding: 8px 8px 15px;
   }
 
   @at-root #{&}__trigger--no-shadow {

@@ -158,7 +158,7 @@ export default class Settings extends Vue {
                 if (event == "ERROR") {
                   throw new Error(data);
                 } else if (event == "OPENED") {
-                  removeLoader();
+                  // removeLoader();
                 }
               },
             },
