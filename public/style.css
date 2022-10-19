@@ -14,6 +14,15 @@
   border: black;
   cursor: not-allowed;
 }
+.multiselect-tag {
+  background: #007cff !important;
+}
+.multiselect-option.is-selected {
+  background: #007cff !important;
+}
+.multiselect-tag i:before {
+  color: black !important;
+}
 .flex {
   display: flex;
 }

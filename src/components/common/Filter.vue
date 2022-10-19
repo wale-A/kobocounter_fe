@@ -10,6 +10,7 @@
       <svg-icon
         :src="require('@/assets/svg/filter_outline.svg')"
         class="filter__trigger-icon"
+        style="fill: #007cff"
       />
     </button>
     <div v-if="showFilters" class="filter__facets">
@@ -292,7 +293,7 @@ export default class Filter extends Vue {}
     display: flex;
     justify-content: space-between;
     margin-right: 24px;
-    padding: 8px 8px 15px;
+    padding: 8px 10px;
   }
 
   @at-root #{&}__trigger--no-shadow {
