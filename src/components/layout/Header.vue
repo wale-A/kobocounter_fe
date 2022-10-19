@@ -1,7 +1,7 @@
 <template>
   <header id="menu" class="header">
     <div class="salutation">
-      <h1 class="salutation__title">Hi {{ username }}!</h1>
+      <h1 class="salutation__title">Hi {{ trimmedUsername }}!</h1>
       <p class="salutation__message">Welcome back</p>
     </div>
     <div class="actions">
@@ -52,6 +52,20 @@ import { Options, Vue } from "vue-class-component";
     displayMenu: Boolean,
     avatarUrl: String,
     username: String,
+  },
+  computed: {
+    trimmedUsername() {
+      if (this.username.length < 12) {
+        return this.username;
+      } else {
+        const [first, last] = this.username.split(" ");
+        if (first.length < 12) {
+          return first;
+        } else {
+          return this.username.slice(0, 10) + "..";
+        }
+      }
+    },
   },
 })
 export default class Header extends Vue {
