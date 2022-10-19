@@ -31,10 +31,12 @@ export default class AddNewAccount extends Vue {
   addNewAccount(): void {
     const addAccountFn = (code: string) =>
       this.addAccount({ code }).then(() => this.getAccounts());
+    const accountAdded = () => this.$emit("accountAdded");
 
     const options = {
       onSuccess: function (response: { code: string }) {
         addAccountFn(response.code);
+        accountAdded();
       },
     };
     this.$launchMono(options);

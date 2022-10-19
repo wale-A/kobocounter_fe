@@ -91,7 +91,10 @@
     </aside>
   </div>
 
-  <AddNewAccount :hasAccounts="accounts.length" />
+  <AddNewAccount
+    :hasAccounts="accounts.length"
+    @accountAdded="$emit('accountAdded')"
+  />
 </template>
 
 <script lang="ts">
