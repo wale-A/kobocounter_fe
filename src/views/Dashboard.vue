@@ -90,7 +90,10 @@
           />
         </div>
       </section>
-      <AddNewAccount :hasAccounts="!(accounts && accounts?.length == 0)" />
+      <AddNewAccount
+        :hasAccounts="!(accounts && accounts?.length == 0)"
+        @accountAdded="accountAdded()"
+      />
     </div>
 
     <Loader v-show="!accounts" />
@@ -222,6 +225,10 @@ export default class Dashboard extends mixins(FilterMixin) {
       this.getEstablishmentActivities(params),
       this.getBudgets(params),
     ]);
+  }
+
+  accountAdded(): void {
+    window.location.reload();
   }
 
   created(): void {

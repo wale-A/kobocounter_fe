@@ -159,6 +159,7 @@ export type RecurrentExpense = {
   frequency: number;
   transactionCategory?: string;
   transactions?: Transaction[];
+  paid?: boolean;
 };
 
 // type Subset<T extends U, U> = U;

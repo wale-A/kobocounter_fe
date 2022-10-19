@@ -15,6 +15,7 @@
             }
           "
           :enabled="displayChart === 'wordcloud'"
+          :disabled="!establishmentActivities.length"
           style="font-size: 1.5em"
         >
           chevron_left
@@ -86,9 +87,13 @@ export default class RecentCategories extends Vue {
 .input-left-icon.active {
   color: turquoise;
   cursor: pointer;
+  display: unset;
 }
 .input-left-icon {
-  color: gray;
-  cursor: not-allowed;
+  display: none;
+}
+
+span[disabled="true"] {
+  display: none !important;
 }
 </style>

@@ -6,10 +6,11 @@
       :class="{ 'filter__trigger--no-shadow': !displayText }"
       @click="showFilters = !showFilters"
     >
-      <span class="filter__trigger-label">Filters</span>
+      <span class="filter__trigger-label">Filters </span>
       <svg-icon
-        :src="require('@/assets/svg/filter-icon.svg')"
+        :src="require('@/assets/svg/filter_outline.svg')"
         class="filter__trigger-icon"
+        style="fill: #007cff"
       />
     </button>
     <div v-if="showFilters" class="filter__facets">
@@ -23,7 +24,7 @@
               :placeholder="field.placeholder"
               :options="field.options"
               :classes="{ options: 'filter-dropdown' }"
-              :mode="field.multiSelect ? 'multiple' : 'single'"
+              :mode="field.multiSelect ? 'tags' : 'single'"
               class="filter-select"
             />
             <textarea
@@ -287,12 +288,12 @@ export default class Filter extends Vue {}
     align-items: center;
     background: #ffffff;
     box-shadow: 0px 4px 15px 4px rgba(54, 65, 86, 0.1);
-    border: none;
+    border: 1px solid grey;
     border-radius: 10px;
     display: flex;
     justify-content: space-between;
     margin-right: 24px;
-    padding: 8px 29px 8px 21px;
+    padding: 8px 10px;
   }
 
   @at-root #{&}__trigger--no-shadow {
@@ -309,11 +310,11 @@ export default class Filter extends Vue {}
     font-weight: 400;
     font-size: 14px;
     line-height: 19px;
-    margin-right: 9px;
+    // margin-right: 9px;
     @include for-size(tablet-landscape-up) {
       font-size: 18px;
       line-height: 25px;
-      margin-right: 24px;
+      // margin-right: 24px;
     }
   }
 

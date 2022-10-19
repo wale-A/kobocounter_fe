@@ -119,7 +119,6 @@ export default class Insights extends mixins(FilterMixin) {
 
   created(): void {
     this.params = this.getModels(this.facets);
-    this.fetch(this.getQuery(this.facets, this.params));
   }
 }
 </script>

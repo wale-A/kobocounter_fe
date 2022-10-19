@@ -22,6 +22,7 @@
           @deleteAccount="deleteExistingAccount($event)"
           @reAuthAccount="reAuthAccount($event)"
           @updatePassword="updateUserPassword($event)"
+          @accountAdded="accountAdded()"
         ></component>
       </main>
     </div>
@@ -157,9 +158,9 @@ export default class Settings extends Vue {
               onEvent: function (event: string, data: any) {
                 if (event == "ERROR") {
                   throw new Error(data);
-                } else if (event == "OPENED") {
-                  removeLoader();
                 }
+                // else if (event == "OPENED") {
+                // }
               },
             },
             token
@@ -191,6 +192,10 @@ export default class Settings extends Vue {
         window.location.reload();
       }
     );
+  }
+
+  accountAdded(): void {
+    window.location.reload();
   }
 }
 

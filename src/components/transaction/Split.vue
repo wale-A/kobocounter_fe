@@ -90,7 +90,7 @@
         <input
           type="button"
           value="SUBMIT"
-          :disabled="!canSubmit"
+          :disabled="!canSubmit || loadingOperation"
           class="button button--primary"
           :class="{ 'button--disabled': !canSubmit }"
           @click.stop="$emit('saveSplit', model)"
@@ -126,6 +126,7 @@ import { SplitTransaction, Transaction } from "@/types";
       type: Array,
       required: true,
     },
+    loadingOperation: Boolean,
   },
   data() {
     return {

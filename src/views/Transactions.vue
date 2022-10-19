@@ -24,7 +24,7 @@
             :highlight="$route?.params.id"
             :transactions="groupedTransactions"
             :canLoadMore="canLoadMore"
-            :loadingTransactions="loadingTransactions"
+            :loadingTransactions="loading"
             @select="
               $router.push({
                 name: 'TransactionDetail',
@@ -43,6 +43,7 @@
             :allExpenseCategories="allExpenseCategories"
             :allTransactionCategories="allTransactionCategories"
             :action="action"
+            :loadingOperation="loading"
             class="transactions__detail"
             :class="{ 'transactions__detail--desktop': !onMobile }"
             @select="$router.push(`/transactions/${$event}/view`)"
@@ -57,6 +58,8 @@
         </template>
       </Columns>
     </div>
+
+    <Loader v-show="loading" />
   </Page>
 </template>
 
@@ -66,6 +69,7 @@ import { mapGetters, mapActions } from "vuex";
 import Columns from "@/components/layout/Columns.vue";
 import Page from "@/components/layout/Page.vue";
 import AddNewAccount from "@/components/AddNewAccount.vue";
+import Loader from "@/components/layout/Loader.vue";
 import {
   FilterParams,
   SplitTransaction,
@@ -86,6 +90,7 @@ import FilterMixin from "@/mixins/Filter";
     List,
     Detail,
     Filter,
+    Loader,
   },
   computed: {
     ...mapGetters([
@@ -163,7 +168,7 @@ export default class Transactions extends mixins(FilterMixin) {
   transactions!: Transaction[];
   categoryOptionsMap!: Record<string, any>;
   allTransactionCategories!: Array<{ value: number; label: string }>;
-  loadingTransactions = false;
+  loading = false;
 
   get filterArgs(): Record<string, any> {
     return {
@@ -180,12 +185,13 @@ export default class Transactions extends mixins(FilterMixin) {
   getAllTransactionCategories!: () => Promise<void>;
 
   fetch(params: FilterParams): void {
+    this.loading = true;
     Promise.allSettled([
       this.getAccounts(params),
       this.getTransactions(params),
       this.getEstablishments(),
       this.getTransactionCategories(params),
-    ]);
+    ]).finally(() => (this.loading = false));
   }
 
   fetchTransactionAndExpensesCategories(): void {
@@ -201,6 +207,7 @@ export default class Transactions extends mixins(FilterMixin) {
   }) => Promise<void>;
 
   editTransaction(model: TransactionPayload): void {
+    this.loading = true;
     this.updateTransaction({
       transactionId: model.id,
       model: {
@@ -221,7 +228,8 @@ export default class Transactions extends mixins(FilterMixin) {
           type: "error",
           duration: 10000,
         });
-      });
+      })
+      .finally(() => (this.loading = false));
   }
 
   saveSplitTransactions!: (arg: {
@@ -233,6 +241,7 @@ export default class Transactions extends mixins(FilterMixin) {
     if (!this.transaction) {
       return;
     }
+    this.loading = true;
     this.saveSplitTransactions({
       transactionId: this.transaction.id,
       payload: model,
@@ -249,7 +258,8 @@ export default class Transactions extends mixins(FilterMixin) {
           text: "Transaction split failed, please retry",
           type: "error",
         });
-      });
+      })
+      .finally(() => (this.loading = false));
   }
 
   nextPageParams!: {
@@ -258,11 +268,11 @@ export default class Transactions extends mixins(FilterMixin) {
   };
 
   loadMore(): void {
-    this.loadingTransactions = true;
+    this.loading = true;
     this.getTransactions({
       ...this.getQuery(this.facets, this.params),
       ...this.nextPageParams,
-    }).finally(() => (this.loadingTransactions = false));
+    }).finally(() => (this.loading = false));
   }
 
   created(): void {

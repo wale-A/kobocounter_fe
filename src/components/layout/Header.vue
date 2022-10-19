@@ -1,16 +1,20 @@
 <template>
   <header id="menu" class="header">
     <div class="salutation">
-      <h1 class="salutation__title">Hi {{ username }}!</h1>
+      <h1 class="salutation__title">Hi {{ trimmedUsername }}!</h1>
       <p class="salutation__message">Welcome back</p>
     </div>
     <div class="actions">
       <slot />
       <div class="user-menu">
-        <button class="user-menu__trigger" @click="toggleMenu">
+        <button class="user-menu__trigger" @click="toggleMenu()">
           <img :src="avatarUrl" alt="avatar" class="user-menu__icon" />
         </button>
-        <div v-show="openMenu" class="user-menu__dropdown">
+        <div
+          v-show="openMenu"
+          class="user-menu__dropdown"
+          @click="toggleMenu()"
+        >
           <router-link :to="{ name: 'EditProfile' }" class="user-menu__link">
             Edit Profile
           </router-link>
@@ -49,18 +53,28 @@ import { Options, Vue } from "vue-class-component";
     avatarUrl: String,
     username: String,
   },
-  data() {
-    return {
-      openMenu: false,
-    };
-  },
-  methods: {
-    toggleMenu() {
-      this.openMenu = !this.openMenu;
+  computed: {
+    trimmedUsername() {
+      if (this.username.length < 12) {
+        return this.username;
+      } else {
+        const [first, last] = this.username.split(" ");
+        if (first.length < 12) {
+          return first;
+        } else {
+          return this.username.slice(0, 10) + "..";
+        }
+      }
     },
   },
 })
-export default class Header extends Vue {}
+export default class Header extends Vue {
+  openMenu = false;
+
+  toggleMenu(): void {
+    this.openMenu = !this.openMenu;
+  }
+}
 </script>
 
 <style lang="scss" scoped>
