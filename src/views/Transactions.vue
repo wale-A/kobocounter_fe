@@ -58,9 +58,9 @@
         </template>
       </Columns>
     </div>
-  </Page>
 
-  <Loader v-show="loading" />
+    <Loader v-show="loading" />
+  </Page>
 </template>
 
 <script lang="ts">
@@ -277,6 +277,7 @@ export default class Transactions extends mixins(FilterMixin) {
 
   created(): void {
     this.params = this.getModels(this.facets);
+    this.fetchTransactionAndExpensesCategories();
   }
 }
 </script>
