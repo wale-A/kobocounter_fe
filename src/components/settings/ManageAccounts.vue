@@ -77,7 +77,7 @@
       >
       <span class="material-icons input-left-icon" v-else>close</span>
       <div v-if="menuKey == account.id" class="menu-dropdown">
-        <span click="$emit('deleteAccount', account.id)" class="trash">
+        <span @click="$emit('deleteAccount', account.id)" class="trash">
           Remove Account
         </span>
         <span
