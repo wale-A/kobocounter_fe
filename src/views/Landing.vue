@@ -125,36 +125,18 @@
         <h3>01</h3>
         <p>
           <b>Sign up for free</b>
-          <br />
-          Lorem ipsum dolor sit amet, consectetur
-          <br />
-          adipisicing elit, sed do eiusmod tempor
-          <br />
-          incididunt ut labore et dolore magna aliqua.
         </p>
       </div>
       <div>
         <h3>02</h3>
         <p>
           <b>Add a bank account</b>
-          <br />
-          Lorem ipsum dolor sit amet, consectetur
-          <br />
-          adipisicing elit, sed do eiusmod tempor
-          <br />
-          incididunt ut labore et dolore magna aliqua.
         </p>
       </div>
       <div>
         <h3>03</h3>
         <p>
           <b>See your financial report</b>
-          <br />
-          Lorem ipsum dolor sit amet, consectetur
-          <br />
-          adipisicing elit, sed do eiusmod tempor
-          <br />
-          incididunt ut labore et dolore magna aliqua.
         </p>
       </div>
     </div>
