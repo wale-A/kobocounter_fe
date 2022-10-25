@@ -39,8 +39,19 @@
         title="You have not created a budget"
         subtext="You will see a list of your budgets on this page once they are created"
         buttonLabel="Create Budget"
+        @action="add = true"
       />
     </div>
+    <Set
+      v-if="add"
+      :action="add"
+      :categories="categories"
+      :budget="model"
+      @cancel="add = false"
+      @review="review($event)"
+      @save="save($event)"
+    />
+    <Modal v-if="showModal" @action="showModal = false" />
   </Page>
 </template>
 
@@ -49,12 +60,15 @@ import { Options, mixins } from "vue-class-component";
 import Columns from "@/components/layout/Columns.vue";
 import Page from "@/components/layout/Page.vue";
 import Filter from "@/components/common/Filter.vue";
-import { FilterParams, BudgetListItem, Budget } from "@/types";
+import { FilterParams, BudgetListItem, Budget, BudgetPayload } from "@/types";
 import { mapGetters, mapActions } from "vuex";
+import { budgetFilter } from "@/util";
 import FilterMixin from "@/mixins/Filter";
 import Detail from "@/components/budget/Detail.vue";
 import List from "@/components/budget/List.vue";
+import Set from "@/components/budget/Set.vue";
 import CTA from "@/components/common/CTA.vue";
+import Modal from "@/components/common/Modal.vue";
 
 @Options<Budgets>({
   components: {
@@ -64,9 +78,11 @@ import CTA from "@/components/common/CTA.vue";
     Detail,
     List,
     CTA,
+    Set,
+    Modal,
   },
   computed: {
-    ...mapGetters(["budget", "budgets"]),
+    ...mapGetters(["budget", "budgets", "categoryOptionsMap"]),
     isSingle() {
       return !!this.$route?.params.id;
     },
@@ -84,6 +100,7 @@ import CTA from "@/components/common/CTA.vue";
       "getBudget",
       "postBudget",
       "deleteBudget",
+      "getAllExpenseCategories",
     ]),
   },
   watch: {
@@ -99,13 +116,66 @@ import CTA from "@/components/common/CTA.vue";
 export default class Budgets extends mixins(FilterMixin) {
   budgets!: BudgetListItem[] | undefined;
   budget!: Budget | undefined;
+  filterFields = budgetFilter;
+  categoryOptionsMap!: Record<string, any>;
+  add = false;
+  loading = false;
+  action = "add";
+  model: BudgetPayload | null = null;
+  showModal = false;
 
-  getAccounts!: (params: FilterParams) => Promise<void>;
+  get filterArgs(): Record<string, any> {
+    return {
+      category: this.categoryOptionsMap,
+    };
+  }
+
+  get paramSummary(): string {
+    if (this.params) {
+      const categorySuffix = this.params.category
+        ? `
+          for '${this.params.category}'
+        `
+        : "";
+      return `Showing budgets from ${this.from} to ${this.to} ${categorySuffix}`;
+    }
+    return "";
+  }
+
+  getAllExpenseCategories!: () => Promise<void>;
   getBudgets!: (params: FilterParams) => Promise<void>;
   getBudget!: (id: string) => Promise<void>;
+  postBudget!: (payload: BudgetPayload) => Promise<void>;
+
+  review(model: BudgetPayload): void {
+    this.model = model;
+    this.action = "review";
+  }
+
+  save(model: BudgetPayload): void {
+    if (!this.model) {
+      return;
+    }
+    this.loading = true;
+    this.postBudget(model)
+      .then(() => {
+        this.add = false;
+        this.showModal = false;
+      })
+      .catch(() => {
+        this.$notify({
+          text: "Creating budget failed, please retry again",
+          type: "error",
+        });
+      })
+      .finally(() => (this.loading = false));
+  }
 
   fetch(params: FilterParams): void {
-    Promise.allSettled([this.getAccounts(params), this.getBudgets(params)]);
+    Promise.allSettled([
+      this.getAllExpenseCategories(),
+      this.getBudgets(params),
+    ]);
   }
 
   created(): void {

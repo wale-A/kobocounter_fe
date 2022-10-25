@@ -177,6 +177,21 @@ export default class Transactions extends mixins(FilterMixin) {
     };
   }
 
+  get paramSummary(): string {
+    if (this.params) {
+      const bank = this.accountMap[this.params.account]
+        ? `${this.accountMap[this.params.account].bankName} Account`
+        : "All Bank Accounts";
+      const search = this.params.search
+        ? `
+          with transactions containing '${this.params.search}'
+        `
+        : "";
+      return `Showing results for ${bank} from ${this.from} to ${this.to} ${search}`;
+    }
+    return "";
+  }
+
   getAccounts!: (params: FilterParams) => Promise<void>;
   getTransactions!: (params: FilterParams) => Promise<void>;
   getTransactionCategories!: (params: FilterParams) => Promise<void>;

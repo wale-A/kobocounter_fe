@@ -197,3 +197,8 @@ export const transactionFilter = {
   category: CATEGORIES_FIELD,
   search: TRANSACTION_FIELD,
 };
+
+export const budgetFilter = {
+  period: PERIOD_FIELD,
+  category: CATEGORIES_FIELD,
+};

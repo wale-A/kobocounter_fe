@@ -109,10 +109,8 @@ const getBudget = (id: string): Promise<AxiosResponse<Budget>> =>
 const deleteBudget = (id: string): Promise<AxiosResponse> =>
   axios.delete(`/budgets/${id}`);
 
-const postBudget = (
-  id: string,
-  payload: BudgetPayload
-): Promise<AxiosResponse> => axios.post(`/budgets/${id}`, payload);
+const postBudget = (payload: BudgetPayload): Promise<AxiosResponse> =>
+  axios.post(`/budgets`, payload);
 
 const getSingleBudget = (id: string): Promise<AxiosResponse> =>
   axios.get(`/banking/budgets/${id}`);

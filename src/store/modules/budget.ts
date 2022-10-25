@@ -66,14 +66,12 @@ const budgets: Module<State, any> = {
     async postBudget(
       _,
       {
-        id,
         payload,
       }: {
-        id: string;
         payload: BudgetPayload;
       }
     ) {
-      const res = await api.postBudget(id, payload);
+      const res = await api.postBudget(payload);
       return res;
     },
     async deleteBudget(_, id: string) {
