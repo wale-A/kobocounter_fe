@@ -42,10 +42,10 @@
         @action="add = true"
       />
     </div>
-    <Set
+    <Create
       v-if="add"
-      :action="add"
-      :categories="categories"
+      :action="action"
+      :categories="categoryOptionsMap"
       :budget="model"
       @cancel="add = false"
       @review="review($event)"
@@ -66,7 +66,7 @@ import { budgetFilter } from "@/util";
 import FilterMixin from "@/mixins/Filter";
 import Detail from "@/components/budget/Detail.vue";
 import List from "@/components/budget/List.vue";
-import Set from "@/components/budget/Set.vue";
+import Create from "@/components/budget/Create.vue";
 import CTA from "@/components/common/CTA.vue";
 import Modal from "@/components/common/Modal.vue";
 
@@ -78,7 +78,7 @@ import Modal from "@/components/common/Modal.vue";
     Detail,
     List,
     CTA,
-    Set,
+    Create,
     Modal,
   },
   computed: {

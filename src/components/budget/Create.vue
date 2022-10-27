@@ -41,12 +41,21 @@ import Review from "./_internal/Review.vue";
     components() {
       return {
         add: "Add",
-        Review: "Review",
+        review: "Review",
       };
     },
   },
 })
-export default class Set extends Vue {}
+export default class Create extends Vue {
+  components!: Record<string, string>;
+  action!: string;
+  categories!: Array<any>;
+  budget!: any;
+
+  created(): void {
+    console.log(this.action, this.categories, this.budget);
+  }
+}
 </script>
 
 <style src="@vueform/multiselect/themes/default.css"></style>

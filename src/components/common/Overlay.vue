@@ -1,6 +1,6 @@
 <template>
   <div class="overlay" @click="$emit('close-modal')">
-    <slot />
+    <slot></slot>
   </div>
 </template>
 
@@ -27,6 +27,7 @@ export default class Overlay extends Vue {}
   bottom: 0;
   left: 0;
   right: 0;
+  z-index: 5000;
   display: flex;
   justify-content: center;
   align-items: center;

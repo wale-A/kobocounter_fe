@@ -8,7 +8,7 @@
             class="budget__nav-icon"
           />
         </button>
-        <span class="budget__title">Create a new budget</span>
+        <span class="budget__title-text">Create a new budget</span>
       </h1>
       <p class="budget__subtitle">Choose a date for your budget</p>
     </div>
@@ -108,7 +108,7 @@ import { Options, Vue } from "vue-class-component";
 import Multiselect from "@vueform/multiselect";
 import Datepicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
-import { SplitTransaction, Transaction } from "@/types";
+import { Transaction } from "@/types";
 
 type categoryType = { value: number; label: string };
 @Options({
@@ -131,18 +131,15 @@ type categoryType = { value: number; label: string };
   computed: {
     availableCategories() {
       const activeCategories = this.model.items.map(
-        (item: categoryType) => item.value
+        (item: { value: number; category: string }) => item.category
       );
+      console.log({ activeCategories });
       return this.categories.filter(
         (category: categoryType) => !activeCategories.includes(category.value)
       );
     },
     canSubmit() {
-      return (
-        this.model.every(
-          (x: SplitTransaction) => x.expenseCategory && x.amount
-        ) && this.splitTransactionTotal <= Math.abs(this.transaction.amount)
-      );
+      return true;
     },
   },
 })
@@ -173,8 +170,15 @@ export default class Add extends Vue {
 
 <style lang="scss" scoped>
 .budget {
+  background: #ffffff;
+  box-shadow: 0px 2px 5px rgba(54, 65, 86, 0.05);
+  border-radius: 5px;
+  padding: 20px 30px 30px;
+  max-width: 500px;
+
   @at-root #{&}__header {
     display: flex;
+    flex-direction: column;
     align-items: center;
     margin-bottom: 30px;
   }
@@ -188,6 +192,7 @@ export default class Add extends Vue {
     font-weight: 700;
     font-size: 18px;
     line-height: 25px;
+    margin-bottom: 20px;
   }
   @at-root #{&}__sub-header {
     margin-bottom: 10px;

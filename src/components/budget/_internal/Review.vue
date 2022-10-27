@@ -1,8 +1,8 @@
 <template>
-  <div class="budget">
-    <div class="budget__header">
-      <h2 class="budget__title">
-        <button class="budget__nav" @click="$router.push({ path: '/Budgets' })">
+  <div class="review">
+    <div class="review__header">
+      <h2 class="review__title">
+        <button class="review__nav" @click="$router.push({ path: '/Budgets' })">
           <svg-icon
             :src="require('@/assets/svg/back.svg')"
             class="filter__trigger-icon"
@@ -10,9 +10,9 @@
         </button>
         <span>Review your budget</span>
       </h2>
-      <p class="budget__subtitle">Budget cannot be edited once activated</p>
+      <p class="review__subtitle">Budget cannot be edited once activated</p>
     </div>
-    <div class="budget__detail">
+    <div class="review__detail">
       <Field label="Total Budget Amount" :value="total" orientation="row" />
       <Field label="Start Date" :value="budget.startDate" orientation="row" />
       <Field label="End Date" :value="budget.endDate" orientation="row" />
@@ -22,18 +22,18 @@
     </div>
     <div
       v-if="budget.items && budget.items.length > 0"
-      class="budget__category"
+      class="review__category"
     >
-      <h3 class="budget__category-title">Budget Categories</h3>
+      <h3 class="review__category-title">Budget Categories</h3>
       <Field
         v-for="item in budget.items"
         :key="item.category"
-        :label="item.category"
+        :label="getCategoryName(item.category)"
         :value="item.value"
         orientation="row"
       />
     </div>
-    <div class="budget__actions">
+    <div class="review__actions">
       <input
         type="button"
         value="Activate Budget"
@@ -62,6 +62,10 @@ type categoryType = { value: number; label: string };
   },
   props: {
     budget: Object,
+    categories: {
+      type: Array,
+      required: true,
+    },
   },
   computed: {
     total() {
@@ -74,12 +78,24 @@ type categoryType = { value: number; label: string };
     },
   },
 })
-export default class Review extends Vue {}
+export default class Review extends Vue {
+  categories!: Array<categoryType>;
+
+  getCategoryName(id: number): string {
+    return this.categories.find((item) => item.value == id)?.label || "";
+  }
+}
 </script>
 
 <style lang="scss" scoped>
 @import "@/styles/mixins.scss";
-.budget {
+.review {
+  background: #ffffff;
+  box-shadow: 0px 2px 5px rgba(54, 65, 86, 0.05);
+  border-radius: 5px;
+  padding: 20px 30px 30px;
+  max-width: 500px;
+
   @at-root #{&}__header {
     display: flex;
     flex-direction: column;
