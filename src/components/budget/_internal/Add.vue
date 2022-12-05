@@ -10,26 +10,38 @@
         </button>
         <span class="budget__title-text">Create a new budget</span>
       </h1>
-      <p class="budget__subtitle">Choose a date for your budget</p>
     </div>
     <form class="budget__form">
-      <div>
+      <div class="budget__section">
+        <p class="budget__section-description">Choose a date for your budget</p>
         <div class="budget__field-group">
           <div class="budget__field-group-item">
-            <label class="budget__field-label">From</label>
-            <Datepicker v-model="model.startDate" class="budget__field-input" />
+            <div class="budget__field-control">
+              <label class="budget__field-label">From</label>
+              <Datepicker
+                v-model="model.startDate"
+                :format="format"
+                :auto-position="false"
+                auto-apply
+                hide-input-icon
+                class="budget__field-input"
+              />
+            </div>
           </div>
           <div class="budget__field-group-item">
-            <label class="budget__field-label">To</label>
-            <input
-              v-model="model.endDate"
-              type="text"
-              class="budget__field-input"
-            />
+            <div class="budget__field-control">
+              <label class="budget__field-label">To</label>
+              <input
+                :value="format(model.endDate)"
+                type="text"
+                class="budget__field-input"
+                readonly
+              />
+            </div>
           </div>
         </div>
         <div class="budget__field-group">
-          <label for="reuse" class="budget__field">
+          <label for="reuse" class="budget__field-row">
             <input
               id="reuse"
               name="reuse"
@@ -44,39 +56,46 @@
           </label>
         </div>
       </div>
-      <div
-        class="budget__field-group"
-        v-for="(item, index) in model.items"
-        :key="index"
-      >
-        <div class="budget__field-group-item">
-          <label class="budget__field-label">Choose category</label>
-          <Multiselect
-            v-model="item.category"
-            :searchable="true"
-            :options="availableCategories"
-            noResultsText="No result found"
-            class="budget__field-input"
-          />
-        </div>
-        <div class="budget__field-group-item">
-          <label class="budget__field-label">Enter Amount</label>
-          <input
-            v-model="item.value"
-            type="number"
-            class="budget__field-input"
-            min="0"
-          />
-          <button
-            v-if="index > 0"
-            class="budget__field-action"
-            @click.stop="remove(index)"
-          >
-            <svg-icon
-              :src="require('@/assets/svg/del.svg')"
-              class="budget__input-icon"
-            />
-          </button>
+      <div class="budget__section">
+        <p class="budget__section-description">Select budget categories</p>
+        <div
+          class="budget__field-group"
+          v-for="(item, index) in model.items"
+          :key="index"
+        >
+          <div class="budget__field-group-item">
+            <div class="budget__field-control">
+              <label class="budget__field-label">Choose category</label>
+              <Multiselect
+                v-model="item.category"
+                :searchable="true"
+                :options="availableCategories"
+                noResultsText="No result found"
+                class="budget__field-input"
+              />
+            </div>
+          </div>
+          <div class="budget__field-group-item">
+            <div class="budget__field-control">
+              <label class="budget__field-label">Enter Amount</label>
+              <input
+                v-model="item.value"
+                type="number"
+                class="budget__field-input"
+                min="0"
+              />
+              <button
+                v-if="index > 0"
+                class="budget__field-action"
+                @click.stop="remove(index)"
+              >
+                <svg-icon
+                  :src="require('@/assets/svg/del.svg')"
+                  class="budget__input-icon"
+                />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -142,6 +161,15 @@ type categoryType = { value: number; label: string };
       return true;
     },
   },
+  watch: {
+    "model.startDate"(val) {
+      if (val) {
+        this.model.endDate = new Date(val.setMonth(val.getMonth() + 1));
+      } else {
+        this.model.endDate = null;
+      }
+    },
+  },
 })
 export default class Add extends Vue {
   categories!: categoryType[];
@@ -165,10 +193,22 @@ export default class Add extends Vue {
   remove(index: number): void {
     this.model.items.splice(index, 1);
   }
+
+  format(date: Date): string {
+    if (!date) {
+      return "";
+    }
+    const day = date.getDate();
+    const month = date.toLocaleString("default", { month: "long" });
+    const year = date.getFullYear();
+
+    return `${month} ${day}, ${year}`;
+  }
 }
 </script>
 
 <style lang="scss" scoped>
+@import "@/styles/mixins.scss";
 .budget {
   background: #ffffff;
   box-shadow: 0px 2px 5px rgba(54, 65, 86, 0.05);
@@ -180,27 +220,36 @@ export default class Add extends Vue {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 30px;
+    @include for-size(tablet-landscape-up) {
+      align-items: flex-start;
+    }
   }
   @at-root #{&}__nav {
     background: transparent;
     border: none;
     text-align: left;
     margin: 0 12px 0 0;
+    @include for-size(tablet-landscape-up) {
+      display: none;
+    }
   }
   @at-root #{&}__title {
     font-weight: 700;
     font-size: 18px;
     line-height: 25px;
-    margin-bottom: 20px;
   }
   @at-root #{&}__sub-header {
     margin-bottom: 10px;
   }
-  @at-root #{&}__sub-title {
-    font-weight: 600;
-    font-size: 14px;
-    line-height: 19px;
+  @at-root #{&}__section {
+    margin-bottom: 36px;
+  }
+  @at-root #{&}__section-description {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 22px;
+    color: #2a2a2a;
+    margin-bottom: 10px;
   }
   @at-root #{&}__amount {
     font-weight: 700;
@@ -230,6 +279,14 @@ export default class Add extends Vue {
     width: 45%;
     position: relative;
   }
+  @at-root #{&}__field-row {
+    display: flex;
+    align-items: flex-start;
+  }
+  @at-root #{&}__field-control {
+    display: flex;
+    flex-direction: column;
+  }
   @at-root #{&}__field-label {
     font-weight: 600;
     font-size: 12px;
@@ -237,9 +294,14 @@ export default class Add extends Vue {
     margin-bottom: 4px;
   }
   @at-root #{&}__field-input {
-    max-width: 100%;
+    width: 100%;
+    height: 40px;
     color: unset;
-    padding-left: 1em;
+  }
+  @at-root #{&}__field-checkbox {
+    width: unset;
+    height: unset;
+    margin-right: 10px;
   }
   @at-root #{&}__field-action {
     background: transparent;
