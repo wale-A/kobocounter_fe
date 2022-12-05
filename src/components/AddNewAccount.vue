@@ -36,7 +36,7 @@ export default class AddNewAccount extends Vue {
     const options = {
       onSuccess: function (response: { code: string }) {
         addAccountFn(response.code);
-        accountAdded();
+        // accountAdded();
       },
     };
     this.$launchMono(options);

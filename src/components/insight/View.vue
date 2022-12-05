@@ -54,7 +54,7 @@ export default class View extends Vue {
   insight!: Insights;
   div(num: number, denum: number): number {
     if (!denum) {
-      return 0.4;
+      return 0;
     }
     return num / denum;
   }

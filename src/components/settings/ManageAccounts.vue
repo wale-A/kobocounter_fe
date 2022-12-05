@@ -15,7 +15,7 @@
       <td>{{ account.bankName }}</td>
       <td>{{ account.accountNumber }}</td>
       <td>{{ account.currency }}</td>
-      <td>{{ parseFloat(account.balance.toFixed(2)).toLocaleString() }}</td>
+      <td>{{ getAccountBalance(account.balance) }}</td>
       <td :style="{ color: getAccountTextColor(account.status) }">
         {{ account.status }}
       </td>
@@ -65,7 +65,7 @@
       <strong>{{ account.bankName }}</strong>
       <span>{{ account.accountNumber }}</span>
       <span style="font-weight: bold; color: green">{{
-        parseFloat(account.balance.toFixed(2)).toLocaleString()
+        getAccountBalance(account.balance)
       }}</span>
       <span :style="{ color: getAccountTextColor(account.status) }">
         {{ account.status }}
@@ -77,7 +77,7 @@
       >
       <span class="material-icons input-left-icon" v-else>close</span>
       <div v-if="menuKey == account.id" class="menu-dropdown">
-        <span click="$emit('deleteAccount', account.id)" class="trash">
+        <span @click="$emit('deleteAccount', account.id)" class="trash">
           Remove Account
         </span>
         <span
@@ -129,13 +129,17 @@ export default class ManageAccounts extends Vue {
       return "#FF0000";
     }
   }
-
   toggleMenu(key: string): void {
     if (this.menuKey == key) {
       this.menuKey = "";
     } else {
       this.menuKey = key;
     }
+  }
+  getAccountBalance(balance?: number): string {
+    if (!balance) return "0";
+
+    return parseFloat(balance.toPrecision(2)).toLocaleString();
   }
 }
 </script>
