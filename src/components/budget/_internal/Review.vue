@@ -14,8 +14,16 @@
     </div>
     <div class="review__detail">
       <Field label="Total Budget Amount" :value="total" orientation="row" />
-      <Field label="Start Date" :value="budget.startDate" orientation="row" />
-      <Field label="End Date" :value="budget.endDate" orientation="row" />
+      <Field
+        label="Start Date"
+        :value="format(budget.startDate)"
+        orientation="row"
+      />
+      <Field
+        label="End Date"
+        :value="format(budget.endDate)"
+        orientation="row"
+      />
       <p v-if="budget.reuse">
         This budget will be re-used for the same number of days after it expires
       </p>
@@ -25,13 +33,16 @@
       class="review__category"
     >
       <h3 class="review__category-title">Budget Categories</h3>
-      <Field
-        v-for="item in budget.items"
-        :key="item.category"
-        :label="getCategoryName(item.category)"
-        :value="item.value"
-        orientation="row"
-      />
+      <hr class="review__category-line" />
+      <div class="review__category-wrapper">
+        <Field
+          v-for="item in budget.items"
+          :key="item.category"
+          :label="getCategoryName(item.category)"
+          :value="item.value"
+          orientation="row"
+        />
+      </div>
     </div>
     <div class="review__actions">
       <input
@@ -45,7 +56,7 @@
         type="button"
         class="button button--secondary"
         value="Edit Budget"
-        @click.stop="$emit('cancel')"
+        @click.stop="$emit('edit', budget)"
       />
     </div>
   </div>
@@ -61,7 +72,10 @@ type categoryType = { value: number; label: string };
     Field,
   },
   props: {
-    budget: Object,
+    budget: {
+      type: Object,
+      required: true,
+    },
     categories: {
       type: Array,
       required: true,
@@ -84,6 +98,17 @@ export default class Review extends Vue {
   getCategoryName(id: number): string {
     return this.categories.find((item) => item.value == id)?.label || "";
   }
+
+  format(date: Date): string {
+    if (!date) {
+      return "";
+    }
+    const day = date.getDate();
+    const month = date.toLocaleString("default", { month: "long" });
+    const year = date.getFullYear();
+
+    return ` ${day} ${month}, ${year}`;
+  }
 }
 </script>
 
@@ -94,7 +119,10 @@ export default class Review extends Vue {
   box-shadow: 0px 2px 5px rgba(54, 65, 86, 0.05);
   border-radius: 5px;
   padding: 20px 30px 30px;
-  max-width: 500px;
+  @include for-size(tablet-landscape-up) {
+    min-width: 500px;
+    max-height: 700px;
+  }
 
   @at-root #{&}__header {
     display: flex;
@@ -102,6 +130,9 @@ export default class Review extends Vue {
     align-items: center;
     margin-bottom: 16px;
     color: #2a2a2a;
+    @include for-size(tablet-landscape-up) {
+      align-items: flex-start;
+    }
   }
   @at-root #{&}__nav {
     background: transparent;
@@ -127,13 +158,23 @@ export default class Review extends Vue {
   @at-root #{&}__detail {
     margin-bottom: 28px;
   }
+  @at-root #{&}__category-wrapper {
+    height: 150px;
+    overflow: auto;
+  }
   @at-root #{&}__category-title {
     font-weight: 700;
     font-size: 12px;
     line-height: 16px;
-
     color: #364156;
+  }
+  @at-root #{&}__category-line {
     margin-bottom: 9px;
+  }
+  @at-root #{&}__actions {
+    margin-top: 2em;
+    display: flex;
+    flex-direction: column;
   }
 }
 </style>

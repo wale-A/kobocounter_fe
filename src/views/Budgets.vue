@@ -48,6 +48,7 @@
       :categories="categoryOptionsMap"
       :budget="model"
       @cancel="add = false"
+      @edit="edit($event)"
       @review="review($event)"
       @save="save($event)"
     />
@@ -152,12 +153,17 @@ export default class Budgets extends mixins(FilterMixin) {
     this.action = "review";
   }
 
-  save(model: BudgetPayload): void {
-    if (!this.model) {
+  edit(model: BudgetPayload): void {
+    this.model = model;
+    this.action = "add";
+  }
+
+  save(payload: BudgetPayload): void {
+    if (!payload) {
       return;
     }
     this.loading = true;
-    this.postBudget(model)
+    this.postBudget(payload)
       .then(() => {
         this.add = false;
         this.showModal = false;

@@ -23,6 +23,8 @@ export default class KeyValue extends Vue {}
   margin-bottom: 8px;
   overflow-wrap: break-word;
   color: #364156;
+  justify-content: space-between;
+  margin-bottom: 16px;
 
   @at-root #{&}__key {
     font-weight: 600;

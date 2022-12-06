@@ -63,14 +63,7 @@ const budgets: Module<State, any> = {
         commit("setBudget", null);
       }
     },
-    async postBudget(
-      _,
-      {
-        payload,
-      }: {
-        payload: BudgetPayload;
-      }
-    ) {
+    async postBudget(_, payload: BudgetPayload) {
       const res = await api.postBudget(payload);
       return res;
     },

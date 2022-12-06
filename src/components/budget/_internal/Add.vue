@@ -58,48 +58,54 @@
       </div>
       <div class="budget__section">
         <p class="budget__section-description">Select budget categories</p>
-        <div
-          class="budget__field-group"
-          v-for="(item, index) in model.items"
-          :key="index"
-        >
-          <div class="budget__field-group-item">
-            <div class="budget__field-control">
-              <label class="budget__field-label">Choose category</label>
-              <Multiselect
-                v-model="item.category"
-                :searchable="true"
-                :options="availableCategories"
-                noResultsText="No result found"
-                class="budget__field-input"
-              />
-            </div>
-          </div>
-          <div class="budget__field-group-item">
-            <div class="budget__field-control">
-              <label class="budget__field-label">Enter Amount</label>
-              <input
-                v-model="item.value"
-                type="number"
-                class="budget__field-input"
-                min="0"
-              />
-              <button
-                v-if="index > 0"
-                class="budget__field-action"
-                @click.stop="remove(index)"
-              >
-                <svg-icon
-                  :src="require('@/assets/svg/del.svg')"
-                  class="budget__input-icon"
+        <div class="budget__section-items">
+          <div
+            class="budget__field-group"
+            v-for="(item, index) in model.items"
+            :key="index"
+          >
+            <div class="budget__field-group-item">
+              <div class="budget__field-control">
+                <label class="budget__field-label">Choose category</label>
+                <Multiselect
+                  v-model="item.category"
+                  :searchable="true"
+                  :options="item.category ? categories : availableCategories"
+                  noResultsText="No result found"
+                  class="budget__field-input"
                 />
-              </button>
+              </div>
+            </div>
+            <div class="budget__field-group-item">
+              <div class="budget__field-control">
+                <label class="budget__field-label">Enter Amount</label>
+                <input
+                  v-model="item.value"
+                  type="number"
+                  class="budget__field-input"
+                  min="0"
+                />
+                <button
+                  v-if="index > 0"
+                  class="budget__field-action"
+                  @click.stop="remove(index)"
+                >
+                  <svg-icon
+                    :src="require('@/assets/svg/del.svg')"
+                    class="budget__input-icon"
+                  />
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <button class="budget__append" @click.prevent="add">
+      <button
+        v-if="availableCategories.length"
+        class="budget__append"
+        @click.prevent="add"
+      >
         + Add New Split
       </button>
       <div class="budget__actions">
@@ -130,11 +136,23 @@ import "@vuepic/vue-datepicker/dist/main.css";
 import { Transaction } from "@/types";
 
 type categoryType = { value: number; label: string };
+type modelType = {
+  startDate: string;
+  endDate: string;
+  items: {
+    category: string;
+    value: null | number;
+  }[];
+};
 @Options({
   components: { Multiselect, Datepicker },
   props: {
     categories: {
       type: Array,
+      required: true,
+    },
+    budget: {
+      type: Object,
       required: true,
     },
   },
@@ -158,29 +176,36 @@ type categoryType = { value: number; label: string };
       );
     },
     canSubmit() {
-      return true;
+      return (
+        this.model.startDate &&
+        this.model.items &&
+        this.model.items.every(
+          (x: { category: string; value: number }) => x.category && x.value
+        )
+      );
     },
   },
   watch: {
     "model.startDate"(val) {
       if (val) {
-        this.model.endDate = new Date(val.setMonth(val.getMonth() + 1));
+        const newDate = new Date(val);
+        this.model.endDate = new Date(newDate.setMonth(newDate.getMonth() + 1));
       } else {
         this.model.endDate = null;
+      }
+    },
+    budget(value) {
+      console.log({ model: value });
+      if (value) {
+        this.model = value;
       }
     },
   },
 })
 export default class Add extends Vue {
   categories!: categoryType[];
-  model!: {
-    startDate: string;
-    endDate: string;
-    items: {
-      category: string;
-      value: null | number;
-    }[];
-  };
+  budget!: modelType;
+  model!: modelType;
   sub!: Transaction[];
 
   add(): void {
@@ -204,6 +229,13 @@ export default class Add extends Vue {
 
     return `${month} ${day}, ${year}`;
   }
+
+  created(): void {
+    console.log({ model: this.budget, categories: this.categories });
+    if (this.budget) {
+      this.model = this.budget;
+    }
+  }
 }
 </script>
 
@@ -214,7 +246,10 @@ export default class Add extends Vue {
   box-shadow: 0px 2px 5px rgba(54, 65, 86, 0.05);
   border-radius: 5px;
   padding: 20px 30px 30px;
-  max-width: 500px;
+  @include for-size(tablet-landscape-up) {
+    min-width: 500px;
+    max-height: 800px;
+  }
 
   @at-root #{&}__header {
     display: flex;
@@ -237,6 +272,7 @@ export default class Add extends Vue {
     font-weight: 700;
     font-size: 18px;
     line-height: 25px;
+    margin-bottom: 20px;
   }
   @at-root #{&}__sub-header {
     margin-bottom: 10px;
@@ -250,6 +286,10 @@ export default class Add extends Vue {
     line-height: 22px;
     color: #2a2a2a;
     margin-bottom: 10px;
+  }
+  @at-root #{&}__section-items {
+    height: 150px;
+    overflow: auto;
   }
   @at-root #{&}__amount {
     font-weight: 700;

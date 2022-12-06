@@ -5,7 +5,8 @@
       :categories="categories"
       :budget="budget"
       @review="$emit('review', $event)"
-      @save="$emit('save', $eventd)"
+      @edit="$emit('edit', $event)"
+      @save="$emit('save', $event)"
       @cancel="$emit('cancel')"
     />
   </Overlay>
