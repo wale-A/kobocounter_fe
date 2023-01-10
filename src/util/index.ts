@@ -1,4 +1,4 @@
-import { COMMON_DATES } from "@/config";
+import { COMMON_DATES, PERIOD_LABEL_MAPPING } from "@/config";
 import { Account, User } from "@/types";
 
 const storeKey = "authenticated-user";
@@ -68,81 +68,48 @@ export const ACCOUNT_FIELD = (
   };
 };
 
-export const PERIOD_FIELD: Record<string, any> = {
-  key: "period",
-  label: "Date",
-  type: "select",
-  placeholder: "Select an option",
-  sanitizeValue(value: { name: string; start: Date; end: Date }): string {
-    return value.name;
-  },
-  options: [
-    {
-      value: "yesterday",
-      label: "Yesterday",
+const getPeriod = (
+  options: Array<string>,
+  defaultValue: string
+): Record<string, any> => {
+  return {
+    key: "period",
+    label: "Date",
+    type: "select",
+    placeholder: "Select an option",
+    sanitizeValue(value: { name: string; start: Date; end: Date }): string {
+      return value.name;
+    },
+    options: options.map((item: string) => ({
+      value: item,
+      label: PERIOD_LABEL_MAPPING[item],
       nativeValue: {
-        name: "yesterday",
-        ...COMMON_DATES["yesterday"],
+        name: item,
+        ...COMMON_DATES[item],
       },
+    })),
+    defaultValue,
+    modelDefault() {
+      return {
+        name: defaultValue,
+        ...COMMON_DATES[defaultValue],
+      };
     },
-    {
-      value: "last-week",
-      label: "Past week",
-      nativeValue: {
-        name: "last-week",
-        ...COMMON_DATES["last-week"],
+    valueActions: [
+      {
+        key: "custom",
+        type: "input",
+        component: "RangePicker",
+        props: "",
       },
+    ],
+    getParams(model: Record<string, any>): Record<string, string> {
+      return {
+        start: model.period.start.getTime(),
+        end: model.period.end.getTime(),
+      };
     },
-    {
-      value: "last-month",
-      label: "Last 30 days",
-      nativeValue: {
-        name: "last-month",
-        ...COMMON_DATES["last-month"],
-      },
-    },
-    {
-      value: "last-quarter",
-      label: "Last 3 months",
-      nativeValue: {
-        name: "last-quarter",
-        ...COMMON_DATES["last-quarter"],
-      },
-    },
-    {
-      value: "last-year",
-      label: "Past year",
-      nativeValue: {
-        name: "last-year",
-        ...COMMON_DATES["last-year"],
-      },
-    },
-    {
-      value: "custom",
-      label: "Custom",
-    },
-  ],
-  defaultValue: "last-month",
-  modelDefault() {
-    return {
-      name: "last-month",
-      ...COMMON_DATES["last-month"],
-    };
-  },
-  valueActions: [
-    {
-      key: "custom",
-      type: "input",
-      component: "RangePicker",
-      props: "",
-    },
-  ],
-  getParams(model: Record<string, any>): Record<string, string> {
-    return {
-      start: model.period.start.getTime(),
-      end: model.period.end.getTime(),
-    };
-  },
+  };
 };
 
 export const TRANSACTION_FIELD: Record<string, any> = {
@@ -189,7 +156,17 @@ export const CATEGORIES_FIELD = (
 
 export const baseFilter = {
   account: ACCOUNT_FIELD,
-  period: PERIOD_FIELD,
+  period: getPeriod(
+    [
+      "yesterday",
+      "last-week",
+      "last-month",
+      "last-quarter",
+      "last-year",
+      "custom",
+    ],
+    "last-month"
+  ),
 };
 
 export const transactionFilter = {
@@ -199,6 +176,16 @@ export const transactionFilter = {
 };
 
 export const budgetFilter = {
-  period: PERIOD_FIELD,
+  period: getPeriod(
+    [
+      "current-month",
+      "future",
+      "last-month",
+      "last-quarter",
+      "last-year",
+      "custom",
+    ],
+    "future"
+  ),
   category: CATEGORIES_FIELD,
 };

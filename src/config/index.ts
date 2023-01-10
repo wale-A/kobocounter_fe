@@ -1,4 +1,4 @@
-import { sub } from "date-fns";
+import { sub, startOfMonth, endOfMonth, endOfYear } from "date-fns";
 
 export const SIDEBAR_MENU_ITEMS = [
   {
@@ -110,25 +110,85 @@ export const TRANSACTION_CATEGORIES = [
 ];
 
 const now = new Date();
-export const COMMON_DATES: Record<string, { start: Date; end: Date }> = {
-  yesterday: {
-    start: sub(now, { days: 1 }),
-    end: now,
-  },
-  "last-week": {
-    start: sub(now, { weeks: 1 }),
-    end: now,
-  },
-  "last-month": {
-    start: sub(now, { months: 1 }),
-    end: now,
-  },
-  "last-quarter": {
-    start: sub(now, { months: 3 }),
-    end: now,
-  },
-  "last-year": {
-    start: sub(now, { years: 1 }),
-    end: now,
-  },
+export const COMMON_DATES: Record<string, { start: Date; end: Date | string }> =
+  {
+    yesterday: {
+      start: sub(now, { days: 1 }),
+      end: now,
+    },
+    "current-month": {
+      start: startOfMonth(now),
+      end: endOfMonth(now),
+    },
+    rest: {
+      start: startOfMonth(now),
+      end: endOfYear(now),
+    },
+    continuous: {
+      start: startOfMonth(now),
+      end: "",
+    },
+    "last-week": {
+      start: sub(now, { weeks: 1 }),
+      end: now,
+    },
+    "last-month": {
+      start: sub(now, { months: 1 }),
+      end: now,
+    },
+    "last-quarter": {
+      start: sub(now, { months: 3 }),
+      end: now,
+    },
+    "last-year": {
+      start: sub(now, { years: 1 }),
+      end: now,
+    },
+  };
+
+export const PERIOD_LABEL_MAPPING: Record<string, string> = {
+  yesterday: "Yesterday",
+  "last-week": "Past week",
+  "last-month": "Past Month",
+  "last-quarter": "Last 3 months",
+  "last-year": "Past year",
+  custom: "Custom",
+  "current-month": "This Month",
+  rest: "Rest of the Year",
+  continuous: "Future",
 };
+
+export const BUDGET_TYPE_OPTIONS: Record<string, string> = {
+  WEEKLY: "weekly",
+  BI_WEEKLY: "bi-weekly",
+  MONTHLY: "monthly",
+  BI_MONTHLY: "bi-monthly",
+  QUARTERLY: "quaterly",
+  MID_YEAR: "mid-year",
+  ANNUALLY: "annually",
+};
+
+export const BUDGET_TYPE_OPTIONS_LABEL: Record<string, string> = {
+  [BUDGET_TYPE_OPTIONS.WEEKLY]: "Weekly",
+  [BUDGET_TYPE_OPTIONS.BI_WEEKLY]: "Bi Weekly",
+  [BUDGET_TYPE_OPTIONS.MONTHLY]: "Monthly",
+  [BUDGET_TYPE_OPTIONS.BI_MONTHLY]: "Bi Monthly",
+  [BUDGET_TYPE_OPTIONS.QUARTERLY]: "Quaterly",
+  [BUDGET_TYPE_OPTIONS.MID_YEAR]: "Half Year",
+  [BUDGET_TYPE_OPTIONS.ANNUALLY]: "Yearly",
+};
+
+export const MONTH_NAMES = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];

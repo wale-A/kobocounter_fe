@@ -20,6 +20,8 @@
               <label class="budget__field-label">From</label>
               <Datepicker
                 v-model="model.startDate"
+                :start-date="startDate"
+                :allowed-dates="allowedDates"
                 :format="format"
                 :auto-position="false"
                 auto-apply
@@ -39,21 +41,6 @@
               />
             </div>
           </div>
-        </div>
-        <div class="budget__field-group">
-          <label for="reuse" class="budget__field-row">
-            <input
-              id="reuse"
-              name="reuse"
-              type="checkbox"
-              v-model="model.reuse"
-              class="budget__field-checkbox"
-            />
-            <span
-              >Re-use this budget for the same number of days after it
-              expires</span
-            >
-          </label>
         </div>
       </div>
       <div class="budget__section">
@@ -134,6 +121,15 @@ import Multiselect from "@vueform/multiselect";
 import Datepicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import { Transaction } from "@/types";
+import { BUDGET_TYPE_OPTIONS } from "@/config";
+import {
+  startOfMonth,
+  endOfMonth,
+  addMonths,
+  addWeeks,
+  endOfWeek,
+  startOfWeek,
+} from "date-fns";
 
 type categoryType = { value: number; label: string };
 type modelType = {
@@ -154,6 +150,14 @@ type modelType = {
     budget: {
       type: Object,
       required: true,
+    },
+    lastBudget: {
+      type: Object,
+      default: null,
+    },
+    budgetType: {
+      type: String,
+      default: "monthly",
     },
   },
   data() {
@@ -184,12 +188,101 @@ type modelType = {
         )
       );
     },
+    allowedDates() {
+      const now = new Date();
+      switch (this.budgetType) {
+        case BUDGET_TYPE_OPTIONS.WEEKLY: {
+          const next = this.lastBudget?.endDate
+            ? addWeeks(this.lastBudget.endDate, 1)
+            : now;
+          return [startOfWeek(next), endOfWeek(next)];
+        }
+        case BUDGET_TYPE_OPTIONS.BI_WEEKLY: {
+          const start = this.lastBudget?.endDate
+            ? addWeeks(this.lastBudget.endDate, 1)
+            : now;
+          const end = addWeeks(this.lastBudget?.endDate || now, 2);
+          return [startOfWeek(start), endOfWeek(end)];
+        }
+        case BUDGET_TYPE_OPTIONS.BI_MONTHLY: {
+          const start = this.lastBudget?.endDate
+            ? addMonths(this.lastBudget.endDate, 1)
+            : now;
+          const end = addMonths(this.lastBudget?.endDate || now, 2);
+          return [startOfMonth(start), endOfMonth(end)];
+        }
+        case BUDGET_TYPE_OPTIONS.QUATERLY: {
+          const start = this.lastBudget?.endDate
+            ? addMonths(this.lastBudget.endDate, 1)
+            : now;
+          const end = addMonths(this.lastBudget?.endDate || now, 3);
+          return [startOfMonth(start), endOfMonth(end)];
+        }
+        case BUDGET_TYPE_OPTIONS.MID_YEAR: {
+          const start = this.lastBudget?.endDate
+            ? addMonths(this.lastBudget.endDate, 1)
+            : now;
+          const end = addMonths(this.lastBudget?.endDate || now, 6);
+          return [startOfMonth(start), endOfMonth(end)];
+        }
+        case BUDGET_TYPE_OPTIONS.YEARLY: {
+          const start = this.lastBudget?.endDate
+            ? addMonths(this.lastBudget.endDate, 1)
+            : now;
+          const end = addMonths(this.lastBudget?.endDate || now, 12);
+          return [startOfMonth(start), endOfMonth(end)];
+        }
+        default: {
+          const next = this.lastBudget?.endDate
+            ? addMonths(this.lastBudget.endDate, 1)
+            : now;
+          return [startOfMonth(next), endOfMonth(next)];
+        }
+      }
+    },
+    startDate() {
+      return this.allowedDates[0];
+    },
   },
   watch: {
     "model.startDate"(val) {
       if (val) {
         const newDate = new Date(val);
-        this.model.endDate = new Date(newDate.setMonth(newDate.getMonth() + 1));
+        switch (this.budgetType) {
+          case BUDGET_TYPE_OPTIONS.WEEKLY: {
+            this.model.endDate = endOfWeek(newDate);
+            break;
+          }
+          case BUDGET_TYPE_OPTIONS.BI_WEEKLY: {
+            const end = addWeeks(newDate, 2);
+            this.model.endDate = endOfWeek(end);
+            break;
+          }
+          case BUDGET_TYPE_OPTIONS.BI_MONTHLY: {
+            const end = addMonths(newDate, 2);
+            this.model.endDate = endOfMonth(end);
+            break;
+          }
+          case BUDGET_TYPE_OPTIONS.QUATERLY: {
+            const end = addMonths(newDate, 3);
+            this.model.endDate = endOfMonth(end);
+            break;
+          }
+          case BUDGET_TYPE_OPTIONS.MID_YEAR: {
+            const end = addMonths(newDate, 6);
+            this.model.endDate = endOfMonth(end);
+            break;
+          }
+          case BUDGET_TYPE_OPTIONS.YEARLY: {
+            const end = addMonths(newDate, 12);
+            this.model.endDate = endOfMonth(end);
+            break;
+          }
+          default: {
+            this.model.endDate = endOfMonth(newDate);
+            break;
+          }
+        }
       } else {
         this.model.endDate = null;
       }

@@ -30,7 +30,7 @@
             @click.stop="selectBudget(item[keyValue])"
           >
             <td class="budget__id">
-              {{ item.id }}
+              {{ getName(item.startDate) }}
             </td>
             <td class="budget__field budget__status">
               {{ item.status || "Active" }}
@@ -53,6 +53,15 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import Panel from "@/components/layout/Panel.vue";
+import { BUDGET_TYPE_OPTIONS, MONTH_NAMES } from "@/config";
+import {
+  getWeek,
+  getWeekOfMonth,
+  getQuarter,
+  getMonth,
+  endOfWeek,
+  getYear,
+} from "date-fns";
 
 @Options({
   components: {
@@ -71,6 +80,10 @@ import Panel from "@/components/layout/Panel.vue";
       type: String,
       default: "id",
     },
+    budgetType: {
+      type: String,
+      default: "monthly",
+    },
   },
   watch: {
     highlight(newVal) {
@@ -80,6 +93,7 @@ import Panel from "@/components/layout/Panel.vue";
 })
 export default class List extends Vue {
   active = "";
+  budgetType!: string;
 
   selectBudget(id: string): void {
     this.active = id;
@@ -93,6 +107,28 @@ export default class List extends Vue {
       return -100;
     }
     return num / denum;
+  }
+
+  getName(startDate: string): string {
+    const date = new Date(startDate);
+    switch (this.budgetType) {
+      case BUDGET_TYPE_OPTIONS.WEEKLY:
+        return `Week ${getWeek(date)}`;
+      case BUDGET_TYPE_OPTIONS.BI_WEEKLY:
+        return `${MONTH_NAMES[getMonth(date)]} WEEK-GROUP ${
+          getWeekOfMonth(date) < 2 ? "1" : "2"
+        }`;
+      case BUDGET_TYPE_OPTIONS.BI_MONTHLY:
+        return `MONTH-GROUP ${(getMonth(date) + 1) / 2}`;
+      case BUDGET_TYPE_OPTIONS.QUATERLY:
+        return `Quater ${getQuarter(date)}`;
+      case BUDGET_TYPE_OPTIONS.MID_YEAR:
+        return getMonth(date) < 6 ? `First Half` : "Second Half";
+      case BUDGET_TYPE_OPTIONS.YEARLY:
+        return `Year ${getYear(date)}`;
+      default:
+        return MONTH_NAMES[getMonth(date)];
+    }
   }
 }
 </script>
