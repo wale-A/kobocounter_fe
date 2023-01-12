@@ -179,13 +179,14 @@ export const budgetFilter = {
   period: getPeriod(
     [
       "current-month",
-      "future",
+      "rest",
+      //"continuous",
       "last-month",
       "last-quarter",
       "last-year",
       "custom",
     ],
-    "future"
+    "rest"
   ),
   category: CATEGORIES_FIELD,
 };

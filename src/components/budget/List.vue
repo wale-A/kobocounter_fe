@@ -42,7 +42,25 @@
               N {{ item.amountSpent }}
             </td>
             <td class="budget__field budget__insight"></td>
-            <td class="budget__field-action budget__action"></td>
+            <td class="budget__field-action">
+              <button class="budget__action" @click="toggleMenu">
+                <svg-icon
+                  :src="require('@/assets/svg/action-menu.svg')"
+                  class="budget__action-icon"
+                />
+              </button>
+              <div v-show="openMenu" class="budget__action-menu">
+                <button class="budget__action-item" @click="emit('add')">
+                  Add
+                </button>
+                <button class="budget__action-item" @click="emit('reload')">
+                  Reload
+                </button>
+                <button class="budget__action-item" @click="emit('delete')">
+                  Delete
+                </button>
+              </div>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -59,7 +77,6 @@ import {
   getWeekOfMonth,
   getQuarter,
   getMonth,
-  endOfWeek,
   getYear,
 } from "date-fns";
 
@@ -93,6 +110,7 @@ import {
 })
 export default class List extends Vue {
   active = "";
+  openMenu = false;
   budgetType!: string;
 
   selectBudget(id: string): void {
@@ -107,6 +125,15 @@ export default class List extends Vue {
       return -100;
     }
     return num / denum;
+  }
+
+  toggleMenu(): void {
+    this.openMenu = !this.openMenu;
+  }
+
+  emit(action: string): void {
+    this.$emit(action, this.active);
+    this.toggleMenu();
   }
 
   getName(startDate: string): string {
@@ -191,6 +218,13 @@ export default class List extends Vue {
     line-height: 16px;
     color: #364156;
     text-align: left;
+    position: relative;
+  }
+
+  @at-root #{&}__action-menu {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
   }
 }
 </style>

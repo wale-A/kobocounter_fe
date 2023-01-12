@@ -110,41 +110,40 @@ export const TRANSACTION_CATEGORIES = [
 ];
 
 const now = new Date();
-export const COMMON_DATES: Record<string, { start: Date; end: Date | string }> =
-  {
-    yesterday: {
-      start: sub(now, { days: 1 }),
-      end: now,
-    },
-    "current-month": {
-      start: startOfMonth(now),
-      end: endOfMonth(now),
-    },
-    rest: {
-      start: startOfMonth(now),
-      end: endOfYear(now),
-    },
-    continuous: {
-      start: startOfMonth(now),
-      end: "",
-    },
-    "last-week": {
-      start: sub(now, { weeks: 1 }),
-      end: now,
-    },
-    "last-month": {
-      start: sub(now, { months: 1 }),
-      end: now,
-    },
-    "last-quarter": {
-      start: sub(now, { months: 3 }),
-      end: now,
-    },
-    "last-year": {
-      start: sub(now, { years: 1 }),
-      end: now,
-    },
-  };
+export const COMMON_DATES: Record<string, { start: Date; end: Date | null }> = {
+  yesterday: {
+    start: sub(now, { days: 1 }),
+    end: now,
+  },
+  "current-month": {
+    start: startOfMonth(now),
+    end: endOfMonth(now),
+  },
+  rest: {
+    start: startOfMonth(now),
+    end: endOfYear(now),
+  },
+  continuous: {
+    start: startOfMonth(now),
+    end: null,
+  },
+  "last-week": {
+    start: sub(now, { weeks: 1 }),
+    end: now,
+  },
+  "last-month": {
+    start: sub(now, { months: 1 }),
+    end: now,
+  },
+  "last-quarter": {
+    start: sub(now, { months: 3 }),
+    end: now,
+  },
+  "last-year": {
+    start: sub(now, { years: 1 }),
+    end: now,
+  },
+};
 
 export const PERIOD_LABEL_MAPPING: Record<string, string> = {
   yesterday: "Yesterday",

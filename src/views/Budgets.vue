@@ -30,6 +30,7 @@
                 params: { id: $event },
               })
             "
+            @add="add = true"
           />
         </template>
         <template v-slot:col-2> <Detail :budget="budget" /></template
