@@ -1,18 +1,16 @@
-import { createApp } from "vue";
-import App from "./App.vue";
-import "./registerServiceWorker";
-import router from "./router";
-import MonoJS from "vue-mono";
-import store from "./store/index";
-import VueChartkick from "vue-chartkick";
-import "chartkick/chart.js";
-import Notifications from "@kyvg/vue3-notification";
 import * as am4core from "@amcharts/amcharts4/core";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import am4themes_kelly from "@amcharts/amcharts4/themes/kelly";
-import InlineSvgPlugin from "vue-inline-svg";
-import VueScreen from "vue-screen";
+import Notifications from "@kyvg/vue3-notification";
 import FloatingVue from "floating-vue";
+import { createApp } from "vue";
+import InlineSvgPlugin from "vue-inline-svg";
+import MonoJS from "vue-mono";
+import VueScreen from "vue-screen";
+import App from "./App.vue";
+import "./registerServiceWorker";
+import router from "./router";
+import store from "./store/index";
 
 const AM4_LICENSE = process.env.VUE_APP_AM4_LICENSE;
 createApp(App)
@@ -21,7 +19,6 @@ createApp(App)
   .use((MonoJS as any).install, {
     publicKey: process.env.VUE_APP_MONO_PUBLIC_KEY,
   })
-  .use(VueChartkick as any)
   .use(Notifications)
   .use(VueScreen, {
     grid: {
