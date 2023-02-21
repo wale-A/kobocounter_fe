@@ -46,10 +46,4 @@ yarn lint
 
 ### Customize configuration
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> master
 See [Configuration Reference](https://cli.vuejs.org/config/).
-
