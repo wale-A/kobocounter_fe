@@ -1,6 +1,6 @@
 <template>
   <div id="header-section">
-    <header>
+    <header class="container">
       <img src="/img/assets/logo.png" alt="logo" class="logo" />
       <div class="buttons">
         <router-link v-if="!isLoggedIn" :to="{ name: 'Login' }">
@@ -19,7 +19,7 @@
       </div>
     </header>
 
-    <section id="section-1">
+    <section class="container" id="section-1">
       <main>
         <h2>
           Track your expenses.
@@ -36,13 +36,6 @@
         <div class="buttons">
           <router-link
             v-if="!isLoggedIn"
-            :to="{ name: 'Login' }"
-            style="text-align: center; line-height: 40px"
-          >
-            Log in
-          </router-link>
-          <router-link
-            v-if="!isLoggedIn"
             :to="{ name: 'Register' }"
             style="text-align: center; line-height: 40px"
             class="alternate"
@@ -56,6 +49,13 @@
             class="alternate"
           >
             Go to Dashboard
+          </router-link>
+          <router-link
+            v-if="!isLoggedIn"
+            :to="{ name: 'Login' }"
+            style="text-align: center; line-height: 40px"
+          >
+            Log in
           </router-link>
         </div>
       </main>
@@ -73,7 +73,7 @@
     </section>
   </div>
 
-  <section id="section-2">
+  <section class="container" id="section-2">
     <main>
       <h2>Start tracking your coins today</h2>
       <div>
@@ -141,115 +141,117 @@
       </div>
     </div>
   </section>
-  <section id="section-4">
-    <aside>
-      <img
-        src="/img/landing/other-features-dot75x.png"
-        alt="other featues"
-        srcset="
-          /img/landing/other-features-dot5x.png   900w,
-          /img/landing/other-features-dot75x.png 1200w,
-          /img/landing/other-features-1x.png     2500w
-        "
-      />
-    </aside>
-    <main>
-      <h2 class="center-text">Other Features</h2>
-      <div class="list" style="justify-content: space-between">
-        <div>
-          <img
-            src="/img/landing/customize-categories.png"
-            alt="cutomize categories"
-          />
-          <p>
-            <b>Customize Categories</b>
-            <br />
-            Make your data even more relevant to
-            <br />
-            you by adding your own categories to
-            <br />
-            better make sense of your income and
-            <br />
-            expense.
-          </p>
+  <div style="background-color: #e5e5e5">
+    <section class="container" id="section-4">
+      <aside>
+        <img
+          src="/img/landing/other-features-dot75x.png"
+          alt="other featues"
+          srcset="
+            /img/landing/other-features-dot5x.png   900w,
+            /img/landing/other-features-dot75x.png 1200w,
+            /img/landing/other-features-1x.png     2500w
+          "
+        />
+      </aside>
+      <main>
+        <h2 class="center-text">Other Features</h2>
+        <div class="list" style="justify-content: space-between">
+          <div>
+            <img
+              src="/img/landing/customize-categories.png"
+              alt="cutomize categories"
+            />
+            <p>
+              <b>Customize Categories</b>
+              <br />
+              Make your data even more relevant to
+              <br />
+              you by adding your own categories to
+              <br />
+              better make sense of your income and
+              <br />
+              expense.
+            </p>
+          </div>
+          <div>
+            <img
+              src="/img/landing/split-transactions.png"
+              alt="split transactions"
+            />
+            <p>
+              <b>Split transactions</b>
+              <br />
+              Got more than one category for a
+              <br />
+              single bank transaction? Split your
+              <br />
+              transactions into different categories for
+              <br />
+              even more accurate data.
+            </p>
+          </div>
+          <div class="break"></div>
+          <div>
+            <img
+              src="/img/landing/record-cash-transactions.png"
+              alt="record cash transactions"
+            />
+            <p>
+              <b>Record Cash Transactions</b>
+              <br />
+              Every single coin counts on your
+              <br />
+              journey to taking charge of your
+              <br />
+              money! This feature allows your to
+              <br />
+              record how you spend your cash.
+            </p>
+          </div>
+          <div>
+            <img src="/img/landing/account-history.png" alt="account history" />
+            <p>
+              <b>Account History</b>
+              <br />
+              Review how your income and
+              <br />
+              expenses have evolved over time. Get a
+              <br />
+              first hand look into what areas you can
+              <br />
+              optimize.
+            </p>
+          </div>
         </div>
-        <div>
-          <img
-            src="/img/landing/split-transactions.png"
-            alt="split transactions"
-          />
-          <p>
-            <b>Split transactions</b>
-            <br />
-            Got more than one category for a
-            <br />
-            single bank transaction? Split your
-            <br />
-            transactions into different categories for
-            <br />
-            even more accurate data.
-          </p>
+        <div class="buttons">
+          <router-link
+            v-if="!isLoggedIn"
+            :to="{ name: 'Register' }"
+            style="text-align: center; line-height: 40px"
+            class="alternate"
+          >
+            Create an account
+          </router-link>
+          <router-link
+            v-if="isLoggedIn"
+            :to="{ name: 'Dashboard' }"
+            style="text-align: center; line-height: 40px"
+          >
+            Go to Dashboard
+          </router-link>
+          <router-link
+            v-if="!isLoggedIn"
+            :to="{ name: 'Login' }"
+            class="land-login"
+            style="text-align: center; line-height: 40px"
+          >
+            Log in
+          </router-link>
         </div>
-        <div class="break"></div>
-        <div>
-          <img
-            src="/img/landing/record-cash-transactions.png"
-            alt="record cash transactions"
-          />
-          <p>
-            <b>Record Cash Transactions</b>
-            <br />
-            Every single coin counts on your
-            <br />
-            journey to taking charge of your
-            <br />
-            money! This feature allows your to
-            <br />
-            record how you spend your cash.
-          </p>
-        </div>
-        <div>
-          <img src="/img/landing/account-history.png" alt="account history" />
-          <p>
-            <b>Account History</b>
-            <br />
-            Review how your income and
-            <br />
-            expenses have evolved over time. Get a
-            <br />
-            first hand look into what areas you can
-            <br />
-            optimize.
-          </p>
-        </div>
-      </div>
-      <div class="buttons">
-        <router-link
-          v-if="!isLoggedIn"
-          :to="{ name: 'Login' }"
-          class="land-login"
-          style="text-align: center; line-height: 40px"
-        >
-          Log in
-        </router-link>
-        <router-link
-          v-if="!isLoggedIn"
-          :to="{ name: 'Register' }"
-          style="text-align: center; line-height: 40px"
-          class="alternate"
-        >
-          Create an account
-        </router-link>
-        <router-link
-          v-if="isLoggedIn"
-          :to="{ name: 'Dashboard' }"
-          style="text-align: center; line-height: 40px"
-        >
-          Go to Dashboard
-        </router-link>
-      </div>
-    </main>
-  </section>
+      </main>
+    </section>
+  </div>
   <footer></footer>
 </template>
 
@@ -315,9 +317,6 @@ header {
   height: 6vh;
   padding: 0 3em 0 1em;
 }
-header .buttons {
-  width: 15%;
-}
 header a {
   font-weight: unset;
   margin-top: 1em;
@@ -329,12 +328,24 @@ header a {
 #section-2,
 #section-3,
 #section-4,
-div.list,
+div.list {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
 .buttons {
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
   align-items: center;
+}
+.buttons a {
+  margin-right: 1em;
+}
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
 }
 #section-2 {
   /* background-color: #f1f4f7; */
@@ -356,7 +367,7 @@ div.list {
   padding: 5em;
 }
 #section-4 {
-  padding: 5em;
+  padding: 5em 0;
   background-color: #e5e5e5;
 }
 #section-4 main {
@@ -367,9 +378,6 @@ div.list {
 }
 #section-4 main {
   margin-left: 10%;
-}
-#section-4 .buttons {
-  width: 50%;
 }
 .break {
   flex-basis: 100%;
