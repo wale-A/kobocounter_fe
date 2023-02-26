@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --mode production",
+    "dev": "vue-cli-service serve",
     "build": "vue-cli-service build --mode production",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "serve-prod": "serve -s dist",
-    "postinstall": "cd ./node_modules/vue-mono && npm install && npm run dist"
+    "postinstall": "cd ./node_modules/vue-mono && yarn && yarn dist"
   },
   "dependencies": {
     "@amcharts/amcharts4": "^4.10.20",
@@ -31,7 +32,6 @@
     "postcss": "^7",
     "register-service-worker": "^1.7.1",
     "vue": "^3.0.0",
-    "vue-chartkick": "^1.1.0",
     "vue-class-component": "^8.0.0-0",
     "vue-facebook-login-component-next": "^1.0.4",
     "vue-inline-svg": "^3.1.0",
@@ -45,7 +45,6 @@
     "@types/dateformat": "^5.0.0",
     "@types/jest": "^24.0.19",
     "@types/serviceworker-webpack-plugin": "^1.0.2",
-    "@types/vue-chartkick": "^0.5.1",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
     "@vue/cli-plugin-babel": "~4.5.0",
