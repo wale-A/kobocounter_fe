@@ -36,6 +36,9 @@ const budgets: Module<State, any> = {
     setBudget(state, budget?: Budget) {
       state.budget = budget;
     },
+    addBudget(state, budget: BudgetListItem) {
+      state.budgets?.push(budget);
+    },
   },
   actions: {
     async getBudgets(
@@ -63,9 +66,9 @@ const budgets: Module<State, any> = {
         commit("setBudget", null);
       }
     },
-    async postBudget(_, payload: BudgetPayload) {
+    async postBudget({ commit }, payload: BudgetPayload) {
       const res = await api.postBudget(payload);
-      return res;
+      commit("addBudget", res.data);
     },
     async deleteBudget(_, id: string) {
       const res = await api.deleteBudget(id);

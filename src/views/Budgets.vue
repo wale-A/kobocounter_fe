@@ -33,8 +33,10 @@
             @add="add = true"
           />
         </template>
-        <template v-slot:col-2> <Detail :budget="budget" /></template
-      ></Columns>
+        <template v-slot:col-2>
+          <Detail :budget="budget" />
+        </template>
+      </Columns>
       <CTA
         v-else
         title="You have not created a budget"
@@ -48,12 +50,19 @@
       :action="action"
       :categories="categoryOptionsMap"
       :budget="model"
+      :loading="loading"
       @cancel="add = false"
       @edit="edit($event)"
       @review="review($event)"
       @save="save($event)"
     />
-    <Modal v-if="showModal" @action="showModal = false" />
+    <Modal
+      v-if="showModal"
+      :title="title"
+      :message="message"
+      :button-label="label"
+      @action="showModal = false"
+    />
   </Page>
 </template>
 
@@ -126,6 +135,10 @@ export default class Budgets extends mixins(FilterMixin) {
   model: BudgetPayload | null = null;
   showModal = false;
 
+  title = "Your budget has been created successfully!";
+  message = "You have a total budget of ${} effective from ${} to ${}";
+  label = "close";
+
   get filterArgs(): Record<string, any> {
     return {
       category: this.categoryOptionsMap,
@@ -167,7 +180,9 @@ export default class Budgets extends mixins(FilterMixin) {
     this.postBudget(payload)
       .then(() => {
         this.add = false;
-        this.showModal = false;
+        this.action = "add";
+        this.model = null;
+        this.showModal = true;
       })
       .catch(() => {
         this.$notify({

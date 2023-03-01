@@ -25,8 +25,16 @@
         orientation="row"
       />
       <Field label="Performance" :value="budget.insight" orientation="row" />
-      <Field label="Start Date" :value="budget.startDate" orientation="row" />
-      <Field label="End Date" :value="budget.endDate" orientation="row" />
+      <Field
+        label="Start Date"
+        :value="getDate(budget.startDate)"
+        orientation="row"
+      />
+      <Field
+        label="End Date"
+        :value="getDate(budget.endDate)"
+        orientation="row"
+      />
     </div>
     <div
       v-if="budget.items && budget.items.length > 0"
@@ -47,6 +55,7 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import Field from "./_internal/Field.vue";
+import { format } from "date-fns";
 
 @Options({
   components: {
@@ -56,7 +65,11 @@ import Field from "./_internal/Field.vue";
     budget: Object,
   },
 })
-export default class View extends Vue {}
+export default class View extends Vue {
+  getDate(date: string): string {
+    return format(new Date(date), "MM/dd/yyyy");
+  }
+}
 </script>
 
 <style lang="scss" scoped>

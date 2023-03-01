@@ -22,7 +22,7 @@
         <tbody>
           <tr
             v-for="item in budgets"
-            :key="item.category"
+            :key="item.id"
             class="budget__item"
             :class="{
               'budget__item--active': item[keyValue] == active,
@@ -35,28 +35,47 @@
             <td class="budget__field budget__status">
               {{ item.status || "Active" }}
             </td>
-            <td class="budget__field budget__start">{{ item.startDate }}</td>
-            <td class="budget__field budget__end">{{ item.endDate }}</td>
+            <td class="budget__field budget__start">
+              {{ getDate(item.startDate) }}
+            </td>
+            <td class="budget__field budget__end">
+              {{ getDate(item.endDate) }}
+            </td>
             <td class="budget__field budget__budget">N {{ item.value }}</td>
             <td class="budget__field budget__spend">
               N {{ item.amountSpent }}
             </td>
             <td class="budget__field budget__insight"></td>
             <td class="budget__field-action">
-              <button class="budget__action" @click="toggleMenu">
+              <button
+                class="budget__action budget__action--clear"
+                @click="toggleMenu()"
+              >
                 <svg-icon
                   :src="require('@/assets/svg/action-menu.svg')"
                   class="budget__action-icon"
                 />
               </button>
-              <div v-show="openMenu" class="budget__action-menu">
-                <button class="budget__action-item" @click="emit('add')">
+              <div
+                v-show="openMenu && active === item.id"
+                class="budget__action-menu"
+              >
+                <button
+                  class="budget__action-item budget__action--clear"
+                  @click="emit('add')"
+                >
                   Add
                 </button>
-                <button class="budget__action-item" @click="emit('reload')">
+                <button
+                  class="budget__action-item budget__action--clear"
+                  @click="emit('reload')"
+                >
                   Reload
                 </button>
-                <button class="budget__action-item" @click="emit('delete')">
+                <button
+                  class="budget__action-item budget__action--clear"
+                  @click="emit('delete')"
+                >
                   Delete
                 </button>
               </div>
@@ -78,6 +97,7 @@ import {
   getQuarter,
   getMonth,
   getYear,
+  format,
 } from "date-fns";
 
 @Options({
@@ -157,11 +177,16 @@ export default class List extends Vue {
         return MONTH_NAMES[getMonth(date)];
     }
   }
+
+  getDate(date: string): string {
+    return format(new Date(date), "MM/dd/yyyy");
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 @import "@/styles/mixins.scss";
+
 .budget {
   font-size: 15px;
   color: #364156;
@@ -172,6 +197,7 @@ export default class List extends Vue {
     line-height: 22px;
     color: #2a2a2a;
     margin-bottom: 10px;
+
     @include for-size(tablet-landscape-up) {
       font-size: 18px;
       line-height: 22px;
@@ -221,10 +247,31 @@ export default class List extends Vue {
     position: relative;
   }
 
+  @at-root #{&}__field-action {
+    position: relative;
+  }
+
+  @at-root #{&}__action-item {
+    padding: 15px;
+  }
+
+  @at-root #{&}__action--clear {
+    border: none;
+    outline: none;
+    background: transparent;
+  }
+
   @at-root #{&}__action-menu {
     position: absolute;
     display: flex;
     flex-direction: column;
+    width: 132px;
+    background-color: #fff;
+    right: 15px;
+    top: 40px;
+    background: #ffffff;
+    box-shadow: 0px 2px 10px 2px rgba(54, 65, 86, 0.1);
+    border-radius: 3px;
   }
 }
 </style>

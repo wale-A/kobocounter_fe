@@ -37,6 +37,10 @@ import Review from "./_internal/Review.vue";
       type: Object,
       default: null,
     },
+    loading: {
+      type: Boolean,
+      default: "false",
+    },
   },
   computed: {
     components() {
