@@ -4,8 +4,8 @@
 
 # entrypoint = "src/App.vue"
 
+compile = "npm run build"
 run = "npm run serve"
-# compile = "npm run build"
 
 [languages.typescript]
 pattern = "**/{*.ts,*.js,*.tsx,*.jsx}"
