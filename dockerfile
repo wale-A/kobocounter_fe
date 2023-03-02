@@ -3,7 +3,7 @@ FROM node:lts-alpine as build-stage
 WORKDIR /app
 # COPY package*.json ./
 COPY . .
-RUN yarn 
+RUN npm i
 
 ARG VITE_MONO_PUBLIC_KEY
 ARG VITE_VAPID_PUBLIC_KEY
@@ -17,7 +17,7 @@ ENV VITE_AM4_LICENSE=${VITE_AM4_LICENSE}
 ENV VITE_PORT=${VITE_PORT}
 ENV VITE_API_URL=${VITE_API_URL}
 
-RUN yarn build
+RUN npm run build
 
 # production stage
 FROM socialengine/nginx-spa:latest as production-stage
