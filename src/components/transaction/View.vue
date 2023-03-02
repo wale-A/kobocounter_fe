@@ -7,7 +7,7 @@
         @click="$router.push({ name: 'TransactionList' })"
       >
         <svg-icon
-          :src="require('@/assets/svg/back.svg')"
+          :src="'/img/assets/svg/back.svg'"
           class="filter__trigger-icon"
         />
       </button>
@@ -104,11 +104,11 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import Header from "./_internal/Header.vue";
-import Field from "./_internal/Field.vue";
-import { formatDate, formatTime } from "@/util";
 import { Transaction } from "@/types";
+import { formatDate, formatTime } from "@/util";
+import { Options, Vue } from "vue-class-component";
+import Field from "./_internal/Field.vue";
+import Header from "./_internal/Header.vue";
 
 @Options({
   components: { Field, Header },

@@ -10,7 +10,7 @@ export async function subscribeUser(): Promise<void> {
         .subscribe({
           userVisibleOnly: true,
           applicationServerKey: urlBase64ToUint8Array(
-            process.env.VUE_APP_VAPID_PUBLIC_KEY || ""
+            import.meta.env.VITE_VAPID_PUBLIC_KEY || ""
           ),
         })
         .then(function (subscription) {

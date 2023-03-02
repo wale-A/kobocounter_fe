@@ -45,12 +45,12 @@
           >
             <svg-icon
               v-if="item.change > 0"
-              :src="require('@/assets/svg/down-arrow.svg')"
+              :src="'/img/assets/svg/down-arrow.svg'"
               class="insight__change-icon"
             />
             <svg-icon
               v-if="item.change < 0"
-              :src="require('@/assets/svg/up-arrow.svg')"
+              :src="'/img/assets/svg/up-arrow.svg'"
               class="insight__change-icon"
             />
             <span class="insight__change-value"
@@ -64,8 +64,8 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
 import Panel from "@/components/layout/Panel.vue";
+import { Options, Vue } from "vue-class-component";
 
 @Options({
   components: {

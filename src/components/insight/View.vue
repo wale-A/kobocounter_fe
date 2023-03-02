@@ -3,7 +3,7 @@
     <div class="insight__header">
       <button class="insight__nav" @click="$router.push({ path: '/Insights' })">
         <svg-icon
-          :src="require('@/assets/svg/back.svg')"
+          :src="'/img/assets/svg/back.svg'"
           class="filter__trigger-icon"
         />
       </button>
@@ -37,9 +37,9 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
 import BudgetHistory from "@/components/charts/BudgetHistory.vue";
 import { Insights } from "@/types";
+import { Options, Vue } from "vue-class-component";
 
 @Options({
   components: {

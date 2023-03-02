@@ -77,7 +77,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import Datepicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";

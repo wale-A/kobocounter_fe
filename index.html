@@ -4,10 +4,10 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <base href="<%= BASE_URL %>" />
+    <base href="/" />
     <title>KoboCounter</title>
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
-    <link rel="stylesheet" href="<%= BASE_URL %>style.css" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/style.css" />
     <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link rel="manifest" href="/manifest.json" />
     <link
@@ -26,7 +26,7 @@
       href="https://fonts.googleapis.com/css?family=Nunito Sans"
       rel="stylesheet"
     />
-    <meta property="og:image" content="<%= BASE_URL %>img/assets/logo.png" />
+    <meta property="og:image" content="/img/assets/logo.png" />
     <meta
       property="og:description"
       content="Your personal service for automatic account reconciliation"
@@ -40,26 +40,11 @@
   <body>
     <noscript>
       <strong
-        >We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work
-        properly without JavaScript enabled. Please enable it to
-        continue.</strong
+        >We're sorry but KoboCounter doesn't work properly without JavaScript
+        enabled. Please enable it to continue.</strong
       >
     </noscript>
     <div id="app"></div>
-    <!-- built files will be auto injected -->
+    <script type="module" src="./src/main.ts"></script>
   </body>
 </html>
-
-<script
-  async
-  src="https://platform.twitter.com/widgets.js"
-  charset="utf-8"
-></script>
-
-<script
-  async
-  defer
-  crossorigin="anonymous"
-  src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v15.0&appId=814410515906513&autoLogAppEvents=1"
-  nonce="nqbqjfsG"
-></script>

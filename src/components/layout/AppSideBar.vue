@@ -4,7 +4,7 @@
       <nav class="app-menu">
         <div class="brand">
           <svg-icon
-            :src="require('@/assets/svg/logo-white.svg')"
+            :src="'/img/assets/svg/logo-white.svg'"
             class="brand__icon"
           />
         </div>

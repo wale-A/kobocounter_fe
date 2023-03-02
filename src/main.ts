@@ -12,12 +12,12 @@ import "./registerServiceWorker";
 import router from "./router";
 import store from "./store/index";
 
-const AM4_LICENSE = process.env.VUE_APP_AM4_LICENSE;
+const AM4_LICENSE = import.meta.env.VITE_AM4_LICENSE;
 createApp(App)
   .use(router)
   .use(store)
   .use((MonoJS as any).install, {
-    publicKey: process.env.VUE_APP_MONO_PUBLIC_KEY,
+    publicKey: import.meta.env.VITE_MONO_PUBLIC_KEY,
   })
   .use(Notifications)
   .use(VueScreen, {

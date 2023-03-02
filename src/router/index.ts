@@ -1,14 +1,14 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import Landing from "../views/Landing.vue";
-import { AccountRoutes } from "./account";
+import store from "../store/index";
 import Dashboard from "../views/Dashboard.vue";
 import Insights from "../views/Insights.vue";
-import PageNotFound from "../views/PageNotFound.vue";
-import Transactions from "../views/Transactions.vue";
-import Settings from "../views/Settings.vue";
 import InviteFriends from "../views/InviteFriends.vue";
+import Landing from "../views/Landing.vue";
+import PageNotFound from "../views/PageNotFound.vue";
+import Settings from "../views/Settings.vue";
+import Transactions from "../views/Transactions.vue";
 import VerifyAccount from "../views/VerifyAccount.vue";
-import store from "../store/index";
+import { AccountRoutes } from "./account";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -25,8 +25,7 @@ const routes: Array<RouteRecordRaw> = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue"),
+    component: () => import("../views/About.vue"),
     meta: {
       layout: "Default",
     },
@@ -53,8 +52,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/insights",
     name: "Insights",
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../components/layout/Route.vue"),
+    component: () => import("../components/layout/Route.vue"),
     meta: {
       authorize: true,
       layout: "App",
@@ -83,8 +81,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/transactions",
     name: "Transactions",
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../components/layout/Route.vue"),
+    component: () => import("../components/layout/Route.vue"),
     meta: {
       authorize: true,
       layout: "App",
@@ -113,8 +110,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/settings",
     name: "Settings",
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../components/layout/Route.vue"),
+    component: () => import("../components/layout/Route.vue"),
     meta: {
       authorize: true,
       layout: "App",

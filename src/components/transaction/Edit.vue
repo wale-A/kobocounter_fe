@@ -3,7 +3,7 @@
     <div class="transaction__header">
       <button class="transaction__nav" @click="$router.go(-1)">
         <svg-icon
-          :src="require('@/assets/svg/back.svg')"
+          :src="'/img/assets/svg/back.svg'"
           class="transaction__nav-icon"
         />
       </button>
@@ -92,12 +92,12 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import Multiselect from "@vueform/multiselect";
-import Header from "./_internal/Header.vue";
-import Field from "./_internal/Field.vue";
-import { formatDate, formatTime } from "@/util";
 import { TransactionInfo, TransactionPayload } from "@/types";
+import { formatDate, formatTime } from "@/util";
+import Multiselect from "@vueform/multiselect";
+import { Options, Vue } from "vue-class-component";
+import Field from "./_internal/Field.vue";
+import Header from "./_internal/Header.vue";
 @Options({
   components: { Field, Header, Multiselect },
   props: {

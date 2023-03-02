@@ -3,7 +3,7 @@
     <div class="transaction__header">
       <button class="transaction__nav" @click="$router.go(-1)">
         <svg-icon
-          :src="require('@/assets/svg/back.svg')"
+          :src="'/img/assets/svg/back.svg'"
           class="transaction__nav-icon"
         />
       </button>
@@ -20,7 +20,7 @@
     </div>
     <div class="transaction__info">
       <svg-icon
-        :src="require('@/assets/svg/info.svg')"
+        :src="'/img/assets/svg/info.svg'"
         class="transaction__info-icon"
       /><span class="transaction__info-text"
         >The total of each split amount should be equal to the total of the
@@ -57,7 +57,7 @@
             @click.stop="remove(index)"
           >
             <svg-icon
-              :src="require('@/assets/svg/del.svg')"
+              :src="'/img/assets/svg/del.svg'"
               class="transaction__input-icon"
             />
           </button>
@@ -107,9 +107,9 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import Multiselect from "@vueform/multiselect";
 import { SplitTransaction, Transaction } from "@/types";
+import Multiselect from "@vueform/multiselect";
+import { Options, Vue } from "vue-class-component";
 
 @Options({
   components: { Multiselect },

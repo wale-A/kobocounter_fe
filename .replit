@@ -2,7 +2,7 @@
 # run = "node --enable-source-maps .build/index.js"
 # entrypoint = "index.ts"
 
-entrypoint = "src/App.vue"
+# entrypoint = "src/App.vue"
 
 run = "npm run serve"
 # compile = "npm run build"

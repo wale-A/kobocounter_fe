@@ -1,8 +1,8 @@
-import { createStore, createLogger } from "vuex";
-import modules from "./modules";
+import { createLogger, createStore } from "vuex";
 import actions from "./actions";
+import modules from "./modules";
 
-const debug = process.env.NODE_ENV !== "production";
+const debug = import.meta.env.NODE_ENV !== "production";
 
 export default createStore({
   modules,

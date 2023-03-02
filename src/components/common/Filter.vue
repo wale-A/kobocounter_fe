@@ -8,7 +8,7 @@
     >
       <span class="filter__trigger-label">Filters </span>
       <svg-icon
-        :src="require('@/assets/svg/filter_outline.svg')"
+        :src="'/img/assets/svg/filter_outline.svg'"
         class="filter__trigger-icon"
         style="fill: #007cff"
       />
@@ -70,8 +70,8 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
 import Multiselect from "@vueform/multiselect";
+import { Options, Vue } from "vue-class-component";
 import RangePicker from "./RangePicker.vue";
 @Options({
   components: { Multiselect, RangePicker },

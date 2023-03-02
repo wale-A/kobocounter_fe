@@ -21,7 +21,7 @@ import Default from "./Default.vue";
           if (!route.meta?.layout || route.meta.layout === this.name) {
             return;
           }
-          const component = await import(`@/layouts/${route.meta.layout}.vue`);
+          const component = await import(`../layouts/${route.meta.layout}.vue`);
           if (component?.default) {
             this.layout = component.default;
             this.name = route.meta.layout;

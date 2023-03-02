@@ -1,9 +1,9 @@
 import axios from "axios";
 import store from "../store/index";
-import { getUserToken, deleteUser } from "./index";
+import { deleteUser, getUserToken } from "./index";
 
 export const instance = axios.create({
-  baseURL: process.env.VUE_APP_API_URL,
+  baseURL: import.meta.env.VITE_API_URL,
   timeout: 30000,
   headers: {
     "Content-Type": "application/json",

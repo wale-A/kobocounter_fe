@@ -14,13 +14,13 @@
 </template>
 
 <script lang="ts">
-import { Options, mixins } from "vue-class-component";
-import Layout from "@/layouts/Layout.vue";
 import { deleteSubscription } from "@/_helpers/pushNotification";
-import { mapActions, mapGetters } from "vuex";
-import { deleteUser } from "@/util";
+import Layout from "@/layouts/Layout.vue";
 import FailedAccountMixin from "@/mixins/FailedAccount";
 import NoTransactionMixin from "@/mixins/NoTransaction";
+import { deleteUser } from "@/util";
+import { Options, mixins } from "vue-class-component";
+import { mapActions, mapGetters } from "vuex";
 
 @Options({
   name: "App",
