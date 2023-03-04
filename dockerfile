@@ -72,7 +72,8 @@ ENV VITE_AM4_LICENSE=${VITE_AM4_LICENSE}
 ENV VITE_PORT=${VITE_PORT}
 ENV VITE_API_URL=${VITE_API_URL}
 
-RUN chmod -R 777 /app
+# RUN chmod -R 777 /app
 
-EXPOSE 3000
-CMD [ "npm", "run", "serve" ]
+EXPOSE 30000
+# RUN npm run serve -- --host
+CMD [ "npm", "run serve -- --host" ]

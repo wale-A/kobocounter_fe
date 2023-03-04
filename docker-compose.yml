@@ -1,0 +1,34 @@
+version: "3.7"
+
+services:
+  kobocounter-fe:
+    build:
+      context: .
+      dockerfile: dockerfile
+    container_name: vite
+    restart: always
+    ports: 
+      - "30000:30000"
+    networks:
+      - vue-network
+    command: >
+      sh -c "npm run serve -- --host"
+networks:
+  vue-network:
+    driver: bridge
+
+
+# version: "3.7"
+# services:
+#  kobocounter-fe:
+#    image: tarampampam/node:16-alpine
+#    container_name: vite
+#    entrypoint: /bin/sh
+#    ports:
+#      - 30000:30000
+#    working_dir: /app
+#    volumes:
+#      - type: bind
+#        source: ./
+#        target: /app
+#    tty: true
