@@ -2,8 +2,15 @@
 FROM node:lts-alpine as build-stage
 WORKDIR /app
 # COPY package*.json ./
+
+COPY package*.json ./
+COPY tsconfig.json ./
+
 COPY . .
-RUN npm i  --legacy-peer-deps
+
+RUN npm i -g typescript
+RUN npm install --legacy-peer-deps
+RUN npm run build
 
 ARG VITE_MONO_PUBLIC_KEY
 ARG VITE_VAPID_PUBLIC_KEY
@@ -23,4 +30,6 @@ RUN npm run build
 FROM socialengine/nginx-spa:latest as production-stage
 COPY --from=build-stage /app/dist /app
 RUN chmod -R 777 /app
-EXPOSE 80
+
+EXPOSE 3000
+RUN [ "npm", "run", "serve" ]
