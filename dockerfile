@@ -3,7 +3,7 @@ FROM node:lts-alpine as build-stage
 WORKDIR /app
 # COPY package*.json ./
 COPY . .
-RUN npm i
+RUN npm i  --legacy-peer-deps
 
 ARG VITE_MONO_PUBLIC_KEY
 ARG VITE_VAPID_PUBLIC_KEY

@@ -9,7 +9,7 @@
     "build": "vite build",
     "lint": "eslint --ext .js, .vue, .ts --ignore-path .gitignore --fix src",
     "serve-prod": "vite",
-    "postinstall": "cd ./node_modules/vue-mono && npm i && npm run dist"
+    "postinstall": "cd ./node_modules/vue-mono && npm i  --legacy-peer-deps && npm run dist"
   },
   "dependencies": {
     "@amcharts/amcharts4": "^4.10.20",
