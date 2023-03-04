@@ -1,5 +1,6 @@
 # build stage
-FROM node:lts-alpine as build-stage
+# FROM node:lts-alpine as build-stage
+FROM tarampampam/node:16-alpine AS build-stage
 WORKDIR /app
 # COPY package*.json ./
 COPY . .
