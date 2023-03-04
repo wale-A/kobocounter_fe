@@ -25,7 +25,6 @@
     "date-fns": "^2.21.3",
     "dateformat": "^5.0.3",
     "dotenv": "^8.2.0",
-    "firebase": "^8.6.3",
     "floating-vue": "^2.0.0-beta.20",
     "popper.js": "^1.16.1",
     "postcss": "^7",
