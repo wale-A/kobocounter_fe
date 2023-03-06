@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "vite --port 30000",
-    "serve": "vite preview --port 30000",
+    "serve": "vite preview --port 11003",
     "build-dev": "vite build --mode development",
-    "build": "vite build",
+    "build": "vite build --mode production",
     "lint": "eslint --ext .js, .vue, .ts --ignore-path .gitignore --fix src",
     "serve-prod": "vite",
     "postinstall": "cd ./node_modules/vue-mono && npm i && npm run dist"

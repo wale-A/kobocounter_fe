@@ -47,3 +47,6 @@ yarn lint
 ### Customize configuration
 
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+create caprover tar file
+`tar -cvf ./deploy.tar --exclude="*.map" ./captain-definition ./dist/*`
