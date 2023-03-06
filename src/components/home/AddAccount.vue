@@ -18,7 +18,6 @@ import { Options, Vue } from "vue-class-component";
       const options = {
         onSuccess: function (response) {
           const code = response.code;
-          console.log({ code });
         },
         onClose: function () {
           alert("user closed the widget.");

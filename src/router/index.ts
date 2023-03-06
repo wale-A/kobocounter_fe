@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import store from "../store/index";
+import Budgets from "../views/Budgets.vue";
 import Dashboard from "../views/Dashboard.vue";
 import Insights from "../views/Insights.vue";
 import InviteFriends from "../views/InviteFriends.vue";
@@ -71,6 +72,35 @@ const routes: Array<RouteRecordRaw> = [
         path: "/insights/:id",
         name: "InsightDetail",
         component: Insights,
+        meta: {
+          authorize: true,
+          layout: "App",
+        },
+      },
+    ],
+  },
+  {
+    path: "/budgets",
+    name: "Budgets",
+    component: () => import("../components/layout/Route.vue"),
+    meta: {
+      authorize: true,
+      layout: "App",
+    },
+    children: [
+      {
+        path: "",
+        name: "BudgetList",
+        component: Budgets,
+        meta: {
+          authorize: true,
+          layout: "App",
+        },
+      },
+      {
+        path: "/budgets/:id",
+        name: "BudgetDetail",
+        component: Budgets,
         meta: {
           authorize: true,
           layout: "App",

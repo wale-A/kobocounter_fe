@@ -87,7 +87,6 @@ import { mapActions } from "vuex";
           this.$router.push({ name: "Home" });
         })
         .catch((e: Error) => {
-          console.log({ e });
           this.disabled = false;
           this.$notify({
             title: "Registration failed",

@@ -135,6 +135,12 @@ export type Budget = {
   items: BudgetItem[];
 };
 
+export type BudgetPayload = {
+  startDate: string;
+  endDate: string;
+  items: Partial<BudgetItem>[];
+};
+
 export type NetIncome = {
   date: string;
   amount: number;

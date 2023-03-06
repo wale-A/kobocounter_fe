@@ -2,6 +2,7 @@ import {
   Budget,
   BudgetListItem,
   BudgetListResponse,
+  BudgetPayload,
   FilterParams,
   Pagination,
 } from "@/types";
@@ -24,6 +25,9 @@ const budgets: Module<State, any> = {
     budgets(state) {
       return state.budgets || [];
     },
+    budget(state) {
+      return state.budget || null;
+    },
   },
   mutations: {
     setBudgets(state, budgets?: BudgetListResponse) {
@@ -31,6 +35,9 @@ const budgets: Module<State, any> = {
     },
     setBudget(state, budget?: Budget) {
       state.budget = budget;
+    },
+    addBudget(state, budget: BudgetListItem) {
+      state.budgets?.push(budget);
     },
   },
   actions: {
@@ -50,6 +57,22 @@ const budgets: Module<State, any> = {
       } catch (e) {
         commit("setBudgets", []);
       }
+    },
+    async getBudget({ commit }, id: string) {
+      try {
+        const res = await api.getBudget(id);
+        commit("setBudget", res.data);
+      } catch (e) {
+        commit("setBudget", null);
+      }
+    },
+    async postBudget({ commit }, payload: BudgetPayload) {
+      const res = await api.postBudget(payload);
+      commit("addBudget", res.data);
+    },
+    async deleteBudget(_, id: string) {
+      const res = await api.deleteBudget(id);
+      return res;
     },
     async getSingleBudget({ commit }, id: string) {
       try {

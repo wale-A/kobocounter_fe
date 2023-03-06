@@ -8,6 +8,7 @@ import {
   TransactionResponse,
   Budget,
   BudgetListResponse,
+  BudgetPayload,
   UpdatePasswordPayload,
 } from "@/types";
 import { AxiosResponse } from "axios";
@@ -102,6 +103,15 @@ const getBudgets = (
 ): Promise<AxiosResponse<Array<BudgetListResponse>>> =>
   axios.get(`/budgets`, { params });
 
+const getBudget = (id: string): Promise<AxiosResponse<Budget>> =>
+  axios.get(`/budgets/${id}`);
+
+const deleteBudget = (id: string): Promise<AxiosResponse> =>
+  axios.delete(`/budgets/${id}`);
+
+const postBudget = (payload: BudgetPayload): Promise<AxiosResponse> =>
+  axios.post(`/budgets`, payload);
+
 const getSingleBudget = (id: string): Promise<AxiosResponse> =>
   axios.get(`/banking/budgets/${id}`);
 
@@ -130,7 +140,10 @@ export default {
   getRevenue,
   subscribe,
   unsubscribe,
+  getBudget,
   getBudgets,
+  postBudget,
+  deleteBudget,
   getInsights,
   getDetailedInsights,
   getSingleBudget,

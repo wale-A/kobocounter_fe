@@ -41,7 +41,6 @@
 
 <script lang="ts">
 import { Options, mixins } from "vue-class-component";
-import Card from "@/components/layout/Card.vue";
 import Columns from "@/components/layout/Columns.vue";
 import Page from "@/components/layout/Page.vue";
 import Filter from "@/components/common/Filter.vue";
@@ -54,7 +53,6 @@ import List from "@/components/insight/List.vue";
 @Options<Insights>({
   components: {
     Columns,
-    Card,
     Filter,
     Page,
     Detail,
