@@ -112,6 +112,11 @@ const deleteBudget = (id: string): Promise<AxiosResponse> =>
 const postBudget = (payload: BudgetPayload): Promise<AxiosResponse> =>
   axios.post(`/budgets`, payload);
 
+const putBudget = (
+  id: string,
+  payload: BudgetPayload
+): Promise<AxiosResponse> => axios.put(`/budgets/${id}`, payload);
+
 const getSingleBudget = (id: string): Promise<AxiosResponse> =>
   axios.get(`/banking/budgets/${id}`);
 
@@ -143,6 +148,7 @@ export default {
   getBudget,
   getBudgets,
   postBudget,
+  putBudget,
   deleteBudget,
   getInsights,
   getDetailedInsights,

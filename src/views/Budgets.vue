@@ -23,18 +23,20 @@
           <List
             :keyValue="'id'"
             :budgets="budgets"
-            :highlight="$route?.params.id"
+            :showEdit="canEdit"
+            :highlight="id"
             @select="
               $router.push({
                 name: 'BudgetDetail',
                 params: { id: $event },
               })
             "
-            @add="add = true"
+            @edit="editBudgetItem"
+            @delete="deleteBudgetItem"
           />
         </template>
         <template v-slot:col-2>
-          <Detail :budget="budget" />
+          <Detail :budget="budgetDetail" />
         </template>
       </Columns>
       <CTA
@@ -50,19 +52,16 @@
       :action="action"
       :categories="categoryOptionsMap"
       :budget="model"
+      :lastBudget="lastBudget"
       :loading="loading"
-      @cancel="add = false"
-      @edit="edit($event)"
-      @review="review($event)"
-      @save="save($event)"
+      :editing="editing"
+      @cancel="cancel"
+      @edit="edit"
+      @review="review"
+      @save="save"
+      @close="close"
     />
-    <Modal
-      v-if="showModal"
-      :title="title"
-      :message="message"
-      :button-label="label"
-      @action="showModal = false"
-    />
+    <AddButton :title="'Add budget'" @add="add = true" />
   </Page>
 </template>
 
@@ -79,7 +78,7 @@ import Detail from "@/components/budget/Detail.vue";
 import List from "@/components/budget/List.vue";
 import Create from "@/components/budget/Create.vue";
 import CTA from "@/components/common/CTA.vue";
-import Modal from "@/components/common/Modal.vue";
+import AddButton from "@/components/AddButton.vue";
 
 @Options<Budgets>({
   components: {
@@ -90,15 +89,36 @@ import Modal from "@/components/common/Modal.vue";
     List,
     CTA,
     Create,
-    Modal,
+    AddButton,
   },
   computed: {
-    ...mapGetters(["budget", "budgets", "categoryOptionsMap"]),
+    ...mapGetters([
+      "budget",
+      "budgets",
+      "budgetMap",
+      "lastBudget",
+      "categoryOptionsMap",
+    ]),
     isSingle() {
       return !!this.$route?.params.id;
     },
     id() {
       return this.$route?.params.id;
+    },
+    canEdit() {
+      if (!this.id || !this.budget) {
+        return false;
+      }
+      return this.id === this.budget?.id;
+    },
+    budgetDetail() {
+      if (!this.id || !this.budget) {
+        return null;
+      }
+      return {
+        ...this.budgetMap[this.id],
+        items: [...(this.budget?.items || [])],
+      };
     },
     onMobile() {
       return ["xs", "sm", "md"].includes(this.$grid.breakpoint);
@@ -109,6 +129,7 @@ import Modal from "@/components/common/Modal.vue";
       "getAccounts",
       "getBudgets",
       "getBudget",
+      "putBudget",
       "postBudget",
       "deleteBudget",
       "getAllExpenseCategories",
@@ -126,18 +147,16 @@ import Modal from "@/components/common/Modal.vue";
 })
 export default class Budgets extends mixins(FilterMixin) {
   budgets!: BudgetListItem[] | undefined;
-  budget!: Budget | undefined;
+  budget!: Budget | null;
+  budgetMap!: Record<string, BudgetListItem>;
+  lastBudget!: BudgetListItem | undefined;
   filterFields = budgetFilter;
   categoryOptionsMap!: Record<string, any>;
   add = false;
   loading = false;
   action = "add";
   model: BudgetPayload | null = null;
-  showModal = false;
-
-  title = "Your budget has been created successfully!";
-  message = "You have a total budget of ${} effective from ${} to ${}";
-  label = "close";
+  editing = false;
 
   get filterArgs(): Record<string, any> {
     return {
@@ -161,10 +180,52 @@ export default class Budgets extends mixins(FilterMixin) {
   getBudgets!: (params: FilterParams) => Promise<void>;
   getBudget!: (id: string) => Promise<void>;
   postBudget!: (payload: BudgetPayload) => Promise<void>;
+  putBudget!: ({
+    id,
+    payload,
+  }: {
+    id: string;
+    payload: BudgetPayload;
+  }) => Promise<void>;
+  deleteBudget!: (id: string) => Promise<void>;
+  transformBudget(budget: Budget | null): BudgetPayload | null {
+    if (!budget) return null;
+    const { startDate, endDate, items } = budget;
+    return {
+      startDate,
+      endDate,
+      items: items.map((item) => {
+        const { category, value } = item;
+        return { category, value };
+      }),
+    };
+  }
 
-  review(model: BudgetPayload): void {
-    this.model = model;
-    this.action = "review";
+  editBudgetItem(id: string): void {
+    // TODO: ensure budget is ready before edit is called
+    this.model = this.transformBudget(this.budget);
+    this.action = "add";
+    this.editing = true;
+    this.add = true;
+  }
+
+  deleteBudgetItem(id: string): void {
+    this.loading = true;
+    this.deleteBudget(id)
+      .then(() => {
+        this.$notify({
+          text: "Budget removed successfully",
+          type: "success",
+        });
+        this.refresh();
+      })
+      .catch(() => {
+        this.$notify({
+          text: "Couldn't delete budget, please retry again",
+          type: "error",
+        });
+      })
+      .finally(() => (this.loading = false));
   }
 
   edit(model: BudgetPayload): void {
@@ -172,17 +233,33 @@ export default class Budgets extends mixins(FilterMixin) {
     this.action = "add";
   }
 
+  review(model: BudgetPayload): void {
+    this.model = model;
+    this.action = "review";
+  }
+
+  cancel(): void {
+    this.model = null;
+    this.editing = false;
+    this.add = false;
+  }
+
   save(payload: BudgetPayload): void {
     if (!payload) {
       return;
     }
+    if (this.editing) {
+      this.budget?.id && this.put(this.budget.id, payload);
+    } else {
+      this.post(payload);
+    }
+  }
+
+  post(payload: BudgetPayload): void {
     this.loading = true;
     this.postBudget(payload)
-      .then(() => {
-        this.add = false;
-        this.action = "add";
-        this.model = null;
-        this.showModal = true;
+      .then((res) => {
+        this.action = "status";
       })
       .catch(() => {
         this.$notify({
@@ -191,6 +268,32 @@ export default class Budgets extends mixins(FilterMixin) {
         });
       })
       .finally(() => (this.loading = false));
+  }
+
+  put(id: string, payload: BudgetPayload): void {
+    this.loading = true;
+    this.putBudget({ id, payload })
+      .then((res) => {
+        this.action = "status";
+      })
+      .catch(() => {
+        this.$notify({
+          text: "Creating budget failed, please retry again",
+          type: "error",
+        });
+      })
+      .finally(() => (this.loading = false));
+  }
+
+  close() {
+    this.add = false;
+    this.action = "add";
+    this.model = null;
+    this.refresh();
+  }
+
+  refresh() {
+    this.getBudgets(this.getQuery(this.facets, this.params));
   }
 
   fetch(params: FilterParams): void {

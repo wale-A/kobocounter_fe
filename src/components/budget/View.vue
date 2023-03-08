@@ -67,7 +67,8 @@ import { format } from "date-fns";
 })
 export default class View extends Vue {
   getDate(date: string): string {
-    return format(new Date(date), "MM/dd/yyyy");
+    const [withoutTime] = date.split("T");
+    return format(new Date(withoutTime), "MM/dd/yyyy");
   }
 }
 </script>

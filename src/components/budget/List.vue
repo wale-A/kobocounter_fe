@@ -61,16 +61,11 @@
                 class="budget__action-menu"
               >
                 <button
+                  v-if="showEdit"
                   class="budget__action-item budget__action--clear"
-                  @click="emit('add')"
+                  @click="emit('edit')"
                 >
-                  Add
-                </button>
-                <button
-                  class="budget__action-item budget__action--clear"
-                  @click="emit('reload')"
-                >
-                  Reload
+                  Edit
                 </button>
                 <button
                   class="budget__action-item budget__action--clear"
@@ -121,6 +116,10 @@ import {
       type: String,
       default: "monthly",
     },
+    showEdit: {
+      type: Boolean,
+      default: false,
+    },
   },
   watch: {
     highlight(newVal) {
@@ -132,6 +131,7 @@ export default class List extends Vue {
   active = "";
   openMenu = false;
   budgetType!: string;
+  showEdit!: boolean;
 
   selectBudget(id: string): void {
     this.active = id;
@@ -179,7 +179,8 @@ export default class List extends Vue {
   }
 
   getDate(date: string): string {
-    return format(new Date(date), "MM/dd/yyyy");
+    const [withoutTime] = date.split("T");
+    return format(new Date(withoutTime), "MM/dd/yyyy");
   }
 }
 </script>
@@ -255,6 +256,10 @@ export default class List extends Vue {
     padding: 15px;
   }
 
+  @at-root #{&}__action {
+    padding: 5px;
+  }
+
   @at-root #{&}__action--clear {
     border: none;
     outline: none;
@@ -267,11 +272,12 @@ export default class List extends Vue {
     flex-direction: column;
     width: 132px;
     background-color: #fff;
-    right: 15px;
+    right: 20px;
     top: 40px;
     background: #ffffff;
     box-shadow: 0px 2px 10px 2px rgba(54, 65, 86, 0.1);
     border-radius: 3px;
+    z-index: 100;
   }
 }
 </style>

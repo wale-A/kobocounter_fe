@@ -114,19 +114,6 @@ export type BudgetItem = {
   amountSpent: number | null;
 };
 
-export type Insights = {
-  id: string;
-  category: string;
-  amount: number;
-  change: number;
-  budgetAmount: number;
-};
-
-export type DetailedInsights = {
-  transactions: Array<{ date: number; amount: number }>;
-  budget: Array<{ date: number; amount: number }>;
-};
-
 export type Budget = {
   id: string;
   startDate: string;
@@ -139,6 +126,19 @@ export type BudgetPayload = {
   startDate: string;
   endDate: string;
   items: Partial<BudgetItem>[];
+};
+
+export type Insights = {
+  id: string;
+  category: string;
+  amount: number;
+  change: number;
+  budgetAmount: number;
+};
+
+export type DetailedInsights = {
+  transactions: Array<{ date: number; amount: number }>;
+  budget: Array<{ date: number; amount: number }>;
 };
 
 export type NetIncome = {
