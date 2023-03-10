@@ -1,5 +1,5 @@
 <template>
-  <Page>
+  <Page :loading="loadingBudgets">
     <template v-if="facets.length > 0" v-slot:actions>
       <Filter
         :displayText="paramSummary"
@@ -36,15 +36,24 @@
           />
         </template>
         <template v-slot:col-2>
-          <Detail :budget="budgetDetail" />
+          <Wrap :loading="loadingBudget">
+            <Detail :budget="budgetDetail" />
+          </Wrap>
         </template>
       </Columns>
       <CTA
-        v-else
+        v-if="budgets && budgets.length === 0"
         title="You have not created a budget"
         subtext="You will see a list of your budgets on this page once they are created"
         buttonLabel="Create Budget"
         @action="add = true"
+      />
+      <CTA
+        v-if="budgetsError"
+        title="Oops"
+        subtext="Couldn't load budgets"
+        buttonLabel="Try again"
+        @action="refresh"
       />
     </div>
     <Create
@@ -71,14 +80,16 @@ import Columns from "@/components/layout/Columns.vue";
 import Page from "@/components/layout/Page.vue";
 import Filter from "@/components/common/Filter.vue";
 import { FilterParams, BudgetListItem, Budget, BudgetPayload } from "@/types";
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapState } from "vuex";
 import { budgetFilter } from "@/util";
 import FilterMixin from "@/mixins/Filter";
 import Detail from "@/components/budget/Detail.vue";
 import List from "@/components/budget/List.vue";
 import Create from "@/components/budget/Create.vue";
 import CTA from "@/components/common/CTA.vue";
+import Wrap from "@/components/common/Wrap.vue";
 import AddButton from "@/components/AddButton.vue";
+import { startOfMonth, differenceInMonths } from "date-fns";
 
 @Options<Budgets>({
   components: {
@@ -90,8 +101,15 @@ import AddButton from "@/components/AddButton.vue";
     CTA,
     Create,
     AddButton,
+    Wrap,
   },
   computed: {
+    ...mapState([
+      "loadingBudget",
+      "budgetError",
+      "loadingBudgets",
+      "budgetsError",
+    ]),
     ...mapGetters([
       "budget",
       "budgets",
@@ -109,7 +127,13 @@ import AddButton from "@/components/AddButton.vue";
       if (!this.id || !this.budget) {
         return false;
       }
-      return this.id === this.budget?.id;
+      return (
+        this.id === this.budget.id &&
+        differenceInMonths(
+          new Date(this.budget.endDate),
+          startOfMonth(new Date())
+        )
+      );
     },
     budgetDetail() {
       if (!this.id || !this.budget) {
@@ -139,15 +163,22 @@ import AddButton from "@/components/AddButton.vue";
     params(newVal) {
       this.fetch(this.getQuery(this.facets, newVal));
     },
-    id(newVal) {
-      console.log("budget", newVal);
-      this.getBudget(newVal);
+    id: {
+      handler(newVal) {
+        console.log("budget", newVal);
+        this.getBudget(newVal);
+      },
+      immediate: true,
     },
   },
 })
 export default class Budgets extends mixins(FilterMixin) {
   budgets!: BudgetListItem[] | undefined;
-  budget!: Budget | null;
+  loadingbudgets!: boolean;
+  budgetError!: Error | undefined;
+  budget!: Budget | undefined;
+  loadingbudget!: boolean;
+  budgetsError!: Error | undefined;
   budgetMap!: Record<string, BudgetListItem>;
   lastBudget!: BudgetListItem | undefined;
   filterFields = budgetFilter;
@@ -203,6 +234,9 @@ export default class Budgets extends mixins(FilterMixin) {
 
   editBudgetItem(id: string): void {
     // TODO: ensure budget is ready before edit is called
+    if (!this.budget) {
+      return;
+    }
     this.model = this.transformBudget(this.budget);
     this.action = "add";
     this.editing = true;

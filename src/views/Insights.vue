@@ -1,5 +1,5 @@
 <template>
-  <Page>
+  <Page :loading="loadingInsights">
     <template v-if="facets.length > 0" v-slot:actions>
       <Filter
         :displayText="paramSummary"
@@ -18,7 +18,7 @@
           @update:account="addAccount"
         />
       </template>
-      <Columns>
+      <Columns v-if="insights && insights.length">
         <template v-slot:col-1>
           <List
             :keyValue="'id'"
@@ -35,6 +35,24 @@
         <template v-slot:col-2>
           <Detail :insight="insight" :data="detailedInsights" /></template
       ></Columns>
+      <CTA
+        v-if="insights && insights.length === 0"
+        title="Oops, we found nothing"
+        subtext="Please adjust the filters or have you created a budget yet?"
+        buttonLabel="Create Budget"
+        @action="
+          $router.push({
+            name: 'Budgets',
+          })
+        "
+      />
+      <CTA
+        v-if="insightsError"
+        title="Oops"
+        subtext="Couldn't load insights"
+        buttonLabel="Try again"
+        @action="refresh"
+      />
     </div>
   </Page>
 </template>
@@ -45,10 +63,11 @@ import Columns from "@/components/layout/Columns.vue";
 import Page from "@/components/layout/Page.vue";
 import Filter from "@/components/common/Filter.vue";
 import { FilterParams, Insights as InsightType } from "@/types";
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapState } from "vuex";
 import FilterMixin from "@/mixins/Filter";
 import Detail from "@/components/insight/Detail.vue";
 import List from "@/components/insight/List.vue";
+import CTA from "@/components/common/CTA.vue";
 
 @Options<Insights>({
   components: {
@@ -57,8 +76,15 @@ import List from "@/components/insight/List.vue";
     Page,
     Detail,
     List,
+    CTA,
   },
   computed: {
+    ...mapState([
+      "loadingInsights",
+      "loadingInsight",
+      "insightsError",
+      "insightError",
+    ]),
     ...mapGetters(["insights", "budgets", "detailedInsights"]),
     isSingle() {
       return this.$route?.params.id;
@@ -115,6 +141,10 @@ export default class Insights extends mixins(FilterMixin) {
       this.getInsights(params),
       this.getBudgets(params),
     ]);
+  }
+
+  refresh() {
+    this.fetch(this.getQuery(this.facets, this.params));
   }
 
   created(): void {

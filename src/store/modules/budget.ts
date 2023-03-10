@@ -11,23 +11,29 @@ import { differenceInDays } from "date-fns";
 import { Module } from "vuex";
 
 type State = {
+  loadingBudget: boolean;
   budget: Budget | undefined;
+  budgetError: Error | undefined;
+  loadingBudgets: boolean;
   budgets: BudgetListItem[] | undefined;
   pagination: Pagination | undefined;
+  budgetsError: Error | undefined;
 };
 
 const budgets: Module<State, any> = {
   state: () => ({
+    loadingBudget: false,
     budget: undefined,
+    budgetError: undefined,
+    loadingBudgets: false,
     budgets: undefined,
     pagination: undefined,
+    budgetsError: undefined,
   }),
   getters: {
     budgets(state) {
-      return (
-        state.budgets?.sort((itemA, itemB) =>
-          differenceInDays(new Date(itemA.endDate), new Date(itemB.endDate))
-        ) || []
+      return state.budgets?.sort((itemA, itemB) =>
+        differenceInDays(new Date(itemA.endDate), new Date(itemB.endDate))
       );
     },
     budgetMap(state) {
@@ -39,19 +45,34 @@ const budgets: Module<State, any> = {
     lastBudget(state) {
       const last =
         state.budgets?.length && state.budgets[state.budgets.length - 1];
-      console.log({ last });
       return last;
     },
     budget(state) {
-      return state.budget || null;
+      return state.budget;
     },
   },
   mutations: {
-    setBudgets(state, budgets?: BudgetListResponse) {
-      state.budgets = budgets?.data;
+    loadBudgets(state, active: boolean) {
+      state.loadingBudgets = active;
     },
-    setBudget(state, budget?: Budget) {
+    setBudgets(state, budgets: BudgetListResponse) {
+      state.budgets = budgets.data;
+      state.budgetsError = undefined;
+    },
+    budgetsError(state, err: Error) {
+      state.budgetsError = err;
+      state.budgets = undefined;
+    },
+    loadBudget(state, active: boolean) {
+      state.loadingBudget = active;
+    },
+    setBudget(state, budget: Budget) {
       state.budget = budget;
+      state.budgetError = undefined;
+    },
+    budgetError(state, err: Error) {
+      state.budgetError = err;
+      state.budget = undefined;
     },
   },
   actions: {
@@ -60,6 +81,7 @@ const budgets: Module<State, any> = {
       { category, start, end, page, size }: FilterParams
     ) {
       try {
+        commit("loadBudgets", true);
         const res = await api.getBudgets({
           category,
           start,
@@ -69,15 +91,20 @@ const budgets: Module<State, any> = {
         });
         commit("setBudgets", res.data);
       } catch (e) {
-        commit("setBudgets", []);
+        commit("budgetsError", e);
+      } finally {
+        commit("loadBudgets", false);
       }
     },
     async getBudget({ commit }, id: string) {
       try {
+        commit("loadBudget", true);
         const res = await api.getBudget(id);
         commit("setBudget", res.data);
       } catch (e) {
-        commit("setBudget", null);
+        commit("budgetError", e);
+      } finally {
+        commit("loadBudget", false);
       }
     },
     async postBudget(_, payload: BudgetPayload) {
@@ -95,12 +122,16 @@ const budgets: Module<State, any> = {
       const res = await api.deleteBudget(id);
       return res;
     },
+    // TODO: remove
     async getSingleBudget({ commit }, id: string) {
       try {
+        commit("loadBudget", true);
         const res = await api.getSingleBudget(id);
         commit("setBudget", res.data);
       } catch (e) {
-        commit("setBudget", undefined);
+        commit("setBudgetError", e);
+      } finally {
+        commit("loadBudget", false);
       }
     },
   },
