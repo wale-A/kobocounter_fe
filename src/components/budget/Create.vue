@@ -7,6 +7,7 @@
       :lastBudget="lastBudget"
       :editing="editing"
       :loading="loading"
+      v-click-outside="() => $emit('cancel')"
       @review="$emit('review', $event)"
       @edit="$emit('edit', $event)"
       @save="$emit('save', $event)"

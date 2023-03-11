@@ -9,6 +9,7 @@ import {
 import api from "@/api";
 import { differenceInDays } from "date-fns";
 import { Module } from "vuex";
+import { justDate, getBudgetName } from "@/util";
 
 type State = {
   loadingBudget: boolean;
@@ -32,13 +33,23 @@ const budgets: Module<State, any> = {
   }),
   getters: {
     budgets(state) {
-      return state.budgets?.sort((itemA, itemB) =>
-        differenceInDays(new Date(itemA.endDate), new Date(itemB.endDate))
-      );
+      return state.budgets
+        ?.map((item) => ({
+          ...item,
+          startDate: justDate(item.startDate),
+          endDate: justDate(item.startDate),
+          name: getBudgetName(item.startDate, "monthly"),
+        }))
+        .sort((itemA, itemB) =>
+          differenceInDays(new Date(itemA.endDate), new Date(itemB.endDate))
+        );
     },
-    budgetMap(state) {
-      return (state.budgets || []).reduce(
-        (acc, item) => ({ ...acc, [item.id]: item }),
+    budgetMap(_, getters) {
+      return (getters.budgets || []).reduce(
+        (acc: Record<string, BudgetListItem>, item: BudgetListItem) => ({
+          ...acc,
+          [item.id]: item,
+        }),
         {}
       );
     },

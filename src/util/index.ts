@@ -1,5 +1,14 @@
 import { COMMON_DATES, PERIOD_LABEL_MAPPING } from "@/config";
 import { Account, User } from "@/types";
+import { BUDGET_TYPE_OPTIONS, MONTH_NAMES } from "@/config";
+import {
+  getWeek,
+  getWeekOfMonth,
+  getQuarter,
+  getMonth,
+  getYear,
+  format,
+} from "date-fns";
 
 const storeKey = "authenticated-user";
 
@@ -189,4 +198,31 @@ export const budgetFilter = {
     "rest"
   ),
   category: CATEGORIES_FIELD,
+};
+
+export const getBudgetName = (startDate: string, type: string): string => {
+  const date = new Date(startDate);
+  switch (type) {
+    case BUDGET_TYPE_OPTIONS.WEEKLY:
+      return `Week ${getWeek(date)}`;
+    case BUDGET_TYPE_OPTIONS.BI_WEEKLY:
+      return `${MONTH_NAMES[getMonth(date)]} WEEK-GROUP ${
+        getWeekOfMonth(date) < 2 ? "1" : "2"
+      }`;
+    case BUDGET_TYPE_OPTIONS.BI_MONTHLY:
+      return `MONTH-GROUP ${(getMonth(date) + 1) / 2}`;
+    case BUDGET_TYPE_OPTIONS.QUATERLY:
+      return `Quater ${getQuarter(date)}`;
+    case BUDGET_TYPE_OPTIONS.MID_YEAR:
+      return getMonth(date) < 6 ? `First Half` : "Second Half";
+    case BUDGET_TYPE_OPTIONS.YEARLY:
+      return `Year ${getYear(date)}`;
+    default:
+      return MONTH_NAMES[getMonth(date)];
+  }
+};
+
+export const justDate = (date: string): string => {
+  const [withoutTime] = date.split("T");
+  return format(new Date(withoutTime), "MM/dd/yyyy");
 };

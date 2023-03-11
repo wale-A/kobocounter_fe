@@ -25,16 +25,8 @@
         orientation="row"
       />
       <Field label="Performance" :value="budget.insight" orientation="row" />
-      <Field
-        label="Start Date"
-        :value="getDate(budget.startDate)"
-        orientation="row"
-      />
-      <Field
-        label="End Date"
-        :value="getDate(budget.endDate)"
-        orientation="row"
-      />
+      <Field label="Start Date" :value="budget.startDate" orientation="row" />
+      <Field label="End Date" :value="budget.endDate" orientation="row" />
     </div>
     <div
       v-if="budget.items && budget.items.length > 0"
@@ -65,12 +57,7 @@ import { format } from "date-fns";
     budget: Object,
   },
 })
-export default class View extends Vue {
-  getDate(date: string): string {
-    const [withoutTime] = date.split("T");
-    return format(new Date(withoutTime), "MM/dd/yyyy");
-  }
-}
+export default class View extends Vue {}
 </script>
 
 <style lang="scss" scoped>

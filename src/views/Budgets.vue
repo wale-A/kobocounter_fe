@@ -188,6 +188,7 @@ export default class Budgets extends mixins(FilterMixin) {
   action = "add";
   model: BudgetPayload | null = null;
   editing = false;
+  budgetDetail!: (BudgetListItem & Budget) | undefined;
 
   get filterArgs(): Record<string, any> {
     return {
@@ -244,6 +245,9 @@ export default class Budgets extends mixins(FilterMixin) {
   }
 
   deleteBudgetItem(id: string): void {
+    if (!confirm(`Delete ${this.budgetDetail?.name} budget`)) {
+      return;
+    }
     this.loading = true;
     this.deleteBudget(id)
       .then(() => {

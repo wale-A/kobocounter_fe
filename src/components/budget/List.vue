@@ -30,16 +30,16 @@
             @click.stop="selectBudget(item[keyValue])"
           >
             <td class="budget__id">
-              {{ getName(item.startDate) }}
+              {{ item.name }}
             </td>
             <td class="budget__field budget__status">
               {{ item.status || "Active" }}
             </td>
             <td class="budget__field budget__start">
-              {{ getDate(item.startDate) }}
+              {{ item.startDate }}
             </td>
             <td class="budget__field budget__end">
-              {{ getDate(item.endDate) }}
+              {{ item.endDate }}
             </td>
             <td class="budget__field budget__budget">N {{ item.value }}</td>
             <td class="budget__field budget__spend">
@@ -58,6 +58,7 @@
               </button>
               <div
                 v-show="openMenu && active === item.id"
+                v-click-outside="() => (openMenu = false)"
                 class="budget__action-menu"
               >
                 <button
@@ -85,15 +86,6 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import Panel from "@/components/layout/Panel.vue";
-import { BUDGET_TYPE_OPTIONS, MONTH_NAMES } from "@/config";
-import {
-  getWeek,
-  getWeekOfMonth,
-  getQuarter,
-  getMonth,
-  getYear,
-  format,
-} from "date-fns";
 
 @Options({
   components: {
@@ -122,8 +114,11 @@ import {
     },
   },
   watch: {
-    highlight(newVal) {
-      this.active = newVal;
+    highlight: {
+      handler(newVal) {
+        this.active = newVal;
+      },
+      immediate: true,
     },
   },
 })
@@ -154,33 +149,6 @@ export default class List extends Vue {
   emit(action: string): void {
     this.$emit(action, this.active);
     this.toggleMenu();
-  }
-
-  getName(startDate: string): string {
-    const date = new Date(startDate);
-    switch (this.budgetType) {
-      case BUDGET_TYPE_OPTIONS.WEEKLY:
-        return `Week ${getWeek(date)}`;
-      case BUDGET_TYPE_OPTIONS.BI_WEEKLY:
-        return `${MONTH_NAMES[getMonth(date)]} WEEK-GROUP ${
-          getWeekOfMonth(date) < 2 ? "1" : "2"
-        }`;
-      case BUDGET_TYPE_OPTIONS.BI_MONTHLY:
-        return `MONTH-GROUP ${(getMonth(date) + 1) / 2}`;
-      case BUDGET_TYPE_OPTIONS.QUATERLY:
-        return `Quater ${getQuarter(date)}`;
-      case BUDGET_TYPE_OPTIONS.MID_YEAR:
-        return getMonth(date) < 6 ? `First Half` : "Second Half";
-      case BUDGET_TYPE_OPTIONS.YEARLY:
-        return `Year ${getYear(date)}`;
-      default:
-        return MONTH_NAMES[getMonth(date)];
-    }
-  }
-
-  getDate(date: string): string {
-    const [withoutTime] = date.split("T");
-    return format(new Date(withoutTime), "MM/dd/yyyy");
   }
 }
 </script>
