@@ -4,10 +4,14 @@
       :is="components[action]"
       :categories="categories"
       :budget="budget"
+      :lastBudget="lastBudget"
+      :editing="editing"
+      :loading="loading"
       @review="$emit('review', $event)"
       @edit="$emit('edit', $event)"
       @save="$emit('save', $event)"
       @cancel="$emit('cancel')"
+      @close="$emit('close')"
     />
   </Overlay>
 </template>
@@ -17,12 +21,14 @@ import Overlay from "@/components/common/Overlay.vue";
 import { Options, Vue } from "vue-class-component";
 import Add from "./_internal/Add.vue";
 import Review from "./_internal/Review.vue";
+import Status from "./_internal/Status.vue";
 
 @Options({
   components: {
     Overlay,
     Add,
     Review,
+    Status,
   },
   props: {
     action: {
@@ -37,7 +43,15 @@ import Review from "./_internal/Review.vue";
       type: Object,
       default: null,
     },
+    lastBudget: {
+      type: Object,
+      default: null,
+    },
     loading: {
+      type: Boolean,
+      default: "false",
+    },
+    editing: {
       type: Boolean,
       default: "false",
     },
@@ -47,6 +61,7 @@ import Review from "./_internal/Review.vue";
       return {
         add: "Add",
         review: "Review",
+        status: "Status",
       };
     },
   },

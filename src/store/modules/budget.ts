@@ -7,6 +7,7 @@ import {
   Pagination,
 } from "@/types";
 import api from "@/api";
+import { differenceInDays } from "date-fns";
 import { Module } from "vuex";
 
 type State = {
@@ -23,7 +24,23 @@ const budgets: Module<State, any> = {
   }),
   getters: {
     budgets(state) {
-      return state.budgets || [];
+      return (
+        state.budgets?.sort((itemA, itemB) =>
+          differenceInDays(new Date(itemA.endDate), new Date(itemB.endDate))
+        ) || []
+      );
+    },
+    budgetMap(state) {
+      return (state.budgets || []).reduce(
+        (acc, item) => ({ ...acc, [item.id]: item }),
+        {}
+      );
+    },
+    lastBudget(state) {
+      const last =
+        state.budgets?.length && state.budgets[state.budgets.length - 1];
+      console.log({ last });
+      return last;
     },
     budget(state) {
       return state.budget || null;
@@ -35,9 +52,6 @@ const budgets: Module<State, any> = {
     },
     setBudget(state, budget?: Budget) {
       state.budget = budget;
-    },
-    addBudget(state, budget: BudgetListItem) {
-      state.budgets?.push(budget);
     },
   },
   actions: {
@@ -66,9 +80,16 @@ const budgets: Module<State, any> = {
         commit("setBudget", null);
       }
     },
-    async postBudget({ commit }, payload: BudgetPayload) {
+    async postBudget(_, payload: BudgetPayload) {
       const res = await api.postBudget(payload);
-      commit("addBudget", res.data);
+      return res;
+    },
+    async putBudget(
+      _,
+      { id, payload }: { id: string; payload: BudgetPayload }
+    ) {
+      const res = await api.putBudget(id, payload);
+      return res;
     },
     async deleteBudget(_, id: string) {
       const res = await api.deleteBudget(id);

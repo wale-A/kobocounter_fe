@@ -51,7 +51,7 @@
     <div class="review__actions">
       <input
         type="button"
-        value="Activate Budget"
+        :value="editing ? 'Update Budget' : 'Activate Budget'"
         :disabled="!budget"
         class="button button--primary"
         @click.stop="$emit('save', budget)"
@@ -69,6 +69,7 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import Field from "./Field.vue";
+import { isDate } from "date-fns";
 
 type categoryType = { value: number; label: string };
 @Options({
@@ -83,6 +84,10 @@ type categoryType = { value: number; label: string };
     categories: {
       type: Array,
       required: true,
+    },
+    editing: {
+      type: Boolean,
+      default: "false",
     },
   },
   computed: {
@@ -108,6 +113,9 @@ export default class Review extends Vue {
   format(date: Date): string {
     if (!date) {
       return "";
+    }
+    if (!isDate(date)) {
+      date = new Date(date);
     }
     const day = date.getDate();
     const month = date.toLocaleString("default", { month: "long" });

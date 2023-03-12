@@ -7,16 +7,18 @@
       <input type="submit" value="Add Bank Account" />
     </form>
   </section>
-  <button class="floating-button" @click="addNewAccount" title="Add an account">
-    +
-  </button>
+  <AddButton :title="'Add an account'" @add="addNewAccount" />
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import AddButton from "./AddButton.vue";
 import { mapActions } from "vuex";
 
 @Options({
+  components: {
+    AddButton,
+  },
   props: {
     hasAccounts: Boolean,
   },
@@ -62,33 +64,8 @@ export default class AddNewAccount extends Vue {
 .no-account input {
   margin: 2em auto;
 }
-.floating-button {
-  padding: 2px 15px;
-  width: unset !important;
-  font-size: 2em;
-  border-radius: 50%;
-  position: fixed;
-  top: 93%;
-  left: 95%;
-  transition: all 0.2s ease-in 0s;
-  z-index: 9999;
-  cursor: pointer;
-  margin: 0;
-  color: white;
-  background-color: #007cff;
-  border-color: transparent;
-}
-
-.card {
-  text-align: center;
-  margin-top: 90px;
-}
 
 @media screen and (max-width: 900px) {
-  .floating-button {
-    top: 84%;
-    left: 84%;
-  }
   .no-account form {
     width: 100%;
   }
