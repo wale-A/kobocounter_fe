@@ -89,9 +89,14 @@ export default class Filter extends Vue {
     );
   }
 
-  addAccount(): void {
-    const addAccountFn = (code: string) =>
-      this.$store.dispatch("addAccount", { code });
+  addAccount(cb: () => void | undefined): void {
+    const addAccountFn = (code: string) => {
+      this.$store.dispatch("addAccount", { code }).then(() => {
+        if (cb) {
+          cb();
+        }
+      });
+    };
     const options = {
       onSuccess: function (response: { code: string }) {
         addAccountFn(response.code);

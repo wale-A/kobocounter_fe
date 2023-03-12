@@ -63,25 +63,25 @@ const budgets: Module<State, any> = {
     },
   },
   mutations: {
-    loadBudgets(state, active: boolean) {
+    loadingBudgets(state, active: boolean) {
       state.loadingBudgets = active;
     },
     setBudgets(state, budgets: BudgetListResponse) {
       state.budgets = budgets.data;
       state.budgetsError = undefined;
     },
-    budgetsError(state, err: Error) {
+    setBudgetsError(state, err: Error) {
       state.budgetsError = err;
       state.budgets = undefined;
     },
-    loadBudget(state, active: boolean) {
+    loadingBudget(state, active: boolean) {
       state.loadingBudget = active;
     },
     setBudget(state, budget: Budget) {
       state.budget = budget;
       state.budgetError = undefined;
     },
-    budgetError(state, err: Error) {
+    setBudgetError(state, err: Error) {
       state.budgetError = err;
       state.budget = undefined;
     },
@@ -92,7 +92,7 @@ const budgets: Module<State, any> = {
       { category, start, end, page, size }: FilterParams
     ) {
       try {
-        commit("loadBudgets", true);
+        commit("loadingBudgets", true);
         const res = await api.getBudgets({
           category,
           start,
@@ -102,20 +102,20 @@ const budgets: Module<State, any> = {
         });
         commit("setBudgets", res.data);
       } catch (e) {
-        commit("budgetsError", e);
+        commit("setBudgetsError", e);
       } finally {
-        commit("loadBudgets", false);
+        commit("loadingBudgets", false);
       }
     },
     async getBudget({ commit }, id: string) {
       try {
-        commit("loadBudget", true);
+        commit("loadingBudget", true);
         const res = await api.getBudget(id);
         commit("setBudget", res.data);
       } catch (e) {
-        commit("budgetError", e);
+        commit("setBudgetError", e);
       } finally {
-        commit("loadBudget", false);
+        commit("loadingBudget", false);
       }
     },
     async postBudget(_, payload: BudgetPayload) {
@@ -136,13 +136,13 @@ const budgets: Module<State, any> = {
     // TODO: remove
     async getSingleBudget({ commit }, id: string) {
       try {
-        commit("loadBudget", true);
+        commit("loadingBudget", true);
         const res = await api.getSingleBudget(id);
         commit("setBudget", res.data);
       } catch (e) {
         commit("setBudgetError", e);
       } finally {
-        commit("loadBudget", false);
+        commit("loadingBudget", false);
       }
     },
   },

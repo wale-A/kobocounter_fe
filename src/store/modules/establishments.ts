@@ -3,14 +3,22 @@ import api from "@/api";
 import { Module } from "vuex";
 
 type State = {
+  loadingEstablishmentActivities: boolean;
   establishmentActivities: EstablishmentActivity[] | undefined;
+  establishmentActivitiesError: Error | undefined;
+  loadingEstablishments: boolean;
   establishments: Record<string, string[]> | undefined;
+  establishmentsError: Error | undefined;
 };
 
 const establishments: Module<State, any> = {
   state: () => ({
+    loadingEstablishmentActivities: false,
     establishmentActivities: undefined,
+    establishmentActivitiesError: undefined,
+    loadingEstablishments: false,
     establishments: undefined,
+    establishmentsError: undefined,
   }),
   getters: {
     establishmentActivities(state) {
@@ -21,11 +29,27 @@ const establishments: Module<State, any> = {
     },
   },
   mutations: {
-    setEstablishmentActivities(state, activities?: []) {
+    loadingEstablishmentActivities(state, active: boolean) {
+      state.loadingEstablishmentActivities = active;
+    },
+    setEstablishmentActivities(state, activities: []) {
       state.establishmentActivities = activities;
+      state.establishmentActivitiesError = undefined;
+    },
+    setEstablishmentActivitiesError(state, error: Error) {
+      state.establishmentActivitiesError = error;
+      state.establishmentActivities = undefined;
+    },
+    loadingEstablishments(state, active: boolean) {
+      state.loadingEstablishments = active;
     },
     setEstablishments(state, establishments?: Record<string, string[]>) {
       state.establishments = establishments;
+      state.establishmentsError = undefined;
+    },
+    setEstablishmentsError(state, error: Error) {
+      state.establishmentsError = error;
+      state.establishments = undefined;
     },
     insertActivity(
       state,
@@ -48,6 +72,7 @@ const establishments: Module<State, any> = {
       { accountId, start, end }: FilterParams
     ) {
       try {
+        commit("loadingEstablishmentActivities", true);
         const res = await api.getEstablishmentActivities({
           accountId,
           start,
@@ -55,15 +80,20 @@ const establishments: Module<State, any> = {
         });
         commit("setEstablishmentActivities", res.data);
       } catch (e) {
-        commit("setEstablishmentActivities", []);
+        commit("setEstablishmentActivitiesError", e);
+      } finally {
+        commit("loadingEstablishmentActivities", false);
       }
     },
     async getEstablishments({ commit }) {
       try {
+        commit("loadingEstablishments", true);
         const res = await api.getEstablishments();
         commit("setEstablishments", res.data as string[]);
       } catch (e) {
-        commit("setEstablishments", []);
+        commit("setEstablishmentsError", e);
+      } finally {
+        commit("loadingEstablishments", false);
       }
     },
   },

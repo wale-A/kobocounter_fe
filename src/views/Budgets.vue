@@ -245,7 +245,11 @@ export default class Budgets extends mixins(FilterMixin) {
   }
 
   deleteBudgetItem(id: string): void {
-    if (!confirm(`Delete ${this.budgetDetail?.name} budget`)) {
+    if (
+      !confirm(
+        `Are you sure you want to delete ${this.budgetDetail?.name} budget`
+      )
+    ) {
       return;
     }
     this.loading = true;

@@ -1,5 +1,5 @@
 <template>
-  <Card title="Account Summary">
+  <Card title="Account Summary" :loading="loading" :error="error">
     <div class="summary">
       <div class="summary__balance">
         <span class="summary__key">Your balance</span>
@@ -37,6 +37,8 @@ import Card from "@/components/layout/Card.vue";
     accountBalance: String,
     totalRevenue: String,
     totalExpenses: String,
+    loading: Boolean,
+    error: Error,
   },
 })
 export default class AccountSummary extends Vue {}

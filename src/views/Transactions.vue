@@ -1,5 +1,5 @@
 <template>
-  <Page>
+  <Page :loading="loadingTransactions">
     <template v-if="facets.length > 0" v-slot:actions>
       <Filter
         :displayText="paramSummary"
@@ -18,7 +18,7 @@
           @update:account="addAccount"
         />
       </template>
-      <Columns>
+      <Columns v-if="transactions && transactions.length">
         <template v-slot:col-1>
           <List
             :highlight="$route?.params.id"
@@ -57,19 +57,35 @@
           />
         </template>
       </Columns>
+      <CTA
+        v-if="transactions && transactions.length === 0"
+        title="Oops, we found nothing"
+        subtext="Please adjust the filters or have you created a budget yet?"
+        buttonLabel="Create Budget"
+        @action="
+          $router.push({
+            name: 'Budgets',
+          })
+        "
+      />
+      <CTA
+        v-if="transactionsError"
+        title="Oops"
+        subtext="Couldn't load transactions"
+        buttonLabel="Try again"
+        @action="refresh"
+      />
     </div>
-
-    <Loader v-show="loading" />
   </Page>
 </template>
 
 <script lang="ts">
 import { Options, mixins } from "vue-class-component";
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapState } from "vuex";
 import Columns from "@/components/layout/Columns.vue";
 import Page from "@/components/layout/Page.vue";
 import AddNewAccount from "@/components/AddNewAccount.vue";
-import Loader from "@/components/layout/Loader.vue";
+import CTA from "@/components/common/CTA.vue";
 import {
   FilterParams,
   SplitTransaction,
@@ -90,9 +106,10 @@ import FilterMixin from "@/mixins/Filter";
     List,
     Detail,
     Filter,
-    Loader,
+    CTA,
   },
   computed: {
+    ...mapState(["loadingTransactions", "transactionsError"]),
     ...mapGetters([
       "accounts",
       "categoryOptionsMap",
@@ -199,23 +216,6 @@ export default class Transactions extends mixins(FilterMixin) {
   getAllExpenseCategories!: () => Promise<void>;
   getAllTransactionCategories!: () => Promise<void>;
 
-  fetch(params: FilterParams): void {
-    this.loading = true;
-    Promise.allSettled([
-      this.getAccounts(params),
-      this.getTransactions(params),
-      this.getEstablishments(),
-      this.getTransactionCategories(params),
-    ]).finally(() => (this.loading = false));
-  }
-
-  fetchTransactionAndExpensesCategories(): void {
-    Promise.allSettled([
-      this.getAllExpenseCategories(),
-      this.getAllTransactionCategories(),
-    ]);
-  }
-
   updateTransaction!: (arg: {
     transactionId: string;
     model: TransactionPayload;
@@ -288,6 +288,27 @@ export default class Transactions extends mixins(FilterMixin) {
       ...this.getQuery(this.facets, this.params),
       ...this.nextPageParams,
     }).finally(() => (this.loading = false));
+  }
+
+  fetch(params: FilterParams): void {
+    this.loading = true;
+    Promise.allSettled([
+      this.getAccounts(params),
+      this.getTransactions(params),
+      this.getEstablishments(),
+      this.getTransactionCategories(params),
+    ]).finally(() => (this.loading = false));
+  }
+
+  fetchTransactionAndExpensesCategories(): void {
+    Promise.allSettled([
+      this.getAllExpenseCategories(),
+      this.getAllTransactionCategories(),
+    ]);
+  }
+
+  refresh() {
+    this.fetch(this.getQuery(this.facets, this.params));
   }
 
   created(): void {

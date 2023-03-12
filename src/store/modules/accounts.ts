@@ -3,13 +3,17 @@ import { Module } from "vuex";
 import api from "@/api";
 
 type State = {
+  loadingAccounts: boolean;
   accounts: Account[] | undefined;
+  accountsError: Error | undefined;
   accountCreateSuccessful: boolean;
 };
 
 const accounts: Module<State, any> = {
   state: () => ({
+    loadingAccounts: false,
     accounts: undefined,
+    accountsError: undefined,
     accountCreateSuccessful: false,
   }),
   getters: {
@@ -36,8 +40,16 @@ const accounts: Module<State, any> = {
     setAccountCreateStatus(state, status: boolean) {
       state.accountCreateSuccessful = status;
     },
-    setAccounts(state: State, accounts?: Account[]) {
+    loadingAccounts(state, active: boolean) {
+      state.loadingAccounts = active;
+    },
+    setAccountsError(state, err: Error) {
+      state.accountsError = err;
+      state.accounts = undefined;
+    },
+    setAccounts(state: State, accounts: Account[]) {
       state.accounts = accounts;
+      state.accountsError = undefined;
     },
   },
   actions: {
@@ -56,13 +68,13 @@ const accounts: Module<State, any> = {
     },
     async getAccounts({ commit }) {
       try {
-        // TODO move auth check to router
-        // if (!rootState?.auth?.user) throw "";
-
+        commit("loadingAccounts", true);
         const res = await api.getAccounts();
         commit("setAccounts", res.data as Account[]);
       } catch (e) {
-        commit("setAccounts", []);
+        commit("setAccountsError", e);
+      } finally {
+        commit("loadingAccounts", false);
       }
     },
     // TODO: cOMPLETE ACCOUNT REAUTH WITH MONO...

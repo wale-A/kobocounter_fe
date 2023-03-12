@@ -20,6 +20,8 @@ import { Options, Vue } from "vue-class-component";
   props: {
     title: String,
     subtitle: String,
+    loading: Boolean,
+    error: Error,
   },
 })
 export default class Card extends Vue {}

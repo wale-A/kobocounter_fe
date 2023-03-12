@@ -8,18 +8,27 @@ import api from "@/api";
 import { Module } from "vuex";
 
 type State = {
+  loadingExpenses: boolean;
+  expenses: Array<{ date: string; amount: number }> | undefined;
+  expensesError: Error | undefined;
+  loadingRecurringExpenditure: boolean;
   recurringExpenditure: RecurrentExpense[] | undefined;
-  expense?: Array<{ date: string; amount: number }>;
+  recurringExpenditureError: Error | undefined;
   expenseCategories?: Array<ExpenseCategories>;
 };
 
 const expenses: Module<State, any> = {
   state: () => ({
+    loadingExpenses: false,
+    expenses: undefined,
+    expensesError: undefined,
+    loadingRecurringExpenditure: false,
     recurringExpenditure: undefined,
+    recurringExpenditureError: undefined,
   }),
   getters: {
-    expense(state) {
-      return state.expense;
+    expenses(state) {
+      return state.expenses;
     },
     recurrentExpenses(state) {
       return state.recurringExpenditure || [];
@@ -29,23 +38,42 @@ const expenses: Module<State, any> = {
     },
   },
   mutations: {
-    setExpense(state: State, expense?: { date: string; amount: number }[]) {
-      state.expense = expense;
+    loadingExpenses(state: State, active: boolean) {
+      state.loadingExpenses = active;
     },
-    setRecurringExpenses(state: State, subscription?: RecurrentExpense[]) {
-      state.recurringExpenditure = subscription;
+    setExpenses(state: State, expenses: { date: string; amount: number }[]) {
+      state.expenses = expenses;
+      state.expensesError = undefined;
+    },
+    setExpensesError(state: State, error: Error) {
+      state.expensesError = error;
+      state.expenses = undefined;
+    },
+    loadingRecurringExpenses(state: State, active: boolean) {
+      state.loadingExpenses = active;
+    },
+    setRecurringExpenses(state: State, expenses: RecurrentExpense[]) {
+      state.recurringExpenditure = expenses;
+      state.recurringExpenditureError = undefined;
+    },
+    setRecurringExpensesError(state: State, error: Error) {
+      state.recurringExpenditureError = error;
+      state.recurringExpenditure = undefined;
     },
     setExpenseCategories(state, categories: ExpenseCategories[]) {
       state.expenseCategories = categories;
     },
   },
   actions: {
-    async getExpense({ commit }, { accountId, start, end }: FilterParams) {
+    async getExpenses({ commit }, { accountId, start, end }: FilterParams) {
       try {
+        commit("loadingExpenses", true);
         const res = await api.getExpenses({ accountId, start, end });
-        commit("setExpense", res.data as NetIncome[]);
+        commit("setExpenses", res.data as NetIncome[]);
       } catch (e) {
-        commit("setExpense", []);
+        commit("setExpensesError", e);
+      } finally {
+        commit("loadingExpenses", false);
       }
     },
     async getRecurringExpenses(
@@ -53,11 +81,13 @@ const expenses: Module<State, any> = {
       { accountId }: { accountId?: string }
     ) {
       try {
+        commit("loadingRecurringExpenses", true);
         const res = await api.getRecurringExpenses({ accountId });
-
         commit("setRecurringExpenses", res.data as RecurrentExpense[]);
       } catch (e) {
-        commit("setRecurringExpenses", []);
+        commit("setRecurringExpensesError", e);
+      } finally {
+        commit("loadingRecurringExpenses", true);
       }
     },
     async getExpenseCategories(

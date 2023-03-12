@@ -1,5 +1,5 @@
 <template>
-  <Card title="Top 3 Expense Categories">
+  <Card title="Top 3 Expense Categories" :loading="loading" :error="error">
     <div class="expense">
       <table class="expense__table">
         <tr class="expense__header">
@@ -43,6 +43,8 @@ import Card from "@/components/layout/Card.vue";
       type: Array,
       required: true,
     },
+    loading: Boolean,
+    error: Error,
   },
 })
 export default class ExpenseCategory extends Vue {}
