@@ -28,7 +28,7 @@ import Loader from "./Loader.vue";
     subtitle: String,
     loading: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     error: Error,
   },
