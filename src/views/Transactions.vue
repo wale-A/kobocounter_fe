@@ -1,5 +1,5 @@
 <template>
-  <Page :loading="loadingTransactions">
+  <Page>
     <template v-if="facets.length > 0" v-slot:actions>
       <Filter
         :displayText="paramSummary"
@@ -81,7 +81,7 @@
 
 <script lang="ts">
 import { Options, mixins } from "vue-class-component";
-import { mapGetters, mapActions, mapState } from "vuex";
+import { mapGetters, mapActions, mapState, mapMutations } from "vuex";
 import Columns from "@/components/layout/Columns.vue";
 import Page from "@/components/layout/Page.vue";
 import AddNewAccount from "@/components/AddNewAccount.vue";
@@ -111,6 +111,7 @@ import FilterMixin from "@/mixins/Filter";
   computed: {
     ...mapState(["loadingTransactions", "transactionsError"]),
     ...mapGetters([
+      "loadingTransactions",
       "accounts",
       "categoryOptionsMap",
       "transactions",
@@ -160,6 +161,7 @@ import FilterMixin from "@/mixins/Filter";
     },
   },
   methods: {
+    ...mapMutations(["setLoading"]),
     ...mapActions([
       "getAccounts",
       "getTransactions",
@@ -172,6 +174,12 @@ import FilterMixin from "@/mixins/Filter";
     ]),
   },
   watch: {
+    loadingTransactions: {
+      handler(newVal) {
+        this.setLoading(newVal);
+      },
+      immediate: true,
+    },
     params(newVal) {
       this.fetch(this.getQuery(this.facets, newVal));
     },

@@ -1,5 +1,6 @@
 <template>
-  <div class="overlay" @click="$emit('close-modal')">
+  <div class="overlay">
+    <button v-if="dismissable" @click="$emit('close')">x</button>
     <slot></slot>
   </div>
 </template>
@@ -9,13 +10,15 @@ import { Options, Vue } from "vue-class-component";
 
 @Options({
   props: {
-    show: {
+    dismissable: {
       type: Boolean,
-      default: true,
+      default: false,
     },
   },
 })
-export default class Overlay extends Vue {}
+export default class Overlay extends Vue {
+  dismissable!: boolean;
+}
 </script>
 
 <style lang="scss" scoped>

@@ -1,3 +1,4 @@
+import app from "./modules/app";
 import auth from "./modules/auth";
 import accounts from "./modules/accounts";
 import establishments from "./modules/establishments";
@@ -8,6 +9,7 @@ import budgets from "./modules/budget";
 import insights from "./modules/insights";
 
 export default {
+  app,
   auth,
   accounts,
   establishments,

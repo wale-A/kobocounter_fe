@@ -32,7 +32,7 @@ const income: Module<State, any> = {
     loadingRevenues(state: State, active: boolean) {
       state.loadingRevenues = active;
     },
-    setRevenue(state: State, revenues: { date: string; amount: number }[]) {
+    setRevenues(state: State, revenues: { date: string; amount: number }[]) {
       state.revenues = revenues;
     },
     setRevenuesError(state: State, error: Error) {

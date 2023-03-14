@@ -36,11 +36,14 @@ const transactions: Module<State, any> = {
     allTransactionCategories: [],
   }),
   getters: {
+    loadingTransactions(state: State) {
+      return state.loadingTransactions;
+    },
     transactions(state: State) {
       return state.transactions;
     },
     groupedTransactions(_, getters) {
-      const sortedTransactions = getters.transactions;
+      const sortedTransactions = getters.transactions || [];
       const group: Record<string, Transaction[]> = {};
       for (let i = 0; i < sortedTransactions?.length || 0; i++) {
         const date = new Date(sortedTransactions[i].date).toDateString();

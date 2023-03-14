@@ -1,5 +1,5 @@
 <template>
-  <Page :loading="loadingInsights">
+  <Page>
     <template v-if="facets.length > 0" v-slot:actions>
       <Filter
         :displayText="paramSummary"
@@ -63,7 +63,7 @@ import Columns from "@/components/layout/Columns.vue";
 import Page from "@/components/layout/Page.vue";
 import Filter from "@/components/common/Filter.vue";
 import { FilterParams, Insights as InsightType } from "@/types";
-import { mapGetters, mapActions, mapState } from "vuex";
+import { mapGetters, mapActions, mapState, mapMutations } from "vuex";
 import FilterMixin from "@/mixins/Filter";
 import Detail from "@/components/insight/Detail.vue";
 import List from "@/components/insight/List.vue";
@@ -85,7 +85,12 @@ import CTA from "@/components/common/CTA.vue";
       "insightsError",
       "insightError",
     ]),
-    ...mapGetters(["insights", "budgets", "detailedInsights"]),
+    ...mapGetters([
+      "loadingInsights",
+      "insights",
+      "budgets",
+      "detailedInsights",
+    ]),
     isSingle() {
       return this.$route?.params.id;
     },
@@ -104,6 +109,7 @@ import CTA from "@/components/common/CTA.vue";
     },
   },
   methods: {
+    ...mapMutations(["setLoading"]),
     ...mapActions([
       "getAccounts",
       "getInsights",
@@ -112,6 +118,12 @@ import CTA from "@/components/common/CTA.vue";
     ]),
   },
   watch: {
+    loadingInsights: {
+      handler(newVal) {
+        this.setLoading(newVal);
+      },
+      immediate: true,
+    },
     params(newVal) {
       this.fetch(this.getQuery(this.facets, newVal));
     },

@@ -8,7 +8,7 @@
     >
       <slot v-if="!onMobile" name="actions" />
     </Header>
-    <Loader v-if="loading" />
+    <Loader v-if="pageLoading" />
     <slot v-else />
   </section>
 </template>
@@ -24,10 +24,11 @@ import Loader from "./Loader.vue";
     Header,
     Loader,
   },
+  // these props are passed via the router-view object in ./App.vue
   props: {
     username: String,
     avatarUrl: String,
-    loading: {
+    pageLoading: {
       type: Boolean,
       default: false,
     },
@@ -39,7 +40,11 @@ import Loader from "./Loader.vue";
   },
 })
 export default class Page extends Vue {
-  loading!: boolean;
+  pageLoading!: boolean;
+
+  created() {
+    console.log({ pgLoading: this.pageLoading });
+  }
 }
 </script>
 

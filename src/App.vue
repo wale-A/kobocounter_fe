@@ -2,9 +2,11 @@
   <main>
     <!--TODO: Add loader here -->
     <Layout @logout="logoutUser">
+      <!--the props are passed to the page component in ./components/layout/Page.vue-->
       <router-view
         :username="username"
         :avatarUrl="avatarUrl"
+        :pageLoading="pageLoading"
         @logout="logoutUser"
       />
     </Layout>
@@ -26,7 +28,7 @@ import NoTransactionMixin from "@/mixins/NoTransaction";
   name: "App",
   components: { Layout },
   computed: {
-    ...mapGetters(["avatarUrl", "username"]),
+    ...mapGetters(["avatarUrl", "username", "pageLoading"]),
   },
   methods: {
     ...mapActions(["logout"]),

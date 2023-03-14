@@ -1,5 +1,5 @@
 <template>
-  <Page :loading="loadingAccounts">
+  <Page>
     <template v-if="facets.length > 0" v-slot:actions>
       <Filter
         :displayText="paramSummary"
@@ -131,7 +131,7 @@
 
 <script lang="ts">
 import { Options, mixins } from "vue-class-component";
-import { mapGetters, mapActions, mapState } from "vuex";
+import { mapGetters, mapActions, mapMutations, mapState } from "vuex";
 import AddNewAccount from "@/components/AddNewAccount.vue";
 import AccountSummary from "@/components/dashlets/AccountSummary.vue";
 import AccountActivity from "@/components/dashlets/AccountActivity.vue";
@@ -162,7 +162,6 @@ import AddButton from "@/components/AddButton.vue";
   },
   computed: {
     ...mapState([
-      "loadingAccounts",
       "accountsError",
       "loadingRecurringExpenditure",
       "recurringExpenditureError",
@@ -176,6 +175,7 @@ import AddButton from "@/components/AddButton.vue";
       "transactionCategoriesError",
     ]),
     ...mapGetters([
+      "loadingAccounts",
       "accounts",
       "transactions",
       "netIncomes",
@@ -192,6 +192,7 @@ import AddButton from "@/components/AddButton.vue";
     },
   },
   methods: {
+    ...mapMutations(["setLoading"]),
     ...mapActions([
       "getAccounts",
       "getTransactions",
@@ -205,6 +206,12 @@ import AddButton from "@/components/AddButton.vue";
     ]),
   },
   watch: {
+    loadingAccounts: {
+      handler(newVal) {
+        this.setLoading(newVal);
+      },
+      immediate: true,
+    },
     params: {
       handler(newVal) {
         this.fetch(this.getQuery(this.facets, newVal));

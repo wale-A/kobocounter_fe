@@ -32,6 +32,9 @@ const budgets: Module<State, any> = {
     budgetsError: undefined,
   }),
   getters: {
+    loadingBudgets(state: State) {
+      return state.loadingBudgets;
+    },
     budgets(state) {
       return state.budgets
         ?.map((item) => ({
@@ -63,7 +66,7 @@ const budgets: Module<State, any> = {
     },
   },
   mutations: {
-    loadingBudgets(state, active: boolean) {
+    setLoadingBudgets(state, active: boolean) {
       state.loadingBudgets = active;
     },
     setBudgets(state, budgets: BudgetListResponse) {
@@ -74,7 +77,7 @@ const budgets: Module<State, any> = {
       state.budgetsError = err;
       state.budgets = undefined;
     },
-    loadingBudget(state, active: boolean) {
+    setLoadingBudget(state, active: boolean) {
       state.loadingBudget = active;
     },
     setBudget(state, budget: Budget) {
@@ -92,7 +95,7 @@ const budgets: Module<State, any> = {
       { category, start, end, page, size }: FilterParams
     ) {
       try {
-        commit("loadingBudgets", true);
+        commit("setLoadingBudgets", true);
         const res = await api.getBudgets({
           category,
           start,
@@ -104,18 +107,18 @@ const budgets: Module<State, any> = {
       } catch (e) {
         commit("setBudgetsError", e);
       } finally {
-        commit("loadingBudgets", false);
+        commit("setLoadingBudgets", false);
       }
     },
     async getBudget({ commit }, id: string) {
       try {
-        commit("loadingBudget", true);
+        commit("setLoadingBudget", true);
         const res = await api.getBudget(id);
         commit("setBudget", res.data);
       } catch (e) {
         commit("setBudgetError", e);
       } finally {
-        commit("loadingBudget", false);
+        commit("setLoadingBudget", false);
       }
     },
     async postBudget(_, payload: BudgetPayload) {

@@ -17,11 +17,14 @@ const accounts: Module<State, any> = {
     accountCreateSuccessful: false,
   }),
   getters: {
+    loadingAccounts(state) {
+      return state.loadingAccounts;
+    },
     accounts(state) {
-      return state.accounts || [];
+      return state.accounts;
     },
     accountMap(_, getters) {
-      return getters.accounts.reduce(
+      return (getters.accounts || []).reduce(
         (acc: Record<string, any>, item: Account) => ({
           ...acc,
           [item.id]: item,
@@ -30,7 +33,7 @@ const accounts: Module<State, any> = {
       );
     },
     accountOptionsMap(_, getters) {
-      return getters.accounts.map((item: Account) => ({
+      return (getters.accounts || []).map((item: Account) => ({
         value: item.id,
         label: `${item.bankName} - ${item.accountNumber}`,
       }));
@@ -40,7 +43,7 @@ const accounts: Module<State, any> = {
     setAccountCreateStatus(state, status: boolean) {
       state.accountCreateSuccessful = status;
     },
-    loadingAccounts(state, active: boolean) {
+    setLoadingAccounts(state, active: boolean) {
       state.loadingAccounts = active;
     },
     setAccountsError(state, err: Error) {
@@ -68,13 +71,13 @@ const accounts: Module<State, any> = {
     },
     async getAccounts({ commit }) {
       try {
-        commit("loadingAccounts", true);
+        commit("setLoadingAccounts", true);
         const res = await api.getAccounts();
         commit("setAccounts", res.data as Account[]);
       } catch (e) {
         commit("setAccountsError", e);
       } finally {
-        commit("loadingAccounts", false);
+        commit("setLoadingAccounts", false);
       }
     },
     // TODO: cOMPLETE ACCOUNT REAUTH WITH MONO...

@@ -31,6 +31,9 @@ const insights: Module<State, any> = {
     insightError: undefined,
   }),
   getters: {
+    loadingInsights(state: State) {
+      return state.loadingInsights;
+    },
     rawInsights(state: State) {
       return state.insights;
     },

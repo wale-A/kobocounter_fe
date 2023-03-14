@@ -1,5 +1,5 @@
 <template>
-  <Page :loading="loadingBudgets">
+  <Page>
     <template v-if="facets.length > 0" v-slot:actions>
       <Filter
         :displayText="paramSummary"
@@ -80,7 +80,7 @@ import Columns from "@/components/layout/Columns.vue";
 import Page from "@/components/layout/Page.vue";
 import Filter from "@/components/common/Filter.vue";
 import { FilterParams, BudgetListItem, Budget, BudgetPayload } from "@/types";
-import { mapGetters, mapActions, mapState } from "vuex";
+import { mapGetters, mapActions, mapState, mapMutations } from "vuex";
 import { budgetFilter } from "@/util";
 import FilterMixin from "@/mixins/Filter";
 import Detail from "@/components/budget/Detail.vue";
@@ -111,6 +111,7 @@ import { startOfMonth, differenceInMonths } from "date-fns";
       "budgetsError",
     ]),
     ...mapGetters([
+      "loadingBudgets",
       "budget",
       "budgets",
       "budgetMap",
@@ -149,6 +150,7 @@ import { startOfMonth, differenceInMonths } from "date-fns";
     },
   },
   methods: {
+    ...mapMutations(["setLoading"]),
     ...mapActions([
       "getAccounts",
       "getBudgets",
@@ -160,6 +162,12 @@ import { startOfMonth, differenceInMonths } from "date-fns";
     ]),
   },
   watch: {
+    loadingBudgets: {
+      handler(newVal) {
+        this.setLoading(newVal);
+      },
+      immediate: true,
+    },
     params(newVal) {
       this.fetch(this.getQuery(this.facets, newVal));
     },
