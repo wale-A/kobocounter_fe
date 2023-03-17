@@ -1,13 +1,17 @@
-import { COMMON_DATES, PERIOD_LABEL_MAPPING } from "@/config";
-import { Account, User } from "@/types";
-import { BUDGET_TYPE_OPTIONS, MONTH_NAMES } from "@/config";
 import {
+  BUDGET_TYPE_OPTIONS,
+  COMMON_DATES,
+  MONTH_NAMES,
+  PERIOD_LABEL_MAPPING,
+} from "@/config";
+import { User } from "@/types";
+import {
+  format,
+  getMonth,
+  getQuarter,
   getWeek,
   getWeekOfMonth,
-  getQuarter,
-  getMonth,
   getYear,
-  format,
 } from "date-fns";
 
 const storeKey = "authenticated-user";
@@ -224,5 +228,6 @@ export const getBudgetName = (startDate: string, type: string): string => {
 
 export const justDate = (date: string): string => {
   const [withoutTime] = date.split("T");
+  // format is returning the previous day
   return format(new Date(withoutTime), "MM/dd/yyyy");
 };

@@ -23,7 +23,7 @@
           <List
             :keyValue="'id'"
             :budgets="budgets"
-            :showEdit="canEdit"
+            :showEdit="!!canEdit"
             :highlight="id"
             @select="
               $router.push({
@@ -73,20 +73,20 @@
 </template>
 
 <script lang="ts">
-import { Options, mixins } from "vue-class-component";
-import Columns from "@/components/layout/Columns.vue";
-import Page from "@/components/layout/Page.vue";
-import Filter from "@/components/common/Filter.vue";
-import { FilterParams, BudgetListItem, Budget, BudgetPayload } from "@/types";
-import { mapGetters, mapActions, mapState, mapMutations } from "vuex";
-import { budgetFilter } from "@/util";
-import FilterMixin from "@/mixins/Filter";
+import AddButton from "@/components/AddButton.vue";
+import Create from "@/components/budget/Create.vue";
 import Detail from "@/components/budget/Detail.vue";
 import List from "@/components/budget/List.vue";
-import Create from "@/components/budget/Create.vue";
 import CTA from "@/components/common/CTA.vue";
-import AddButton from "@/components/AddButton.vue";
-import { startOfMonth, differenceInMonths } from "date-fns";
+import Filter from "@/components/common/Filter.vue";
+import Columns from "@/components/layout/Columns.vue";
+import Page from "@/components/layout/Page.vue";
+import FilterMixin from "@/mixins/Filter";
+import { Budget, BudgetListItem, BudgetPayload, FilterParams } from "@/types";
+import { budgetFilter } from "@/util";
+import { differenceInMonths, startOfMonth } from "date-fns";
+import { Options, mixins } from "vue-class-component";
+import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
 
 @Options<Budgets>({
   components: {
@@ -168,7 +168,6 @@ import { startOfMonth, differenceInMonths } from "date-fns";
     },
     id: {
       handler(newVal) {
-        console.log("budget", newVal);
         this.getBudget(newVal);
       },
       immediate: true,

@@ -74,7 +74,7 @@ export default class Create extends Vue {
   budget!: any;
 
   created(): void {
-    console.log(this.action, this.categories, this.budget);
+    // console.log(this.action, this.categories, this.budget);
   }
 }
 </script>

@@ -47,7 +47,6 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import Field from "./_internal/Field.vue";
-import { format } from "date-fns";
 
 @Options({
   components: {

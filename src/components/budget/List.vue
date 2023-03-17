@@ -84,8 +84,8 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
 import Panel from "@/components/layout/Panel.vue";
+import { Options, Vue } from "vue-class-component";
 
 @Options({
   components: {

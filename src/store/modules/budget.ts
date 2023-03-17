@@ -1,3 +1,4 @@
+import api from "@/api";
 import {
   Budget,
   BudgetListItem,
@@ -6,10 +7,9 @@ import {
   FilterParams,
   Pagination,
 } from "@/types";
-import api from "@/api";
+import { formatDate, getBudgetName } from "@/util";
 import { differenceInDays } from "date-fns";
 import { Module } from "vuex";
-import { justDate, getBudgetName } from "@/util";
 
 type State = {
   loadingBudget: boolean;
@@ -36,8 +36,12 @@ const budgets: Module<State, any> = {
       return state.budgets
         ?.map((item) => ({
           ...item,
-          startDate: justDate(item.startDate),
-          endDate: justDate(item.startDate),
+          amountSpent: item.amountSpent
+            ? item.amountSpent.toLocaleString()
+            : "-",
+          value: item.value.toLocaleString(),
+          startDate: formatDate(item.startDate),
+          endDate: formatDate(item.endDate),
           name: getBudgetName(item.startDate, "monthly"),
         }))
         .sort((itemA, itemB) =>
@@ -59,7 +63,14 @@ const budgets: Module<State, any> = {
       return last;
     },
     budget(state) {
-      return state.budget;
+      return {
+        ...state.budget,
+        items: state.budget?.items.map((item) => ({
+          ...item,
+          value: item.value.toLocaleString(),
+          amountSpent: item.amountSpent?.toLocaleString(),
+        })),
+      };
     },
   },
   mutations: {

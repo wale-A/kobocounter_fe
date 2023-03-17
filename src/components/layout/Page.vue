@@ -43,7 +43,7 @@ export default class Page extends Vue {
   pageLoading!: boolean;
 
   created() {
-    console.log({ pgLoading: this.pageLoading });
+    // console.log({ pgLoading: this.pageLoading });
   }
 }
 </script>

@@ -152,21 +152,21 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import { BUDGET_TYPE_OPTIONS } from "@/config";
+import { Transaction } from "@/types";
 import Multiselect from "@vueform/multiselect";
 import Datepicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
-import { Transaction } from "@/types";
-import { BUDGET_TYPE_OPTIONS } from "@/config";
 import {
-  startOfMonth,
-  endOfMonth,
   addMonths,
   addWeeks,
+  endOfMonth,
   endOfWeek,
-  startOfWeek,
   isDate,
+  startOfMonth,
+  startOfWeek,
 } from "date-fns";
+import { Options, Vue } from "vue-class-component";
 
 type categoryType = { value: number; label: string };
 type modelType = {
@@ -206,7 +206,6 @@ type modelType = {
       const activeCategories = this.model.items.map(
         (item: { value: number; category: string }) => item.category
       );
-      console.log({ activeCategories });
       return this.categories.filter(
         (category: categoryType) => !activeCategories.includes(category.value)
       );
@@ -326,7 +325,6 @@ type modelType = {
       }
     },
     budget(value) {
-      console.log({ model: value });
       if (value) {
         this.model = value;
       }

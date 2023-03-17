@@ -10,8 +10,8 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
 import { format } from "date-fns";
+import { Options, Vue } from "vue-class-component";
 type categoryType = { value: number; label: string };
 @Options({
   props: {
@@ -56,7 +56,6 @@ export default class Status extends Vue {
   buttonLabel = "Close";
 
   formatDate(date: string): string {
-    console.log({ date });
     if (!date) {
       return "";
     }
