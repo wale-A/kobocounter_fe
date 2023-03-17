@@ -24,7 +24,7 @@
             :highlight="$route?.params.id"
             :transactions="groupedTransactions"
             :canLoadMore="canLoadMore"
-            :loadingTransactions="loading"
+            :loadingMore="loading"
             @select="
               $router.push({
                 name: 'TransactionDetail',
@@ -43,7 +43,8 @@
             :allExpenseCategories="allExpenseCategories"
             :allTransactionCategories="allTransactionCategories"
             :action="action"
-            :loadingOperation="loading"
+            :loading="loading"
+            :saving="saving"
             class="transactions__detail"
             :class="{ 'transactions__detail--desktop': !onMobile }"
             @select="$router.push(`/transactions/${$event}/view`)"
@@ -109,9 +110,12 @@ import FilterMixin from "@/mixins/Filter";
     CTA,
   },
   computed: {
-    ...mapState(["loadingTransactions", "transactionsError"]),
+    ...mapState({
+      loadingTransactions: (state: any) =>
+        state.transactions.loadingTransactions,
+      transactionsError: (state: any) => state.transactions.transactionsError,
+    }),
     ...mapGetters([
-      "loadingTransactions",
       "accounts",
       "categoryOptionsMap",
       "transactions",
@@ -194,6 +198,7 @@ export default class Transactions extends mixins(FilterMixin) {
   categoryOptionsMap!: Record<string, any>;
   allTransactionCategories!: Array<{ value: number; label: string }>;
   loading = false;
+  saving = false;
 
   get filterArgs(): Record<string, any> {
     return {
@@ -230,7 +235,7 @@ export default class Transactions extends mixins(FilterMixin) {
   }) => Promise<void>;
 
   editTransaction(model: TransactionPayload): void {
-    this.loading = true;
+    this.saving = true;
     this.updateTransaction({
       transactionId: model.id,
       model: {
@@ -252,7 +257,7 @@ export default class Transactions extends mixins(FilterMixin) {
           duration: 10000,
         });
       })
-      .finally(() => (this.loading = false));
+      .finally(() => (this.saving = false));
   }
 
   saveSplitTransactions!: (arg: {
@@ -264,7 +269,7 @@ export default class Transactions extends mixins(FilterMixin) {
     if (!this.transaction) {
       return;
     }
-    this.loading = true;
+    this.saving = true;
     this.saveSplitTransactions({
       transactionId: this.transaction.id,
       payload: model,
@@ -282,7 +287,7 @@ export default class Transactions extends mixins(FilterMixin) {
           type: "error",
         });
       })
-      .finally(() => (this.loading = false));
+      .finally(() => (this.saving = false));
   }
 
   nextPageParams!: {

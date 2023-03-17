@@ -36,9 +36,7 @@
           />
         </template>
         <template v-slot:col-2>
-          <Wrap :loading="loadingBudget">
-            <Detail :budget="budgetDetail" />
-          </Wrap>
+          <Detail :budget="budgetDetail" :loading="loadingBudget" />
         </template>
       </Columns>
       <CTA
@@ -87,7 +85,6 @@ import Detail from "@/components/budget/Detail.vue";
 import List from "@/components/budget/List.vue";
 import Create from "@/components/budget/Create.vue";
 import CTA from "@/components/common/CTA.vue";
-import Wrap from "@/components/common/Wrap.vue";
 import AddButton from "@/components/AddButton.vue";
 import { startOfMonth, differenceInMonths } from "date-fns";
 
@@ -101,17 +98,15 @@ import { startOfMonth, differenceInMonths } from "date-fns";
     CTA,
     Create,
     AddButton,
-    Wrap,
   },
   computed: {
-    ...mapState([
-      "loadingBudget",
-      "budgetError",
-      "loadingBudgets",
-      "budgetsError",
-    ]),
+    ...mapState({
+      loadingBudget: (state: any) => state.budgets.loadingBudget,
+      budgetError: (state: any) => state.budgets.budgetError,
+      loadingBudgets: (state: any) => state.budgets.loadingBudgets,
+      budgetsError: (state: any) => state.budgets.budgetsError,
+    }),
     ...mapGetters([
-      "loadingBudgets",
       "budget",
       "budgets",
       "budgetMap",

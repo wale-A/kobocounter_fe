@@ -36,9 +36,6 @@ const transactions: Module<State, any> = {
     allTransactionCategories: [],
   }),
   getters: {
-    loadingTransactions(state: State) {
-      return state.loadingTransactions;
-    },
     transactions(state: State) {
       return state.transactions;
     },

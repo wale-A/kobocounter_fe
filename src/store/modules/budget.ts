@@ -32,9 +32,6 @@ const budgets: Module<State, any> = {
     budgetsError: undefined,
   }),
   getters: {
-    loadingBudgets(state: State) {
-      return state.loadingBudgets;
-    },
     budgets(state) {
       return state.budgets
         ?.map((item) => ({

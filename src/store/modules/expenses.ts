@@ -50,7 +50,7 @@ const expenses: Module<State, any> = {
       state.expenses = undefined;
     },
     loadingRecurringExpenses(state: State, active: boolean) {
-      state.loadingExpenses = active;
+      state.loadingRecurringExpenditure = active;
     },
     setRecurringExpenses(state: State, expenses: RecurrentExpense[]) {
       state.recurringExpenditure = expenses;
@@ -87,7 +87,7 @@ const expenses: Module<State, any> = {
       } catch (e) {
         commit("setRecurringExpensesError", e);
       } finally {
-        commit("loadingRecurringExpenses", true);
+        commit("loadingRecurringExpenses", false);
       }
     },
     async getExpenseCategories(

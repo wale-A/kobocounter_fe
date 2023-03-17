@@ -161,19 +161,23 @@ import AddButton from "@/components/AddButton.vue";
     AddButton,
   },
   computed: {
-    ...mapState([
-      "accountsError",
-      "loadingRecurringExpenditure",
-      "recurringExpenditureError",
-      "loadingBudgets",
-      "budgetsError",
-      "loadingRevenues",
-      "loadingExpenses",
-      "revenuesError",
-      "expensesError",
-      "loadingTransactionCategories",
-      "transactionCategoriesError",
-    ]),
+    ...mapState({
+      accountsError: (state: any) => state.accounts.accountsError,
+      loadingRecurringExpenditure: (state: any) =>
+        state.expenses.loadingRecurringExpenditure,
+      recurringExpenditureError: (state: any) =>
+        state.expenses.recurringExpenditureError,
+      loadingBudgets: (state: any) => state.budgets.loadingBudgets,
+      budgetsError: (state: any) => state.budgets.budgetsError,
+      loadingRevenues: (state: any) => state.income.loadingRevenues,
+      loadingExpenses: (state: any) => state.expenses.loadingExpenses,
+      revenuesError: (state: any) => state.income.revenuesError,
+      expensesError: (state: any) => state.expenses.expensesError,
+      loadingTransactionCategories: (state: any) =>
+        state.transactions.loadingTransactionCategories,
+      transactionCategoriesError: (state: any) =>
+        state.transactions.transactionCategoriesError,
+    }),
     ...mapGetters([
       "loadingAccounts",
       "accounts",

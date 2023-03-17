@@ -45,7 +45,7 @@
         <button
           class="transaction__pager-trigger"
           @click="$emit('loadMore')"
-          :disabled="loadingTransactions"
+          :disabled="loadingMore"
         >
           Load More
         </button>
@@ -80,7 +80,7 @@ import { Transaction } from "@/types";
       type: Boolean,
       required: true,
     },
-    loadingTransactions: Boolean,
+    loadingMore: Boolean,
   },
   watch: {
     highlight(newVal) {

@@ -33,7 +33,10 @@
           />
         </template>
         <template v-slot:col-2>
-          <Detail :insight="insight" :data="detailedInsights" /></template
+          <Detail
+            :insight="insight"
+            :data="detailedInsights"
+            :loading="loadingInsight" /></template
       ></Columns>
       <CTA
         v-if="insights && insights.length === 0"
@@ -79,18 +82,13 @@ import CTA from "@/components/common/CTA.vue";
     CTA,
   },
   computed: {
-    ...mapState([
-      "loadingInsights",
-      "loadingInsight",
-      "insightsError",
-      "insightError",
-    ]),
-    ...mapGetters([
-      "loadingInsights",
-      "insights",
-      "budgets",
-      "detailedInsights",
-    ]),
+    ...mapState({
+      loadingInsights: (state: any) => state.insights.loadingInsights,
+      loadingInsight: (state: any) => state.insights.loadingInsight,
+      insightsError: (state: any) => state.insights.insightsError,
+      insightError: (state: any) => state.insights.insightError,
+    }),
+    ...mapGetters(["insights", "budgets", "detailedInsights"]),
     isSingle() {
       return this.$route?.params.id;
     },
