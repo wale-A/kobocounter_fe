@@ -202,13 +202,18 @@ type modelType = {
     },
   },
   computed: {
-    availableCategories() {
-      const activeCategories = this.model.items.map(
+    activeCategories() {
+      return this.model.items.map(
         (item: { value: number; category: string }) => item.category
       );
-      return this.categories.filter(
-        (category: categoryType) => !activeCategories.includes(category.value)
-      );
+    },
+    availableCategories() {
+      const cat = this.categories.map((category: categoryType) => ({
+        ...category,
+        disabled: this.activeCategories.includes(category.value),
+      }));
+      console.log({ cat });
+      return cat;
     },
     categoryMap() {
       return this.categories.reduce(
@@ -335,8 +340,10 @@ export default class Add extends Vue {
   category = "";
   value = 0;
   categories!: categoryType[];
+  availableCategories!: categoryType[];
   categoryMap!: Record<string, string>;
   budget!: modelType;
+  lastBudget!: modelType;
   model: modelType = {
     startDate: "",
     endDate: "",
@@ -377,6 +384,7 @@ export default class Add extends Vue {
   }
 
   created(): void {
+    console.log({ lastbudget: this.lastBudget, category: this.categories });
     if (this.budget) {
       this.model = this.budget;
     }

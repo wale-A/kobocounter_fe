@@ -52,7 +52,7 @@ type categoryType = { value: number; label: string };
   },
 })
 export default class Status extends Vue {
-  iconPath = "/img/assets/no-accounts.svg";
+  iconPath = "/img/assets/status-success.svg";
   buttonLabel = "Close";
 
   formatDate(date: string): string {
