@@ -208,12 +208,10 @@ type modelType = {
       );
     },
     availableCategories() {
-      const cat = this.categories.map((category: categoryType) => ({
+      return this.categories.map((category: categoryType) => ({
         ...category,
         disabled: this.activeCategories.includes(category.value),
       }));
-      console.log({ cat });
-      return cat;
     },
     categoryMap() {
       return this.categories.reduce(
@@ -384,7 +382,6 @@ export default class Add extends Vue {
   }
 
   created(): void {
-    console.log({ lastbudget: this.lastBudget, category: this.categories });
     if (this.budget) {
       this.model = this.budget;
     }
