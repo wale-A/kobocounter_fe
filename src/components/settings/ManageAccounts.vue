@@ -139,7 +139,7 @@ export default class ManageAccounts extends Vue {
   getAccountBalance(balance?: number): string {
     if (!balance) return "0";
 
-    return parseFloat(balance.toPrecision(2)).toLocaleString();
+    return parseFloat(balance.toFixed(2)).toLocaleString();
   }
 }
 </script>

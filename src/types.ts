@@ -194,3 +194,5 @@ export type PaginatedResponse<T> = {
   meta: Pagination;
   data: T[];
 };
+
+export type LabelValueType = { value: number; label: string };

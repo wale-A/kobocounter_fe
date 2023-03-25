@@ -4,7 +4,7 @@ import {
   MONTH_NAMES,
   PERIOD_LABEL_MAPPING,
 } from "@/config";
-import { User } from "@/types";
+import { LabelValueType, User } from "@/types";
 import {
   format,
   getMonth,
@@ -231,3 +231,10 @@ export const justDate = (date: string): string => {
   // format is returning the previous day
   return format(new Date(withoutTime), "MM/dd/yyyy");
 };
+
+export function getItemNameFromList(
+  list: LabelValueType[],
+  id: number
+): string {
+  return list.find((item) => item.value == id)?.label || "";
+}

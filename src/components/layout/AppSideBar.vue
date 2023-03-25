@@ -3,10 +3,7 @@
     <div class="l-top">
       <nav class="app-menu">
         <div class="brand">
-          <svg-icon
-            :src="require('@/assets/svg/logo-white.svg')"
-            class="brand__icon"
-          />
+          <img src="/img/assets/logo-white.png" style="width: 90%" alt="logo" />
         </div>
         <ul class="app-menu__list">
           <li

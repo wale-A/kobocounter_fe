@@ -64,8 +64,8 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
 import Panel from "@/components/layout/Panel.vue";
+import { Options, Vue } from "vue-class-component";
 
 @Options({
   components: {
@@ -195,7 +195,7 @@ export default class List extends Vue {
   }
 
   @at-root #{&}__change--green {
-    color: rgba(111, 205, 199, 0.8);
+    color: rgb(65, 197, 118);
   }
 
   @at-root #{&}__change-icon {

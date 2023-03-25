@@ -312,6 +312,7 @@ a {
 }
 .logo {
   padding: 1em 1em 0.5em;
+  height: 85%;
 }
 .logo img {
   width: 30px;

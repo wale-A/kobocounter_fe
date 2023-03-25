@@ -1,4 +1,4 @@
-import { TransactionInfo, Account } from "@/types";
+import { Account, TransactionInfo } from "@/types";
 import { Options, Vue } from "vue-class-component";
 import { mapGetters } from "vuex";
 @Options({
@@ -7,7 +7,7 @@ import { mapGetters } from "vuex";
   },
   watch: {
     transactions(newVal: TransactionInfo[]) {
-      if (!newVal.length && this.accounts?.length) {
+      if (newVal?.length && this.accounts?.length) {
         this.$notify({
           text: "You do not have transactions for the selected filter values",
           type: "info",

@@ -18,8 +18,8 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
 import Overlay from "@/components/common/Overlay.vue";
+import { Options, Vue } from "vue-class-component";
 import Add from "./_internal/Add.vue";
 import Review from "./_internal/Review.vue";
 import Status from "./_internal/Status.vue";

@@ -10,21 +10,30 @@
         </button>
         <span>Budget Details</span>
       </h2>
-      <p class="budget__subtitle">This budget is active and cannot be edited</p>
+      <!-- <p class="budget__subtitle">This budget is active and cannot be edited</p> -->
     </div>
     <div class="budget__detail">
-      <Field label="Budgeted Amount" :value="budget.value" orientation="row" />
       <Field
-        label="Actual Spend"
-        :value="budget.amountSpent"
+        label="Budgeted Amount"
+        :value="budget.value.toLocaleString()"
         orientation="row"
       />
       <Field
+        label="Actual Spend"
+        :value="budget.amountSpent.toLocaleString()"
+        orientation="row"
+      />
+      <!-- <Field
         label="Status"
         :value="budget.status || 'Active'"
         orientation="row"
+      /> -->
+      <Field
+        label="Performance"
+        :value="getPerformance()"
+        orientation="row"
+        :labelColor="getTextColor()"
       />
-      <Field label="Performance" :value="budget.insight" orientation="row" />
       <Field label="Start Date" :value="budget.startDate" orientation="row" />
       <Field label="End Date" :value="budget.endDate" orientation="row" />
     </div>
@@ -34,29 +43,71 @@
     >
       <h3 class="budget__category-title">Budget Categories</h3>
       <Field
-        v-for="item in budget.items"
+        v-for="item in budgetedItems()"
         :key="item.category"
-        :label="item.category"
-        :value="item.value"
+        :label="getCategoryName(item.category)"
+        :value="item.amountSpent?.toLocaleString()"
+        orientation="row"
+      />
+
+      <h3 class="budget__category-title" style="margin-top: 2em">
+        Unbudgeted Categories
+      </h3>
+      <Field
+        v-for="item in unexpectedItems()"
+        :key="item.category"
+        :label="getCategoryName(item.category)"
+        :value="item.amountSpent?.toLocaleString()"
         orientation="row"
       />
     </div>
+    <BudgetItemChart :categories="categories" :items="budget.items" />
   </div>
 </template>
 
 <script lang="ts">
+import { BudgetItem, LabelValueType } from "@/types";
+import { getItemNameFromList } from "@/util";
 import { Options, Vue } from "vue-class-component";
+import BudgetItemChart from "../charts/BudgetItemChart.vue";
 import Field from "./_internal/Field.vue";
 
 @Options({
   components: {
     Field,
+    BudgetItemChart,
   },
   props: {
     budget: Object,
+    categories: {
+      type: Array,
+      required: true,
+    },
   },
 })
-export default class View extends Vue {}
+export default class View extends Vue {
+  budget!: BudgetItem & { items: BudgetItem[] };
+  categories!: Array<LabelValueType>;
+  getCategoryName = (id: number) => getItemNameFromList(this.categories, id);
+  getPerformance = () =>
+    `${(
+      ((this.budget.amountSpent
+        ? this.budget.amountSpent - this.budget.value
+        : 0) /
+        this.budget.value) *
+      100
+    ).toFixed(2)}% ${
+      (this.budget.amountSpent || 0) < this.budget.value ? "😃" : "🤯"
+    }`;
+  getTextColor = () =>
+    this.budget.amountSpent || 0 > this.budget.value ? "red" : "green";
+  budgetedItems = () => {
+    const x = this.budget.items.filter((x: { value?: number }) => x.value);
+    return x;
+  };
+  unexpectedItems = () =>
+    this.budget.items.filter((x: { value?: number }) => !x.value);
+}
 </script>
 
 <style lang="scss" scoped>
@@ -93,9 +144,12 @@ export default class View extends Vue {}
   @at-root #{&}__detail {
     margin-bottom: 28px;
   }
+  @at-root #{&}__category {
+    margin-bottom: 28px;
+  }
   @at-root #{&}__category-title {
     font-weight: 700;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 16px;
 
     color: #364156;

@@ -36,7 +36,11 @@
           />
         </template>
         <template v-slot:col-2>
-          <Detail :budget="budgetDetail" :loading="loadingBudget" />
+          <Detail
+            :budget="budgetDetail"
+            :loading="loadingBudget"
+            :categories="categoryOptionsMap"
+          />
         </template>
       </Columns>
       <CTA
@@ -153,6 +157,7 @@ import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
       "putBudget",
       "postBudget",
       "deleteBudget",
+      "getAllTransactionCategories",
       "getAllExpenseCategories",
     ]),
   },
@@ -211,6 +216,7 @@ export default class Budgets extends mixins(FilterMixin) {
   }
 
   getAllExpenseCategories!: () => Promise<void>;
+  getAllTransactionCategories!: () => Promise<void>;
   getBudgets!: (params: FilterParams) => Promise<void>;
   getBudget!: (id: string) => Promise<void>;
   postBudget!: (payload: BudgetPayload) => Promise<void>;
@@ -343,6 +349,7 @@ export default class Budgets extends mixins(FilterMixin) {
   fetch(params: FilterParams): void {
     Promise.allSettled([
       this.getAllExpenseCategories(),
+      this.getAllTransactionCategories(),
       this.getBudgets(params),
     ]);
   }

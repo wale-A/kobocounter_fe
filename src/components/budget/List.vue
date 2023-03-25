@@ -9,8 +9,8 @@
       <table v-if="budgets" class="budget__list">
         <thead>
           <tr class="budget__header">
-            <td class="budget__header-item">Budget ID</td>
-            <td class="budget__header-item">Status</td>
+            <!-- <td class="budget__header-item">Budget ID</td>
+            <td class="budget__header-item">Status</td> -->
             <td class="budget__header-item">Start Date</td>
             <td class="budget__header-item">End Date</td>
             <td class="budget__header-item">Budget</td>
@@ -29,23 +29,51 @@
             }"
             @click.stop="selectBudget(item[keyValue])"
           >
-            <td class="budget__id">
+            <!-- <td class="budget__id">
               {{ item.name }}
             </td>
             <td class="budget__field budget__status">
               {{ item.status || "Active" }}
-            </td>
+            </td> -->
             <td class="budget__field budget__start">
               {{ item.startDate }}
             </td>
             <td class="budget__field budget__end">
               {{ item.endDate }}
             </td>
-            <td class="budget__field budget__budget">N {{ item.value }}</td>
-            <td class="budget__field budget__spend">
-              N {{ item.amountSpent }}
+            <td class="budget__field budget__budget">
+              N {{ item.value.toLocaleString() }}
             </td>
-            <td class="budget__field budget__insight"></td>
+            <td class="budget__field budget__spend">
+              N {{ item.amountSpent.toLocaleString() }}
+            </td>
+            <td
+              class="budget__field budget__insight"
+              :class="{
+                'budget__insight--red': item.amountSpent > item.value,
+                'budget__insight--green': item.amountSpent < item.value,
+              }"
+            >
+              <svg-icon
+                v-if="item.amountSpent < item.value"
+                :src="require('@/assets/svg/down-arrow.svg')"
+                class="insight__change-icon"
+              />
+              <svg-icon
+                v-if="item.amountSpent > item.value"
+                :src="require('@/assets/svg/up-arrow.svg')"
+                class="insight__change-icon"
+              />
+              <span class="insight__change-value" style="padding-left: 5px"
+                >{{
+                  (
+                    ((item.amountSpent ? item.amountSpent - item.value : 0) /
+                      item.value) *
+                    100
+                  ).toFixed(2)
+                }}%</span
+              >
+            </td>
             <td class="budget__field-action">
               <button
                 class="budget__action budget__action--clear"
@@ -204,6 +232,11 @@ export default class List extends Vue {
     border-bottom: 1px solid #d9dbdb;
   }
 
+  @at-root #{&}__item:hover {
+    cursor: grab;
+    background: #ecefef;
+  }
+
   @at-root #{&}__item--active {
     background: #d9dbdb;
   }
@@ -224,6 +257,13 @@ export default class List extends Vue {
     padding: 15px;
   }
 
+  @at-root #{&}__action-item:hover {
+    border: black;
+    outline: none;
+    background: #d9dbdb;
+    cursor: grab;
+  }
+
   @at-root #{&}__action {
     padding: 5px;
   }
@@ -232,13 +272,19 @@ export default class List extends Vue {
     border: none;
     outline: none;
     background: transparent;
+    // cursor: grab;
+  }
+
+  @at-root #{&}__action--clear:hover {
+    cursor: grab;
+    font-weight: bold;
   }
 
   @at-root #{&}__action-menu {
     position: absolute;
     display: flex;
     flex-direction: column;
-    width: 132px;
+    width: 100px;
     background-color: #fff;
     right: 20px;
     top: 40px;
@@ -246,6 +292,13 @@ export default class List extends Vue {
     box-shadow: 0px 2px 10px 2px rgba(54, 65, 86, 0.1);
     border-radius: 3px;
     z-index: 100;
+  }
+
+  @at-root #{&}__insight--red {
+    color: rgba(222, 28, 98, 0.8);
+  }
+  @at-root #{&}__insight--green {
+    color: rgb(65, 197, 118);
   }
 }
 </style>

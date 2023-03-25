@@ -13,7 +13,11 @@
       <p class="review__subtitle">Budget cannot be edited once activated</p>
     </div>
     <div class="review__detail">
-      <Field label="Total Budget Amount" :value="total" orientation="row" />
+      <Field
+        label="Total Budget Amount"
+        :value="total.toLocaleString()"
+        orientation="row"
+      />
       <Field
         label="Start Date"
         :value="format(budget.startDate)"
@@ -39,7 +43,7 @@
           v-for="item in budget.items"
           :key="item.category"
           :label="getCategoryName(item.category)"
-          :value="item.value"
+          :value="item.value.toLocaleString()"
           orientation="row"
         />
       </div>
@@ -63,11 +67,12 @@
 </template>
 
 <script lang="ts">
+import { LabelValueType } from "@/types";
+import { getItemNameFromList } from "@/util";
+import { isDate } from "date-fns";
 import { Options, Vue } from "vue-class-component";
 import Field from "./Field.vue";
-import { isDate } from "date-fns";
 
-type categoryType = { value: number; label: string };
 @Options({
   components: {
     Field,
@@ -91,18 +96,19 @@ type categoryType = { value: number; label: string };
       if (!this.budget) {
         return 0;
       }
-      return this.budget.items.reduce((acc: number, category: categoryType) => {
-        return (acc += category.value);
-      }, 0);
+      return this.budget.items.reduce(
+        (acc: number, category: LabelValueType) => {
+          return (acc += category.value);
+        },
+        0
+      );
     },
   },
 })
 export default class Review extends Vue {
-  categories!: Array<categoryType>;
+  categories!: Array<LabelValueType>;
 
-  getCategoryName(id: number): string {
-    return this.categories.find((item) => item.value == id)?.label || "";
-  }
+  getCategoryName = (id: number) => getItemNameFromList(this.categories, id);
 
   format(date: Date): string {
     if (!date) {

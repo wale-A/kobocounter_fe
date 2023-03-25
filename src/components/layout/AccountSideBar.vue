@@ -2,7 +2,7 @@
   <div class="name">
     <div class="logo" style="padding: 1em 0; margin-left: -0.5em">
       <router-link :to="{ name: 'Home' }">
-        <img src="/img/assets/logo-white.svg" style="width: 90%" />
+        <img src="/img/assets/logo-white.png" style="width: 70%" />
       </router-link>
     </div>
   </div>

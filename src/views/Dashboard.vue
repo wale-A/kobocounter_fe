@@ -50,7 +50,7 @@
             <AccountSummary
               :accountBalance="accountBalance || 0"
               :totalRevenue="totalRevenue"
-              :totalExpense="totalExpense"
+              :totalExpenses="totalExpenses"
               :loading="loadingAccounts"
               :error="accountsError"
               class="dashboard__widget dashboard__widget--acount-summary"
@@ -130,21 +130,21 @@
 </template>
 
 <script lang="ts">
-import { Options, mixins } from "vue-class-component";
-import { mapGetters, mapActions, mapMutations, mapState } from "vuex";
-import AddNewAccount from "@/components/AddNewAccount.vue";
-import AccountSummary from "@/components/dashlets/AccountSummary.vue";
-import AccountActivity from "@/components/dashlets/AccountActivity.vue";
-import RecentCategories from "@/components/dashlets/RecentCategories.vue";
-import BudgetPerformance from "@/components/dashlets/BudgetPerformance.vue";
-import Page from "@/components/layout/Page.vue";
-import Loader from "@/components/layout/Loader.vue";
-import Filter from "@/components/common/Filter.vue";
-import { Account, FilterParams, TransactionInfo } from "@/types";
-import FilterMixin from "@/mixins/Filter";
-import UpcomingExpenses from "@/components/dashlets/UpcomingExpenses.vue";
-import CTA from "@/components/common/CTA.vue";
 import AddButton from "@/components/AddButton.vue";
+import AddNewAccount from "@/components/AddNewAccount.vue";
+import CTA from "@/components/common/CTA.vue";
+import Filter from "@/components/common/Filter.vue";
+import AccountActivity from "@/components/dashlets/AccountActivity.vue";
+import AccountSummary from "@/components/dashlets/AccountSummary.vue";
+import BudgetPerformance from "@/components/dashlets/BudgetPerformance.vue";
+import RecentCategories from "@/components/dashlets/RecentCategories.vue";
+import UpcomingExpenses from "@/components/dashlets/UpcomingExpenses.vue";
+import Loader from "@/components/layout/Loader.vue";
+import Page from "@/components/layout/Page.vue";
+import FilterMixin from "@/mixins/Filter";
+import { Account, FilterParams, TransactionInfo } from "@/types";
+import { Options, mixins } from "vue-class-component";
+import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
 
 @Options<Dashboard>({
   components: {
@@ -236,11 +236,10 @@ export default class Dashboard extends mixins(FilterMixin) {
         (acc: number, val: { amount: number }) => (acc += val.amount),
         0
       ) || 0;
-
     return rev.toLocaleString();
   }
 
-  get totalExpense(): string {
+  get totalExpenses(): string {
     const exp = Math.abs(
       this.expenses?.reduce(
         (acc: number, val: { amount: number }) => (acc += val.amount),

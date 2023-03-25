@@ -1,7 +1,9 @@
 <template>
   <div class="kv">
     <label class="kv__key">{{ label }}</label>
-    <label class="kv__value">{{ value || "-" }}</label>
+    <label class="kv__value" :style="`color: ${labelColor || 'unset'}`">{{
+      value || "-"
+    }}</label>
   </div>
 </template>
 
@@ -11,9 +13,14 @@ import { Options, Vue } from "vue-class-component";
   props: {
     label: String,
     value: String,
+    labelColor: String,
   },
 })
-export default class KeyValue extends Vue {}
+export default class KeyValue extends Vue {
+  value!: string;
+  label!: string;
+  labelColor?: string;
+}
 </script>
 
 <style lang="scss" scoped>
@@ -28,13 +35,13 @@ export default class KeyValue extends Vue {}
 
   @at-root #{&}__key {
     font-weight: 600;
-    font-size: 12px;
-    line-height: 12px;
+    font-size: 13px;
+    line-height: 13px;
     width: 50%;
   }
 
   @at-root #{&}__value {
-    font-size: 12px;
+    font-size: 13px;
     line-height: 16px;
   }
 }

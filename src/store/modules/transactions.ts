@@ -1,15 +1,14 @@
+import api from "@/api";
 import {
+  FilterParams,
+  Pagination,
+  SplitTransaction,
+  Transaction,
   TransactionCategories,
   TransactionInfo,
-  FilterParams,
   TransactionPayload,
-  SplitTransaction,
-  Pagination,
-  TransactionResponse,
-  Transaction,
 } from "@/types";
 import { Module } from "vuex";
-import api from "@/api";
 
 type State = {
   loadingTransactions: boolean;

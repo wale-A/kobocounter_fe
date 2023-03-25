@@ -1,16 +1,16 @@
-import axios from "@/util/axios";
 import {
-  LoginPayload,
-  RegisterPayload,
-  FilterParams,
-  TransactionPayload,
-  SplitTransaction,
-  TransactionResponse,
   Budget,
   BudgetListResponse,
   BudgetPayload,
+  FilterParams,
+  LoginPayload,
+  RegisterPayload,
+  SplitTransaction,
+  TransactionPayload,
+  TransactionResponse,
   UpdatePasswordPayload,
 } from "@/types";
+import axios from "@/util/axios";
 import { AxiosResponse } from "axios";
 
 const login = (payload: LoginPayload): Promise<AxiosResponse> => {
@@ -122,6 +122,7 @@ const getSingleBudget = (id: string): Promise<AxiosResponse> =>
 
 const getAllExpenseCategories = (): Promise<AxiosResponse> =>
   axios.get(`/banking/expenseCategories`);
+
 const getAllTransactionCategories = (): Promise<AxiosResponse> =>
   axios.get(`/banking/transactionCategories`);
 

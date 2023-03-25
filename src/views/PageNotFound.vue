@@ -1,10 +1,9 @@
 <template>
   <main>
-    <img
-      alt="Not Found"
-      src="https://th.bing.com/th/id/R0a373d6d51122ade8642e7acb748ef32?rik=nrVRaXFmAbWxXw&pid=ImgRaw"
-    />
-    <p class="major-text darker-color">Page Not Found</p>
+    <img alt="Not Found" src="/img/404.png" />
+    How did you get here ?
+    <br /><br />
+    this should not have happened .....
 
     <button>
       <router-link :to="{ name: 'Home' }"> GO HOME </router-link>
@@ -18,24 +17,28 @@ main {
   flex-flow: column;
   justify-content: space-between;
   align-items: center;
-  margin-top: 10%;
+  font-size: 1.3em;
 }
 main img {
-  width: 70%;
-  margin-bottom: 1%;
+  width: 40%;
+  margin-top: 5%;
+  margin-bottom: 3%;
 }
 main button {
-  margin-top: 40px;
-  width: unset;
+  margin-top: 60px;
+  width: 130px;
+  height: 60px;
 }
 main button a {
-  color: white;
+  color: black;
   text-decoration: none;
+  font-size: 1.4em;
 }
 
 @media screen and (max-width: 800px) {
   main {
     margin-top: 40%;
+    font-size: 1.1em;
   }
   main img {
     width: 85%;

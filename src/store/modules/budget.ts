@@ -36,10 +36,6 @@ const budgets: Module<State, any> = {
       return state.budgets
         ?.map((item) => ({
           ...item,
-          amountSpent: item.amountSpent
-            ? item.amountSpent.toLocaleString()
-            : "-",
-          value: item.value.toLocaleString(),
           startDate: formatDate(item.startDate),
           endDate: formatDate(item.endDate),
           name: getBudgetName(item.startDate, "monthly"),
@@ -58,8 +54,7 @@ const budgets: Module<State, any> = {
       );
     },
     lastBudget(state) {
-      const last =
-        state.budgets?.length && state.budgets[state.budgets.length - 1];
+      const last = state.budgets?.length && state.budgets[0];
       return last;
     },
     budget(state) {
@@ -67,8 +62,8 @@ const budgets: Module<State, any> = {
         ...state.budget,
         items: state.budget?.items.map((item) => ({
           ...item,
-          value: item.value.toLocaleString(),
-          amountSpent: item.amountSpent?.toLocaleString(),
+          value: item.value,
+          amountSpent: item.amountSpent || 0,
         })),
       };
     },

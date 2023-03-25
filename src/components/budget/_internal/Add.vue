@@ -71,7 +71,7 @@
                     {{ categoryMap[item.category] || item.category }}
                   </td>
                   <td class="budget__list-row-item">
-                    {{ item.value }}
+                    {{ item.value?.toLocaleString() }}
                   </td>
                   <td class="budget__list-row-item">
                     <button
@@ -502,6 +502,10 @@ export default class Add extends Vue {
   @at-root #{&}__field-control {
     display: flex;
     flex-direction: column;
+
+    input {
+      padding-left: 10px;
+    }
   }
 
   @at-root #{&}__field-label {
