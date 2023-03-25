@@ -9,7 +9,9 @@
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "serve-prod": "serve -s dist",
-    "postinstall": "cd ./node_modules/vue-mono && yarn && yarn dist"
+    "postinstall": "cd ./node_modules/vue-mono && yarn && yarn dist",
+    "create-tar": "tar -cvf ./deploy.tar --exclude='*.map' ./captain-definition ./dist/* ./package.json",
+    "deploy": "npm run build && npm run create-tar"
   },
   "dependencies": {
     "@amcharts/amcharts4": "^4.10.20",

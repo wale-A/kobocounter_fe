@@ -264,7 +264,7 @@ import { mapGetters } from "vuex";
     ...mapGetters(["isLoggedIn"]),
   },
 })
-export default class NewLanding extends Vue {}
+export default class Landing extends Vue {}
 </script>
 
 <style scoped>

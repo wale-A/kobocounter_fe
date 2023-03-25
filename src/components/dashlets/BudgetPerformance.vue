@@ -8,7 +8,7 @@
         Create one now to see your budget performance.
       </p>
       <br />
-      <router-link to="Budget" class="button">
+      <router-link to="Budgets" class="button">
         <span class="">Create Your Budget</span>
       </router-link>
     </section>
@@ -16,8 +16,8 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
 import Card from "@/components/layout/Card.vue";
+import { Options, Vue } from "vue-class-component";
 
 import GuageChart from "@/components/charts/GuageChart.vue";
 
