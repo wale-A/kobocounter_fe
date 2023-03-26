@@ -15,9 +15,6 @@
           class="user-menu__dropdown"
           @click="toggleMenu()"
         >
-          <router-link :to="{ name: 'EditProfile' }" class="user-menu__link">
-            Edit Profile
-          </router-link>
           <router-link :to="{ name: 'ManageAccounts' }" class="user-menu__link">
             Manage Accounts
           </router-link>

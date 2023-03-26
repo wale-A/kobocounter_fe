@@ -24,10 +24,10 @@
           @updatePassword="updateUserPassword($event)"
           @accountAdded="accountAdded()"
         ></component>
+
+        <Loader v-show="loading" />
       </main>
     </div>
-
-    <Loader v-show="loading" />
     <FailedAccountNotification :accounts="accounts" />
   </Page>
 </template>
@@ -229,5 +229,8 @@ aside {
 main {
   width: 84%;
   margin: 2% 8%;
+}
+.loader {
+  height: unset !important;
 }
 </style>

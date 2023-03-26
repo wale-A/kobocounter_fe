@@ -7,13 +7,17 @@
       <input type="submit" value="Add Bank Account" />
     </form>
   </section>
-  <AddButton :title="'Add an account'" @add="addNewAccount" />
+  <AddButton
+    :title="'Add an account'"
+    @add="addNewAccount"
+    v-show="!hasAccounts"
+  />
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import AddButton from "./AddButton.vue";
 import { mapActions } from "vuex";
+import AddButton from "./AddButton.vue";
 
 @Options({
   components: {
