@@ -431,7 +431,7 @@ p b {
   font-size: 1.2em;
 }
 footer img {
-  max-width: 20%;
+  max-width: 13%;
 }
 @media (min-width: 2000px) {
   aside {
