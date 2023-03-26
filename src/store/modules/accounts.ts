@@ -3,21 +3,28 @@ import { Module } from "vuex";
 import api from "@/api";
 
 type State = {
+  loadingAccounts: boolean;
   accounts: Account[] | undefined;
+  accountsError: Error | undefined;
   accountCreateSuccessful: boolean;
 };
 
 const accounts: Module<State, any> = {
   state: () => ({
+    loadingAccounts: false,
     accounts: undefined,
+    accountsError: undefined,
     accountCreateSuccessful: false,
   }),
   getters: {
+    loadingAccounts(state) {
+      return state.loadingAccounts;
+    },
     accounts(state) {
-      return state.accounts || [];
+      return state.accounts;
     },
     accountMap(_, getters) {
-      return getters.accounts.reduce(
+      return (getters.accounts || []).reduce(
         (acc: Record<string, any>, item: Account) => ({
           ...acc,
           [item.id]: item,
@@ -26,7 +33,7 @@ const accounts: Module<State, any> = {
       );
     },
     accountOptionsMap(_, getters) {
-      return getters.accounts.map((item: Account) => ({
+      return (getters.accounts || []).map((item: Account) => ({
         value: item.id,
         label: `${item.bankName} - ${item.accountNumber}`,
       }));
@@ -36,8 +43,16 @@ const accounts: Module<State, any> = {
     setAccountCreateStatus(state, status: boolean) {
       state.accountCreateSuccessful = status;
     },
-    setAccounts(state: State, accounts?: Account[]) {
+    setLoadingAccounts(state, active: boolean) {
+      state.loadingAccounts = active;
+    },
+    setAccountsError(state, err: Error) {
+      state.accountsError = err;
+      state.accounts = undefined;
+    },
+    setAccounts(state: State, accounts: Account[]) {
       state.accounts = accounts;
+      state.accountsError = undefined;
     },
   },
   actions: {
@@ -56,13 +71,13 @@ const accounts: Module<State, any> = {
     },
     async getAccounts({ commit }) {
       try {
-        // TODO move auth check to router
-        // if (!rootState?.auth?.user) throw "";
-
+        commit("setLoadingAccounts", true);
         const res = await api.getAccounts();
         commit("setAccounts", res.data as Account[]);
       } catch (e) {
-        commit("setAccounts", []);
+        commit("setAccountsError", e);
+      } finally {
+        commit("setLoadingAccounts", false);
       }
     },
     // TODO: cOMPLETE ACCOUNT REAUTH WITH MONO...

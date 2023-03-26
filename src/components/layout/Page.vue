@@ -8,21 +8,30 @@
     >
       <slot v-if="!onMobile" name="actions" />
     </Header>
-    <slot />
+    <Loader v-if="pageLoading" />
+    <slot v-else />
   </section>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import Header from "./Header.vue";
+import Loader from "./Loader.vue";
+
 @Options({
   name: "Page",
   components: {
     Header,
+    Loader,
   },
+  // these props are passed via the router-view object in ./App.vue
   props: {
     username: String,
     avatarUrl: String,
+    pageLoading: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     onMobile() {
@@ -30,7 +39,13 @@ import Header from "./Header.vue";
     },
   },
 })
-export default class Page extends Vue {}
+export default class Page extends Vue {
+  pageLoading!: boolean;
+
+  created() {
+    // console.log({ pgLoading: this.pageLoading });
+  }
+}
 </script>
 
 <style lang="scss" scoped>

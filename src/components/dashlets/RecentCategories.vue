@@ -1,5 +1,5 @@
 <template>
-  <Card title="Transaction Categories">
+  <Card title="Transaction Categories" :loading="loading" :error="error">
     <template #action>
       <div>
         <span
@@ -75,6 +75,8 @@ import WordCloudChart from "@/components/charts/WordCloudChart.vue";
     from: String,
     to: String,
     height: String,
+    loading: Boolean,
+    error: Error,
   },
 })
 export default class RecentCategories extends Vue {

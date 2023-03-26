@@ -8,7 +8,8 @@
       :establishments="establishments"
       :allExpenseCategories="allExpenseCategories"
       :allTransactionCategories="allTransactionCategories"
-      :loadingOperation="loadingOperation"
+      :loading="loading"
+      :saving="saving"
       @edit="$emit('edit', transaction.id)"
       @split="$emit('split', transaction.id)"
       @select="$emit('select', $event)"
@@ -28,6 +29,7 @@ import View from "./View.vue";
 import Edit from "./Edit.vue";
 import Split from "./Split.vue";
 import Panel from "@/components/layout/Panel.vue";
+import Loader from "@/components/layout/Loader.vue";
 
 @Options({
   props: {
@@ -44,7 +46,14 @@ import Panel from "@/components/layout/Panel.vue";
       type: Array,
       required: true,
     },
-    loadingOperation: Boolean,
+    saving: {
+      type: Boolean,
+      default: false,
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     Empty,
@@ -52,9 +61,13 @@ import Panel from "@/components/layout/Panel.vue";
     View,
     Split,
     Panel,
+    Loader,
   },
   computed: {
     key() {
+      if (this.loading) {
+        return "loader";
+      }
       return this.transaction ? this.action : "empty";
     },
     components() {
@@ -63,6 +76,7 @@ import Panel from "@/components/layout/Panel.vue";
         split: "Split",
         edit: "Edit",
         empty: "Empty",
+        loader: "Loader",
       };
     },
   },

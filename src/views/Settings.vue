@@ -33,14 +33,14 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import ManageAccounts from "@/components/settings/ManageAccounts.vue";
-import { mapActions, mapGetters } from "vuex";
-import Page from "@/components/layout/Page.vue";
-import { Account, UpdatePasswordPayload } from "@/types";
-import ChangePassword from "@/components/settings/ChangePassword.vue";
 import Loader from "@/components/layout/Loader.vue";
+import Page from "@/components/layout/Page.vue";
+import ChangePassword from "@/components/settings/ChangePassword.vue";
+import ManageAccounts from "@/components/settings/ManageAccounts.vue";
 import UpgradePlan from "@/components/settings/UpgradePlan.vue";
+import { Account, UpdatePasswordPayload } from "@/types";
+import { Options, Vue } from "vue-class-component";
+import { mapActions, mapGetters } from "vuex";
 
 @Options({
   components: {
@@ -125,7 +125,6 @@ export default class Settings extends Vue {
       this.deleteAccount(accountId)
         .then(() => this.getAccounts().then(() => (this.loading = false)))
         .catch((e) => {
-          console.error({ e });
           this.loading = false;
         });
     }
@@ -174,7 +173,6 @@ export default class Settings extends Vue {
           type: "error",
           duration: 10000,
         });
-        console.error({ e });
       });
   }
 

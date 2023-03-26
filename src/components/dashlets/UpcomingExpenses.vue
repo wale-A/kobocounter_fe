@@ -1,5 +1,5 @@
 <template>
-  <Card title="Upcoming Expenses">
+  <Card title="Upcoming Expenses" :loading="loading" :error="error">
     <div class="expense">
       <table class="expense__table">
         <tr class="expense__header">
@@ -70,6 +70,8 @@ import "floating-vue/dist/style.css";
       type: Array,
       required: true,
     },
+    loading: Boolean,
+    error: Error,
   },
 })
 export default class UpcomingExpenses extends Vue {

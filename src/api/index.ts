@@ -1,15 +1,16 @@
-import axios from "@/util/axios";
 import {
-  LoginPayload,
-  RegisterPayload,
-  FilterParams,
-  TransactionPayload,
-  SplitTransaction,
-  TransactionResponse,
   Budget,
   BudgetListResponse,
+  BudgetPayload,
+  FilterParams,
+  LoginPayload,
+  RegisterPayload,
+  SplitTransaction,
+  TransactionPayload,
+  TransactionResponse,
   UpdatePasswordPayload,
 } from "@/types";
+import axios from "@/util/axios";
 import { AxiosResponse } from "axios";
 
 const login = (payload: LoginPayload): Promise<AxiosResponse> => {
@@ -102,11 +103,26 @@ const getBudgets = (
 ): Promise<AxiosResponse<Array<BudgetListResponse>>> =>
   axios.get(`/budgets`, { params });
 
+const getBudget = (id: string): Promise<AxiosResponse<Budget>> =>
+  axios.get(`/budgets/${id}`);
+
+const deleteBudget = (id: string): Promise<AxiosResponse> =>
+  axios.delete(`/budgets/${id}`);
+
+const postBudget = (payload: BudgetPayload): Promise<AxiosResponse> =>
+  axios.post(`/budgets`, payload);
+
+const putBudget = (
+  id: string,
+  payload: BudgetPayload
+): Promise<AxiosResponse> => axios.put(`/budgets/${id}`, payload);
+
 const getSingleBudget = (id: string): Promise<AxiosResponse> =>
   axios.get(`/banking/budgets/${id}`);
 
 const getAllExpenseCategories = (): Promise<AxiosResponse> =>
   axios.get(`/banking/expenseCategories`);
+
 const getAllTransactionCategories = (): Promise<AxiosResponse> =>
   axios.get(`/banking/transactionCategories`);
 
@@ -130,7 +146,11 @@ export default {
   getRevenue,
   subscribe,
   unsubscribe,
+  getBudget,
   getBudgets,
+  postBudget,
+  putBudget,
+  deleteBudget,
   getInsights,
   getDetailedInsights,
   getSingleBudget,

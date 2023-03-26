@@ -1,5 +1,18 @@
-import { COMMON_DATES } from "@/config";
-import { Account, User } from "@/types";
+import {
+  BUDGET_TYPE_OPTIONS,
+  COMMON_DATES,
+  MONTH_NAMES,
+  PERIOD_LABEL_MAPPING,
+} from "@/config";
+import { LabelValueType, User } from "@/types";
+import {
+  format,
+  getMonth,
+  getQuarter,
+  getWeek,
+  getWeekOfMonth,
+  getYear,
+} from "date-fns";
 
 const storeKey = "authenticated-user";
 
@@ -68,81 +81,48 @@ export const ACCOUNT_FIELD = (
   };
 };
 
-export const PERIOD_FIELD: Record<string, any> = {
-  key: "period",
-  label: "Date",
-  type: "select",
-  placeholder: "Select an option",
-  sanitizeValue(value: { name: string; start: Date; end: Date }): string {
-    return value.name;
-  },
-  options: [
-    {
-      value: "yesterday",
-      label: "Yesterday",
+const getPeriod = (
+  options: Array<string>,
+  defaultValue: string
+): Record<string, any> => {
+  return {
+    key: "period",
+    label: "Date",
+    type: "select",
+    placeholder: "Select an option",
+    sanitizeValue(value: { name: string; start: Date; end: Date }): string {
+      return value.name;
+    },
+    options: options.map((item: string) => ({
+      value: item,
+      label: PERIOD_LABEL_MAPPING[item],
       nativeValue: {
-        name: "yesterday",
-        ...COMMON_DATES["yesterday"],
+        name: item,
+        ...COMMON_DATES[item],
       },
+    })),
+    defaultValue,
+    modelDefault() {
+      return {
+        name: defaultValue,
+        ...COMMON_DATES[defaultValue],
+      };
     },
-    {
-      value: "last-week",
-      label: "Past week",
-      nativeValue: {
-        name: "last-week",
-        ...COMMON_DATES["last-week"],
+    valueActions: [
+      {
+        key: "custom",
+        type: "input",
+        component: "RangePicker",
+        props: "",
       },
+    ],
+    getParams(model: Record<string, any>): Record<string, string> {
+      return {
+        start: model.period.start.getTime(),
+        end: model.period.end.getTime(),
+      };
     },
-    {
-      value: "last-month",
-      label: "Last 30 days",
-      nativeValue: {
-        name: "last-month",
-        ...COMMON_DATES["last-month"],
-      },
-    },
-    {
-      value: "last-quarter",
-      label: "Last 3 months",
-      nativeValue: {
-        name: "last-quarter",
-        ...COMMON_DATES["last-quarter"],
-      },
-    },
-    {
-      value: "last-year",
-      label: "Past year",
-      nativeValue: {
-        name: "last-year",
-        ...COMMON_DATES["last-year"],
-      },
-    },
-    {
-      value: "custom",
-      label: "Custom",
-    },
-  ],
-  defaultValue: "last-month",
-  modelDefault() {
-    return {
-      name: "last-month",
-      ...COMMON_DATES["last-month"],
-    };
-  },
-  valueActions: [
-    {
-      key: "custom",
-      type: "input",
-      component: "RangePicker",
-      props: "",
-    },
-  ],
-  getParams(model: Record<string, any>): Record<string, string> {
-    return {
-      start: model.period.start.getTime(),
-      end: model.period.end.getTime(),
-    };
-  },
+  };
 };
 
 export const TRANSACTION_FIELD: Record<string, any> = {
@@ -189,7 +169,17 @@ export const CATEGORIES_FIELD = (
 
 export const baseFilter = {
   account: ACCOUNT_FIELD,
-  period: PERIOD_FIELD,
+  period: getPeriod(
+    [
+      "yesterday",
+      "last-week",
+      "last-month",
+      "last-quarter",
+      "last-year",
+      "custom",
+    ],
+    "last-month"
+  ),
 };
 
 export const transactionFilter = {
@@ -197,3 +187,54 @@ export const transactionFilter = {
   category: CATEGORIES_FIELD,
   search: TRANSACTION_FIELD,
 };
+
+export const budgetFilter = {
+  period: getPeriod(
+    [
+      "current-month",
+      "rest",
+      //"continuous",
+      "last-month",
+      "last-quarter",
+      "last-year",
+      "custom",
+    ],
+    "rest"
+  ),
+  category: CATEGORIES_FIELD,
+};
+
+export const getBudgetName = (startDate: string, type: string): string => {
+  const date = new Date(startDate);
+  switch (type) {
+    case BUDGET_TYPE_OPTIONS.WEEKLY:
+      return `Week ${getWeek(date)}`;
+    case BUDGET_TYPE_OPTIONS.BI_WEEKLY:
+      return `${MONTH_NAMES[getMonth(date)]} WEEK-GROUP ${
+        getWeekOfMonth(date) < 2 ? "1" : "2"
+      }`;
+    case BUDGET_TYPE_OPTIONS.BI_MONTHLY:
+      return `MONTH-GROUP ${(getMonth(date) + 1) / 2}`;
+    case BUDGET_TYPE_OPTIONS.QUATERLY:
+      return `Quater ${getQuarter(date)}`;
+    case BUDGET_TYPE_OPTIONS.MID_YEAR:
+      return getMonth(date) < 6 ? `First Half` : "Second Half";
+    case BUDGET_TYPE_OPTIONS.YEARLY:
+      return `Year ${getYear(date)}`;
+    default:
+      return MONTH_NAMES[getMonth(date)];
+  }
+};
+
+export const justDate = (date: string): string => {
+  const [withoutTime] = date.split("T");
+  // format is returning the previous day
+  return format(new Date(withoutTime), "MM/dd/yyyy");
+};
+
+export function getItemNameFromList(
+  list: LabelValueType[],
+  id: number
+): string {
+  return list.find((item) => item.value == id)?.label || "";
+}

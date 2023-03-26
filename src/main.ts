@@ -5,6 +5,7 @@ import Notifications from "@kyvg/vue3-notification";
 import FloatingVue from "floating-vue";
 import { createApp } from "vue";
 import InlineSvgPlugin from "vue-inline-svg";
+import vClickOutside from "click-outside-vue3";
 import MonoJS from "vue-mono";
 import VueScreen from "vue-screen";
 import App from "./App.vue";
@@ -32,6 +33,7 @@ createApp(App)
   })
   .use(FloatingVue)
   .component("svg-icon", InlineSvgPlugin)
+  .directive("clickOutside", vClickOutside.directive)
   .mount("#app");
 if (AM4_LICENSE) {
   am4core.addLicense(AM4_LICENSE);

@@ -18,7 +18,7 @@
           @update:account="addAccount"
         />
       </template>
-      <Columns>
+      <Columns v-if="insights && insights.length">
         <template v-slot:col-1>
           <List
             :keyValue="'id'"
@@ -33,34 +33,61 @@
           />
         </template>
         <template v-slot:col-2>
-          <Detail :insight="insight" :data="detailedInsights" /></template
+          <Detail
+            :insight="insight"
+            :data="detailedInsights"
+            :loading="loadingInsight" /></template
       ></Columns>
+      <CTA
+        v-if="insights && insights.length === 0"
+        title="Oops, we found no transactions to show insights on"
+        subtext="Please adjust the filters, or add a bank account if you haven't."
+        buttonLabel="Add Account"
+        @action="
+          $router.push({
+            name: 'ManageAccounts',
+          })
+        "
+      />
+      <CTA
+        v-if="insightsError"
+        title="Oops"
+        subtext="Couldn't load insights"
+        buttonLabel="Try again"
+        @action="refresh"
+      />
     </div>
   </Page>
 </template>
 
 <script lang="ts">
-import { Options, mixins } from "vue-class-component";
-import Card from "@/components/layout/Card.vue";
-import Columns from "@/components/layout/Columns.vue";
-import Page from "@/components/layout/Page.vue";
+import CTA from "@/components/common/CTA.vue";
 import Filter from "@/components/common/Filter.vue";
-import { FilterParams, Insights as InsightType } from "@/types";
-import { mapGetters, mapActions } from "vuex";
-import FilterMixin from "@/mixins/Filter";
 import Detail from "@/components/insight/Detail.vue";
 import List from "@/components/insight/List.vue";
+import Columns from "@/components/layout/Columns.vue";
+import Page from "@/components/layout/Page.vue";
+import FilterMixin from "@/mixins/Filter";
+import { FilterParams, Insights as InsightType } from "@/types";
+import { Options, mixins } from "vue-class-component";
+import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
 
 @Options<Insights>({
   components: {
     Columns,
-    Card,
     Filter,
     Page,
     Detail,
     List,
+    CTA,
   },
   computed: {
+    ...mapState({
+      loadingInsights: (state: any) => state.insights.loadingInsights,
+      loadingInsight: (state: any) => state.insights.loadingInsight,
+      insightsError: (state: any) => state.insights.insightsError,
+      insightError: (state: any) => state.insights.insightError,
+    }),
     ...mapGetters(["insights", "budgets", "detailedInsights"]),
     isSingle() {
       return this.$route?.params.id;
@@ -80,6 +107,7 @@ import List from "@/components/insight/List.vue";
     },
   },
   methods: {
+    ...mapMutations(["setLoading"]),
     ...mapActions([
       "getAccounts",
       "getInsights",
@@ -88,6 +116,12 @@ import List from "@/components/insight/List.vue";
     ]),
   },
   watch: {
+    loadingInsights: {
+      handler(newVal) {
+        this.setLoading(newVal);
+      },
+      immediate: true,
+    },
     params(newVal) {
       this.fetch(this.getQuery(this.facets, newVal));
     },
@@ -117,6 +151,10 @@ export default class Insights extends mixins(FilterMixin) {
       this.getInsights(params),
       this.getBudgets(params),
     ]);
+  }
+
+  refresh() {
+    this.fetch(this.getQuery(this.facets, this.params));
   }
 
   created(): void {

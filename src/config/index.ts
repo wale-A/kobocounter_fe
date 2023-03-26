@@ -1,4 +1,4 @@
-import { sub } from "date-fns";
+import { sub, startOfMonth, endOfMonth, endOfYear } from "date-fns";
 
 export const SIDEBAR_MENU_ITEMS = [
   {
@@ -38,16 +38,16 @@ export const SIDEBAR_MENU_ITEMS = [
     route: { path: "/Transactions" },
   },
   {
-    title: "Budget",
+    title: "Budgets",
     icon: {
-      mobile: "/img/assets/n3.png",
-      desktop: "/img/assets/3.png",
+      mobile: "/img/assets/n2.png",
+      desktop: "/img/assets/2.png",
     },
     medium: {
       mobile: true,
       desktop: true,
     },
-    route: { path: "/Budget" },
+    route: { path: "/Budgets" },
   },
   {
     title: "Settings",
@@ -110,10 +110,22 @@ export const TRANSACTION_CATEGORIES = [
 ];
 
 const now = new Date();
-export const COMMON_DATES: Record<string, { start: Date; end: Date }> = {
+export const COMMON_DATES: Record<string, { start: Date; end: Date | null }> = {
   yesterday: {
     start: sub(now, { days: 1 }),
     end: now,
+  },
+  "current-month": {
+    start: startOfMonth(now),
+    end: endOfMonth(now),
+  },
+  rest: {
+    start: startOfMonth(now),
+    end: endOfYear(now),
+  },
+  continuous: {
+    start: startOfMonth(now),
+    end: null,
   },
   "last-week": {
     start: sub(now, { weeks: 1 }),
@@ -132,3 +144,50 @@ export const COMMON_DATES: Record<string, { start: Date; end: Date }> = {
     end: now,
   },
 };
+
+export const PERIOD_LABEL_MAPPING: Record<string, string> = {
+  yesterday: "Yesterday",
+  "last-week": "Past week",
+  "last-month": "Past Month",
+  "last-quarter": "Last 3 months",
+  "last-year": "Past year",
+  custom: "Custom",
+  "current-month": "This Month",
+  rest: "Rest of the Year",
+  continuous: "Future",
+};
+
+export const BUDGET_TYPE_OPTIONS: Record<string, string> = {
+  WEEKLY: "weekly",
+  BI_WEEKLY: "bi-weekly",
+  MONTHLY: "monthly",
+  BI_MONTHLY: "bi-monthly",
+  QUARTERLY: "quaterly",
+  MID_YEAR: "mid-year",
+  ANNUALLY: "annually",
+};
+
+export const BUDGET_TYPE_OPTIONS_LABEL: Record<string, string> = {
+  [BUDGET_TYPE_OPTIONS.WEEKLY]: "Weekly",
+  [BUDGET_TYPE_OPTIONS.BI_WEEKLY]: "Bi Weekly",
+  [BUDGET_TYPE_OPTIONS.MONTHLY]: "Monthly",
+  [BUDGET_TYPE_OPTIONS.BI_MONTHLY]: "Bi Monthly",
+  [BUDGET_TYPE_OPTIONS.QUARTERLY]: "Quaterly",
+  [BUDGET_TYPE_OPTIONS.MID_YEAR]: "Half Year",
+  [BUDGET_TYPE_OPTIONS.ANNUALLY]: "Yearly",
+};
+
+export const MONTH_NAMES = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];

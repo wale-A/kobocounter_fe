@@ -150,13 +150,13 @@ import "@vuepic/vue-datepicker/dist/main.css";
 export default class RangePicker extends Vue {}
 </script>
 
-<style lang="scss">
+<!--style lang="scss">
 .dp__menu {
   width: 100%;
   border: none;
   box-shadow: 0px 4px 15px 4px rgba(54, 65, 86, 0.1);
 }
-</style>
+</style-->
 
 <style lang="scss" scoped>
 .range-picker {

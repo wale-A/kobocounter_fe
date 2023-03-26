@@ -18,13 +18,13 @@
           @update:account="addAccount"
         />
       </template>
-      <Columns>
+      <Columns v-if="transactions && transactions.length">
         <template v-slot:col-1>
           <List
             :highlight="$route?.params.id"
             :transactions="groupedTransactions"
             :canLoadMore="canLoadMore"
-            :loadingTransactions="loading"
+            :loadingMore="loading"
             @select="
               $router.push({
                 name: 'TransactionDetail',
@@ -43,7 +43,8 @@
             :allExpenseCategories="allExpenseCategories"
             :allTransactionCategories="allTransactionCategories"
             :action="action"
-            :loadingOperation="loading"
+            :loading="loading"
+            :saving="saving"
             class="transactions__detail"
             :class="{ 'transactions__detail--desktop': !onMobile }"
             @select="$router.push(`/transactions/${$event}/view`)"
@@ -57,30 +58,46 @@
           />
         </template>
       </Columns>
+      <CTA
+        v-if="transactions && transactions.length === 0"
+        title="Oops, we found no transactions"
+        subtext="Please adjust the filters, or add a bank account if you haven't."
+        buttonLabel="Add Bank Account"
+        @action="
+          $router.push({
+            name: 'ManageAccounts',
+          })
+        "
+      />
+      <CTA
+        v-if="transactionsError"
+        title="Oops"
+        subtext="Couldn't load transactions"
+        buttonLabel="Try again"
+        @action="refresh"
+      />
     </div>
-
-    <Loader v-show="loading" />
   </Page>
 </template>
 
 <script lang="ts">
-import { Options, mixins } from "vue-class-component";
-import { mapGetters, mapActions } from "vuex";
+import AddNewAccount from "@/components/AddNewAccount.vue";
+import CTA from "@/components/common/CTA.vue";
+import Filter from "@/components/common/Filter.vue";
 import Columns from "@/components/layout/Columns.vue";
 import Page from "@/components/layout/Page.vue";
-import AddNewAccount from "@/components/AddNewAccount.vue";
-import Loader from "@/components/layout/Loader.vue";
+import Detail from "@/components/transaction/Detail.vue";
+import List from "@/components/transaction/List.vue";
+import FilterMixin from "@/mixins/Filter";
 import {
   FilterParams,
   SplitTransaction,
   Transaction,
   TransactionPayload,
 } from "@/types";
-import Detail from "@/components/transaction/Detail.vue";
-import List from "@/components/transaction/List.vue";
-import Filter from "@/components/common/Filter.vue";
 import { transactionFilter } from "@/util";
-import FilterMixin from "@/mixins/Filter";
+import { Options, mixins } from "vue-class-component";
+import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
 
 @Options<Transactions>({
   components: {
@@ -90,9 +107,14 @@ import FilterMixin from "@/mixins/Filter";
     List,
     Detail,
     Filter,
-    Loader,
+    CTA,
   },
   computed: {
+    ...mapState({
+      loadingTransactions: (state: any) =>
+        state.transactions.loadingTransactions,
+      transactionsError: (state: any) => state.transactions.transactionsError,
+    }),
     ...mapGetters([
       "accounts",
       "categoryOptionsMap",
@@ -143,6 +165,7 @@ import FilterMixin from "@/mixins/Filter";
     },
   },
   methods: {
+    ...mapMutations(["setLoading"]),
     ...mapActions([
       "getAccounts",
       "getTransactions",
@@ -155,6 +178,12 @@ import FilterMixin from "@/mixins/Filter";
     ]),
   },
   watch: {
+    loadingTransactions: {
+      handler(newVal) {
+        this.setLoading(newVal);
+      },
+      immediate: true,
+    },
     params(newVal) {
       this.fetch(this.getQuery(this.facets, newVal));
     },
@@ -169,12 +198,28 @@ export default class Transactions extends mixins(FilterMixin) {
   categoryOptionsMap!: Record<string, any>;
   allTransactionCategories!: Array<{ value: number; label: string }>;
   loading = false;
+  saving = false;
 
   get filterArgs(): Record<string, any> {
     return {
       account: this.accountOptionsMap,
       category: this.categoryOptionsMap,
     };
+  }
+
+  get paramSummary(): string {
+    if (this.params) {
+      const bank = this.accountMap[this.params.account]
+        ? `${this.accountMap[this.params.account].bankName} Account`
+        : "All Bank Accounts";
+      const search = this.params.search
+        ? `
+          with transactions containing '${this.params.search}'
+        `
+        : "";
+      return `Showing results for ${bank} from ${this.from} to ${this.to} ${search}`;
+    }
+    return "";
   }
 
   getAccounts!: (params: FilterParams) => Promise<void>;
@@ -184,30 +229,13 @@ export default class Transactions extends mixins(FilterMixin) {
   getAllExpenseCategories!: () => Promise<void>;
   getAllTransactionCategories!: () => Promise<void>;
 
-  fetch(params: FilterParams): void {
-    this.loading = true;
-    Promise.allSettled([
-      this.getAccounts(params),
-      this.getTransactions(params),
-      this.getEstablishments(),
-      this.getTransactionCategories(params),
-    ]).finally(() => (this.loading = false));
-  }
-
-  fetchTransactionAndExpensesCategories(): void {
-    Promise.allSettled([
-      this.getAllExpenseCategories(),
-      this.getAllTransactionCategories(),
-    ]);
-  }
-
   updateTransaction!: (arg: {
     transactionId: string;
     model: TransactionPayload;
   }) => Promise<void>;
 
   editTransaction(model: TransactionPayload): void {
-    this.loading = true;
+    this.saving = true;
     this.updateTransaction({
       transactionId: model.id,
       model: {
@@ -229,7 +257,7 @@ export default class Transactions extends mixins(FilterMixin) {
           duration: 10000,
         });
       })
-      .finally(() => (this.loading = false));
+      .finally(() => (this.saving = false));
   }
 
   saveSplitTransactions!: (arg: {
@@ -241,7 +269,7 @@ export default class Transactions extends mixins(FilterMixin) {
     if (!this.transaction) {
       return;
     }
-    this.loading = true;
+    this.saving = true;
     this.saveSplitTransactions({
       transactionId: this.transaction.id,
       payload: model,
@@ -259,7 +287,7 @@ export default class Transactions extends mixins(FilterMixin) {
           type: "error",
         });
       })
-      .finally(() => (this.loading = false));
+      .finally(() => (this.saving = false));
   }
 
   nextPageParams!: {
@@ -273,6 +301,27 @@ export default class Transactions extends mixins(FilterMixin) {
       ...this.getQuery(this.facets, this.params),
       ...this.nextPageParams,
     }).finally(() => (this.loading = false));
+  }
+
+  fetch(params: FilterParams): void {
+    this.loading = true;
+    Promise.allSettled([
+      this.getAccounts(params),
+      this.getTransactions(params),
+      this.getEstablishments(),
+      this.getTransactionCategories(params),
+    ]).finally(() => (this.loading = false));
+  }
+
+  fetchTransactionAndExpensesCategories(): void {
+    Promise.allSettled([
+      this.getAllExpenseCategories(),
+      this.getAllTransactionCategories(),
+    ]);
+  }
+
+  refresh() {
+    this.fetch(this.getQuery(this.facets, this.params));
   }
 
   created(): void {

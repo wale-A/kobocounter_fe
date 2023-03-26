@@ -77,7 +77,7 @@
             value="SAVE"
             class="button button--primary"
             @click.stop="$emit('saveEdit', model)"
-            :disabled="loadingOperation"
+            :disabled="saving"
           />
           <input
             type="button"
@@ -116,7 +116,7 @@ import { TransactionInfo, TransactionPayload } from "@/types";
       type: Array,
       required: true,
     },
-    loadingOperation: Boolean,
+    saving: Boolean,
   },
   data() {
     return {

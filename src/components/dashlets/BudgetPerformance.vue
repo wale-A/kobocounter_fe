@@ -1,5 +1,5 @@
 <template>
-  <Card title="Budget Performance">
+  <Card title="Budget Performance" :loading="loading" :error="error">
     <GuageChart v-show="data?.length" :budget="data" />
     <section v-show="!data?.length" style="padding: 10% 5%">
       <p>
@@ -8,7 +8,7 @@
         Create one now to see your budget performance.
       </p>
       <br />
-      <router-link to="Budget" class="button">
+      <router-link to="Budgets" class="button">
         <span class="">Create Your Budget</span>
       </router-link>
     </section>
@@ -16,8 +16,8 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
 import Card from "@/components/layout/Card.vue";
+import { Options, Vue } from "vue-class-component";
 
 import GuageChart from "@/components/charts/GuageChart.vue";
 
@@ -32,6 +32,8 @@ import GuageChart from "@/components/charts/GuageChart.vue";
       type: Array,
       required: true,
     },
+    loading: Boolean,
+    error: Error,
   },
 })
 export default class BudgetPerformance extends Vue {}

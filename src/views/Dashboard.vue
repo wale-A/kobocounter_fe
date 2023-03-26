@@ -11,7 +11,7 @@
     </template>
     <div>
       <section
-        v-show="accounts?.length"
+        v-if="accounts && accounts.length"
         class="dashboard"
         :class="{ 'dashboard--padding': !onMobile }"
       >
@@ -30,8 +30,10 @@
           <div class="dashboard__widget-set dashboard__widget-set--first">
             <AccountActivity
               :fileName="'income_summary__' + from + '_to_' + to"
-              :revenue="revenue"
-              :expense="expense"
+              :revenue="revenues"
+              :expense="expenses"
+              :loading="loadingRevenues || loadingExpenses"
+              :error="revenuesError || expensesError"
               class="dashboard__widget dashboard__widget--acount-activity"
             />
             <RecentCategories
@@ -39,6 +41,8 @@
               :establishmentActivities="establishmentActivities"
               :to="to"
               :from="from"
+              :loading="loadingTransactionCategories"
+              :error="transactionCategoriesError"
               class="dashboard__widget dashboard__widget--recent-category"
             />
           </div>
@@ -47,14 +51,20 @@
               :accountBalance="accountBalance || 0"
               :totalRevenue="totalRevenue"
               :totalExpenses="totalExpenses"
+              :loading="loadingAccounts"
+              :error="accountsError"
               class="dashboard__widget dashboard__widget--acount-summary"
             />
             <BudgetPerformance
               :data="budgets"
+              :loading="loadingBudgets"
+              :error="budgetsError"
               class="dashboard__widget dashboard__widget--budget-performance"
             />
             <UpcomingExpenses
               :expenses="recurrentExpenses"
+              :loading="loadingRecurringExpenditure"
+              :error="recurringExpenditureError"
               class="dashboard__widget dashboard__widget--acount-top-expenses dashboard__widget--acount-top-expenses--mobile"
             />
           </div>
@@ -64,21 +74,29 @@
             :accountBalance="accountBalance || 0"
             :totalRevenue="totalRevenue"
             :totalExpenses="totalExpenses"
+            :loading="loadingAccounts"
+            :error="accountsError"
             class="dashboard__widget dashboard__widget--acount-summary dashboard__widget--acount-summary--mobile"
           />
           <AccountActivity
             :fileName="'income_summary__' + from + '_to_' + to"
-            :revenue="revenue"
-            :expense="expense"
+            :revenue="revenues"
+            :expense="expenses"
+            :loading="loadingRevenues || loadingExpenses"
+            :error="revenuesError || expensesError"
             class="dashboard__widget dashboard__widget--acount-activity dashboard__widget--acount-activity--mobile"
           />
           <BudgetPerformance
             :data="budgets"
+            :loading="loadingBudgets"
+            :error="budgetsError"
             class="dashboard__widget dashboard__widget--budget-performance dashboard__widget--budget-performance--mobile"
           />
 
           <UpcomingExpenses
             :expenses="recurrentExpenses"
+            :loading="loadingRecurringExpenditure"
+            :error="recurringExpenditureError"
             class="dashboard__widget dashboard__widget--acount-top-expenses dashboard__widget--acount-top-expenses--mobile"
           />
           <RecentCategories
@@ -86,34 +104,47 @@
             :establishmentActivities="establishmentActivities"
             :to="to"
             :from="from"
+            :loading="loadingTransactionCategories"
+            :error="transactionCategoriesError"
             class="dashboard__widget dashboard__widget--recent-category dashboard__widget--recent-category--mobile"
           />
         </div>
       </section>
-      <AddNewAccount
-        :hasAccounts="!(accounts && accounts?.length == 0)"
-        @accountAdded="accountAdded()"
+      <CTA
+        v-if="accounts && accounts.length === 0"
+        title="You have not added any bank accounts"
+        subtext="Bank accounts you add will be displayed here"
+        buttonLabel="Add Bank Account"
+        @action="addNewAccount"
       />
+      <CTA
+        v-if="accountsError"
+        title="Oops"
+        subtext="Couldn't load accounts"
+        buttonLabel="Try again"
+        @action="refresh"
+      />
+      <AddButton :title="'Add Account'" @add="addNewAccount" />
     </div>
-
-    <Loader v-show="!accounts" />
   </Page>
 </template>
 
 <script lang="ts">
-import { Options, mixins } from "vue-class-component";
-import { mapGetters, mapActions } from "vuex";
+import AddButton from "@/components/AddButton.vue";
 import AddNewAccount from "@/components/AddNewAccount.vue";
-import AccountSummary from "@/components/dashlets/AccountSummary.vue";
-import AccountActivity from "@/components/dashlets/AccountActivity.vue";
-import RecentCategories from "@/components/dashlets/RecentCategories.vue";
-import BudgetPerformance from "@/components/dashlets/BudgetPerformance.vue";
-import Page from "@/components/layout/Page.vue";
-import Loader from "@/components/layout/Loader.vue";
+import CTA from "@/components/common/CTA.vue";
 import Filter from "@/components/common/Filter.vue";
-import { Account, FilterParams, TransactionInfo } from "@/types";
-import FilterMixin from "@/mixins/Filter";
+import AccountActivity from "@/components/dashlets/AccountActivity.vue";
+import AccountSummary from "@/components/dashlets/AccountSummary.vue";
+import BudgetPerformance from "@/components/dashlets/BudgetPerformance.vue";
+import RecentCategories from "@/components/dashlets/RecentCategories.vue";
 import UpcomingExpenses from "@/components/dashlets/UpcomingExpenses.vue";
+import Loader from "@/components/layout/Loader.vue";
+import Page from "@/components/layout/Page.vue";
+import FilterMixin from "@/mixins/Filter";
+import { Account, FilterParams, TransactionInfo } from "@/types";
+import { Options, mixins } from "vue-class-component";
+import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
 
 @Options<Dashboard>({
   components: {
@@ -126,18 +157,38 @@ import UpcomingExpenses from "@/components/dashlets/UpcomingExpenses.vue";
     RecentCategories,
     BudgetPerformance,
     UpcomingExpenses,
+    CTA,
+    AddButton,
   },
   computed: {
+    ...mapState({
+      accountsError: (state: any) => state.accounts.accountsError,
+      loadingRecurringExpenditure: (state: any) =>
+        state.expenses.loadingRecurringExpenditure,
+      recurringExpenditureError: (state: any) =>
+        state.expenses.recurringExpenditureError,
+      loadingBudgets: (state: any) => state.budgets.loadingBudgets,
+      budgetsError: (state: any) => state.budgets.budgetsError,
+      loadingRevenues: (state: any) => state.income.loadingRevenues,
+      loadingExpenses: (state: any) => state.expenses.loadingExpenses,
+      revenuesError: (state: any) => state.income.revenuesError,
+      expensesError: (state: any) => state.expenses.expensesError,
+      loadingTransactionCategories: (state: any) =>
+        state.transactions.loadingTransactionCategories,
+      transactionCategoriesError: (state: any) =>
+        state.transactions.transactionCategoriesError,
+    }),
     ...mapGetters([
+      "loadingAccounts",
       "accounts",
       "transactions",
-      "netIncome",
+      "netIncomes",
       "transactionCategories",
       "accountCreateStatus",
       "recurrentExpenses",
       "establishmentActivities",
-      "revenue",
-      "expense",
+      "revenues",
+      "expenses",
       "budgets",
     ]),
     onMobile() {
@@ -145,12 +196,13 @@ import UpcomingExpenses from "@/components/dashlets/UpcomingExpenses.vue";
     },
   },
   methods: {
+    ...mapMutations(["setLoading"]),
     ...mapActions([
       "getAccounts",
       "getTransactions",
-      "getNetIncome",
-      "getExpense",
-      "getRevenue",
+      "getNetIncomes",
+      "getExpenses",
+      "getRevenues",
       "getTransactionCategories",
       "getRecurringExpenses",
       "getEstablishmentActivities",
@@ -158,6 +210,12 @@ import UpcomingExpenses from "@/components/dashlets/UpcomingExpenses.vue";
     ]),
   },
   watch: {
+    loadingAccounts: {
+      handler(newVal) {
+        this.setLoading(newVal);
+      },
+      immediate: true,
+    },
     params: {
       handler(newVal) {
         this.fetch(this.getQuery(this.facets, newVal));
@@ -169,22 +227,21 @@ import UpcomingExpenses from "@/components/dashlets/UpcomingExpenses.vue";
 export default class Dashboard extends mixins(FilterMixin) {
   accounts!: Record<string, any>[];
   transactions!: TransactionInfo[];
-  revenue!: { amount: number }[];
-  expense!: { amount: number }[];
+  revenues!: { amount: number }[];
+  expenses!: { amount: number }[];
 
   get totalRevenue(): string {
     const rev =
-      this.revenue?.reduce(
+      this.revenues?.reduce(
         (acc: number, val: { amount: number }) => (acc += val.amount),
         0
       ) || 0;
-
     return rev.toLocaleString();
   }
 
   get totalExpenses(): string {
     const exp = Math.abs(
-      this.expense?.reduce(
+      this.expenses?.reduce(
         (acc: number, val: { amount: number }) => (acc += val.amount),
         0
       ) || 0
@@ -203,32 +260,37 @@ export default class Dashboard extends mixins(FilterMixin) {
 
   getAccounts!: (params: FilterParams) => Promise<void>;
   getTransactions!: (params: FilterParams) => Promise<void>;
-  getNetIncome!: (params: FilterParams) => Promise<void>;
-  getExpense!: (params: FilterParams) => Promise<void>;
-  getRevenue!: (params: FilterParams) => Promise<void>;
+  getNetIncomes!: (params: FilterParams) => Promise<void>;
+  getExpenses!: (params: FilterParams) => Promise<void>;
+  getRevenues!: (params: FilterParams) => Promise<void>;
   getTransactionCategories!: (params: FilterParams) => Promise<void>;
   getRecurringExpenses!: (params: FilterParams) => Promise<void>;
   getEstablishmentActivities!: (params: FilterParams) => Promise<void>;
   getBudgets!: (params: FilterParams) => Promise<void>;
 
+  addNewAccount(): void {
+    this.addAccount(() => this.refresh());
+  }
+
+  refresh() {
+    this.fetch(this.getQuery(this.facets, this.params));
+  }
+
   fetch(params: FilterParams): void {
     Promise.allSettled([
       this.getAccounts(params),
       this.getTransactions({ ...params, page: -1, size: -1 }),
-      this.getNetIncome(params),
-      this.getExpense(params),
-      this.getRevenue(params),
       this.getTransactionCategories({ ...params, expenses: true }),
+      this.getBudgets(params),
+
+      this.getRevenues(params),
+      this.getNetIncomes(params),
+      this.getExpenses(params),
       this.getRecurringExpenses({
         accountId: params.accountId,
       }),
       this.getEstablishmentActivities(params),
-      this.getBudgets(params),
     ]);
-  }
-
-  accountAdded(): void {
-    window.location.reload();
   }
 
   created(): void {

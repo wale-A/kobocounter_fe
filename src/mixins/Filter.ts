@@ -36,12 +36,7 @@ export default class Filter extends Vue {
       const bank = this.accountMap[this.params.account]
         ? `${this.accountMap[this.params.account].bankName} Account`
         : "All Bank Accounts";
-      const search = this.params.search
-        ? `
-          with transactions containing '${this.params.search}'
-        `
-        : "";
-      return `Showing results for ${bank} from ${this.from} to ${this.to} ${search}`;
+      return `Showing results for ${bank} from ${this.from} to ${this.to}`;
     }
     return "";
   }
@@ -94,9 +89,14 @@ export default class Filter extends Vue {
     );
   }
 
-  addAccount(): void {
-    const addAccountFn = (code: string) =>
-      this.$store.dispatch("addAccount", { code });
+  addAccount(cb: () => void | undefined): void {
+    const addAccountFn = (code: string) => {
+      this.$store.dispatch("addAccount", { code }).then(() => {
+        if (cb) {
+          cb();
+        }
+      });
+    };
     const options = {
       onSuccess: function (response: { code: string }) {
         addAccountFn(response.code);

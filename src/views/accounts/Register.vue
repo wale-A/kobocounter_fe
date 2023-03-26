@@ -41,9 +41,9 @@
 
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Vue, Options } from "vue-class-component";
-import Header from "@/components/layout/Header.vue";
 import Password from "@/components/Password.vue";
+import Header from "@/components/layout/Header.vue";
+import { Options, Vue } from "vue-class-component";
 import { mapActions } from "vuex";
 
 @Options({
@@ -87,7 +87,6 @@ import { mapActions } from "vuex";
           this.$router.push({ name: "Home" });
         })
         .catch((e: Error) => {
-          console.log({ e });
           this.disabled = false;
           this.$notify({
             title: "Registration failed",

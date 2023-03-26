@@ -1,28 +1,35 @@
+import api from "@/api";
 import {
+  FilterParams,
+  Pagination,
+  SplitTransaction,
+  Transaction,
   TransactionCategories,
   TransactionInfo,
-  FilterParams,
   TransactionPayload,
-  SplitTransaction,
-  Pagination,
-  TransactionResponse,
-  Transaction,
 } from "@/types";
 import { Module } from "vuex";
-import api from "@/api";
 
 type State = {
-  transactions: TransactionInfo[];
+  loadingTransactions: boolean;
+  transactions: TransactionInfo[] | undefined;
+  transactionsError: Error | undefined;
   pagination: Pagination | undefined;
-  transactionCategories: TransactionCategories[];
+  loadingTransactionCategories: boolean;
+  transactionCategories: TransactionCategories[] | undefined;
+  transactionCategoriesError: Error | undefined;
   allExpenseCategories: KeyValue;
   allTransactionCategories: KeyValue;
 };
 
 const transactions: Module<State, any> = {
   state: () => ({
-    transactions: [],
+    loadingTransactions: false,
+    transactions: undefined,
+    transactionsError: undefined,
+    loadingTransactionCategories: false,
     transactionCategories: [],
+    transactionCategoriesError: undefined,
     pagination: undefined,
     allExpenseCategories: [],
     allTransactionCategories: [],
@@ -32,7 +39,7 @@ const transactions: Module<State, any> = {
       return state.transactions;
     },
     groupedTransactions(_, getters) {
-      const sortedTransactions = getters.transactions;
+      const sortedTransactions = getters.transactions || [];
       const group: Record<string, Transaction[]> = {};
       for (let i = 0; i < sortedTransactions?.length || 0; i++) {
         const date = new Date(sortedTransactions[i].date).toDateString();
@@ -83,16 +90,48 @@ const transactions: Module<State, any> = {
     },
   },
   mutations: {
-    setTransactions(state, res: TransactionResponse) {
-      if (res.meta.page <= 1) {
-        state.transactions = res.data;
-      } else {
-        state.transactions = state.transactions.concat(res.data);
-      }
-      state.pagination = res.meta;
+    loadingTransactions(state, active: boolean) {
+      state.loadingTransactions = active;
+    },
+    setTransactions(
+      state,
+      {
+        transactions,
+        pagination,
+      }: { transactions: TransactionInfo[]; pagination: any }
+    ) {
+      state.transactions = transactions;
+      state.pagination = pagination;
+      state.transactionsError = undefined;
+    },
+    appendTransactions(
+      state,
+      {
+        transactions,
+        pagination,
+      }: { transactions: TransactionInfo[]; pagination: any }
+    ) {
+      state.transactions = {
+        ...state.transactions,
+        ...transactions,
+      };
+      state.pagination = pagination;
+    },
+    setTransactionsError(state, err: Error) {
+      state.transactionsError = err;
+      state.transactions = undefined;
+      state.pagination = undefined;
+    },
+    loadingTransactionCategories(state, active: boolean) {
+      state.loadingTransactionCategories = active;
     },
     setTransactionCategories(state, categories: TransactionCategories[]) {
       state.transactionCategories = categories;
+      state.transactionCategoriesError = undefined;
+    },
+    setTransactionCategoriesError(state, err: Error) {
+      state.transactionCategoriesError = err;
+      state.transactionCategories = undefined;
     },
     updateTransaction(state, model: TransactionPayload) {
       if (!(state.transactions && state.transactions.length > 0)) return;
@@ -137,7 +176,9 @@ const transactions: Module<State, any> = {
       { commit },
       { accountId, start, end, category, page, size, search }: FilterParams
     ) {
+      const initial = !page || page === 1;
       try {
+        initial && commit("loadingTransactions", true);
         const res = await api.getTransactions({
           accountId,
           start,
@@ -147,9 +188,20 @@ const transactions: Module<State, any> = {
           size,
           search,
         });
-        commit("setTransactions", res.data);
+        initial &&
+          commit("setTransactions", {
+            transactions: res.data.data,
+            pagination: res.data.meta,
+          });
+        !initial &&
+          commit("appendTransactions", {
+            transactions: res.data.data,
+            pagination: res.data.meta,
+          });
       } catch (e) {
-        commit("setTransactions", { data: [], meta: undefined });
+        initial && commit("setTransactionsError", e);
+      } finally {
+        initial && commit("loadingTransactions", false);
       }
     },
     async getTransactionCategories(
@@ -157,15 +209,34 @@ const transactions: Module<State, any> = {
       { accountId, start, end, expenses }: FilterParams
     ) {
       try {
+        commit("loadingTransactionCategories", true);
         const res = await api.getTransactionCategories({
           accountId,
           start,
           end,
           expenses,
         });
-        commit("setTransactionCategories", res.data as TransactionCategories[]);
+        commit("setTransactionCategories", res.data);
       } catch (e) {
         commit("setTransactionCategories", []);
+      } finally {
+        commit("loadingTransactionCategories", false);
+      }
+    },
+    async getAllExpenseCategories({ commit }) {
+      try {
+        const res = await api.getAllExpenseCategories();
+        commit("setAllExpenseCategories", res.data as KeyValue);
+      } catch (e) {
+        commit("setAllExpenseCategories", []);
+      }
+    },
+    async getAllTransactionCategories({ commit }) {
+      try {
+        const res = await api.getAllTransactionCategories();
+        commit("setAllTransactionCategories", res.data as KeyValue);
+      } catch (e) {
+        commit("setAllTransactionCategories", []);
       }
     },
     async updateTransaction(
@@ -200,22 +271,6 @@ const transactions: Module<State, any> = {
         dispatch("getTransactions", {});
       } else {
         throw res.data;
-      }
-    },
-    async getAllExpenseCategories({ commit }) {
-      try {
-        const res = await api.getAllExpenseCategories();
-        commit("setAllExpenseCategories", res.data as KeyValue);
-      } catch (e) {
-        commit("setAllExpenseCategories", []);
-      }
-    },
-    async getAllTransactionCategories({ commit }) {
-      try {
-        const res = await api.getAllTransactionCategories();
-        commit("setAllTransactionCategories", res.data as KeyValue);
-      } catch (e) {
-        commit("setAllTransactionCategories", []);
       }
     },
   },

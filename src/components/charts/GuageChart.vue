@@ -3,10 +3,10 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import * as am4core from "@amcharts/amcharts4/core";
+import { BudgetListItem } from "@/types";
 import * as am4charts from "@amcharts/amcharts4/charts";
-import { BudgetItem, BudgetListItem } from "@/types";
+import * as am4core from "@amcharts/amcharts4/core";
+import { Options, Vue } from "vue-class-component";
 
 @Options({
   mounted() {
@@ -23,13 +23,13 @@ import { BudgetItem, BudgetListItem } from "@/types";
     draw() {
       const totalBudget = this.budget.reduce(
         (acc: number, cur: BudgetListItem) => {
-          return acc + cur.value;
+          return acc + Number(cur.value);
         },
         0
       );
       const totalSpent = this.budget.reduce(
         (acc: number, cur: BudgetListItem) => {
-          return acc + (cur.amountSpent || 0);
+          return acc + Number(cur.amountSpent || 0);
         },
         0
       );

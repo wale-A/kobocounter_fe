@@ -9,17 +9,28 @@
       </div>
     </div>
     <div class="card__body">
-      <slot />
+      <Loader v-if="loading" :iconPath="'/img/assets/svg/loading-icons.svg'" />
+      <slot v-else />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import Loader from "./Loader.vue";
+
 @Options({
+  components: {
+    Loader,
+  },
   props: {
     title: String,
     subtitle: String,
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    error: Error,
   },
 })
 export default class Card extends Vue {}

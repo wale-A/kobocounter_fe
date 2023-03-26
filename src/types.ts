@@ -114,6 +114,20 @@ export type BudgetItem = {
   amountSpent: number | null;
 };
 
+export type Budget = {
+  id: string;
+  startDate: string;
+  endDate: string;
+  name: string;
+  items: BudgetItem[];
+};
+
+export type BudgetPayload = {
+  startDate: string;
+  endDate: string;
+  items: Partial<BudgetItem>[];
+};
+
 export type Insights = {
   id: string;
   category: string;
@@ -125,14 +139,6 @@ export type Insights = {
 export type DetailedInsights = {
   transactions: Array<{ date: number; amount: number }>;
   budget: Array<{ date: number; amount: number }>;
-};
-
-export type Budget = {
-  id: string;
-  startDate: string;
-  endDate: string;
-  name: string;
-  items: BudgetItem[];
 };
 
 export type NetIncome = {
@@ -188,3 +194,5 @@ export type PaginatedResponse<T> = {
   meta: Pagination;
   data: T[];
 };
+
+export type LabelValueType = { value: number; label: string };

@@ -4,7 +4,11 @@ import { Module } from "vuex";
 
 type State = {
   insights: Insights[] | undefined;
+  loadingInsights: boolean;
+  insightsError: Error | undefined;
   detailedInsights: DetailedInsights[] | undefined;
+  loadingInsight: boolean;
+  insightError: Error | undefined;
 };
 
 function getHash(input: string) {
@@ -20,7 +24,11 @@ function getHash(input: string) {
 const insights: Module<State, any> = {
   state: () => ({
     insights: undefined,
+    loadingInsights: false,
+    insightsError: undefined,
     detailedInsights: undefined,
+    loadingInsight: false,
+    insightError: undefined,
   }),
   getters: {
     rawInsights(state: State) {
@@ -42,18 +50,37 @@ const insights: Module<State, any> = {
   mutations: {
     setInsights(state: State, insights: Insights[]) {
       state.insights = insights;
+      state.insightsError = undefined;
+    },
+    loadingInsights(state: State, active: boolean) {
+      state.loadingInsights = active;
+    },
+    setInsightsError(state: State, err: Error | undefined) {
+      state.insightsError = err;
+      state.insights = undefined;
     },
     setDetailedInsights(state: State, data: DetailedInsights[]) {
       state.detailedInsights = data;
+      state.insightError = undefined;
+    },
+    loadingInsight(state: State, active: boolean) {
+      state.loadingInsight = active;
+    },
+    setInsightError(state: State, err: Error | undefined) {
+      state.insightError = err;
+      state.detailedInsights = undefined;
     },
   },
   actions: {
     async getInsights({ commit }, { accountId, start, end }: FilterParams) {
       try {
+        commit("loadingInsights", true);
         const res = await api.getInsights({ accountId, start, end });
         commit("setInsights", res.data as Insights[]);
       } catch (e) {
-        commit("setInsights", []);
+        commit("setInsightsError", e);
+      } finally {
+        commit("loadingInsights", false);
       }
     },
 
@@ -65,7 +92,7 @@ const insights: Module<State, any> = {
         if (!category) {
           commit("setDetailedInsights", []);
         }
-
+        commit("loadingInsight", true);
         const res = await api.getDetailedInsights({
           accountId,
           start,
@@ -74,7 +101,9 @@ const insights: Module<State, any> = {
         });
         commit("setDetailedInsights", res.data as Insights[]);
       } catch (e) {
-        commit("setDetailedInsights", []);
+        commit("setInsightError", e);
+      } finally {
+        commit("loadingInsight", false);
       }
     },
   },

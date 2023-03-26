@@ -8,6 +8,7 @@ import { mapGetters } from "vuex";
   watch: {
     accounts(newVal: Account[]) {
       if (
+        newVal &&
         newVal.some((x) => x.status == "FAILED") &&
         !this.failedAccountNotificationClicked &&
         !["ManageAccounts", "AllSettings"].includes(this.$route.name)

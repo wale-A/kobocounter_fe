@@ -1,8 +1,8 @@
 <template>
-  <Card title="Account Activity">
+  <Card title="Account Activity" :loading="loading" :error="error">
     <IncomeChart
       :width="'98%'"
-      :fileName="filename"
+      :fileName="fileName"
       :revenue="revenue"
       :expense="expense"
     />
@@ -21,9 +21,11 @@ import IncomeChart from "@/components/charts/IncomeChart.vue";
     IncomeChart,
   },
   props: {
-    revenue: String,
-    expense: String,
+    revenue: Array,
+    expense: Array,
     fileName: String,
+    loading: Boolean,
+    error: Error,
   },
 })
 export default class AccountActivity extends Vue {}

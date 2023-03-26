@@ -79,12 +79,10 @@ import { Options, Vue } from "vue-class-component";
         this.$store.dispatch("generateAccountReAuthCode", {
           accountId: this.id,
           callback: (token?: string) => {
-            console.log({ token });
             if (token) {
               this.$reAuthorise(
                 {
                   onSuccess: function (response: { code: string }) {
-                    console.log({ response });
                     updateAccountFn(response.code);
                   },
                 },

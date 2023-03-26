@@ -1,36 +1,95 @@
+import api from "@/api";
 import {
   Budget,
   BudgetListItem,
   BudgetListResponse,
+  BudgetPayload,
   FilterParams,
   Pagination,
 } from "@/types";
-import api from "@/api";
+import { formatDate, getBudgetName } from "@/util";
+import { differenceInDays } from "date-fns";
 import { Module } from "vuex";
 
 type State = {
+  loadingBudget: boolean;
   budget: Budget | undefined;
+  budgetError: Error | undefined;
+  loadingBudgets: boolean;
   budgets: BudgetListItem[] | undefined;
   pagination: Pagination | undefined;
+  budgetsError: Error | undefined;
 };
 
 const budgets: Module<State, any> = {
   state: () => ({
+    loadingBudget: false,
     budget: undefined,
+    budgetError: undefined,
+    loadingBudgets: false,
     budgets: undefined,
     pagination: undefined,
+    budgetsError: undefined,
   }),
   getters: {
     budgets(state) {
-      return state.budgets || [];
+      return state.budgets
+        ?.map((item) => ({
+          ...item,
+          startDate: formatDate(item.startDate),
+          endDate: formatDate(item.endDate),
+          name: getBudgetName(item.startDate, "monthly"),
+        }))
+        .sort((itemA, itemB) =>
+          differenceInDays(new Date(itemA.endDate), new Date(itemB.endDate))
+        );
+    },
+    budgetMap(_, getters) {
+      return (getters.budgets || []).reduce(
+        (acc: Record<string, BudgetListItem>, item: BudgetListItem) => ({
+          ...acc,
+          [item.id]: item,
+        }),
+        {}
+      );
+    },
+    lastBudget(state) {
+      const last = state.budgets?.length && state.budgets[0];
+      return last;
+    },
+    budget(state) {
+      return {
+        ...state.budget,
+        items: state.budget?.items.map((item) => ({
+          ...item,
+          value: item.value,
+          amountSpent: item.amountSpent || 0,
+        })),
+      };
     },
   },
   mutations: {
-    setBudgets(state, budgets?: BudgetListResponse) {
-      state.budgets = budgets?.data;
+    setLoadingBudgets(state, active: boolean) {
+      state.loadingBudgets = active;
     },
-    setBudget(state, budget?: Budget) {
+    setBudgets(state, budgets: BudgetListResponse) {
+      state.budgets = budgets.data;
+      state.budgetsError = undefined;
+    },
+    setBudgetsError(state, err: Error) {
+      state.budgetsError = err;
+      state.budgets = undefined;
+    },
+    setLoadingBudget(state, active: boolean) {
+      state.loadingBudget = active;
+    },
+    setBudget(state, budget: Budget) {
       state.budget = budget;
+      state.budgetError = undefined;
+    },
+    setBudgetError(state, err: Error) {
+      state.budgetError = err;
+      state.budget = undefined;
     },
   },
   actions: {
@@ -39,6 +98,7 @@ const budgets: Module<State, any> = {
       { category, start, end, page, size }: FilterParams
     ) {
       try {
+        commit("setLoadingBudgets", true);
         const res = await api.getBudgets({
           category,
           start,
@@ -48,15 +108,47 @@ const budgets: Module<State, any> = {
         });
         commit("setBudgets", res.data);
       } catch (e) {
-        commit("setBudgets", []);
+        commit("setBudgetsError", e);
+      } finally {
+        commit("setLoadingBudgets", false);
       }
     },
+    async getBudget({ commit }, id: string) {
+      try {
+        commit("setLoadingBudget", true);
+        const res = await api.getBudget(id);
+        commit("setBudget", res.data);
+      } catch (e) {
+        commit("setBudgetError", e);
+      } finally {
+        commit("setLoadingBudget", false);
+      }
+    },
+    async postBudget(_, payload: BudgetPayload) {
+      const res = await api.postBudget(payload);
+      return res;
+    },
+    async putBudget(
+      _,
+      { id, payload }: { id: string; payload: BudgetPayload }
+    ) {
+      const res = await api.putBudget(id, payload);
+      return res;
+    },
+    async deleteBudget(_, id: string) {
+      const res = await api.deleteBudget(id);
+      return res;
+    },
+    // TODO: remove
     async getSingleBudget({ commit }, id: string) {
       try {
+        commit("loadingBudget", true);
         const res = await api.getSingleBudget(id);
         commit("setBudget", res.data);
       } catch (e) {
-        commit("setBudget", undefined);
+        commit("setBudgetError", e);
+      } finally {
+        commit("loadingBudget", false);
       }
     },
   },
