@@ -60,12 +60,12 @@
       </Columns>
       <CTA
         v-if="transactions && transactions.length === 0"
-        title="Oops, we found nothing"
-        subtext="Please adjust the filters or have you created a budget yet?"
-        buttonLabel="Create Budget"
+        title="Oops, we found no transactions"
+        subtext="Please adjust the filters, or add a bank account if you haven't."
+        buttonLabel="Add Bank Account"
         @action="
           $router.push({
-            name: 'Budgets',
+            name: 'ManageAccounts',
           })
         "
       />
@@ -81,23 +81,23 @@
 </template>
 
 <script lang="ts">
-import { Options, mixins } from "vue-class-component";
-import { mapGetters, mapActions, mapState, mapMutations } from "vuex";
-import Columns from "@/components/layout/Columns.vue";
-import Page from "@/components/layout/Page.vue";
 import AddNewAccount from "@/components/AddNewAccount.vue";
 import CTA from "@/components/common/CTA.vue";
+import Filter from "@/components/common/Filter.vue";
+import Columns from "@/components/layout/Columns.vue";
+import Page from "@/components/layout/Page.vue";
+import Detail from "@/components/transaction/Detail.vue";
+import List from "@/components/transaction/List.vue";
+import FilterMixin from "@/mixins/Filter";
 import {
   FilterParams,
   SplitTransaction,
   Transaction,
   TransactionPayload,
 } from "@/types";
-import Detail from "@/components/transaction/Detail.vue";
-import List from "@/components/transaction/List.vue";
-import Filter from "@/components/common/Filter.vue";
 import { transactionFilter } from "@/util";
-import FilterMixin from "@/mixins/Filter";
+import { Options, mixins } from "vue-class-component";
+import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
 
 @Options<Transactions>({
   components: {

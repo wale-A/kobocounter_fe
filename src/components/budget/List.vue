@@ -35,17 +35,17 @@
             <td class="budget__field budget__status">
               {{ item.status || "Active" }}
             </td> -->
-            <td class="budget__field budget__start">
-              {{ item.startDate }}
+            <td class="budget__field budget__start" style="font-size: 11px">
+              {{ item.startDate.replaceAll("/", " / ") }}
             </td>
-            <td class="budget__field budget__end">
-              {{ item.endDate }}
+            <td class="budget__field budget__end" style="font-size: 11px">
+              {{ item.endDate.replaceAll("/", " / ") }}
             </td>
             <td class="budget__field budget__budget">
-              N {{ item.value.toLocaleString() }}
+              {{ item.value.toLocaleString() }}
             </td>
             <td class="budget__field budget__spend">
-              N {{ item.amountSpent.toLocaleString() }}
+              {{ item.amountSpent.toLocaleString() }}
             </td>
             <td
               class="budget__field budget__insight"
@@ -226,6 +226,7 @@ export default class List extends Vue {
     color: #364156;
     line-height: 15px;
     text-align: left;
+    padding: 0.5em;
   }
 
   @at-root #{&}__item {
@@ -247,6 +248,7 @@ export default class List extends Vue {
     color: #364156;
     text-align: left;
     position: relative;
+    padding: 0.5em;
   }
 
   @at-root #{&}__field-action {

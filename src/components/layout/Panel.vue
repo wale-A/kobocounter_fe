@@ -29,7 +29,7 @@ export default class Panel extends Vue {}
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 15px 20px;
+  padding: 15px 10px;
 
   @include for-size(tablet-landscape-up) {
     padding: 13px 17px;

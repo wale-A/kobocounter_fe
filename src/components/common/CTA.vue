@@ -35,7 +35,7 @@ export default class CTA extends Vue {}
   align-items: center;
   justify-content: center;
   flex-grow: 1;
-  padding-top: 15%;
+  padding-top: 1%;
 
   @include for-size(tablet-landscape-up) {
     padding: 2% 10%;
@@ -68,7 +68,7 @@ export default class CTA extends Vue {}
   }
 
   @at-root #{&}__action {
-    width: 100%;
+    width: 70%;
     padding: 9px 12px;
     border-radius: 5px;
     font-weight: 600;

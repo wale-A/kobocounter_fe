@@ -24,14 +24,18 @@
         <h2>
           Track your expenses.
           <br />
-          Rule your money.
+          Take control of your finances.
         </h2>
         <p>
-          Tired of wondering where all your money went?
+          Are you tired of overspending and not knowing where your money is
+          going?
           <br />
-          Track your spending and expenses across all your bank accounts
-          <br />
-          with a single app.
+          Do you want to take control of your finances and start saving more
+          money?
+          <br /><br />
+          KoboCounter is here to help! Our expense tracking app is designed to
+          make it easy and simple for you to monitor your spending, set budgets,
+          and achieve your financial goals.
         </p>
         <div class="buttons">
           <router-link
@@ -119,27 +123,46 @@
     </aside>
   </section>
   <section id="section-3">
-    <h2>How it works</h2>
-    <div class="list" style="justify-content: space-between">
-      <div>
-        <h3>01</h3>
-        <p>
-          <b>Sign up for free</b>
-        </p>
-      </div>
-      <div>
-        <h3>02</h3>
-        <p>
-          <b>Add a bank account</b>
-        </p>
-      </div>
-      <div>
-        <h3>03</h3>
-        <p>
-          <b>See your financial report</b>
-        </p>
-      </div>
-    </div>
+    <aside>
+      <img
+        src="/img/landing/organized-coins.png"
+        alt="organize your finances"
+        style="max-width: 85%"
+      />
+    </aside>
+    <main>
+      <p>
+        <b>Easy to Use</b>
+        <br />
+        KoboCounter is designed to be user-friendly and intuitive, even for
+        those who are not tech-savvy.
+      </p>
+      <p>
+        <b>Automated Tracking</b>
+        <br />
+        Connect your bank accounts to the app and let it automatically import
+        and categorize your transactions.
+      </p>
+      <p>
+        <b>Customizable Categories</b><br />
+        Create your own categories and tags to track your expenses the way you
+        want.
+      </p>
+      <p>
+        <b>Budgeting Tools</b><br />
+        Set budget limits for each category and receive alerts when you reach
+        your limit.
+      </p>
+      <p>
+        <b>Reports and Insights</b><br />
+        Get a clear view of your spending habits and patterns with our detailed
+        reports and analytics.
+      </p>
+      <p>
+        <b>Multicurrency Support</b><br />
+        You might try it, but KoboCounter doesn't support it *yet* 😩
+      </p>
+    </main>
   </section>
   <div style="background-color: #e5e5e5">
     <section class="container" id="section-4">
@@ -157,7 +180,7 @@
       <main>
         <h2 class="center-text">Other Features</h2>
         <div class="list" style="justify-content: space-between">
-          <div>
+          <article>
             <img
               src="/img/landing/customize-categories.png"
               alt="cutomize categories"
@@ -173,8 +196,8 @@
               <br />
               expense.
             </p>
-          </div>
-          <div>
+          </article>
+          <article>
             <img
               src="/img/landing/split-transactions.png"
               alt="split transactions"
@@ -184,15 +207,14 @@
               <br />
               Got more than one category for a
               <br />
-              single bank transaction? Split your
+              single bank transaction?
               <br />
-              transactions into different categories for
+              Split transactions into categories
               <br />
-              even more accurate data.
+              for even more accurate data.
             </p>
-          </div>
-          <div class="break"></div>
-          <div>
+          </article>
+          <article>
             <img
               src="/img/landing/record-cash-transactions.png"
               alt="record cash transactions"
@@ -208,51 +230,73 @@
               <br />
               record how you spend your cash.
             </p>
-          </div>
-          <div>
+          </article>
+          <article>
             <img src="/img/landing/account-history.png" alt="account history" />
             <p>
               <b>Account History</b>
               <br />
-              Review how your income and
+              Review how income & expenses &nbsp;
               <br />
-              expenses have evolved over time. Get a
+              evolve over time.
               <br />
-              first hand look into what areas you can
+              Get a first hand look areas you
               <br />
-              optimize.
+              can optimize.
             </p>
-          </div>
-        </div>
-        <div class="buttons">
-          <router-link
-            v-if="!isLoggedIn"
-            :to="{ name: 'Register' }"
-            style="text-align: center; line-height: 40px"
-            class="alternate"
-          >
-            Create an account
-          </router-link>
-          <router-link
-            v-if="isLoggedIn"
-            :to="{ name: 'Dashboard' }"
-            style="text-align: center; line-height: 40px"
-          >
-            Go to Dashboard
-          </router-link>
-          <router-link
-            v-if="!isLoggedIn"
-            :to="{ name: 'Login' }"
-            class="land-login"
-            style="text-align: center; line-height: 40px"
-          >
-            Log in
-          </router-link>
+          </article>
         </div>
       </main>
     </section>
   </div>
-  <footer></footer>
+  <footer>
+    <img src="/img/assets/logo.png" alt="logo" style="margin-bottom: 2em" />
+    <p>
+      At KoboCounter, we take security and privacy seriously. All your financial
+      data is encrypted and securely stored on our servers.
+      <br />
+      We also do not share or sell your data to any third parties.
+
+      <br /><br />
+      Why Choose KoboCounter?
+      <br />
+      KoboCounter is the ultimate tool for anyone who wants to take control of
+      their finances. With our easy-to-use app, you can track your expenses, set
+      budgets, and achieve your financial goals. Whether you're an individual or
+      a business owner, our app is designed to help you save time and money.
+
+      <br /><br />
+      Ready to take control of your finances?
+      <br />
+      Sign up for KoboCounter now and start tracking your expenses today!
+    </p>
+
+    <div class="buttons">
+      <router-link
+        v-if="!isLoggedIn"
+        :to="{ name: 'Register' }"
+        style="text-align: center; line-height: 40px"
+        class="alternate"
+      >
+        Create an account
+      </router-link>
+      <router-link
+        v-if="isLoggedIn"
+        :to="{ name: 'Dashboard' }"
+        style="text-align: center; line-height: 40px"
+      >
+        Go to Dashboard
+      </router-link>
+      <router-link
+        v-if="!isLoggedIn"
+        :to="{ name: 'Login' }"
+        class="land-login"
+        style="text-align: center; line-height: 40px"
+      >
+        Log in
+      </router-link>
+    </div>
+  </footer>
 </template>
 
 <script lang="ts">
@@ -264,7 +308,9 @@ import { mapGetters } from "vuex";
     ...mapGetters(["isLoggedIn"]),
   },
 })
-export default class Landing extends Vue {}
+export default class Landing extends Vue {
+  isLoggedIn!: boolean;
+}
 </script>
 
 <style scoped>
@@ -331,7 +377,7 @@ header a {
 div.list {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
 }
 .buttons {
@@ -363,8 +409,8 @@ div.list {
     rgba(0, 124, 255, 0.5) 63%
   );
   /* background-color: #f6f9fb; */
-  flex-direction: column;
-  padding: 5em;
+  flex-direction: row;
+  padding: 4em 2em;
 }
 #section-4 {
   padding: 5em 0;
@@ -375,9 +421,7 @@ div.list {
   flex-direction: column;
   /* align-content: center; */
   /* align-items: center; */
-}
-#section-4 main {
-  margin-left: 10%;
+  margin-left: 5%;
 }
 .break {
   flex-basis: 100%;
@@ -386,7 +430,9 @@ div.list {
 p b {
   font-size: 1.2em;
 }
-
+footer img {
+  max-width: 20%;
+}
 @media (min-width: 2000px) {
   aside {
     display: flex;
@@ -453,6 +499,12 @@ p b {
   }
   br {
     display: none;
+  }
+  footer br {
+    display: unset;
+  }
+  footer img {
+    max-width: 50%;
   }
   aside {
     width: 100%;
