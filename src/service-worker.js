@@ -20,8 +20,7 @@ self.addEventListener("push", function (e) {
   const data = e.data.json();
   const options = {
     body: data.body,
-    icon: `https://kobocounter.com/img/icons/android/android-launchericon-192-192.png`,
-    // image: `https://kobocounter.com/img/icons/android/android-launchericon-512-512.png`,
+    icon: `https://kobocounter.com/img/icons/icon-192x192.png`,
     vibrate: [300, 100, 400],
     actions: JSON.parse(data?.actions || "null") || undefined,
   };
