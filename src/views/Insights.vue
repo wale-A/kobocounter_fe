@@ -4,7 +4,7 @@
       <Filter
         :displayText="paramSummary"
         :fields="facets"
-        :model="{ ...params }"
+        :model="{ ...filters }"
         @filter="setParams($event)"
         @update:account="addAccount"
       />
@@ -13,7 +13,7 @@
       <template v-if="onMobile && !isSingle && facets.length > 0">
         <Filter
           :fields="facets"
-          :model="{ ...params }"
+          :model="{ ...filters }"
           @filter="setParams($event)"
           @update:account="addAccount"
         />
@@ -122,12 +122,12 @@ import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
       },
       immediate: true,
     },
-    params(newVal) {
+    filters(newVal) {
       this.fetch(this.getQuery(this.facets, newVal));
     },
     insight(newVal) {
       this.getDetailedInsights({
-        ...this.getQuery(this.facets, this.params),
+        ...this.getQuery(this.facets, this.filters),
         category: newVal?.category,
       });
     },
@@ -154,11 +154,11 @@ export default class Insights extends mixins(FilterMixin) {
   }
 
   refresh() {
-    this.fetch(this.getQuery(this.facets, this.params));
+    this.fetch(this.getQuery(this.facets, Filter.params));
   }
 
   created(): void {
-    this.params = this.getModels(this.facets);
+    this.setParams(this.getModels(this.facets));
   }
 }
 </script>

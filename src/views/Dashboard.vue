@@ -4,7 +4,7 @@
       <Filter
         :displayText="paramSummary"
         :fields="facets"
-        :model="{ ...params }"
+        :model="{ ...filters }"
         @filter="setParams($event)"
         @update:account="addAccount"
       />
@@ -18,7 +18,7 @@
         <template v-if="onMobile && facets.length > 0">
           <Filter
             :fields="facets"
-            :model="{ ...params }"
+            :model="{ ...filters }"
             @filter="setParams($event)"
             @update:account="addAccount"
           />
@@ -124,7 +124,11 @@
         buttonLabel="Try again"
         @action="refresh"
       />
-      <AddButton :title="'Add Account'" @add="addNewAccount" />
+      <AddButton
+        v-if="!accounts?.length"
+        :title="'Add Account'"
+        @add="addNewAccount"
+      />
     </div>
   </Page>
 </template>
@@ -216,7 +220,7 @@ import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
       },
       immediate: true,
     },
-    params: {
+    filters: {
       handler(newVal) {
         this.fetch(this.getQuery(this.facets, newVal));
       },
@@ -273,7 +277,7 @@ export default class Dashboard extends mixins(FilterMixin) {
   }
 
   refresh() {
-    this.fetch(this.getQuery(this.facets, this.params));
+    this.fetch(this.getQuery(this.facets, this.filters));
   }
 
   fetch(params: FilterParams): void {
@@ -294,7 +298,7 @@ export default class Dashboard extends mixins(FilterMixin) {
   }
 
   created(): void {
-    this.params = this.getModels(this.facets);
+    this.setParams(this.getModels(this.facets));
   }
 }
 </script>
