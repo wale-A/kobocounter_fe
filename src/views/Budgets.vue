@@ -4,7 +4,7 @@
       <Filter
         :displayText="paramSummary"
         :fields="facets"
-        :model="{ ...params }"
+        :model="{ ...filters }"
         @filter="setParams($event)"
         @update:account="addAccount"
       />
@@ -13,7 +13,7 @@
       <template v-if="onMobile && !isSingle && facets.length > 0">
         <Filter
           :fields="facets"
-          :model="{ ...params }"
+          :model="{ ...filters }"
           @filter="setParams($event)"
           @update:account="addAccount"
         />
@@ -168,7 +168,7 @@ import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
       },
       immediate: true,
     },
-    params(newVal) {
+    filters(newVal) {
       this.fetch(this.getQuery(this.facets, newVal));
     },
     id: {
@@ -204,10 +204,10 @@ export default class Budgets extends mixins(FilterMixin) {
   }
 
   get paramSummary(): string {
-    if (this.params) {
-      const categorySuffix = this.params.category
+    if (this.filters) {
+      const categorySuffix = this.filters.category
         ? `
-          for '${this.params.category}'
+          for '${this.filters.category}'
         `
         : "";
       return `Showing budgets from ${this.from} to ${this.to} ${categorySuffix}`;
@@ -343,7 +343,7 @@ export default class Budgets extends mixins(FilterMixin) {
   }
 
   refresh() {
-    this.getBudgets(this.getQuery(this.facets, this.params));
+    this.getBudgets(this.getQuery(this.facets, this.filters));
   }
 
   fetch(params: FilterParams): void {
@@ -355,8 +355,9 @@ export default class Budgets extends mixins(FilterMixin) {
   }
 
   created(): void {
-    this.params = this.getModels(this.facets);
-    this.fetch(this.getQuery(this.facets, this.params));
+    const params = this.getModels(this.facets);
+    this.setParams(params);
+    this.fetch(this.getQuery(this.facets, params));
   }
 }
 </script>

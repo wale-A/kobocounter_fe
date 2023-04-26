@@ -70,8 +70,8 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
 import Multiselect from "@vueform/multiselect";
+import { Options, Vue } from "vue-class-component";
 import RangePicker from "./RangePicker.vue";
 @Options({
   components: { Multiselect, RangePicker },
@@ -148,7 +148,9 @@ import RangePicker from "./RangePicker.vue";
   methods: {
     getValue(model: Record<string, any>) {
       return Object.keys(model).reduce((acc, key) => {
-        const field = this.fieldMap[key].field;
+        const field = this.fieldMap[key]?.field;
+        if (!field) return { ...acc };
+
         return {
           ...acc,
           [key]:
@@ -261,7 +263,9 @@ import RangePicker from "./RangePicker.vue";
     this.watchAdditionalValues(fields);
   },
 })
-export default class Filter extends Vue {}
+export default class Filter extends Vue {
+  static params: any;
+}
 </script>
 
 <style lang="scss" scoped>

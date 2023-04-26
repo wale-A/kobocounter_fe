@@ -4,7 +4,7 @@
       <Filter
         :displayText="paramSummary"
         :fields="facets"
-        :model="{ ...params }"
+        :model="{ ...filters }"
         @filter="setParams($event)"
         @update:account="addAccount"
       />
@@ -13,7 +13,7 @@
       <template v-if="onMobile && !isSingle && facets.length > 0">
         <Filter
           :fields="facets"
-          :model="{ ...params }"
+          :model="{ ...filters }"
           @filter="setParams($event)"
           @update:account="addAccount"
         />
@@ -184,7 +184,7 @@ import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
       },
       immediate: true,
     },
-    params(newVal) {
+    filters(newVal) {
       this.fetch(this.getQuery(this.facets, newVal));
     },
   },
@@ -208,13 +208,13 @@ export default class Transactions extends mixins(FilterMixin) {
   }
 
   get paramSummary(): string {
-    if (this.params) {
-      const bank = this.accountMap[this.params.account]
-        ? `${this.accountMap[this.params.account].bankName} Account`
+    if (this.filters) {
+      const bank = this.accountMap[this.filters.account]
+        ? `${this.accountMap[this.filters.account].bankName} Account`
         : "All Bank Accounts";
-      const search = this.params.search
+      const search = this.filters.search
         ? `
-          with transactions containing '${this.params.search}'
+          with transactions containing '${this.filters.search}'
         `
         : "";
       return `Showing results for ${bank} from ${this.from} to ${this.to} ${search}`;
@@ -298,7 +298,7 @@ export default class Transactions extends mixins(FilterMixin) {
   loadMore(): void {
     this.loading = true;
     this.getTransactions({
-      ...this.getQuery(this.facets, this.params),
+      ...this.getQuery(this.facets, this.filters),
       ...this.nextPageParams,
     }).finally(() => (this.loading = false));
   }
@@ -321,11 +321,11 @@ export default class Transactions extends mixins(FilterMixin) {
   }
 
   refresh() {
-    this.fetch(this.getQuery(this.facets, this.params));
+    this.fetch(this.getQuery(this.facets, this.filters));
   }
 
   created(): void {
-    this.params = this.getModels(this.facets);
+    this.setParams(this.getModels(this.facets));
     this.fetchTransactionAndExpensesCategories();
   }
 }
