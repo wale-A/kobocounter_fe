@@ -11,9 +11,9 @@ they will be brought in here on merge.
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
+import * as am4core from "@amcharts/amcharts4/core";
+import { Options, Vue } from "vue-class-component";
 
 @Options({
   props: {
@@ -141,13 +141,11 @@ import * as am4charts from "@amcharts/amcharts4/charts";
       });
     },
   },
-  watch: {
-    inputData() {
-      const data = this.inputData?.map((x: any) => {
-        return { category: x.displayCategory, amount: x.amount };
-      });
-      this.draw(data);
-    },
+  mounted() {
+    const data = this.inputData?.map((x: any) => {
+      return { category: x.displayCategory, amount: x.amount };
+    });
+    this.draw(data);
   },
 })
 export default class DonutChart extends Vue {}

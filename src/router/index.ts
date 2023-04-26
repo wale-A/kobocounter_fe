@@ -1,15 +1,15 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import Landing from "../views/Landing.vue";
-import { AccountRoutes } from "./account";
+import store from "../store/index";
+import Budgets from "../views/Budgets.vue";
 import Dashboard from "../views/Dashboard.vue";
 import Insights from "../views/Insights.vue";
-import Budgets from "../views/Budgets.vue";
-import PageNotFound from "../views/PageNotFound.vue";
-import Transactions from "../views/Transactions.vue";
-import Settings from "../views/Settings.vue";
 import InviteFriends from "../views/InviteFriends.vue";
+import Landing from "../views/Landing.vue";
+import PageNotFound from "../views/PageNotFound.vue";
+import Settings from "../views/Settings.vue";
+import Transactions from "../views/Transactions.vue";
 import VerifyAccount from "../views/VerifyAccount.vue";
-import store from "../store/index";
+import { AccountRoutes } from "./account";
 
 const routes: Array<RouteRecordRaw> = [
   {

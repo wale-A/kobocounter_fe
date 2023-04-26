@@ -15,9 +15,9 @@ import { mapGetters } from "vuex";
       ) {
         this.failedAccountNotificationClicked = true;
         this.$notify({
-          text: "You have account(s) in need of attention. Please manage your accounts in the <a href='/settings'>Settings</a> section",
+          text: "Your account is in need of attention. Please manage your account in the <a href='/settings'>Settings</a> section",
           type: "warn",
-          duration: -1,
+          duration: 3000,
         });
       }
     },

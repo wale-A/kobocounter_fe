@@ -1,6 +1,6 @@
 import axios from "axios";
 import store from "../store/index";
-import { getUserToken, deleteUser } from "./index";
+import { deleteUser, getUserToken } from "./index";
 
 export const instance = axios.create({
   baseURL: process.env.VUE_APP_API_URL,
@@ -13,8 +13,11 @@ export const instance = axios.create({
 instance.interceptors.response.use(undefined, (error) => {
   const { response } = error;
   if (response) {
-    if ([401, 403].includes(response.status)) {
-      return store.dispatch("logout").then(() => deleteUser());
+    if ([401].includes(response.status)) {
+      return store.dispatch("logout").then(() => {
+        deleteUser();
+        location.href = "/account/login";
+      });
     } else if (response.status.toString().startsWith("4")) {
       throw new Error(response.data);
     } else {

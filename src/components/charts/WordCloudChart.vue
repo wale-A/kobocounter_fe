@@ -6,12 +6,12 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4plugins_wordCloud from "@amcharts/amcharts4/plugins/wordCloud";
+import { Options, Vue } from "vue-class-component";
 
 @Options({
-  beforeUpdate() {
+  mounted() {
     this.draw();
   },
   props: {

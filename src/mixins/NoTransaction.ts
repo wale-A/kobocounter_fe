@@ -7,11 +7,11 @@ import { mapGetters } from "vuex";
   },
   watch: {
     transactions(newVal: TransactionInfo[]) {
-      if (newVal?.length && this.accounts?.length) {
+      if (newVal?.length == 0 && this.accounts?.length) {
         this.$notify({
           text: "You do not have transactions for the selected filter values",
           type: "info",
-          duration: -1,
+          duration: 3000,
         });
       }
     },

@@ -29,7 +29,7 @@ export default class Loader extends Vue {
 
   @at-root #{&}__icon {
     width: 300px;
-    height: 300px;
+    height: 150px;
     color: blue;
   }
 }

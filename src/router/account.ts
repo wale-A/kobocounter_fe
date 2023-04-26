@@ -1,5 +1,6 @@
-import { RouteRecordRaw } from "vue-router";
 import Manage from "@/views/accounts/Manage.vue";
+import ResetPassword from "@/views/accounts/ResetPassword.vue";
+import { RouteRecordRaw } from "vue-router";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -32,6 +33,15 @@ const routes: Array<RouteRecordRaw> = [
     component: Manage,
     meta: {
       authorize: true,
+      layout: "Account",
+    },
+  },
+  {
+    // /reset-password?token=YnJvbnNlbi50cmV2b25AaWx5ZGVlbi5vcmc6ODVmMTFhYjk=
+    path: "/reset-password",
+    name: "ResetPassword",
+    component: ResetPassword,
+    meta: {
       layout: "Account",
     },
   },

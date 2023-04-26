@@ -11,9 +11,9 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import Card from "@/components/layout/Card.vue";
 import IncomeChart from "@/components/charts/IncomeChart.vue";
+import Card from "@/components/layout/Card.vue";
+import { Options, Vue } from "vue-class-component";
 
 @Options({
   components: {
@@ -28,5 +28,11 @@ import IncomeChart from "@/components/charts/IncomeChart.vue";
     error: Error,
   },
 })
-export default class AccountActivity extends Vue {}
+export default class AccountActivity extends Vue {
+  loading?: boolean;
+  error?: string;
+  fileName?: string;
+  revenue?: unknown[];
+  expense?: unknown[];
+}
 </script>

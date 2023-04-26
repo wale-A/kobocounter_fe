@@ -82,7 +82,7 @@ import { mapActions } from "vuex";
             title: "User successfully registered",
             text: "Please check your mail to verify your account",
             type: "success",
-            duration: -1,
+            duration: 3000,
           });
           this.$router.push({ name: "Home" });
         })
@@ -92,7 +92,7 @@ import { mapActions } from "vuex";
             title: "Registration failed",
             text: e.message,
             type: "error",
-            duration: -1,
+            duration: 3000,
           });
         });
     },

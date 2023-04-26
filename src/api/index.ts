@@ -25,6 +25,15 @@ const updatePassword = (
 const register = (payload: RegisterPayload): Promise<AxiosResponse> =>
   axios.post(`/users`, payload);
 
+const forgotPassword = (email: string): Promise<AxiosResponse> =>
+  axios.post(`/users/forgotPassword`, { email });
+
+const resetPassword = (
+  token: string,
+  password: string
+): Promise<AxiosResponse> =>
+  axios.post(`/users/resetPassword`, { token, password });
+
 const verifyAccount = (token: string): Promise<AxiosResponse> =>
   axios.post(`/users/verify`, { token });
 
@@ -158,4 +167,6 @@ export default {
   verifyAccount,
   getAllExpenseCategories,
   getAllTransactionCategories,
+  forgotPassword,
+  resetPassword,
 };

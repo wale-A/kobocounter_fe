@@ -1,6 +1,10 @@
-import { UpdatePasswordPayload, User } from "@/types";
-import { LoginPayload, RegisterPayload } from "@/types";
 import api from "@/api";
+import {
+  LoginPayload,
+  RegisterPayload,
+  UpdatePasswordPayload,
+  User,
+} from "@/types";
 import { getUser } from "@/util";
 import { Module } from "vuex";
 
@@ -58,6 +62,15 @@ const auth: Module<State, any> = {
     },
     async verifyAccount(_, token: string) {
       await api.verifyAccount(token);
+    },
+    async requestPasswordReset(_, email: string) {
+      await api.forgotPassword(email);
+    },
+    async resetPassword(
+      _,
+      { token, password }: { token: string; password: string }
+    ) {
+      await api.resetPassword(token, password);
     },
   },
 };

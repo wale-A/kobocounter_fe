@@ -28,7 +28,9 @@
         <div class="forgot">
           <p>
             Forgot password?
-            <a href="#"> Click here</a>
+            <router-link :to="{ name: 'ResetPassword' }" class="accent-color"
+              >Click here</router-link
+            >
           </p>
         </div>
       </form>
@@ -37,12 +39,12 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import Password from "@/components/Password.vue";
-import { mapActions } from "vuex";
-import { storeUser } from "@/util";
-import { User } from "@/types";
 import { subscribeUser } from "@/_helpers/pushNotification";
+import Password from "@/components/Password.vue";
+import { User } from "@/types";
+import { storeUser } from "@/util";
+import { Options, Vue } from "vue-class-component";
+import { mapActions } from "vuex";
 
 @Options({
   components: {
@@ -81,7 +83,7 @@ import { subscribeUser } from "@/_helpers/pushNotification";
             text: e.message,
             title: "Login failed",
             type: "error",
-            duration: -1,
+            duration: 3000,
           });
         });
     },

@@ -155,11 +155,10 @@ export default class Settings extends Vue {
                 refreshAccounts(response.code);
               },
               onEvent: function (event: string, data: any) {
+                removeLoader();
                 if (event == "ERROR") {
                   throw new Error(data);
                 }
-                // else if (event == "OPENED") {
-                // }
               },
             },
             token
@@ -197,9 +196,7 @@ export default class Settings extends Vue {
   }
 }
 
-type SettingsKeys =
-  // | "edit-profile"
-  "manage-accounts" | "upgrade-plan" | "change-password";
+type SettingsKeys = "manage-accounts" | "upgrade-plan" | "change-password";
 </script>
 
 <style scoped lang="scss">

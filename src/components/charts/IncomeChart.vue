@@ -3,9 +3,9 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
+import * as am4core from "@amcharts/amcharts4/core";
+import { Options, Vue } from "vue-class-component";
 
 @Options({
   props: {
@@ -16,6 +16,9 @@ import * as am4charts from "@amcharts/amcharts4/charts";
     height: String,
     width: String,
     fileName: String,
+  },
+  mounted() {
+    this.draw();
   },
   methods: {
     draw() {
@@ -78,7 +81,12 @@ import * as am4charts from "@amcharts/amcharts4/charts";
       dateAxis.fontFamily = "Poppins";
       valueAxis.fontFamily = "Poppins";
 
-      function createSeries(field: string, title: string, color: string) {
+      function createSeries(
+        field: string,
+        title: string,
+        color: string,
+        eventHandler?: (e: unknown) => void
+      ) {
         /**
          * this code is for the line graph, before i made the change to a bar chart
         // const series = chart.series.push(new am4charts.LineSeries());
@@ -116,6 +124,12 @@ import * as am4charts from "@amcharts/amcharts4/charts";
         series.tooltip.fontFamily = "Poppins";
         // series.tooltip.ignoreBounds = true;
         // series.stacked = true;
+
+        // if (eventHandler)
+        series.columns.template.events.on("hit", function (ev) {
+          console.log({ ev });
+          console.log({ data: ev.target?.dataItem?.dataContext });
+        });
 
         return series;
       }
@@ -242,17 +256,36 @@ import * as am4charts from "@amcharts/amcharts4/charts";
       });
     },
   },
-  watch: {
-    revenue() {
-      this.draw();
-    },
-    expense() {
-      this.draw();
-    },
-    netIncome() {
-      this.draw();
-    },
-  },
+  // watch: {
+  //   revenue(val, oldVal) {
+  //     if (
+  //       oldVal &&
+  //       val &&
+  //       val.filter((x: unknown) => oldVal.includes(x)).length
+  //     ) {
+  //       console.log(
+  //         "filtered revenue: ",
+  //         val.filter((x: unknown) => oldVal.includes(x))
+  //       );
+  //       console.log("revenue....", { val, oldVal });
+  //       this.draw();
+  //     }
+  //   },
+  //   expense(val, oldVal) {
+  //     if (
+  //       oldVal &&
+  //       val &&
+  //       val.filter((x: unknown) => oldVal.includes(x)).length
+  //     ) {
+  //       console.log("expense.....", { val, oldVal });
+  //       this.draw();
+  //     }
+  //   },
+  //   netIncome(val) {
+  //     console.log({ netIncome: val });
+  //     this.draw();
+  //   },
+  // },
 })
 export default class IncomeChart extends Vue {}
 </script>

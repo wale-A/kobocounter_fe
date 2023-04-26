@@ -36,7 +36,10 @@ import GuageChart from "@/components/charts/GuageChart.vue";
     error: Error,
   },
 })
-export default class BudgetPerformance extends Vue {}
+export default class BudgetPerformance extends Vue {
+  loading?: boolean;
+  error?: unknown;
+}
 </script>
 
 <style scoped>

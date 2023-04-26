@@ -26,8 +26,8 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
 import Card from "@/components/layout/Card.vue";
+import { Options, Vue } from "vue-class-component";
 
 @Options({
   components: {
@@ -65,7 +65,7 @@ export default class AccountSummary extends Vue {}
   }
 
   @at-root #{&}__icon {
-    margin-right: 8px;
+    margin-right: 2px;
     width: 30px;
     height: 30px;
   }
@@ -74,6 +74,7 @@ export default class AccountSummary extends Vue {}
     display: flex;
     padding: 7px;
     width: 50%;
+    padding-left: 0px;
   }
 
   @at-root #{&}__desc {

@@ -9,9 +9,9 @@
 </template>
 
 <script lang="ts">
+import Loader from "@/components/layout/Loader.vue";
 import { Options, Vue } from "vue-class-component";
 import { mapActions } from "vuex";
-import Loader from "@/components/layout/Loader.vue";
 @Options({
   components: {
     Loader,
@@ -22,7 +22,7 @@ import Loader from "@/components/layout/Loader.vue";
       this.$notify({
         text: "Verification code is not vaid, Please confirm the url in the email",
         type: "error",
-        duration: -1,
+        duration: 3000,
       });
     } else {
       this.verifyUserAccount(verificationToken);
@@ -49,7 +49,7 @@ export default class VerifyAccount extends Vue {
         this.$notify({
           text: "Account verification failed. Please confirm verification url",
           type: "error",
-          duration: -1,
+          duration: 3000,
         });
       })
       .finally(() => {
