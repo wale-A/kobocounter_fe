@@ -34,6 +34,7 @@
               :expense="expenses"
               :loading="loadingRevenues || loadingExpenses"
               :error="revenuesError || expensesError"
+              :clickHandler="printText"
               class="dashboard__widget dashboard__widget--acount-activity"
             />
             <RecentCategories
@@ -84,6 +85,7 @@
             :expense="expenses"
             :loading="loadingRevenues || loadingExpenses"
             :error="revenuesError || expensesError"
+            :clickHandler="printText"
             class="dashboard__widget dashboard__widget--acount-activity dashboard__widget--acount-activity--mobile"
           />
           <BudgetPerformance
@@ -106,6 +108,8 @@
             :from="from"
             :loading="loadingTransactionCategories"
             :error="transactionCategoriesError"
+            :categories="categoryOptionsMap"
+            :clickHandler="printText"
             class="dashboard__widget dashboard__widget--recent-category dashboard__widget--recent-category--mobile"
           />
         </div>
@@ -194,6 +198,7 @@ import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
       "revenues",
       "expenses",
       "budgets",
+      "categoryOptionsMap",
     ]),
     onMobile() {
       return ["xs", "sm", "md"].includes(this.$grid.breakpoint);
@@ -211,6 +216,8 @@ import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
       "getRecurringExpenses",
       "getEstablishmentActivities",
       "getBudgets",
+      "getAllTransactionCategories",
+      "getAllExpenseCategories",
     ]),
   },
   watch: {
@@ -233,6 +240,9 @@ export default class Dashboard extends mixins(FilterMixin) {
   transactions!: TransactionInfo[];
   revenues!: { amount: number }[];
   expenses!: { amount: number }[];
+  categoryOptionsMap!: Record<string, any>;
+  getAllExpenseCategories!: () => Promise<void>;
+  getAllTransactionCategories!: () => Promise<void>;
 
   get totalRevenue(): string {
     const rev =
@@ -286,7 +296,6 @@ export default class Dashboard extends mixins(FilterMixin) {
       this.getTransactions({ ...params, page: -1, size: -1 }),
       this.getTransactionCategories({ ...params, expenses: true }),
       this.getBudgets(params),
-
       this.getRevenues(params),
       this.getNetIncomes(params),
       this.getExpenses(params),
@@ -294,11 +303,18 @@ export default class Dashboard extends mixins(FilterMixin) {
         accountId: params.accountId,
       }),
       this.getEstablishmentActivities(params),
+      this.getAllExpenseCategories(),
+      this.getAllTransactionCategories(),
     ]);
   }
 
   created(): void {
     this.setParams(this.getModels(this.facets));
+  }
+
+  printText(data: any) {
+    this.setParams({ ...this.getModels(this.facets), ...data });
+    this.$router.push("Transactions");
   }
 }
 </script>

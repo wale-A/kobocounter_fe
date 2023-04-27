@@ -1,8 +1,8 @@
 <template>
   <div class="guageChartDiv" :style="{ height: '90%', width: '100%' }"></div>
   <p style="text-align: center; font-size: smaller; margin-top: 1px">
-    N{{ totalSpent.toLocaleString() }} spent out of a budget of N{{
-      totalBudget.toLocaleString()
+    N{{ totalSpent?.toLocaleString() }} spent out of a budget of N{{
+      totalBudget?.toLocaleString()
     }}
   </p>
 </template>

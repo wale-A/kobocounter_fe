@@ -5,8 +5,8 @@
       :fileName="fileName"
       :revenue="revenue"
       :expense="expense"
+      :clickHandler="clickHandler"
     />
-    <!-- :netIncome="netIncome" -->
   </Card>
 </template>
 
@@ -26,6 +26,7 @@ import { Options, Vue } from "vue-class-component";
     fileName: String,
     loading: Boolean,
     error: Error,
+    clickHandler: Function,
   },
 })
 export default class AccountActivity extends Vue {

@@ -55,11 +55,6 @@ import { mapActions } from "vuex";
   },
   computed: {
     valid() {
-      console.log({
-        email: this.email,
-        password: this.password,
-        token: this.resetToken,
-      });
       return this.email || (this.password && this.resetToken);
     },
   },
@@ -81,7 +76,6 @@ export default class ResetPassword extends Vue {
   disabled = false;
 
   sendForgotPasswordEmail(): void {
-    console.log("sending forgot password email: ", { email: this.email });
     this.isLoading = true;
     this.disabled = true;
     this.requestPasswordReset(this.email)

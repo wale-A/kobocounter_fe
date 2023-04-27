@@ -12,16 +12,16 @@ import { Options, Vue } from "vue-class-component";
     revenue: Array,
     expense: Array,
     netIncome: Array,
-    click: Function,
     height: String,
     width: String,
     fileName: String,
+    clickHandler: Function,
   },
   mounted() {
-    this.draw();
+    this.draw(this.clickHandler);
   },
   methods: {
-    draw() {
+    draw(clickHandler: (e?: any) => void) {
       const chart = am4core.create("incomeChartDiv", am4charts.XYChart);
       chart.responsive.enabled = true;
       chart.cursor = new am4charts.XYCursor();
@@ -81,12 +81,7 @@ import { Options, Vue } from "vue-class-component";
       dateAxis.fontFamily = "Poppins";
       valueAxis.fontFamily = "Poppins";
 
-      function createSeries(
-        field: string,
-        title: string,
-        color: string,
-        eventHandler?: (e: unknown) => void
-      ) {
+      function createSeries(field: string, title: string, color: string) {
         /**
          * this code is for the line graph, before i made the change to a bar chart
         // const series = chart.series.push(new am4charts.LineSeries());
@@ -125,11 +120,24 @@ import { Options, Vue } from "vue-class-component";
         // series.tooltip.ignoreBounds = true;
         // series.stacked = true;
 
-        // if (eventHandler)
-        series.columns.template.events.on("hit", function (ev) {
-          console.log({ ev });
-          console.log({ data: ev.target?.dataItem?.dataContext });
-        });
+        if (clickHandler) {
+          series.columns.template.events.on("hit", function (ev) {
+            const context = ev.target?.dataItem?.dataContext as {
+              date?: number;
+              expense?: number;
+              netIncome?: number;
+              revenue?: number;
+            };
+            if (context.date)
+              clickHandler({
+                period: {
+                  end: new Date(context.date + 86400000),
+                  name: "custom",
+                  start: new Date(context.date),
+                },
+              });
+          });
+        }
 
         return series;
       }
@@ -256,36 +264,8 @@ import { Options, Vue } from "vue-class-component";
       });
     },
   },
-  // watch: {
-  //   revenue(val, oldVal) {
-  //     if (
-  //       oldVal &&
-  //       val &&
-  //       val.filter((x: unknown) => oldVal.includes(x)).length
-  //     ) {
-  //       console.log(
-  //         "filtered revenue: ",
-  //         val.filter((x: unknown) => oldVal.includes(x))
-  //       );
-  //       console.log("revenue....", { val, oldVal });
-  //       this.draw();
-  //     }
-  //   },
-  //   expense(val, oldVal) {
-  //     if (
-  //       oldVal &&
-  //       val &&
-  //       val.filter((x: unknown) => oldVal.includes(x)).length
-  //     ) {
-  //       console.log("expense.....", { val, oldVal });
-  //       this.draw();
-  //     }
-  //   },
-  //   netIncome(val) {
-  //     console.log({ netIncome: val });
-  //     this.draw();
-  //   },
-  // },
 })
-export default class IncomeChart extends Vue {}
+export default class IncomeChart extends Vue {
+  clickHandler!: (e?: any) => void;
+}
 </script>

@@ -20,13 +20,19 @@ import { Options, Vue } from "vue-class-component";
     inputData: {
       type: Object,
     },
-    click: Function,
     height: String,
     width: String,
     fileName: String,
+    clickHandler: Function,
+    categories: Array,
   },
+
   methods: {
-    draw(chartData: [] | null) {
+    draw(
+      chartData: [] | null,
+      categories: Record<string, any>,
+      clickHandler?: (e?: any) => void
+    ) {
       const chart = am4core.create("donutChartDiv", am4charts.PieChart3D);
       chart.hiddenState.properties.opacity = 0;
       chart.responsive.enabled = true;
@@ -77,6 +83,18 @@ import { Options, Vue } from "vue-class-component";
       series.ticks.template.disabled = false;
       series.legendSettings.itemValueText = "[bold]N {amount}[/]";
       series.slices.template.fillOpacity = 1;
+
+      series.slices.template.events.on("hit", function (ev) {
+        const categoryValue = categories.find(
+          (x: { value: number; label: string }) =>
+            x.label == (ev.target?.dataItem?.dataContext as any)?.category
+        )?.value;
+        if (!isNaN(categoryValue) && clickHandler) {
+          clickHandler({
+            category: [categoryValue],
+          });
+        }
+      });
 
       const hs = series.slices.template.states.getKey("hover");
       if (!hs) return;
@@ -145,8 +163,11 @@ import { Options, Vue } from "vue-class-component";
     const data = this.inputData?.map((x: any) => {
       return { category: x.displayCategory, amount: x.amount };
     });
-    this.draw(data);
+    this.draw(data, this.categories, this.clickHandler);
   },
 })
-export default class DonutChart extends Vue {}
+export default class DonutChart extends Vue {
+  categories!: { value: string; label: string }[];
+  clickHandler!: (e?: any) => void;
+}
 </script>

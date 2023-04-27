@@ -52,16 +52,18 @@
       :inputData="transactionCategories"
       :width="'98%'"
       :fileName="'spending_category_summary__' + from + '_to_' + to"
+      :clickHandler="clickHandler"
+      :categories="categories"
       v-show="displayChart === 'piechart'"
     />
   </Card>
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import Card from "@/components/layout/Card.vue";
 import DonutChart from "@/components/charts/DonutChart.vue";
 import WordCloudChart from "@/components/charts/WordCloudChart.vue";
+import Card from "@/components/layout/Card.vue";
+import { Options, Vue } from "vue-class-component";
 
 @Options({
   components: {
@@ -77,6 +79,8 @@ import WordCloudChart from "@/components/charts/WordCloudChart.vue";
     height: String,
     loading: Boolean,
     error: Error,
+    clickHandler: Function,
+    categories: Object,
   },
 })
 export default class RecentCategories extends Vue {
