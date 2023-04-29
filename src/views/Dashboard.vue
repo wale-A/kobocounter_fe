@@ -44,6 +44,8 @@
               :from="from"
               :loading="loadingTransactionCategories"
               :error="transactionCategoriesError"
+              :categories="categoryOptionsMap"
+              :clickHandler="printText"
               class="dashboard__widget dashboard__widget--recent-category"
             />
           </div>

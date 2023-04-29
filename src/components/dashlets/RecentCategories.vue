@@ -80,7 +80,7 @@ import { Options, Vue } from "vue-class-component";
     loading: Boolean,
     error: Error,
     clickHandler: Function,
-    categories: Object,
+    categories: Array,
   },
 })
 export default class RecentCategories extends Vue {
