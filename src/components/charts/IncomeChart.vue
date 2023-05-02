@@ -269,3 +269,9 @@ export default class IncomeChart extends Vue {
   clickHandler!: (e?: any) => void;
 }
 </script>
+
+<style scoped>
+.incomeChartDiv {
+  cursor: pointer;
+}
+</style>

@@ -1,6 +1,10 @@
 <template>
   <Card title="Budget Performance" :loading="loading" :error="error">
-    <GuageChart v-if="!!data?.length" :budget="data" />
+    <GuageChart
+      v-if="!!data?.length"
+      :budget="data"
+      :clickHandler="clickHandler"
+    />
     <section v-else style="padding: 10% 5%">
       <p>
         You have not created a budget for this month.
@@ -34,11 +38,13 @@ import GuageChart from "@/components/charts/GuageChart.vue";
     },
     loading: Boolean,
     error: Error,
+    clickHandler: Function,
   },
 })
 export default class BudgetPerformance extends Vue {
   loading?: boolean;
   error?: unknown;
+  clickHandler!: (e?: any) => void;
 }
 </script>
 

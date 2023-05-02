@@ -34,7 +34,7 @@
               :expense="expenses"
               :loading="loadingRevenues || loadingExpenses"
               :error="revenuesError || expensesError"
-              :clickHandler="printText"
+              :clickHandler="handleTransactionChartClick"
               class="dashboard__widget dashboard__widget--acount-activity"
             />
             <RecentCategories
@@ -45,7 +45,7 @@
               :loading="loadingTransactionCategories"
               :error="transactionCategoriesError"
               :categories="categoryOptionsMap"
-              :clickHandler="printText"
+              :clickHandler="handleTransactionChartClick"
               class="dashboard__widget dashboard__widget--recent-category"
             />
           </div>
@@ -62,6 +62,7 @@
               :data="budgets"
               :loading="loadingBudgets"
               :error="budgetsError"
+              :clickHandler="handleBudgetChartClick"
               class="dashboard__widget dashboard__widget--budget-performance"
             />
             <UpcomingExpenses
@@ -87,13 +88,14 @@
             :expense="expenses"
             :loading="loadingRevenues || loadingExpenses"
             :error="revenuesError || expensesError"
-            :clickHandler="printText"
+            :clickHandler="handleTransactionChartClick"
             class="dashboard__widget dashboard__widget--acount-activity dashboard__widget--acount-activity--mobile"
           />
           <BudgetPerformance
             :data="budgets"
             :loading="loadingBudgets"
             :error="budgetsError"
+            :clickHandler="handleBudgetChartClick"
             class="dashboard__widget dashboard__widget--budget-performance dashboard__widget--budget-performance--mobile"
           />
 
@@ -111,7 +113,7 @@
             :loading="loadingTransactionCategories"
             :error="transactionCategoriesError"
             :categories="categoryOptionsMap"
-            :clickHandler="printText"
+            :clickHandler="handleTransactionChartClick"
             class="dashboard__widget dashboard__widget--recent-category dashboard__widget--recent-category--mobile"
           />
         </div>
@@ -314,9 +316,13 @@ export default class Dashboard extends mixins(FilterMixin) {
     this.setParams(this.getModels(this.facets));
   }
 
-  printText(data: any) {
+  handleTransactionChartClick(data: any) {
     this.setParams({ ...this.getModels(this.facets), ...data });
     this.$router.push("Transactions");
+  }
+
+  handleBudgetChartClick() {
+    this.$router.push("Budgets");
   }
 }
 </script>

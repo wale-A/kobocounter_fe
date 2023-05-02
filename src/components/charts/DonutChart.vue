@@ -202,3 +202,9 @@ export default class DonutChart extends Vue {
   }
 }
 </script>
+
+<style scoped>
+.donutChartDiv {
+  cursor: pointer;
+}
+</style>
