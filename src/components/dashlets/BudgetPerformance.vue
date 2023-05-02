@@ -1,7 +1,7 @@
 <template>
   <Card title="Budget Performance" :loading="loading" :error="error">
-    <GuageChart v-show="data?.length" :budget="data" />
-    <section v-show="!data?.length" style="padding: 10% 5%">
+    <GuageChart v-if="!!data?.length" :budget="data" />
+    <section v-else style="padding: 10% 5%">
       <p>
         You have not created a budget for this month.
         <br />
@@ -9,7 +9,7 @@
       </p>
       <br />
       <router-link to="Budgets" class="button">
-        <span class="">Create Your Budget</span>
+        <span class="">Manage Your Budget</span>
       </router-link>
     </section>
   </Card>

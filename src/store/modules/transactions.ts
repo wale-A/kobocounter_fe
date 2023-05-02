@@ -46,8 +46,6 @@ const transactions: Module<State, any> = {
         const txn = sortedTransactions[i] as Transaction;
         group[date] = (group[date] || []).concat(txn);
       }
-
-      console.log({ group });
       return group;
     },
     transactionCategories(state: State) {
