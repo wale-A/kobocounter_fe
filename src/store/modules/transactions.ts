@@ -46,6 +46,8 @@ const transactions: Module<State, any> = {
         const txn = sortedTransactions[i] as Transaction;
         group[date] = (group[date] || []).concat(txn);
       }
+
+      console.log({ group });
       return group;
     },
     transactionCategories(state: State) {
@@ -111,11 +113,9 @@ const transactions: Module<State, any> = {
         pagination,
       }: { transactions: TransactionInfo[]; pagination: any }
     ) {
-      state.transactions = {
-        ...state.transactions,
-        ...transactions,
-      };
+      state.transactions = [...(state.transactions || []), ...transactions];
       state.pagination = pagination;
+      state.transactionsError = undefined;
     },
     setTransactionsError(state, err: Error) {
       state.transactionsError = err;
