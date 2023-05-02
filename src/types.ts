@@ -63,7 +63,7 @@ export type TransactionPayload = {
   recipientName: string | string[];
   isEstablishment: boolean;
   establishmentActivities: string[];
-  modifyExistingTransactions: boolean;
+  modifyExistingTransactions?: boolean;
 };
 
 export type Transaction = {
