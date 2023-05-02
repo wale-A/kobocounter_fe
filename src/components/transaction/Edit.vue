@@ -71,6 +71,19 @@
           </template>
         </Field>
 
+        <div class="transaction__field-group">
+          <label for="modify-existing" class="transaction__field">
+            <input
+              id="modify-existing"
+              name="modify-existing"
+              type="checkbox"
+              v-model="model.modifyExistingTransactions"
+              class="transaction__field-checkbox"
+            />
+            <span>Modify existing transactions with similar narration </span>
+          </label>
+        </div>
+
         <div class="transaction__actions">
           <input
             type="button"
@@ -92,12 +105,12 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import Multiselect from "@vueform/multiselect";
-import Header from "./_internal/Header.vue";
-import Field from "./_internal/Field.vue";
-import { formatDate, formatTime } from "@/util";
 import { TransactionInfo, TransactionPayload } from "@/types";
+import { formatDate, formatTime } from "@/util";
+import Multiselect from "@vueform/multiselect";
+import { Options, Vue } from "vue-class-component";
+import Field from "./_internal/Field.vue";
+import Header from "./_internal/Header.vue";
 @Options({
   components: { Field, Header, Multiselect },
   props: {
